@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta http-equiv="cache-control" content="max-age=0" />
+<meta http-equiv="cache-control" content="no-cache" />
+<meta http-equiv="expires" content="0" />
+<meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
+<meta http-equiv="pragma" content="no-cache" />
+<style>
+body {
+	text-align: center;
+	background: #00ECB9;
+	font-family: sans-serif;
+	font-weight: 100;
+}
+
+h1 {
+	color: #396;
+	font-weight: 100;
+	font-size: 40px;
+	margin: 40px 0px 20px;
+}
+
+#clockdiv {
+	font-family: sans-serif;
+	color: #fff;
+	display: inline-block;
+	font-weight: 100;
+	text-align: center;
+	font-size: 30px;
+}
+
+#clockdiv>div {
+	padding: 10px;
+	border-radius: 3px;
+	background: #00BF96;
+	display: inline-block;
+}
+
+#clockdiv div>span {
+	padding: 15px;
+	border-radius: 3px;
+	background: #00816A;
+	display: inline-block;
+}
+
+.smalltext {
+	padding-top: 5px;
+	font-size: 16px;
+}
+</style>
+</head>
+<body>
+  <h1>Countdown Clock</h1>
+  <div id="clockdiv">
+    <div>
+      <span class="days"></span>
+      <div class="smalltext">Days</div>
+    </div>
+    <div>
+      <span class="hours"></span>
+      <div class="smalltext">Hours</div>
+    </div>
+    <div>
+      <span class="minutes"></span>
+      <div class="smalltext">Minutes</div>
+    </div>
+    <div>
+      <span class="seconds"></span>
+      <div class="smalltext">Seconds</div>
+    </div>
+  </div>
+</body>
+<script>
+/* function getTimeRemaining(endtime) {
+	var t = Date.parse(endtime) - Date.parse(new Date());
+	var seconds = Math.floor((t / 1000) % 60);
+	var minutes = Math.floor((t / 1000 / 60) % 60);
+	var hours = Math.floor((t / (1000 * 60 * 60)) % 24);
+	var days = Math.floor(t / (1000 * 60 * 60 * 24));
+	return {
+		'total' : t,
+		'days' : days,
+		'hours' : hours,
+		'minutes' : minutes,
+		'seconds' : seconds
+	};
+}
+
+function initializeClock(id, endtime) {
+	var clock = document.getElementById(id);
+	var daysSpan = clock.querySelector('.days');
+	var hoursSpan = clock.querySelector('.hours');
+	var minutesSpan = clock.querySelector('.minutes');
+	var secondsSpan = clock.querySelector('.seconds');
+
+	function updateClock() {
+		var t = getTimeRemaining(endtime);
+
+		daysSpan.innerHTML = t.days;
+		hoursSpan.innerHTML = ('0' + t.hours).slice(-2);
+		minutesSpan.innerHTML = ('0' + t.minutes).slice(-2);
+		secondsSpan.innerHTML = ('0' + t.seconds).slice(-2);
+
+		if (t.total <= 0) {
+			clearInterval(timeinterval);
+			// window.top.open(isDebug ? 'http://www.google.com/'
+			// : 'https://apps.facebook.com/mousehunt/', '_self');
+			// this.focus();
+			// self.opener = this;
+			// self.close();
+		}
+	}
+
+	updateClock();
+	var timeinterval = setInterval(updateClock, 1000);
+}
+
+var isDebug = true;
+var duration = 8 * 60 * 60 * 1000;
+try {
+	var a = window.location.href.split('?')[1].split('&');
+	duration = parseInt(a[a.length - 1].split('=')[1]);
+	console.log(duration);
+} catch (e) {
+	//
+}
+// var deadline = new Date(Date.parse(new Date()) + 15 * 24 * 60 * 60 * 1000);
+var deadline = new Date(Date.parse(new Date()) + duration);
+initializeClock('clockdiv', deadline); */
+//compressed by Google Closure Compiler
+function getTimeRemaining(b){b=Date.parse(b)-Date.parse(new Date);return{total:b,days:Math.floor(b/864E5),hours:Math.floor(b/36E5%24),minutes:Math.floor(b/1E3/60%60),seconds:Math.floor(b/1E3%60)}}
+function initializeClock(b,e){function d(){var b=getTimeRemaining(e);f.innerHTML=b.days;g.innerHTML=("0"+b.hours).slice(-2);h.innerHTML=("0"+b.minutes).slice(-2);k.innerHTML=("0"+b.seconds).slice(-2);0>=b.total&&clearInterval(l)}var c=document.getElementById(b),f=c.querySelector(".days"),g=c.querySelector(".hours"),h=c.querySelector(".minutes"),k=c.querySelector(".seconds");d();var l=setInterval(d,1E3)}var isDebug=!0,duration=288E5;
+try{var a=window.location.href.split("?")[1].split("&"),duration=parseInt(a[a.length-1].split("=")[1]);console.log(duration)}catch(b){}var deadline=new Date(Date.parse(new Date)+duration);initializeClock("clockdiv",deadline);
+</script>
+</html>
