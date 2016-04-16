@@ -105,7 +105,8 @@ function initializeClock(id, endtime) {
 
 		if (t.total <= 0) {
 			clearInterval(timeinterval);
-			window.open(isDebug ? 'http://www.google.com/' : 'https://apps.facebook.com/mousehunt/', '_self');
+			var url = isDebug ? 'http://www.google.com/' : 'https://apps.facebook.com/mousehunt/';
+			window.open(url, '_self');
 			// this.focus();
 			// self.opener = this;
 			// self.close();
