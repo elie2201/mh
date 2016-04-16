@@ -73,7 +73,7 @@ h1 {
   </div>
 </body>
 <script>
-/* function getTimeRemaining(endtime) {
+function getTimeRemaining(endtime) {
 	var t = Date.parse(endtime) - Date.parse(new Date());
 	var seconds = Math.floor((t / 1000) % 60);
 	var minutes = Math.floor((t / 1000 / 60) % 60);
@@ -105,8 +105,7 @@ function initializeClock(id, endtime) {
 
 		if (t.total <= 0) {
 			clearInterval(timeinterval);
-			// window.top.open(isDebug ? 'http://www.google.com/'
-			// : 'https://apps.facebook.com/mousehunt/', '_self');
+			window.open(isDebug ? 'http://www.google.com/' : 'https://apps.facebook.com/mousehunt/', '_self');
 			// this.focus();
 			// self.opener = this;
 			// self.close();
@@ -128,10 +127,10 @@ try {
 }
 // var deadline = new Date(Date.parse(new Date()) + 15 * 24 * 60 * 60 * 1000);
 var deadline = new Date(Date.parse(new Date()) + duration);
-initializeClock('clockdiv', deadline); */
+initializeClock('clockdiv', deadline);
 //compressed by Google Closure Compiler
-function getTimeRemaining(b){b=Date.parse(b)-Date.parse(new Date);return{total:b,days:Math.floor(b/864E5),hours:Math.floor(b/36E5%24),minutes:Math.floor(b/1E3/60%60),seconds:Math.floor(b/1E3%60)}}
+/* function getTimeRemaining(b){b=Date.parse(b)-Date.parse(new Date);return{total:b,days:Math.floor(b/864E5),hours:Math.floor(b/36E5%24),minutes:Math.floor(b/1E3/60%60),seconds:Math.floor(b/1E3%60)}}
 function initializeClock(b,e){function d(){var b=getTimeRemaining(e);f.innerHTML=b.days;g.innerHTML=("0"+b.hours).slice(-2);h.innerHTML=("0"+b.minutes).slice(-2);k.innerHTML=("0"+b.seconds).slice(-2);0>=b.total&&clearInterval(l)}var c=document.getElementById(b),f=c.querySelector(".days"),g=c.querySelector(".hours"),h=c.querySelector(".minutes"),k=c.querySelector(".seconds");d();var l=setInterval(d,1E3)}var isDebug=!1,duration=288E5;
-try{var a=window.location.href.split("?")[1].split("&"),duration=parseInt(a[a.length-1].split("=")[1]);console.log(duration)}catch(b){}var deadline=new Date(Date.parse(new Date)+duration);initializeClock("clockdiv",deadline);
+try{var a=window.location.href.split("?")[1].split("&"),duration=parseInt(a[a.length-1].split("=")[1]);console.log(duration)}catch(b){}var deadline=new Date(Date.parse(new Date)+duration);initializeClock("clockdiv",deadline); */
 </script>
 </html>
