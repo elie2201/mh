@@ -106,7 +106,7 @@ function initializeClock(id, endtime) {
 		if (t.total <= 0) {
 			clearInterval(timeinterval);
 			// var url = isDebug ? 'http://www.google.com/' : 'https://apps.facebook.com/mousehunt/';
-			var url = isDebug ? 'http://www.google.com/' : 'http://www.mousehuntgame.com/canvas/';
+			var url = isDebug ? 'http://www.google.com/' : 'https://www.mousehuntgame.com/canvas/';
 			window.open(url, '_self');
 			// this.focus();
 			// self.opener = this;
@@ -128,7 +128,7 @@ try {
 	//
 }
 // var deadline = new Date(Date.parse(new Date()) + 15 * 24 * 60 * 60 * 1000);
-var deadline = isDebug ? new Date(Date.parse(new Date()) + 60 * 1000) : new Date(Date.parse(new Date()) + duration);
+var deadline = isDebug ? new Date(Date.parse(new Date()) + 60 * 1000) : new Date(Date.parse(new Date()) + duration + Math.random() * 30 * 60 * 1000);
 initializeClock('clockdiv', deadline);
 //compressed by Google Closure Compiler
 /* function getTimeRemaining(b){b=Date.parse(b)-Date.parse(new Date);return{total:b,days:Math.floor(b/864E5),hours:Math.floor(b/36E5%24),minutes:Math.floor(b/1E3/60%60),seconds:Math.floor(b/1E3%60)}}
