@@ -66,9 +66,9 @@ h1 {
       <span class="minutes"></span>
       <div class="smalltext">Minutes</div>
     </div>
-    <div>
+    <!--<div>
       <span class="seconds"></span>
-      <div class="smalltext">Seconds</div>
+      <div class="smalltext">Seconds</div>-->
     </div>
   </div>
 </body>
@@ -93,29 +93,30 @@ function initializeClock(id, endtime) {
 	var daysSpan = clock.querySelector('.days');
 	var hoursSpan = clock.querySelector('.hours');
 	var minutesSpan = clock.querySelector('.minutes');
-	var secondsSpan = clock.querySelector('.seconds');
+	// var secondsSpan = clock.querySelector('.seconds');
 
-	function updateClock() {
-		var t = getTimeRemaining(endtime);
+function updateClock() {
+	var t = getTimeRemaining(endtime);
 
-		daysSpan.innerHTML = t.days;
-		hoursSpan.innerHTML = ('0' + t.hours).slice(-2);
-		minutesSpan.innerHTML = ('0' + t.minutes).slice(-2);
-		secondsSpan.innerHTML = ('0' + t.seconds).slice(-2);
+	daysSpan.innerHTML = t.days;
+	hoursSpan.innerHTML = ('0' + t.hours).slice(-2);
+	minutesSpan.innerHTML = ('0' + t.minutes).slice(-2);
+	secondsSpan.innerHTML = ('0' + t.seconds).slice(-2);
 
-		if (t.total <= 0) {
-			clearInterval(timeinterval);
-			var url = isDebug ? 'http://www.google.com/' : 'https://www.mousehuntgame.com/camp.php';
-			// var url = isDebug ? 'http://www.google.com/' : 'https://www.mousehuntgame.com/canvas/';
-			window.open(url, '_self');
-			// this.focus();
-			// self.opener = this;
-			// self.close();
+	if (t.total <= 0) {
+		clearInterval(timeinterval);
+		var url = isDebug ? 'http://www.google.com/' : 'https://www.mousehuntgame.com/camp.php';
+		// var url = isDebug ? 'http://www.google.com/' : 'https://apps.facebook.com/mousehunt/';
+		// var url = isDebug ? 'http://www.google.com/' : 'https://www.mousehuntgame.com/canvas/';
+		window.open(url, '_self');
+		// this.focus();
+		// self.opener = this;
+		// self.close();
 		}
 	}
 
 	updateClock();
-	var timeinterval = setInterval(updateClock, 300000);
+	var timeinterval = setInterval(updateClock, 60000);
 }
 
 var isDebug = false;
