@@ -124,6 +124,9 @@ var duration = 8 * 60 * 60 * 1000;
 try {
 	var a = window.location.href.split('?')[1].split('&');
 	duration = parseInt(a[a.length - 1].split('=')[1]);
+	if (duration < 1800000) {
+		return;
+	}
 	console.log(duration);
 } catch (e) {
 	//
