@@ -124,18 +124,17 @@ var duration = 8 * 60 * 60 * 1000;
 try {
 	var a = window.location.href.split('?')[1].split('&');
 	duration = parseInt(a[a.length - 1].split('=')[1]);
-	if (duration < 3500000) {
-		return;
-	}
-	console.log(duration);
-} catch (e) {
-	//
-}
+	if (duration > 3500000) {
 let random = Math.random();
 // var deadline = new Date(Date.parse(new Date()) + 15 * 24 * 60 * 60 * 1000);
 // var deadline = isDebug ? new Date(Date.parse(new Date()) + 60 * 1000) : new Date(Date.parse(new Date()) + (Math.random() * 100 % 1 - 0.5) * 30 * 60 * 1000);
 var deadline = isDebug ? new Date(Date.parse(new Date()) + 60 * 1000) : new Date(new Date().getTime() + duration + Math.floor((Math.random() * 100000 % 1 - 0.5) * 30 * 60 * 1000));
 initializeClock('clockdiv', deadline);
+	}
+	console.log(duration);
+} catch (e) {
+	//
+}
 //compressed by Google Closure Compiler
 /* function getTimeRemaining(b){b=Date.parse(b)-Date.parse(new Date);return{total:b,days:Math.floor(b/864E5),hours:Math.floor(b/36E5%24),minutes:Math.floor(b/1E3/60%60),seconds:Math.floor(b/1E3%60)}}
 function initializeClock(b,e){function d(){var b=getTimeRemaining(e);f.innerHTML=b.days;g.innerHTML=("0"+b.hours).slice(-2);h.innerHTML=("0"+b.minutes).slice(-2);k.innerHTML=("0"+b.seconds).slice(-2);0>=b.total&&clearInterval(l)}var c=document.getElementById(b),f=c.querySelector(".days"),g=c.querySelector(".hours"),h=c.querySelector(".minutes"),k=c.querySelector(".seconds");d();var l=setInterval(d,1E3)}var isDebug=!1,duration=288E5;
