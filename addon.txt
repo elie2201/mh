@@ -1,8 +1,8 @@
 // floatingIslands
 if (getEnvironmentType() === 'floating_islands') floatingIslands();
 function floatingIslands() {
-  const version = '1.3.3.0.1';
-  console.plog(`floatingIslands_${version}`);
+  const version = '1.4.0.0.0';
+  console.log(`floatingIslands_${version}`);
   const enviromentType = getEnvironmentType();
   if (enviromentType !== 'floating_islands') return;
   // trap: [<weapon>, <base>, <bait>, <trinket>, <bottleWindEnabled>, litCandle, doubleEgg]
@@ -28,6 +28,9 @@ function floatingIslands() {
     isBwAfterLaiTrove: false,
     isBwAfterHaiTrove: false,
     isBwAfterSpTrove: false,
+    isBwAutoOffLai: false,
+    isBwAutoOffHai: true,
+    isBwAutoOffSP: false,
     isHuntAfterLaiTrove: false,
     isHuntAfterHaiTrove: true,
     isHuntAfterSpTrove: true,
@@ -166,6 +169,27 @@ function floatingIslands() {
     }
   };
   if (settings.isAutoHuntAfterTrove) autoHuntAfterTrove();
+  const bwAutoOff = () => {
+    if (isLai && settings.isBwAutoOffLai) {
+      /* if (countArrayElement('sky_pirates', modTypes) == 2) {
+        settings.isHuntAfterLaiTrove = true;
+        if (hasTreasureTrove) settings.isPirateHuntingLai = true;
+      } else if (countArrayElement('loot_cache', modTypes) == 2)
+        settings.isHuntAfterLaiTrove = true; */
+    } else if (isHai && settings.isBwAutoOffHai) {
+      if (modTypes.indexOf('sky_pirates') < 0) {
+        if (countArrayElement('loot_cache', modTypes) < 2)
+          settings.isBottledWind = false;
+      } else {
+        if (
+          modTypes.indexOf('loot_cache') < 0 &&
+          countArrayElement('sky_pirates', modTypes) < 2
+        )
+          settings.isBottledWind = false;
+      }
+    }
+  };
+  bwAutoOff();
   // **Retreat after has treasure trove and has defeated warden/paragon without reloading
   // has_defeated_enemy && has_treasure_trove
   // hg.views.HeadsUpDisplayFloatingIslandsView.retreat(this);
