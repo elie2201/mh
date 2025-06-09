@@ -4,7 +4,7 @@ setTimeout(() => { scheduledSleep(); }, getRandomInteger(60000, 120000));
 function scheduledSleep() {
   // const version = '1.0.1.0.0';
   const enviromentType = getEnvironmentType();
-  console.log(`scheduledSleep_1.0.2.1.0 in ${enviromentType}`);
+  console.log(`scheduledSleep_1.0.2.2.0 in ${enviromentType}`);
   const keys = {
     sbFactory: 'super_brie_factory',
     fw: 'desert_warpath',
@@ -108,6 +108,7 @@ function goToBed(schedule, isPreSleep) {
 /** matching enviromentSchedules by day and then matching daySchedules by time  */
 function matchSchedules(enviromentSchedules) {
   const now = new Date();
+  const origHm = toHdotMexpression(now);
   const nowHm = toHdotMexpression(
     new Date(now.getTime() + getRandomInteger(-900000, 900000))
   );
@@ -132,7 +133,7 @@ function matchSchedules(enviromentSchedules) {
     const wakeUpAtArr = getWakeUpAt(sleepAtArr, sleepForArr, segments);
     const wakeUpAt = wakeUpAtArr[0] + wakeUpAtArr[1] / 100;
     // TODO 目前不處理 wakeUpAt超過 24:00:00問題,自行切開設定
-    if (nowHm > wakeUpAt) {
+    if (origHm > wakeUpAt) {
       console.log(`Waked up. hm(${nowHm}) > wakeUpAt(${wakeUpAt})`, schedule);
       continue;
     }
