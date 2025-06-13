@@ -4,7 +4,7 @@ setTimeout(() => { scheduledSleep(); }, getRandomInteger(60000, 120000));
 function scheduledSleep() {
   // const version = '1.0.1.0.0';
   const enviromentType = getEnvironmentType();
-  console.log(`scheduledSleep_1.0.2.2.0 in ${enviromentType}`);
+  console.log(`scheduledSleep_1.0.2.3.1 in ${enviromentType}`);
   const keys = {
     sbFactory: 'super_brie_factory',
     fw: 'desert_warpath',
@@ -108,7 +108,8 @@ function goToBed(schedule, isPreSleep) {
 /** matching enviromentSchedules by day and then matching daySchedules by time  */
 function matchSchedules(enviromentSchedules) {
   const now = new Date();
-  const origHm = toHdotMexpression(now);
+  // 剛過 00:00:00如果 shift出昨天,會造成 origHm < 今天的 wakeup但 nowHm > 昨天的 sleepAt的 bug
+  // const origHm = toHdotMexpression(now);
   const nowHm = toHdotMexpression(
     new Date(now.getTime() + getRandomInteger(-900000, 900000))
   );
@@ -133,7 +134,7 @@ function matchSchedules(enviromentSchedules) {
     const wakeUpAtArr = getWakeUpAt(sleepAtArr, sleepForArr, segments);
     const wakeUpAt = wakeUpAtArr[0] + wakeUpAtArr[1] / 100;
     // TODO 目前不處理 wakeUpAt超過 24:00:00問題,自行切開設定
-    if (origHm > wakeUpAt) {
+    if (nowHm > wakeUpAt) {
       console.log(`Waked up. hm(${nowHm}) > wakeUpAt(${wakeUpAt})`, schedule);
       continue;
     }
@@ -154,8 +155,8 @@ function matchSchedules(enviromentSchedules) {
 function getWakeUpAt(sleepAtHmArr, sleepForHmArr, segments) {
   console.log(sleepAtHmArr, sleepForHmArr, segments);
   let hours = sleepAtHmArr[0] + sleepForHmArr[0] * segments;
-  // sleep結束前 15分鐘視為 wakeup
-  let minutes = sleepAtHmArr[1] + sleepForHmArr[1] * segments - 15;
+  // sleep結束前 30分鐘視為 wakeup
+  let minutes = sleepAtHmArr[1] + sleepForHmArr[1] * segments - 30;
   while (minutes < 0) {
     hours -= 1;
     minutes += 60;
