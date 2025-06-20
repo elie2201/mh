@@ -1,7 +1,7 @@
 // floatingIslands
 if (getEnvironmentType() === 'floating_islands') floatingIslands();
 function floatingIslands() {
-  console.log('floatingIslands_1.4.1.0.1');
+  console.log('floatingIslands_1.4.2.0.1');
   const enviromentType = getEnvironmentType();
   if (enviromentType !== 'floating_islands') return;
   // trap: [<weapon>, <base>, <bait>, <trinket>, <bottleWindEnabled>, litCandle, doubleEgg]
@@ -548,6 +548,12 @@ function bestChoice(islands, choices, wantedModifier) {
     const island = islands[choice];
     if (island.filter((elem) => elem === 'sky_pirates').length === 2)
       return choice;
+  }
+  // Lai的話 shrine first優先, Hai的話這個判斷無作用
+  for (let i = 0; i < choices.length; i++) {
+    const choice = choices[i];
+    const island = islands[choice];
+    if (island[0].indexOf('shrine') > -1) return choice;
   }
   for (let i = 0; i < choices.length; i++) {
     const choice = choices[i];
