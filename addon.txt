@@ -1,9 +1,9 @@
 // floatingIslands
 if (getEnvironmentType() === 'floating_islands') floatingIslands();
 function floatingIslands() {
-  console.log('floatingIslands_1.4.2.0.1');
-  const enviromentType = getEnvironmentType();
-  if (enviromentType !== 'floating_islands') return;
+  console.log('floatingIslands_1.4.3.1.1');
+  const environmentType = getEnvironmentType();
+  if (environmentType !== 'floating_islands') return;
   // trap: [<weapon>, <base>, <bait>, <trinket>, <bottleWindEnabled>, litCandle, doubleEgg]
   // prettier-ignore
   const defaultSetting = {
@@ -489,8 +489,9 @@ function skyMap(islands, settings, isHai) {
     }
   }
   if (choices.length > 0) {
+    console.plog(choices);
     const choice = bestChoice(islands, choices, settings.wantedModifier);
-    console.log('launchSkyMap', choice);
+    console.plog('launchSkyMap', choice);
     if (choice) {
       launchSkyMap(choice); // TODO 測試時 comment掉
       return isSkyMapLaunched;
@@ -565,7 +566,7 @@ function bestChoice(islands, choices, wantedModifier) {
   for (let i = 0; i < choices.length; i++) {
     const choice = choices[i];
     const island = islands[choice];
-    if (island.indexOf('empty_sky') < 0 && distinctArray(island).length < 4)
+    if (island.indexOf('empty_sky') < 0 && distinctArray(island).length === 2)
       return choice;
   }
   for (let i = 0; i < choices.length; i++) {
@@ -577,17 +578,7 @@ function bestChoice(islands, choices, wantedModifier) {
     if (island.indexOf('empty_sky') < 0) return choice;
   }
   return choices[0];
-  /* for (let i = 0; i < choices.length; i++) {
-    const choice = choices[i];
-    const island = islands[choice];
-    const distinct = [];
-    for (let j = 0; j < island.length; j++) {
-      const modType = island[j];
-      if (distinct.indexOf(modType) < 0) distinct.push(modType);
-    }
-    if (distinct.length < 4) return choice;
-  }
-  return null; */
+  // return null;
 }
 // launchSkyMap('');
 function launchSkyMap(powerType) {
