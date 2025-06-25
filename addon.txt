@@ -1,7 +1,7 @@
 // floatingIslands
 if (getEnvironmentType() === 'floating_islands') floatingIslands();
 function floatingIslands() {
-  console.log('floatingIslands_1.4.3.1.1');
+  console.log('floatingIslands_1.4.5.1.1');
   const environmentType = getEnvironmentType();
   if (environmentType !== 'floating_islands') return;
   // trap: [<weapon>, <base>, <bait>, <trinket>, <bottleWindEnabled>, litCandle, doubleEgg]
@@ -171,8 +171,8 @@ function floatingIslands() {
   const bwAutoOff = () => {
     if (isLai && settings.isBwAutoOffLai) {
       if (
-        countArrayElement('loot_cache', modTypes) < 2 &&
-        countArrayElement('sky_pirates', modTypes) < 2 &&
+        // countArrayElement('loot_cache', modTypes) < 2 &&
+        // countArrayElement('sky_pirates', modTypes) < 2 &&
         hasSpeedUp
       )
         settings.isBottledWind = false;
@@ -489,9 +489,8 @@ function skyMap(islands, settings, isHai) {
     }
   }
   if (choices.length > 0) {
-    console.plog(choices);
     const choice = bestChoice(islands, choices, settings.wantedModifier);
-    console.plog('launchSkyMap', choice);
+    console.plog('launchSkyMap', choice, choices, islands);
     if (choice) {
       launchSkyMap(choice); // TODO 測試時 comment掉
       return isSkyMapLaunched;
