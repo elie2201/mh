@@ -2,10 +2,10 @@
 if (user.quests.QuestRonza) ronzaLogging();
 /** Check and execute scheduled jobs */
 function ronzaLogging() {
-  console.log('ronzaLogging_0.0.0.0.1');
+  console.log('ronzaLogging_0.0.0.0.2');
   const isoDate = new Date().toLocaleDateString('en-CA');
   const defaultJobs = [
-    { begin: '21:46:00', end: '23:06:00', job: 'logChromeBit' }
+    { begin: '22:46:00', end: '23:06:00', job: 'logChromeBit' }
   ];
   const storingLogKey = 'chromeBitLog';
   const scheduledJobs = defaultJobs; // getStorageToObject(scheduledJobsKey, defaultJobs);
