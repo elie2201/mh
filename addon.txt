@@ -2,7 +2,7 @@
 if (getEnvironmentType() == 'ronzas_traveling_shoppe') travelingShoppe();
 function travelingShoppe() {
   // const version = '0.0.0.0.1';
-  console.log(`travelingShoppe_0.0.0.0.1`);
+  console.log(`travelingShoppe_0.0.0.0.2`);
   // const quest = user.quests.QuestRonza;
   const goudaType = 'gouda_cheese';
   const rockforthType = 'rockforth_cheese';
@@ -34,7 +34,7 @@ function travelingShoppe() {
   const storageKey = 'ronzas_traveling_shoppe';
   const settings = getStorageToObject(storageKey, defaultSettings);
   if (settings.isShutdown) {
-    armAllTraps(settings.traps[settings.farmingRockforthTrap]);
+    armAllTraps(...settings.traps[settings.farmingRockforthTrap]);
     return;
   }
   const baitItemId = user.bait_item_id;
@@ -42,8 +42,8 @@ function travelingShoppe() {
   if (baitItemId !== rockforthItemId) {
     getQuantityByUrlThen(rockforthType, (qty) => {
       if (qty > settings.startRockforthQty)
-        armAllTraps(settings.traps.rockforth_cheese);
-      else armAllTraps(settings.traps[settings.farmingRockforthTrap]);
+        armAllTraps(...settings.traps.rockforth_cheese);
+      else armAllTraps(...settings.traps[settings.farmingRockforthTrap]);
     });
     return;
   }
@@ -67,6 +67,6 @@ function travelingShoppe() {
   };
   currentTrapKey = checkUsingLocalTrapKey(currentTrapKey, trapKeys);
   const trap = settings.traps[currentTrapKey];
-  armAllTraps(trap);
+  armAllTraps(...trap);
 }
 // End travelingShoppe
