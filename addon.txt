@@ -1,72 +1,44 @@
-// travelingShoppe
-if (getEnvironmentType() == 'ronzas_traveling_shoppe') travelingShoppe();
-function travelingShoppe() {
-  // const version = '0.0.0.0.1';
-  console.log(`travelingShoppe_0.0.0.0.2`);
-  // const quest = user.quests.QuestRonza;
-  const goudaType = 'gouda_cheese';
-  const rockforthType = 'rockforth_cheese';
-  const defaultSettings = {
-    isShutdown: false,
-    farmingRockforthTrap: goudaType,
-    startRockforthQty: 34,
-    traps: {
-      gouda_cheese: [
-        'Gouda Cheese',
-        'Jacked Rabbot',
-        'Seasonal Gift',
-        'Luck Charm,Super Cactus Charm'
-      ],
-      super_brie_cheese: [
-        'SUPER',
-        'best.weapon.physical',
-        'best.base.combo',
-        'Luck Charm,Super Cactus Charm'
-      ],
-      rockforth_cheese: [
-        'Rockforth Cheese',
-        'Boiling Cauldron',
-        "Alchemist's Cookbook",
-        'Cactus Charm,Luck Charm,Super Cactus Charm'
-      ]
-    }
+// ronzaLogging
+if (user.quests.QuestRonza) ronzaLogging();
+/** Check and execute scheduled jobs */
+function ronzaLogging() {
+  console.log('ronzaLogging_0.0.0.0.3');
+  const isoDate = new Date().toLocaleDateString('en-CA');
+  const defaultJobs = [
+    { begin: '22:46:00', end: '23:06:00', job: 'logChromeBit' }
+  ];
+  const storingLogKey = 'chromeBitLog';
+  const scheduledJobs = defaultJobs; // getStorageToObject(scheduledJobsKey, defaultJobs);
+  const logChromeBit = () => {
+    const log = getStorageToObject(storingLogKey, {});
+    log[isoDate] = user.quests.QuestRonza.num_chrome_bits;
+    setStorage(storingLogKey, JSON.stringify(log));
   };
-  const storageKey = 'ronzas_traveling_shoppe';
-  const settings = getStorageToObject(storageKey, defaultSettings);
-  if (settings.isShutdown) {
-    armAllTraps(...settings.traps[settings.farmingRockforthTrap]);
-    return;
+  for (let i = 0; i < scheduledJobs.length; i++) {
+    const element = scheduledJobs[i];
+    // logging(element);
+    let beginTime = element['begin'];
+    let endTime = element['end'];
+    if (beginTime.indexOf('T') < 0) beginTime = isoDate + 'T' + beginTime;
+    if (endTime.indexOf('T') < 0) endTime = isoDate + 'T' + endTime;
+    const job = element['job'];
+    const now = new Date();
+    console.log(
+      `Should I run ${job} ${typeof window[
+        job
+      ]} between ${beginTime} and ${endTime} at ${now.toISOString()}?`
+    );
+    if (now < Date.parse(beginTime)) continue;
+    if (now > Date.parse(endTime)) continue;
+    console.log(
+      `run ${job} ${typeof window[
+        job
+      ]} between ${beginTime} and ${endTime} at ${now.toISOString()}`
+    );
+    // if (typeof window[job] === 'function')
+    setTimeout(() => {
+      logChromeBit();
+    }, getRandomInteger(3000, 5000));
   }
-  const baitItemId = user.bait_item_id;
-  const rockforthItemId = 109;
-  if (baitItemId !== rockforthItemId) {
-    getQuantityByUrlThen(rockforthType, (qty) => {
-      if (qty > settings.startRockforthQty)
-        armAllTraps(...settings.traps.rockforth_cheese);
-      else armAllTraps(...settings.traps[settings.farmingRockforthTrap]);
-    });
-    return;
-  }
-  let currentTrapKey = settings.farmingRockforthTrap;
-  const baitQuantity = parseQuantity(user.bait_quantity);
-  if (baitQuantity < 4) currentTrapKey = settings.farmingRockforthTrap;
-  else currentTrapKey = rockforthType;
-  // check using localStorage.currentTrapKey if not empty and in settings
-  const trapKeys = Object.keys(settings.traps);
-  const checkUsingLocalTrapKey = (currentKey, effectiveKeys) => {
-    let localTrapKey = localStorage.currentTrapKey;
-    if (
-      !localTrapKey ||
-      (localTrapKey !== '' && effectiveKeys.indexOf(localTrapKey) < 0)
-    ) {
-      localTrapKey = '';
-      localStorage.currentTrapKey = localTrapKey;
-    }
-    if (localTrapKey !== '') return localTrapKey;
-    return currentKey;
-  };
-  currentTrapKey = checkUsingLocalTrapKey(currentTrapKey, trapKeys);
-  const trap = settings.traps[currentTrapKey];
-  armAllTraps(...trap);
 }
-// End travelingShoppe
+// End ronzaLogging
