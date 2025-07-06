@@ -1,45 +1,457 @@
-// ronzaLogging
-if (user.quests.QuestRonza) ronzaLogging();
-/** Check and execute scheduled jobs */
-function ronzaLogging() {
-  console.log('ronzaLogging_0.0.1.1.3');
-  const isoDate = new Date().toLocaleDateString('en-CA');
-  const defaultJobs = [
-    { begin: '22:40:00', end: '23:00:00', job: 'logChromeBit' }
-  ];
-  const storingLogKey = 'chromeBitLog';
-  const scheduledJobs = defaultJobs; // getStorageToObject(scheduledJobsKey, defaultJobs);
-  const logChromeBit = () => {
-    const log = getStorageToObject(storingLogKey, {});
-    if (log[isoDate]) return;
-    log[isoDate] = user.quests.QuestRonza.num_chrome_bits;
-    setStorage(storingLogKey, JSON.stringify(log));
+// scheduledSleep
+// prettier-ignore
+setTimeout(() => { scheduledSleep(); }, getRandomInteger(60000, 120000));
+function scheduledSleep() {
+  const environmentType = getEnvironmentType();
+  console.log(`scheduledSleep_1.0.3.4.2 in ${environmentType}`);
+  const keys = {
+    sbFactory: 'super_brie_factory',
+    fw: 'desert_warpath',
+    laby: 'labyrinth',
+    zokor: 'ancient_city',
+    bwRift: 'rift_bristle_woods',
+    fi: 'floating_islands'
   };
-  for (let i = 0; i < scheduledJobs.length; i++) {
-    const element = scheduledJobs[i];
-    // logging(element);
-    let beginTime = element['begin'];
-    let endTime = element['end'];
-    if (beginTime.indexOf('T') < 0) beginTime = isoDate + 'T' + beginTime;
-    if (endTime.indexOf('T') < 0) endTime = isoDate + 'T' + endTime;
-    const job = element['job'];
-    const now = new Date();
-    console.log(
-      `Should I run ${job} ${typeof window[
-        job
-      ]} between ${beginTime} and ${endTime} at ${now.toISOString()}?`
-    );
-    if (now < Date.parse(beginTime)) continue;
-    if (now > Date.parse(endTime)) continue;
-    console.log(
-      `run ${job} ${typeof window[
-        job
-      ]} between ${beginTime} and ${endTime} at ${now.toISOString()}`
-    );
-    // if (typeof window[job] === 'function')
-    setTimeout(() => {
-      logChromeBit();
-    }, getRandomInteger(3000, 5000));
+  // prettier-ignore
+  // [sleepAt, sleepForExpr, segments]
+  const defaultSettings = {
+    isPreSleep: false,
+    friendHunts: 1,
+    defaultSleep: { weekDefault: [[9.07, 5.45, 1]] },
+    mountain: {
+      weekDefault: [[9.07, 5.45, 1]],
+      sleepTrap: ['', '', '', 'None']
+    },
+    desert_warpath: {
+      weekDefault: [[9.07, 5.45, 1]],
+      sleepTrap: ['Gouda Cheese', 'best.weapon.physical', 'best.base.combo', 'Luck Charm']
+    },
+    labyrinth: { weekDefault: [[9.07, 3.3, 2]] },
+    zokor: { weekDefault: [[9.07, 3.3, 2]] },
+    rift_bristle_woods: { weekDefault: [[9.07, 3.3, 2]] },
+    floating_islands: { weekDefault: [[9.07, 5.45, 1]] }
+  };
+  const settings = getStorageToObject('scheduledSleep', defaultSettings);
+  const enviromentSetting = settings[environmentType];
+  const enviromentSchedules = enviromentSetting
+    ? enviromentSetting
+    : settings['defaultSleep'];
+  if (
+    !enviromentSchedules.isPreSleep &&
+    enviromentSchedules.isPreSleep !== false
+  )
+    enviromentSchedules.isPreSleep = settings.isPreSleep;
+  if (!enviromentSchedules.friendHunts && enviromentSchedules.friendHunts !== 0)
+    enviromentSchedules.friendHunts = settings.friendHunts;
+  const defaultAction = (enviromentSchedules) => {
+    const daySchedule = matchSchedules(enviromentSchedules);
+    if (!daySchedule) return;
+    const sleepTrap = enviromentSchedules['sleepTrap'];
+    if (sleepTrap) armAllTraps(...sleepTrap);
+    const isPreSleep = enviromentSchedules.isPreSleep;
+    goToBed(daySchedule, isPreSleep);
+  };
+  switch (environmentType) {
+    case keys.fw:
+      fwSleep(enviromentSchedules);
+      break;
+    case keys.laby:
+      labySleep(enviromentSchedules);
+      break;
+    case keys.zokor:
+      labySleep(enviromentSchedules);
+      break;
+    case keys.fi:
+      fiSleep(enviromentSchedules);
+      break;
+    case keys.bwRift:
+      bwRiftSleep(enviromentSchedules);
+      break;
+    case keys.sbFactory:
+      sbFactorySleep(enviromentSchedules);
+      break;
+    default:
+      defaultAction(enviromentSchedules);
+      break;
   }
 }
-// End ronzaLogging
+// goToBed([9.07, 5.45, 1]);
+// goToBed([9.07, '1.04+-2', 6]);
+function goToBed(schedule, isPreSleep) {
+  const sleepForArr = getSleepForArray(schedule);
+  const sleepForHours = sleepForArr[0];
+  const sleepForMinutes = sleepForArr[1];
+  const deviation = sleepForArr[2];
+  const duration =
+    Math.floor(sleepForHours * 3600000 + sleepForMinutes * 60000) +
+    (deviation ? getRandomInteger(-deviation * 60000, deviation * 60000) : 0);
+  const storedRoutine = isPreSleep ? localStorage.currentRoutine : 'toRest';
+  let currentRoutine = 'toRest';
+  let sleepHref =
+    'https://elie2201.github.io/mh/mhReloader.html?until=0&duration=' +
+    getRandomInteger(480000, 720000) +
+    '&fixed=true'; // pre-sleep url
+  switch (storedRoutine) {
+    case 'toRest':
+      // to Resting
+      currentRoutine = 'Resting';
+      sleepHref =
+        'https://elie2201.github.io/mh/mhReloader.html?until=0&duration=' +
+        duration +
+        (deviation || deviation === 0 ? '&fixed=true' : ''); // sleep url
+      break;
+  }
+  setTimeout(() => {
+    const currentRoutineKey = 'currentRoutine';
+    window.localStorage.setItem(currentRoutineKey, currentRoutine);
+    setTimeout(() => {
+      window.location.href = sleepHref;
+    }, 3000);
+  }, 20000);
+}
+// matchSchedules({ weekDefault: [[9.07, 5.45, 1]] })
+// matchSchedules({ weekDefault: [[9.07, '1.04+-2', 6]] })
+/** matching enviromentSchedules by day and then matching daySchedules by time  */
+function matchSchedules(enviromentSchedules) {
+  const now = new Date();
+  // 剛過 00:00:00如果 shift出昨天,會造成 origHm < 今天的 wakeup但 nowHm > 昨天的 sleepAt的 bug
+  // const origHm = toHdotMexpression(now);
+  const nowHm = toHdotMexpression(
+    new Date(now.getTime() + getRandomInteger(-900000, 900000))
+  );
+  const day = now.getDay();
+  const daySchedules = enviromentSchedules[day];
+  const schedules = daySchedules
+    ? daySchedules
+    : enviromentSchedules['weekDefault'];
+  for (let i = 0; i < schedules.length; i++) {
+    // schedule [sleepAt, sleepForExpr, segments]
+    const schedule = schedules[i];
+    const sleepForArr = getSleepForArray(schedule); // [hours, minutes, deviation]
+    if (!sleepForArr[0] && !sleepForArr[1]) {
+      console.log(
+        `Not this. sleep for ${sleepForArr[0]} hours ${sleepForArr[1]} minutes at ${schedule[0]}`
+      );
+      continue;
+    }
+    const segments = schedule[2] ? schedule[2] : 1;
+    const sleepAtArr = getSleepAtArray(schedule); // [hours, minutes]
+    const sleepAt = sleepAtArr[0] + sleepAtArr[1] / 100;
+    const wakeUpAtArr = getWakeUpAt(sleepAtArr, sleepForArr, segments);
+    const wakeUpAt = wakeUpAtArr[0] + wakeUpAtArr[1] / 100;
+    // TODO 目前不處理 wakeUpAt超過 24:00:00問題,自行切開設定
+    if (nowHm > wakeUpAt) {
+      console.log(`Waked up. hm(${nowHm}) > wakeUpAt(${wakeUpAt})`, schedule);
+      continue;
+    }
+    if (nowHm < sleepAt) {
+      console.log(`Not this. hm(${nowHm}) < sleepAt(${sleepAt})`, schedule);
+      continue;
+    }
+    console.log(
+      `It's this: sleepAt(${sleepAt}) < hm(${nowHm}) < wakeUpAt(${wakeUpAt})`,
+      schedule
+    );
+    return schedule;
+  }
+  return null;
+}
+// getWakeUpAt([1, 7], [1, -120, 10], 2);
+/** calculate wakeUpAt as [hours, minutes] */
+function getWakeUpAt(sleepAtHmArr, sleepForHmArr, segments) {
+  console.log(sleepAtHmArr, sleepForHmArr, segments);
+  let hours = sleepAtHmArr[0] + sleepForHmArr[0] * segments;
+  // sleep結束前 30分鐘視為 wakeup
+  let minutes = sleepAtHmArr[1] + sleepForHmArr[1] * segments - 30;
+  while (minutes < 0) {
+    hours -= 1;
+    minutes += 60;
+  }
+  hours += parseInt(minutes / 60); // TODO 極端情形下可能出現負數 hours,暫不處理
+  return [hours < 0 ? 0 : hours, minutes % 60];
+}
+// getSleepForHm([9.07, 5.45, 1]);
+// getSleepForHm([9.07, '1.04+-2', 1]);
+function getSleepForHm(schedule) {
+  const sleepForArray = getSleepForArray(schedule);
+  return sleepForArray[0] + sleepForArray[1] / 100;
+}
+// getSleepAtArray([9.07, 5.45, 1]);
+// getSleepAtArray([9.07, '1.04+-2', 1]);
+/** get sleepAt as [hours, minutes] */
+function getSleepAtArray(schedule) {
+  const sleepAtExpr = schedule[0] + '';
+  console.log(`Sleep at ${sleepAtExpr}`);
+  const sleepAtArr = splitHourMinutes(sleepAtExpr); // [hours, minutes]
+  console.log('sleepAtArray: ', sleepAtArr);
+  return sleepAtArr;
+}
+// getSleepForArray([9.07, 5.45, 1]);
+// getSleepForArray([9.07, '1.04+-2', 1]);
+/** get sleepFor as [hours, minutes, deviation] */
+function getSleepForArray(schedule) {
+  const sleepForExpr = schedule[1] + '';
+  console.log(`Sleep for ${sleepForExpr}`);
+  const sleepForExprArr = parseSleepFor(sleepForExpr); // [hours.minutes, deviation]
+  const sleepForArr = splitHourMinutes(sleepForExprArr[0]);
+  sleepForArr.push(sleepForExprArr[1]); // [hours, minutes, deviation]
+  console.log('sleepForArr: ', sleepForArr);
+  return sleepForArr;
+}
+/** split argument by +- and return split result */
+function parseSleepFor(sleepForExpr) {
+  const s1Arr = (sleepForExpr + '').split('+-');
+  return [parseFloat(s1Arr[0]), parseFloat(s1Arr[1])];
+}
+// splitHourMinutes(9.67); // => [9, 7]
+function splitHourMinutes(hmExpr) {
+  const hm = (hmExpr + '').split('.');
+  const sleepForHours = parseInt(hm[0]);
+  const sleepForMunites = hm[1]
+    ? Math.floor(parseFloat('.' + hm[1]) * 100) % 60
+    : 0;
+  return [sleepForHours, sleepForMunites];
+}
+// toHdotMexpression(new Date());
+// toHdotMexpression(new Date(new Date('2025-05-04T01:52:00').getTime() + getRandomInteger(-900000, 900000)));
+/** Express now time like 14(o'clock).34(minutes) */
+function toHdotMexpression(now) {
+  console.log(`toHdotMexpression(${now})`);
+  const hm = now.getHours() + now.getMinutes() / 100;
+  console.log(`Now expressed in hour.minutes format: ${hm}`);
+  return hm;
+}
+function fiSleep(enviromentSchedules) {
+  if (!enviromentSchedules)
+    enviromentSchedules = { weekDefault: [[9.07, 5.45, 1]] };
+  const quest = user.quests.QuestFloatingIslands;
+  const atts = quest.hunting_site_atts;
+  const isLai = atts.is_low_tier_island;
+  const isHai = atts.is_high_tier_island;
+  const isSp = atts.is_vault_island;
+  const settings = getStorageToObject('floatingIslands');
+  // exclude not sleep
+  if (quest.jet_stream_active && !settings.isSleepInCJS) {
+    console.log('Not sleep when CJS active');
+    return;
+  }
+  const schedule = matchSchedules(enviromentSchedules);
+  if (!schedule) return;
+  const sleepForHm = getSleepForHm(schedule);
+  const checkFiSleep = () => {
+    const isOkSleep = true;
+    const hasDefeatedEnemy = atts.has_defeated_enemy;
+    const hasTreasureTrove = atts.has_treasure_trove;
+    const speed = fiSpeed(quest);
+    const stepsToBoss = atts.enemy_encounter_hunts_remaining; // is 0 if encountered boss
+    const huntsToBoss = Math.ceil(stepsToBoss / speed);
+    const stepsToTrove = 40 - atts.island_progress;
+    const huntsToTrove = Math.ceil(stepsToTrove / speed);
+    const huntsLeft = atts.hunts_remaining;
+    const sleepHunts = Math.ceil(sleepForHm + enviromentSchedules.friendHunts);
+    console.log(
+      `speed: ${speed}, steps to Boss: ${stepsToBoss}, hunts to Boss: ${huntsToBoss}`,
+      `, steps to Trove: ${stepsToTrove}, hunts to Trove: ${huntsToTrove}`,
+      `sleep for: ${sleepForHm} hours.`
+    );
+    if (!hasDefeatedEnemy && huntsToBoss < sleepHunts) {
+      console.log('Not sleep when approaching boss');
+      return !isOkSleep;
+    }
+    if (huntsLeft < sleepHunts) {
+      console.log('Not sleep when approaching boss');
+      return !isOkSleep;
+    }
+    const isHuntToEnd =
+      (isLai && settings.isHuntAfterLaiTrove) ||
+      (isHai && settings.isHuntAfterHaiTrove) ||
+      (isSp && settings.isHuntAfterSpTrove);
+    if (!hasTreasureTrove && huntsToTrove < sleepHunts && !isHuntToEnd) {
+      console.log(
+        `Not sleep when approaching trove, hunt to end: ${isHuntToEnd}`
+      );
+      return !isOkSleep;
+    }
+    console.log('It is ok to sleep');
+    return isOkSleep;
+  };
+  const altitude = fiAltitude(quest);
+  switch (altitude) {
+    case 'launch':
+      console.log('Not sleep on launch');
+      return;
+    case 'lai':
+      console.log('Check sleeping on LAI');
+      if (!checkFiSleep()) return;
+      break;
+    case 'hai':
+      console.log('Check sleeping on HAI');
+      if (!checkFiSleep()) return;
+      break;
+    case 'sp':
+      console.log('Check sleeping on SP');
+      if (!checkFiSleep()) return;
+      break;
+    default:
+      return;
+  }
+  console.plog('goToBed:', schedule);
+  const isPreSleep = enviromentSchedules.isPreSleep;
+  const sleepTrap = enviromentSchedules['sleepTrap'];
+  if (sleepTrap) armAllTraps(...sleepTrap);
+  goToBed(schedule, isPreSleep);
+}
+function fiSpeed(quest) {
+  if (!quest) quest = user.quests.QuestFloatingIslands;
+  const atts = quest.hunting_site_atts;
+  let speed = 1;
+  if (quest.jet_stream_active) speed += 1;
+  if (atts.is_fuel_enabled) speed += 1;
+  if (isShrineActive(quest)) speed += 1;
+  return speed;
+}
+function isShrineActive(quest) {
+  const q = quest ? quest : user.quests.QuestFloatingIslands;
+  const activeMods = q.hunting_site_atts.activated_island_mod_types;
+  for (let i = 0; i < activeMods.length; i++) {
+    const mod = activeMods[i];
+    if (mod.indexOf('shrine') > -1 || mod.indexOf('paragon_cache') > -1)
+      return true;
+  }
+  return false;
+}
+function fiAltitude(quest) {
+  const q = quest ? quest : user.quests.QuestFloatingIslands;
+  const atts = q.hunting_site_atts;
+  if (atts.is_low_tier_island) return 'lai';
+  else if (atts.is_high_tier_island) return 'hai';
+  else if (atts.is_vault_island) return 'sp';
+  return 'launch';
+}
+function labySleep(enviromentSchedules) {
+  if (!enviromentSchedules)
+    enviromentSchedules = { weekDefault: [[9.07, 3.5, 2]] };
+  const schedule = matchSchedules(enviromentSchedules);
+  if (!schedule) return;
+  const sleepForHm = getSleepForHm(schedule);
+  if (!isEnoughSleepLaby(sleepForHm, enviromentSchedules.friendHunts)) {
+    console.log('Not enough tiles for sleep, keep hunting!!');
+    return;
+  }
+  const isPreSleep = enviromentSchedules.isPreSleep;
+  const sleepTrap = enviromentSchedules['sleepTrap'];
+  if (sleepTrap) armAllTraps(...sleepTrap);
+  goToBed(schedule, isPreSleep);
+}
+// prettier-ignore
+function isEnoughSleepLaby(sleepForHm, friendHunts) {
+  if (user.quests.QuestAncientCity) {
+    const quest = user.quests.QuestAncientCity;
+    const remaining = quest.remaining;
+    const ftc = quest.stealth_loss_ftc;
+    const hunts = Math.floor(remaining / ftc);
+    return hunts >= Math.ceil(sleepForHm + friendHunts);
+  }
+  const quest = user.quests.QuestLabyrinth;
+  if (quest.status != 'hallway') return true;
+  const hallwayLength = quest.hallway_length;
+  const tiles = quest.tiles;
+  let activeTileIndex = 0;
+  for (let i = 0; i < tiles.length; i++) {
+    activeTileIndex = i;
+    const tile = tiles[i];
+    if (tile.status == 'active') break;
+  }
+  const needTiles = Math.ceil(sleepForHm + friendHunts);
+  const isEnoughTiles = needTiles <= hallwayLength - activeTileIndex;
+  console.log(hallwayLength, activeTileIndex, needTiles, isEnoughTiles);
+  return isEnoughTiles;
+}
+function bwRiftSleep(enviromentSchedules) {
+  console.log('bwRift sleep');
+  const quest = user.quests.QuestRiftBristleWoods;
+  console.log(`quest.progress_percent: ${quest.progress_percent}`);
+  if (parseInt(quest.progress_percent) < 90) {
+    console.log('progress lower than 90, return!!');
+    return;
+  }
+  const ignoredChamberNames = [
+    'Guard Barracks',
+    'Acolyte',
+    'Hidden Treasury',
+    'Lucky Tower'
+  ];
+  const chamberName = trimToEmpty(quest.chamber_name);
+  /* if (ignoredChamberNames.indexOf(chamberName) > -1)
+    if (
+      ignoredChamberNames.indexOf('Acolyte') < 0 ||
+      (quest.obelisk_percent > 45 && quest.obelisk_percent < 100) ||
+      (quest.obelisk_percent == 100 && quest.acolyte_sand < 13)
+    )
+      return; */
+  if (ignoredChamberNames.indexOf(chamberName) > -1)
+    if (
+      ignoredChamberNames.indexOf('Acolyte') < 0 ||
+      (quest.obelisk_percent > 65 && quest.obelisk_percent < 100) ||
+      (quest.obelisk_percent == 100 && quest.acolyte_sand < 7)
+    )
+      return;
+  const schedule = matchSchedules(enviromentSchedules);
+  if (!schedule) return;
+  console.log('For sleep:', schedule);
+  if ('Runic Laboratory' == chamberName) {
+    // ancient string = 2343
+    if (parseQuantity(user.bait_item_id) != 2343)
+      hg.utils.TrapControl.setBait('ancient_string_cheese').go(() => {});
+  }
+  const isPreSleep = enviromentSchedules.isPreSleep;
+  const sleepTrap = enviromentSchedules['sleepTrap'];
+  if (sleepTrap) armAllTraps(...sleepTrap);
+  goToBed(schedule, isPreSleep);
+}
+function fwSleep(enviromentSchedules) {
+  logging('fiery warpath sleep');
+  const quest = user.viewing_atts.desert_warpath;
+  let streak = parseInt(quest.streak_quantity);
+  if (Number.isNaN(streak)) streak = 0;
+  console.log(`current streak: ${streak}`);
+  if (streak > 2) {
+    console.log('streak more than 2, not sleep!!');
+    return;
+  }
+  let wave = parseInt(quest.wave);
+  if (Number.isNaN(wave)) wave = 5;
+  console.log(`current wave: ${wave}, 5 means portal`);
+  if (wave > 3) {
+    console.log(`current wave: ${wave} is boss hunting, not sleep`);
+    return;
+  }
+  // const population = getFwPopulation();
+  const schedule = matchSchedules(enviromentSchedules);
+  if (!schedule) return;
+  const isPreSleep = enviromentSchedules.isPreSleep;
+  const sleepTrap = enviromentSchedules['sleepTrap'];
+  if (sleepTrap) armAllTraps(...sleepTrap);
+  goToBed(schedule, isPreSleep);
+}
+function sbFactorySleep(enviromentSchedules) {
+  logging(`SB factory sleep`);
+  const quest = user.quests.QuestSuperBrieFactory;
+  const atts = quest.factory_atts;
+  const items = quest.items;
+  if (atts.hunts_remaining < 5 + enviromentSchedules.friendHunts) {
+    console.log('boss coming, not sleep');
+    return;
+  }
+  const schedule = matchSchedules(enviromentSchedules);
+  if (!schedule) return;
+  const isPreSleep = enviromentSchedules.isPreSleep;
+  // if arming Coggy Colby and quantity less than 5 + enviromentSchedules.friendHunts, change to SB
+  if (
+    parseQuantity(items.coggy_colby_cheese.quantity) <
+    5 + enviromentSchedules.friendHunts
+  )
+    hg.utils.TrapControl.setBait('super_brie_cheese').go(() => {});
+  goToBed(schedule, isPreSleep);
+}
+// End scheduledSleep
