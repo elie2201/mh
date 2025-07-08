@@ -4,7 +4,7 @@ function valourRift() {
   const valourRiftType = 'rift_valour';
   const environmentType = getEnvironmentType();
   if (environmentType != valourRiftType) return;
-  logging('valourRift_0.0.9.1.0');
+  logging('valourRift_0.0.9.1.1');
   // trap: [<bait>, <weapon>, <base>, <trinket>, <championFireEnabled>, litCandle, doubleEgg]
   // prettier-ignore
   const defaultSetting = {
@@ -48,6 +48,27 @@ function valourRift() {
     !quest.is_at_eclipse &&
     floor >= settings.minRetreatFloor
   ) {
+    // retreat();
+    const retreat = () => {
+      console.log('retreat');
+      const element = '<a/>';
+      hg.views.HeadsUpDisplayRiftValourView.riftValourAjax(
+        element,
+        { action: 'retreat' },
+        () => {
+          hg.views.HeadsUpDisplayRiftValourView.riftValourAjax(
+            element,
+            { action: 'claim_cache' },
+            () => {
+              // document.querySelector('a.jsDialogClose, a#jsDialogClose').click();
+              setTimeout(() => {
+                window.location.href = MOUSEHUNT_BASE_URL;
+              }, 1000);
+            }
+          );
+        }
+      );
+    };
     if (settings.forceRetreatFloor && settings.forceRetreatFloor === floor) {
       retreat();
       return;
@@ -144,31 +165,6 @@ function autoBuyGauntlet() {
     const itemQuantity = Math.min(elixirQuantity, 55);
     completeTransaction(true, itemType, itemQuantity, false);
   }
-}
-// retreat();
-function retreat() {
-  console.log('retreat');
-  const element = '<a/>';
-  hg.views.HeadsUpDisplayRiftValourView.riftValourAjax(
-    element,
-    {
-      action: 'retreat'
-    },
-    () => {
-      hg.views.HeadsUpDisplayRiftValourView.riftValourAjax(
-        element,
-        {
-          action: 'claim_cache'
-        },
-        () => {
-          // document.querySelector('a.jsDialogClose, a#jsDialogClose').click();
-          setTimeout(() => {
-            window.location.href = MOUSEHUNT_BASE_URL;
-          }, 1000);
-        }
-      );
-    }
-  );
 }
 // checkUpgrade();
 function checkUpgrade() {
