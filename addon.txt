@@ -1,73 +1,73 @@
-// travelingShoppe
-if (getEnvironmentType() == 'ronzas_traveling_shoppe') travelingShoppe();
-function travelingShoppe() {
-  console.log(`travelingShoppe_0.0.1.0.2`);
-  // const quest = user.quests.QuestRonza;
-  const goudaType = 'gouda_cheese';
-  const rockforthType = 'rockforth_cheese';
+// forewordFarm
+if (getEnvironmentType() === 'foreword_farm') forewordFarm();
+function forewordFarm() {
+  const enviromentType = getEnvironmentType();
+  if (enviromentType !== 'foreword_farm') return;
+  logging('forewordFarm_0.1.0.0.0');
+  const quest = user.quests.QuestForewordFarm;
+  const plantRowTypes = [
+    ['ordinary_farm_plant', 'ordinary_magic_farm_plant'],
+    ['legendary_farm_plant', 'legendary_magic_farm_plant'],
+    ['twisted_legendary_farm_plant', 'twisted_legendary_magic_farm_plant']
+  ];
+  // prettier-ignore
   const defaultSettings = {
-    isShutdown: false,
-    farmingRockforthTrap: goudaType,
-    startRockforthQty: 39,
-    endRockforthQty: 9,
+    isAutoClaim: true,
+    isAutoPlant: true,
+    isPlant3AtOnce: false,
+    plantTypeRow: 0,
+    isPlantWithMe: false,
+    isAutoPlantType: false,
     traps: {
-      gouda_cheese: [
-        'Gouda Cheese',
-        'best.weapon.shadow',
-        'Seasonal Gift',
-        'Luck Charm,Super Cactus Charm'
-      ],
-      super_brie_cheese: [
-        'SUPER',
-        'best.weapon.physical',
-        'best.base.combo',
-        'Luck Charm,Super Cactus Charm'
-      ],
-      rockforth_cheese: [
-        'Rockforth Cheese',
-        'Boiling Cauldron',
-        "Alchemist's Cookbook",
-        'Cactus Charm,Luck Charm,Super Cactus Charm'
-      ]
+      no_plants: ['Gouda Cheese', 'best.weapon.tactical', 'best.base.combo', 'Luck Charm', false],
+      one_plants: ['Gouda Cheese', 'best.weapon.tactical', 'best.base.combo', 'Luck Charm', false],
+      two_plants: ['Gouda Cheese', 'best.weapon.tactical', 'best.base.combo', 'Luck Charm', false],
+      three_plants: ['Gouda Cheese', 'best.weapon.tactical', 'best.base.combo', 'Luck Charm', false],
+      three_papyrus: ['Gouda Cheese', 'best.weapon.tactical', 'best.base.combo', 'Super Snowball Charm', false]
     }
   };
-  const storageKey = 'ronzas_traveling_shoppe';
-  const settings = getStorageToObject(storageKey, defaultSettings);
-  if (settings.isShutdown) {
-    armAllTraps(...settings.traps[settings.farmingRockforthTrap]);
-    return;
-  }
-  const baitItemId = user.bait_item_id;
-  const rockforthItemId = 109;
-  if (baitItemId !== rockforthItemId) {
-    getQuantityByUrlThen(rockforthType, (qty) => {
-      if (qty > settings.startRockforthQty)
-        armAllTraps(...settings.traps.rockforth_cheese);
-      else armAllTraps(...settings.traps[settings.farmingRockforthTrap]);
+  const ajax = (element, params, successCallback) => {
+    params['last_read_journal_entry_id'] = $('#journallatestentry').data(
+      'entry-id'
+    );
+    params['uh'] = user.unique_hash;
+    $.ajax({
+      data: params,
+      dataType: 'json',
+      type: 'post',
+      url: MOUSEHUNT_BASE_URL + 'managers/ajax/environment/foreword_farm.php',
+      success: function (data) {
+        if (successCallback) {
+          successCallback(data);
+        }
+      },
+      error: function () {
+        // eslint-disable-next-line new-cap
+        const popup = new jsDialog();
+        popup.setTemplate('error');
+        popup.addToken('{*title*}', 'An error has occurred.');
+        popup.addToken('{*content*}', 'An error occurred. Please try again!');
+        popup.show();
+      }
     });
-    return;
-  }
-  let currentTrapKey = settings.farmingRockforthTrap;
-  const baitQuantity = parseQuantity(user.bait_quantity);
-  if (baitQuantity < settings.endRockforthQty)
-    currentTrapKey = settings.farmingRockforthTrap;
-  else currentTrapKey = rockforthType;
-  // check using localStorage.currentTrapKey if not empty and in settings
-  const trapKeys = Object.keys(settings.traps);
-  const checkUsingLocalTrapKey = (currentKey, effectiveKeys) => {
-    let localTrapKey = localStorage.currentTrapKey;
-    if (
-      !localTrapKey ||
-      (localTrapKey !== '' && effectiveKeys.indexOf(localTrapKey) < 0)
-    ) {
-      localTrapKey = '';
-      localStorage.currentTrapKey = localTrapKey;
-    }
-    if (localTrapKey !== '') return localTrapKey;
-    return currentKey;
   };
-  currentTrapKey = checkUsingLocalTrapKey(currentTrapKey, trapKeys);
-  const trap = settings.traps[currentTrapKey];
+  const settings = getStorageToObject(enviromentType, defaultSettings);
+  const miceState = quest.mice_state;
+  const trap = settings.traps[miceState];
   armAllTraps(...trap);
+  const claimHarvest = () => {
+    const params = {
+      action: 'claim_harvest'
+    };
+    ajax(null, params, function (data) {
+      if (data.success) {
+        console.log(`claimed harvest: ${data.foreword_farm_harvest_bin}`);
+      }
+    });
+  };
+  if (settings.isAutoClaim && quest.harvest_bin.can_claim)
+    setTimeout(() => {
+      claimHarvest();
+    }, getRandomInteger(10000, 17000));
 }
-// End travelingShoppe
+// End forewordFarm
