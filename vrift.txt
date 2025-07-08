@@ -1,0 +1,235 @@
+// valourRift
+if (getEnvironmentType() === 'rift_valour') valourRift();
+function valourRift() {
+  const valourRiftType = 'rift_valour';
+  const environmentType = getEnvironmentType();
+  if (environmentType != valourRiftType) return;
+  logging('valourRift_0.0.9.1.0');
+  // trap: [<bait>, <weapon>, <base>, <trinket>, <championFireEnabled>, litCandle, doubleEgg]
+  // prettier-ignore
+  const defaultSetting = {
+    isAutoEnter: false,
+    minGscToEnter: 200,
+    isAutoRetreat: true,
+    minRetreatFloor: 3,
+    catchRate: 95,
+    forceRetreatFloor: null,
+    isAutoUpgrade: true,
+    minCheeseQty: 20,
+    buyCheeseQty: 55,
+    trap: {
+      farming: {
+        0: ['Gauntlet String,Brie String', 'best.weapon.rift', 'best.base.rift', 'Rift Luck Charm,Rift Vacuum Charm', false, 'none', false]
+      },
+      tower: {
+        0: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift 2024 Charm,Rift 2025 Charm', false, 'none', false],
+        8: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift 2024 Charm,Rift 2025 Charm', false, 'none', false],
+        16: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift 2024 Charm,Rift 2025 Charm', false, 'none', false],
+        24: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift 2024 Charm,Rift 2025 Charm', false, 'none', false],
+        eclipse: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift 2024 Charm,Rift 2025 Charm', true, 'none', false]
+      },
+      uu: {
+        0: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift 2024 Charm,Rift 2025 Charm', false, 'none', false],
+        8: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift 2024 Charm,Rift 2025 Charm', false, 'none', false],
+        16: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift 2024 Charm,Rift 2025 Charm', false, 'none', false],
+        24: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift 2024 Charm,Rift 2025 Charm', false, 'none', false],
+        eclipse: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift 2024 Charm,Rift 2025 Charm', true, 'none', false]
+      }
+    }
+  };
+  const settings = getStorageToObject(valourRiftType, defaultSetting);
+  const quest = user.quests.QuestRiftValour;
+  const vriftStates = { farming: 'farming', tower: 'tower' };
+  const state = quest.state;
+  const floor = quest.floor;
+  if (
+    state === vriftStates.tower &&
+    settings.isAutoRetreat &&
+    !quest.is_at_eclipse &&
+    floor >= settings.minRetreatFloor
+  ) {
+    if (settings.forceRetreatFloor && settings.forceRetreatFloor === floor) {
+      retreat();
+      return;
+    }
+    // 如果不夠到達下個樓層,撤退
+    const speed = quest.power_up_data.long_stride.current_value;
+    const huntsLeft = quest.hunts_remaining;
+    const floorSteps = quest.floor_steps;
+    const catchRate = settings.catchRate;
+    const expectedPercent = (huntsLeft * catchRate * speed) / floorSteps;
+    console.log(
+      `${expectedPercent} + ${quest.floor_percent} < 100? ${
+        expectedPercent + quest.floor_percent < 100
+      }`
+    );
+    if (expectedPercent + quest.floor_percent < 100) {
+      retreat();
+      return;
+    }
+  }
+  const gscQuantity = parseQuantity(
+    document.querySelector('div[data-item-type="gauntlet_string_cheese"]')
+      .innerText
+  );
+  const elixirQuantity = parseQuantity(
+    document.querySelector('div[data-item-type="gauntlet_elixir_stat_item"]')
+      .innerText
+  );
+  if (state === vriftStates.farming && settings.isAutoEnter) {
+    if (gscQuantity + elixirQuantity >= settings.minGscToEnter) {
+      hg.views.HeadsUpDisplayRiftValourView.enterTower();
+      setTimeout(() => {
+        valourRift();
+      }, 3000);
+      return;
+    }
+  }
+  const isAtEclipse = quest.is_at_eclipse;
+  const trapKey = quest.is_eclipse_mode ? 'uu' : state;
+  const floorSegments = [24, 16, 8];
+  let floorKey = 0;
+  if (state !== vriftStates.farming)
+    for (let i = 0; i < floorSegments.length; i++) {
+      const floorSegment = floorSegments[i];
+      if (floor > floorSegment) {
+        floorKey = floorSegment;
+        break;
+      }
+    }
+  let trap = settings.trap[trapKey][floorKey];
+  if (isAtEclipse) trap = settings.trap[trapKey].eclipse;
+  /* if (isAtEclipse || trap[4]) toggleChampionFire(true);
+  else toggleChampionFire(false); */
+  toggleChampionFire(trap[4]);
+  setTimeout(() => {
+    litCandle(trap[5]);
+    doubleEgg(trap[6]);
+  }, 500);
+  setTimeout(() => {
+    armAllTraps(...trap);
+  }, 1500);
+  if (settings.isAutoUpgrade)
+    setTimeout(() => {
+      checkUpgrade();
+    }, 6000);
+  setTimeout(() => {
+    autoBuyGauntlet();
+  }, 10000);
+}
+function toggleChampionFire(isToEnable) {
+  logging(`toggleChampionFire to ${isToEnable}`);
+  const quest = user.quests.QuestRiftValour;
+  const itemQuantity = parseQuantity(
+    document.querySelector('div[data-item-type="rift_gauntlet_fuel_stat_item"]')
+      .innerText
+  );
+  if (itemQuantity < 1) return;
+  const isFuelEnabled = quest.is_fuel_enabled || false;
+  if ((isFuelEnabled === true) != isToEnable)
+    hg.views.HeadsUpDisplayRiftValourView.toggleFuel();
+}
+function autoBuyGauntlet() {
+  logging('autoBuyGauntlet');
+  const gscQuantity = parseQuantity(
+    document.querySelector('div[data-item-type="gauntlet_string_cheese"]')
+      .innerText
+  );
+  if (gscQuantity < 10) {
+    const elixirQuantity = parseQuantity(
+      document.querySelector('div[data-item-type="gauntlet_elixir_stat_item"]')
+        .innerText
+    );
+    const itemType = 'gauntlet_string_cheese';
+    const itemQuantity = Math.min(elixirQuantity, 55);
+    completeTransaction(true, itemType, itemQuantity, false);
+  }
+}
+// retreat();
+function retreat() {
+  console.log('retreat');
+  const element = '<a/>';
+  hg.views.HeadsUpDisplayRiftValourView.riftValourAjax(
+    element,
+    {
+      action: 'retreat'
+    },
+    () => {
+      hg.views.HeadsUpDisplayRiftValourView.riftValourAjax(
+        element,
+        {
+          action: 'claim_cache'
+        },
+        () => {
+          // document.querySelector('a.jsDialogClose, a#jsDialogClose').click();
+          setTimeout(() => {
+            window.location.href = MOUSEHUNT_BASE_URL;
+          }, 1000);
+        }
+      );
+    }
+  );
+}
+// checkUpgrade();
+function checkUpgrade() {
+  console.log('checkUpgrade');
+  const upgradePlans = [
+    [1, 1, 1],
+    [2, 1, 1],
+    [2, 2, 1],
+    [3, 2, 1],
+    [3, 3, 1],
+    [3, 3, 2],
+    [4, 3, 2],
+    [5, 3, 2],
+    [5, 3, 3],
+    [6, 3, 3],
+    [6, 3, 4],
+    [6, 4, 4],
+    [7, 4, 4],
+    [8, 4, 4],
+    [8, 4, 5],
+    [9, 4, 5],
+    [10, 4, 5]
+  ];
+  const quest = user.quests.QuestRiftValour;
+  const powerUpData = quest.power_up_data;
+  const speed = powerUpData.long_stride;
+  const sync = powerUpData.hunt_limit;
+  const siphon = powerUpData.boss_extension;
+  const upgradeTypes = [
+    'upgrade_long_stride',
+    'upgrade_hunt_limit',
+    'upgrade_boss_extension'
+  ];
+  const canUpgrade = [speed.can_upgrade, sync.can_upgrade, siphon.can_upgrade];
+  const currentLevels = [
+    speed.current_level + 1,
+    sync.current_level + 1,
+    siphon.current_level + 1
+  ];
+  console.log(canUpgrade, currentLevels);
+  if (canUpgrade.indexOf(true) < 0) return;
+  for (let i = 0; i < upgradePlans.length; i++) {
+    const plan = upgradePlans[i];
+    for (let j = 0; j < plan.length; j++) {
+      const level = plan[j];
+      console.log(
+        `upgrade ${upgradeTypes[j]} from level ${
+          currentLevels[j]
+        } to ${level}? ${canUpgrade[j] === true}`
+      );
+      if (currentLevels[j] < level) {
+        console.log(
+          `find goal ${upgradeTypes[j]}, from level${currentLevels[j]} to level${level}`
+        );
+        if (canUpgrade[j] === true)
+          hg.views.HeadsUpDisplayRiftValourView.riftValourAjax('<a/>', {
+            action: upgradeTypes[j]
+          });
+        return;
+      }
+    }
+  }
+}
+// End valourRift
