@@ -1,0 +1,73 @@
+// forewordFarm
+if (getEnvironmentType() === 'foreword_farm') forewordFarm();
+function forewordFarm() {
+  const enviromentType = getEnvironmentType();
+  if (enviromentType !== 'foreword_farm') return;
+  logging(`forewordFarm_0.1.0.0.0`);
+  const quest = user.quests.QuestForewordFarm;
+  const plantRowTypes = [
+    ['ordinary_farm_plant', 'ordinary_magic_farm_plant'],
+    ['legendary_farm_plant', 'legendary_magic_farm_plant'],
+    ['twisted_legendary_farm_plant', 'twisted_legendary_magic_farm_plant']
+  ];
+  // prettier-ignore
+  const defaultSettings = {
+    isAutoClaim: true,
+    isAutoPlant: true,
+    isPlant3AtOnce: false,
+    plantTypeRow: 0,
+    isPlantWithMe: false,
+    isAutoPlantType: false,
+    traps: {
+      no_plants: ['Gouda Cheese', 'best.weapon.tactical', 'best.base.combo', 'Luck Charm', false],
+      one_plants: ['Gouda Cheese', 'best.weapon.tactical', 'best.base.combo', 'Luck Charm', false],
+      two_plants: ['Gouda Cheese', 'best.weapon.tactical', 'best.base.combo', 'Luck Charm', false],
+      three_plants: ['Gouda Cheese', 'best.weapon.tactical', 'best.base.combo', 'Luck Charm', false],
+      three_papyrus: ['Gouda Cheese', 'best.weapon.tactical', 'best.base.combo', 'Super Snowball Charm', false]
+    }
+  };
+  const ajax = (element, params, successCallback) => {
+    params['last_read_journal_entry_id'] = $('#journallatestentry').data(
+      'entry-id'
+    );
+    params['uh'] = user.unique_hash;
+    $.ajax({
+      data: params,
+      dataType: 'json',
+      type: 'post',
+      url: MOUSEHUNT_BASE_URL + 'managers/ajax/environment/foreword_farm.php',
+      success: function (data) {
+        if (successCallback) {
+          successCallback(data);
+        }
+      },
+      error: function () {
+        // eslint-disable-next-line new-cap
+        const popup = new jsDialog();
+        popup.setTemplate('error');
+        popup.addToken('{*title*}', 'An error has occurred.');
+        popup.addToken('{*content*}', 'An error occurred. Please try again!');
+        popup.show();
+      }
+    });
+  };
+  const settings = getStorageToObject(enviromentType, defaultSettings);
+  const miceState = quest.mice_state;
+  const trap = settings.traps[miceState];
+  armAllTraps(...trap);
+  const claimHarvest = () => {
+    const params = {
+      action: 'claim_harvest'
+    };
+    ajax(null, params, function (data) {
+      if (data.success) {
+        console.log(`claimed harvest: ${data.foreword_farm_harvest_bin}`);
+      }
+    });
+  };
+  if (settings.isAutoClaim && quest.harvest_bin.can_claim)
+    setTimeout(() => {
+      claimHarvest();
+    }, getRandomInteger(10000, 17000));
+}
+// End forewordFarm
