@@ -1,7 +1,7 @@
 // travelingShoppe
 if (getEnvironmentType() == 'ronzas_traveling_shoppe') travelingShoppe();
 function travelingShoppe() {
-  console.log(`travelingShoppe_0.0.2.0.2`);
+  console.log(`travelingShoppe_0.1.2.0.2`);
   // const quest = user.quests.QuestRonza;
   const goudaType = 'gouda_cheese';
   const rockforthType = 'rockforth_cheese';
@@ -16,6 +16,7 @@ function travelingShoppe() {
       gouda_cheese: ['Gouda Cheese', 'best.weapon.shadow', 'Seasonal Gift', 'Luck Charm,Super Cactus Charm'],
       super_brie_cheese: ['SUPER', 'best.weapon.physical', 'best.base.combo', 'Luck Charm,Super Cactus Charm'],
       rockforth_cheese: ['Rockforth Cheese', 'Boiling Cauldron', "Alchemist's Cookbook", 'Cactus Charm,Luck Charm,Super Cactus Charm'],
+      gotd: ['', '', 'Seasonal Gift', ''],
       shutdown: ['Gouda Cheese', 'best.weapon.shadow', 'Seasonal Gift', 'None']
     }
   };
@@ -53,7 +54,12 @@ function travelingShoppe() {
   };
   currentTrapKey = checkUsingLocalTrapKey(currentTrapKey, trapKeys);
   const trap = settings.traps[currentTrapKey];
-  if (settings.isGotd) trap[2] = 'Seasonal Gift';
+  if (settings.isGotd) {
+    for (let i = 0; i < 4; i++) {
+      const gotd = settings.traps.gotd[i];
+      trap[i] = gotd === '' ? trap[i] : gotd;
+    }
+  }
   armAllTraps(...trap);
 }
 // End travelingShoppe
