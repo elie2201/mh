@@ -1,17 +1,17 @@
 // travelingShoppe
 if (getEnvironmentType() == 'ronzas_traveling_shoppe') travelingShoppe();
 function travelingShoppe() {
-  console.log(`travelingShoppe_0.1.2.0.2`);
+  console.log(`travelingShoppe_0.1.3.1.2`);
   // const quest = user.quests.QuestRonza;
   const goudaType = 'gouda_cheese';
   const rockforthType = 'rockforth_cheese';
   // prettier-ignore
   const defaultSettings = {
     isShutdown: false,
-    isGotd: false,
+    gotdDates: [],
     farmingRockforthTrap: goudaType,
     startRockforthQty: 39,
-    endRockforthQty: 9,
+    endRockforthQty: 13,
     traps: {
       gouda_cheese: ['Gouda Cheese', 'best.weapon.shadow', 'Seasonal Gift', 'Luck Charm,Super Cactus Charm'],
       super_brie_cheese: ['SUPER', 'best.weapon.physical', 'best.base.combo', 'Luck Charm,Super Cactus Charm'],
@@ -26,6 +26,8 @@ function travelingShoppe() {
     armAllTraps(...settings.traps[settings.shutdown]);
     return;
   }
+  const today = new Date();
+  const todate = today.toISOString.split('T')[0];
   const baitItemId = user.bait_item_id;
   const rockforthItemId = 109;
   if (baitItemId !== rockforthItemId) {
@@ -54,7 +56,8 @@ function travelingShoppe() {
   };
   currentTrapKey = checkUsingLocalTrapKey(currentTrapKey, trapKeys);
   const trap = settings.traps[currentTrapKey];
-  if (settings.isGotd) {
+  const isGotd = settings.gotdDates.indexOf(todate);
+  if (isGotd) {
     for (let i = 0; i < 4; i++) {
       const gotd = settings.traps.gotd[i];
       trap[i] = gotd === '' ? trap[i] : gotd;
