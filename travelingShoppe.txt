@@ -1,0 +1,59 @@
+// travelingShoppe
+if (getEnvironmentType() == 'ronzas_traveling_shoppe') travelingShoppe();
+function travelingShoppe() {
+  console.log(`travelingShoppe_0.0.2.0.2`);
+  // const quest = user.quests.QuestRonza;
+  const goudaType = 'gouda_cheese';
+  const rockforthType = 'rockforth_cheese';
+  // prettier-ignore
+  const defaultSettings = {
+    isShutdown: false,
+    isGotd: false,
+    farmingRockforthTrap: goudaType,
+    startRockforthQty: 39,
+    endRockforthQty: 9,
+    traps: {
+      gouda_cheese: ['Gouda Cheese', 'best.weapon.shadow', 'Seasonal Gift', 'Luck Charm,Super Cactus Charm'],
+      super_brie_cheese: ['SUPER', 'best.weapon.physical', 'best.base.combo', 'Luck Charm,Super Cactus Charm'],
+      rockforth_cheese: ['Rockforth Cheese', 'Boiling Cauldron', "Alchemist's Cookbook", 'Cactus Charm,Luck Charm,Super Cactus Charm'],
+      shutdown: ['Gouda Cheese', 'best.weapon.shadow', 'Seasonal Gift', 'None']
+    }
+  };
+  const storageKey = 'ronzas_traveling_shoppe';
+  const settings = getStorageToObject(storageKey, defaultSettings);
+  if (settings.isShutdown) {
+    armAllTraps(...settings.traps[settings.shutdown]);
+    return;
+  }
+  const baitItemId = user.bait_item_id;
+  const rockforthItemId = 109;
+  if (baitItemId !== rockforthItemId) {
+    getQuantityByUrlThen(rockforthType, (qty) => {
+      if (qty > settings.startRockforthQty)
+        armAllTraps(...settings.traps.rockforth_cheese);
+      else armAllTraps(...settings.traps[settings.farmingRockforthTrap]);
+    });
+    return;
+  }
+  let currentTrapKey = settings.farmingRockforthTrap;
+  const baitQuantity = parseQuantity(user.bait_quantity);
+  if (baitQuantity < settings.endRockforthQty)
+    currentTrapKey = settings.farmingRockforthTrap;
+  else currentTrapKey = rockforthType;
+  // check using localStorage.currentTrapKey if not empty and in settings
+  const trapKeys = Object.keys(settings.traps);
+  const checkUsingLocalTrapKey = (currentKey, effectiveKeys) => {
+    let localTrapKey = trimToEmpty(localStorage.currentTrapKey);
+    if (effectiveKeys.indexOf(localTrapKey) < 0) {
+      localTrapKey = '';
+      localStorage.currentTrapKey = localTrapKey;
+    }
+    if (localTrapKey !== '') return localTrapKey;
+    return currentKey;
+  };
+  currentTrapKey = checkUsingLocalTrapKey(currentTrapKey, trapKeys);
+  const trap = settings.traps[currentTrapKey];
+  if (settings.isGotd) trap[2] = 'Seasonal Gift';
+  armAllTraps(...trap);
+}
+// End travelingShoppe
