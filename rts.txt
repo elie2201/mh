@@ -1,7 +1,7 @@
 // travelingShoppe
 if (getEnvironmentType() == 'ronzas_traveling_shoppe') travelingShoppe();
 function travelingShoppe() {
-  console.log(`travelingShoppe_0.1.3.1.3`);
+  console.log(`travelingShoppe_0.1.3.1.4`);
   // const quest = user.quests.QuestRonza;
   const goudaType = 'gouda_cheese';
   const rockforthType = 'rockforth_cheese';
@@ -56,7 +56,7 @@ function travelingShoppe() {
   };
   currentTrapKey = checkUsingLocalTrapKey(currentTrapKey, trapKeys);
   const trap = settings.traps[currentTrapKey];
-  const isGotd = settings.gotdDates.indexOf(todate);
+  const isGotd = settings.gotdDates.indexOf(todate) > -1;
   if (isGotd) {
     for (let i = 0; i < 4; i++) {
       const gotd = settings.traps.gotd[i];
