@@ -4,15 +4,28 @@ function valourRift() {
   const valourRiftType = 'rift_valour';
   const environmentType = getEnvironmentType();
   if (environmentType != valourRiftType) return;
-  logging('valourRift_0.1.10.2.1');
+  logging('valourRift_0.3.11.4.1');
+  const allAugmentations = {
+    sigilHunter: 'hr',
+    secretResearch: 'sr',
+    superSiphon: 'ss',
+    ultimateUmbra: 'tu',
+    elixirRain: 'er',
+    stringStepping: 'sste'
+  };
   // trap: [<bait>, <weapon>, <base>, <trinket>, <championFireEnabled>, litCandle, doubleEgg]
   // prettier-ignore
   const defaultSetting = {
     isAutoEnter: false,
     minGscToEnter: 200,
+    isAutoAugment: false,
+    isSigilHunter: false,
+    isSecretResearch: false,
+    isSuperSiphon: false,
+    isUltimateUmbra: false,
+    isStringStepping: false,
     isAutoRetreat: true,
     minRetreatFloor: 3,
-    catchRate: 95,
     forceRetreatFloor: null,
     isAutoUpgrade: true,
     minCheeseQty: 20,
@@ -22,18 +35,18 @@ function valourRift() {
         0: ['Gauntlet String,Brie String', 'best.weapon.rift', 'best.base.rift', 'Rift Luck Charm,Rift Vacuum Charm', false, 'none', false]
       },
       tower: {
-        0: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift 2024 Charm,Rift 2025 Charm', false, 'none', false],
-        8: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift 2024 Charm,Rift 2025 Charm', false, 'none', false],
-        16: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift 2024 Charm,Rift 2025 Charm', false, 'none', false],
-        24: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift 2024 Charm,Rift 2025 Charm', false, 'none', false],
-        eclipse: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift 2024 Charm,Rift 2025 Charm', true, 'none', false]
+        0: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Vacuum Charm', false, 'none', false],
+        8: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Vacuum Charm', false, 'none', false],
+        16: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Vacuum Charm', false, 'none', false],
+        24: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Vacuum Charm', false, 'none', false],
+        eclipse: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift 2025 Charm,Rift 2024 Charm', true, 'none', false]
       },
       uu: {
         0: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift 2024 Charm,Rift 2025 Charm', false, 'none', false],
         8: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift 2024 Charm,Rift 2025 Charm', false, 'none', false],
         16: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift 2024 Charm,Rift 2025 Charm', false, 'none', false],
         24: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift 2024 Charm,Rift 2025 Charm', false, 'none', false],
-        eclipse: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift 2024 Charm,Rift 2025 Charm', true, 'none', false]
+        eclipse: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift 2025 Charm,Rift 2024 Charm', true, 'none', false]
       }
     }
   };
@@ -43,6 +56,8 @@ function valourRift() {
   const state = quest.state;
   const floor = quest.floor;
   // const huntsLeft = quest.hunts_remaining;
+  const stepsToEclipse =
+    quest.prestige_total_step - quest.prestige_current_step - 1;
   const powerUpData = quest.power_up_data;
   const speed = powerUpData.long_stride;
   const sync = powerUpData.hunt_limit;
@@ -58,15 +73,66 @@ function valourRift() {
     sync.current_level + 1,
     siphon.current_level + 1
   ];
-  console.log(canUpgrade, currentLevels);
+  const currentLevelsJSON = JSON.stringify(currentLevels);
+  // prettier-ignore
+  const upgradeLevelsJSON = [
+    '[1,1,1]', '[2,1,1]', '[2,2,1]', '[3,2,1]', '[3,3,1]', '[3,3,2]', '[4,3,2]',
+    '[5,3,2]', '[5,3,3]', '[6,3,3]', '[6,3,4]', '[6,4,4]', '[6,5,4]', '[6,6,4]',
+    '[7,6,4]', '[8,6,4]', '[8,6,5]', '[9,6,5]', '[10,6,5]', '[10,7,5]'
+  ];
+  console.log(
+    canUpgrade,
+    currentLevels,
+    `current upgrade index: ${upgradeLevelsJSON.indexOf(currentLevelsJSON)}`
+  );
+  const gscQuantity = parseQuantity(
+    document.querySelector('div[data-item-type="gauntlet_string_cheese"]')
+      .innerText
+  );
+  const elixirQuantity = parseQuantity(
+    document.querySelector('div[data-item-type="gauntlet_elixir_stat_item"]')
+      .innerText
+  );
+  const sigilQuantity = parseQuantity(
+    document.querySelector(
+      'div[data-item-type="rift_gaunt_upgrade_a_stat_item"]'
+    ).innerText
+  );
+  const secretQuantity = parseQuantity(
+    document.querySelector(
+      'div[data-item-type="rift_gaunt_upgrade_b_stat_item"]'
+    ).innerText
+  );
+  const fragmentQuantity = parseQuantity(
+    document.querySelector(
+      'div[data-item-type="shade_eclipse_resource_stat_item"]'
+    ).innerText
+  );
+  const coreQuantity = parseQuantity(
+    document.querySelector(
+      'div[data-item-type="total_eclipse_resource_stat_item"]'
+    ).innerText
+  );
+  logging(
+    `GSC: ${gscQuantity}, Elixir: ${elixirQuantity}, Sigils: ${sigilQuantity}, Secrets: ${secretQuantity}, Fragments: ${fragmentQuantity}, Cores: ${coreQuantity}`
+  );
   const autoRetreat = () => {
     // 先不處理 UU Run
     if (quest.is_eclipse_mode) return;
     // 針對那些接近但理論上到不了 eclipse floor的 upgrade,
     // 萬一運氣好到了 eclipse floor就撤退,不要浪費 CF賭 Eclipse
-    const retreatUpgrades = ['[3,1,1]', '[5,3,3]', '[6,5,4]'];
-    const retreatFloor = [8, 16, 24];
-    const index = retreatUpgrades.indexOf(JSON.stringify(currentLevels));
+    // prettier-ignore
+    const retreatUpgrades = [
+      '[3,1,1]', '[5,3,2]', '[5,3,3]', '[6,3,4]', '[6,4,4]',
+      '[6,5,4]', '[7,6,4]', '[8,6,4]', '[8,6,5]', '[9,6,5]',
+      '[10,6,5]', '[10,7,5]'
+    ];
+    // prettier-ignore
+    const retreatFloor = [
+      8, 16, 16, 24, 24,
+      24, 32, 32, 40, 40,
+      56, 56];
+    const index = retreatUpgrades.indexOf(currentLevelsJSON);
     if (index > -1) settings.forceRetreatFloor = retreatFloor[index];
   };
   if (state === vriftStates.tower && floor >= settings.minRetreatFloor)
@@ -85,8 +151,9 @@ function valourRift() {
       // document.querySelector('a.jsDialogClose, a#jsDialogClose').click();
       setTimeout(() => {
         window.location.href = MOUSEHUNT_BASE_URL;
-      }, 1000);
+      }, 2000);
     });
+    return;
   }
   // retreat();
   const retreat = () => {
@@ -100,7 +167,7 @@ function valourRift() {
           // document.querySelector('a.jsDialogClose, a#jsDialogClose').click();
           setTimeout(() => {
             window.location.href = MOUSEHUNT_BASE_URL;
-          }, 1000);
+          }, 2000);
         });
       }
     );
@@ -111,20 +178,45 @@ function valourRift() {
       return;
     }
   }
-  const gscQuantity = parseQuantity(
-    document.querySelector('div[data-item-type="gauntlet_string_cheese"]')
-      .innerText
-  );
-  const elixirQuantity = parseQuantity(
-    document.querySelector('div[data-item-type="gauntlet_elixir_stat_item"]')
-      .innerText
-  );
   if (state === vriftStates.farming && settings.isAutoEnter) {
+    const enterTower = (augmentations, completionCallback) => {
+      const element = '<a/>';
+      /* const completionCallback = () => {
+        document.querySelector('a.jsDialogClose, a#jsDialogClose').click();
+        if (activejsDialog) {
+          activejsDialog.hide();
+        }
+        valourRift();
+      }; */
+      if (!augmentations && settings.isAutoAugment) {
+        augmentations = [];
+        if (settings.isSigilHunter)
+          augmentations.push(allAugmentations.sigilHunter);
+        if (settings.isSecretResearch)
+          augmentations.push(allAugmentations.secretResearch);
+        if (settings.isSuperSiphon)
+          augmentations.push(allAugmentations.superSiphon);
+        if (settings.isUltimateUmbra)
+          augmentations.push(allAugmentations.ultimateUmbra);
+        if (settings.isStringStepping)
+          augmentations.push(allAugmentations.stringStepping);
+      }
+      if (!augmentations) augmentations = [];
+      hg.views.HeadsUpDisplayRiftValourView.riftValourAjax(
+        element,
+        { action: 'enter_tower', augmentation_types: augmentations },
+        completionCallback
+      );
+    };
     if (gscQuantity + elixirQuantity >= settings.minGscToEnter) {
-      hg.views.HeadsUpDisplayRiftValourView.enterTower();
+      enterTower(() => {
+        document.querySelector('a.jsDialogClose, a#jsDialogClose').click();
+        valourRift();
+      });
+      /* hg.views.HeadsUpDisplayRiftValourView.enterTower();
       setTimeout(() => {
         valourRift();
-      }, 3000);
+      }, 3000); */
       return;
     }
   }
@@ -144,7 +236,7 @@ function valourRift() {
   if (isAtEclipse) trap = settings.trap[trapKey].eclipse;
   /* if (isAtEclipse || trap[4]) toggleChampionFire(true);
   else toggleChampionFire(false); */
-  toggleChampionFire(trap[4]);
+  toggleChampionFire(autoOffChampionFire(trap[4]));
   setTimeout(() => {
     litCandle(trap[5]);
     doubleEgg(trap[6]);
@@ -227,6 +319,22 @@ function valourRift() {
   setTimeout(() => {
     autoBuy();
   }, 10000);
+  const offChampionFireSteps = [
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 15, 16, 17, 18, 19, 20, 23, 24,
+    25, 26, 27, 28, 29, 30, 34, 35, 36, 37, 38, 39, 40, 45, 46, 47, 48, 49, 50,
+    56, 57, 58, 59, 60, 67, 68, 69, 70, 78, 79, 80, 89, 90, 100
+  ];
+  function autoOffChampionFire(isToEnable) {
+    logging(`Before auto off: ${isToEnable}`);
+    if (!isToEnable) return isToEnable;
+    if (isAtEclipse) return isToEnable;
+    if (offChampionFireSteps.indexOf(stepsToEclipse)) {
+      logging('Turn off CF');
+      return false;
+    }
+    logging('Keep CF');
+    return isToEnable;
+  }
 }
 function toggleChampionFire(isToEnable) {
   logging(`toggleChampionFire to ${isToEnable}`);
