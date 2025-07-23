@@ -4,7 +4,7 @@ function valourRift() {
   const valourRiftType = 'rift_valour';
   const environmentType = getEnvironmentType();
   if (environmentType != valourRiftType) return;
-  logging('valourRift_0.3.11.4.1');
+  logging('valourRift_0.3.12.4.1');
   const allAugmentations = {
     sigilHunter: 'hr',
     secretResearch: 'sr',
@@ -28,6 +28,7 @@ function valourRift() {
     minRetreatFloor: 3,
     forceRetreatFloor: null,
     isAutoUpgrade: true,
+    isAutoBuyItem: false,
     minCheeseQty: 20,
     buyCheeseQty: 55,
     trap: {
@@ -298,7 +299,7 @@ function valourRift() {
     }, 6000);
   const autoBuy = () => {
     logging('autoBuy');
-    if (gscQuantity < getRandomInteger(14, 23)) {
+    if (gscQuantity < getRandomInteger(17, 26)) {
       logging('auto buy Gauntlet');
       const itemType = 'gauntlet_string_cheese';
       const itemQuantity = Math.min(elixirQuantity, 55);
@@ -306,19 +307,20 @@ function valourRift() {
     }
     if (
       user.trinket_item_id === 1553 &&
-      parseQuantity(user.trinket_quantity) < 22
+      parseQuantity(user.trinket_quantity) < getRandomInteger(17, 26)
     ) {
       logging('auto buy Rift Vacuum');
       const itemType = 'rift_vacuum_trinket';
-      const itemQuantity = 222;
+      const itemQuantity = 111;
       setTimeout(() => {
         completeTransaction(true, itemType, itemQuantity, false);
       }, 3000);
     }
   };
-  setTimeout(() => {
-    autoBuy();
-  }, 10000);
+  if (settings.isAutoBuyItem)
+    setTimeout(() => {
+      autoBuy();
+    }, 10000);
   const offChampionFireSteps = [
     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 15, 16, 17, 18, 19, 20, 23, 24,
     25, 26, 27, 28, 29, 30, 34, 35, 36, 37, 38, 39, 40, 45, 46, 47, 48, 49, 50,
