@@ -3,7 +3,7 @@
 setTimeout(() => { scheduledSleep(); }, getRandomInteger(60000, 120000));
 function scheduledSleep() {
   const environmentType = getEnvironmentType();
-  console.log(`scheduledSleep_1.0.3.4.3 in ${environmentType}`);
+  logging(`scheduledSleep_1.0.4.4.3 in ${environmentType}`);
   const keys = {
     sbFactory: 'super_brie_factory',
     fw: 'desert_warpath',
