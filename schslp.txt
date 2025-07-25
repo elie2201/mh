@@ -3,7 +3,7 @@
 setTimeout(() => { scheduledSleep(); }, getRandomInteger(60000, 120000));
 function scheduledSleep() {
   const environmentType = getEnvironmentType();
-  logging(`scheduledSleep_1.0.4.4.3 in ${environmentType}`);
+  logging(`scheduledSleep_1.0.3.5.3 in ${environmentType}`);
   const keys = {
     sbFactory: 'super_brie_factory',
     fw: 'desert_warpath',
@@ -229,7 +229,7 @@ function fiSleep(enviromentSchedules) {
   const isLai = atts.is_low_tier_island;
   const isHai = atts.is_high_tier_island;
   const isSp = atts.is_vault_island;
-  const settings = getStorageToObject('floatingIslands');
+  const settings = getStorageToObject('floating_islands');
   // exclude not sleep
   if (quest.jet_stream_active && !settings.isSleepInCJS) {
     console.log('Not sleep when CJS active');
