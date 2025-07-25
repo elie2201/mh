@@ -4,7 +4,11 @@ function floatingIslands() {
   const targetEnvironmentType = 'floating_islands';
   const environmentType = getEnvironmentType();
   if (environmentType != targetEnvironmentType) return;
-  console.log('floatingIslands_1.4.6.1.2');
+  console.log('floatingIslands_1.4.6.2.3');
+  // prettier-ignore
+  const AllPowerTypes = ['arcn', 'frgttn', 'hdr', 'shdw', 'drcnc', 'law', 'phscl', 'tctcl'];
+  // prettier-ignore
+  const AllPowerNames = ['arcane', 'forgotten', 'hydro', 'shadow', 'draconic', 'law', 'physical', 'tactical'];
   // trap: [<weapon>, <base>, <bait>, <trinket>, <bottleWindEnabled>, litCandle, doubleEgg]
   // prettier-ignore
   const defaultSetting = {
@@ -382,16 +386,16 @@ function floatingIslands() {
   // autoSkyMap
   // if (!autoSkyMap({ isAutoLai: true, isCycleLai: true, myLaiPowerTypes: ['law', 'phscl', 'drcnc', 'arcn', 'tctcl', 'shdw', 'frgttn', 'hdr'], shrineMaxIndex: 2 })) console.log('Not launched');
   /* autoSkyMap({
-  isAutoHai: true,
-  isCycleHai: true,
-  myHaiPowerTypes: ['law', 'tctcl', 'phscl', 'hdr'],
-  includedHaiShrine: ['paragon_cache_a', 'paragon_cache_b', 'paragon_cache_c'],
-  shrineMaxIndex: 2
-}); */
+    isAutoHai: true,
+    isCycleHai: true,
+    myHaiPowerTypes: ['law', 'tctcl', 'phscl', 'hdr'],
+    includedHaiShrine: ['paragon_cache_a', 'paragon_cache_b', 'paragon_cache_c'],
+    shrineMaxIndex: 2
+  }); */
   // prettier-ignore
-  const AllPowerTypes = ['arcn', 'frgttn', 'hdr', 'shdw', 'drcnc', 'law', 'phscl', 'tctcl'];
+  // const AllPowerTypes = ['arcn', 'frgttn', 'hdr', 'shdw', 'drcnc', 'law', 'phscl', 'tctcl'];
   // prettier-ignore
-  const AllPowerNames = ['arcane', 'forgotten', 'hydro', 'shadow', 'draconic', 'law', 'physical', 'tactical'];
+  // const AllPowerNames = ['arcane', 'forgotten', 'hydro', 'shadow', 'draconic', 'law', 'physical', 'tactical'];
   function autoSkyMap(settings) {
     const quest = user.quests.QuestFloatingIslands;
     const atts = quest.hunting_site_atts;
