@@ -4,7 +4,7 @@ function floatingIslands() {
   const targetEnvironmentType = 'floating_islands';
   const environmentType = getEnvironmentType();
   if (environmentType != targetEnvironmentType) return;
-  console.log('floatingIslands_1.4.6.2.3');
+  console.log('floatingIslands_1.4.7.3.3');
   // prettier-ignore
   const AllPowerTypes = ['arcn', 'frgttn', 'hdr', 'shdw', 'drcnc', 'law', 'phscl', 'tctcl'];
   // prettier-ignore
@@ -102,13 +102,13 @@ function floatingIslands() {
         tactical: ['Extra Rich Cloud Cheesecake', 'best.weapon.', 'best.base.combo', 'Ultimate Party Charm', false, 'none', true]
       },
       pirate: {
-        lai: ['Sky Pirate Swiss Cheese', 'best.weapon.hydro', 'best.base.combo', '2024 Charm,2025 Charm', false, 'none', true],
-        hai: ['Sky Pirate Swiss Cheese', 'best.weapon.hydro', 'best.base.combo', '2024 Charm,2025 Charm', false, 'none', true],
-        sp: ['Sky Pirate Swiss Cheese', 'best.weapon.hydro', 'best.base.combo', 'Festive Ultimate Lucky Power Charm,Ultimate Lucky Power Charm', false, 'none', true]
+        lai: ['Sky Pirate Swiss Cheese', 'best.weapon.forgotten', 'best.base.combo', '2024 Charm,2025 Charm', false, 'none', true],
+        hai: ['Sky Pirate Swiss Cheese', 'best.weapon.forgotten', 'best.base.combo', '2024 Charm,2025 Charm', false, 'none', true],
+        sp: ['Sky Pirate Swiss Cheese', 'best.weapon.forgotten', 'best.base.combo', 'Festive Ultimate Lucky Power Charm,Ultimate Lucky Power Charm', false, 'none', true]
       },
-      warden: ['Cloud Cheesecake', 'best.weapon.hydro', 'best.base.combo', '2024 Charm,2025 Charm', false, 'none', false],
+      warden: ['Cloud Cheesecake', 'best.weapon.forgotten', 'best.base.combo', '2024 Charm,2025 Charm', false, 'none', false],
       paragon: ['Cloud Cheesecake', 'best.weapon.', 'best.base.combo', 'Ultimate Spooky Charm,Ultimate Snowball Charm', false, 'red', true],
-      empress: ['Empowered SUPER', 'best.weapon.hydro', 'best.base.combo', 'Ultimate Lucky Power Charm,Festive Ultimate Lucky Power Charm', false, 'red', true]
+      empress: ['Empowered SUPER', 'best.weapon.forgotten', 'best.base.combo', 'Ultimate Lucky Power Charm,Festive Ultimate Lucky Power Charm', false, 'red', true]
     }
   };
   const settings = getStorageToObject(targetEnvironmentType, defaultSetting);
@@ -121,7 +121,9 @@ function floatingIslands() {
   const cyclone = items.sky_scrambler_stat_item;
   const cycloneQty = parseQuantity(cyclone.quantity);
   const cloudCurd = items.cloud_curd_crafting_item;
-  const cccQty = parseQuantity(cloudCurd.quantity);
+  const ccQty = parseQuantity(cloudCurd.quantity);
+  const cloudCheese = items.sky_cheese;
+  const cccQty = parseQuantity(cloudCheese.quantity);
   const spsCurds = items.sky_pirate_cheese_curd_crafting_item;
   const spscQty = parseQuantity(spsCurds.quantity);
   const magicEssence = items.magic_essence_craft_item;
@@ -229,6 +231,7 @@ function floatingIslands() {
   // **Travel to FI or reload from retreating to launch pad.
   if (
     isLaunch &&
+    cccQty + ccQty > 75 &&
     ((settings.isAutoLai && atts.sky_wardens_caught < 4) ||
       (settings.isAutoHai && atts.sky_wardens_caught == 4) ||
       (settings.isAutoSp && stormCellQty > 49))
@@ -237,7 +240,7 @@ function floatingIslands() {
     autoSkyMap(settings);
     return;
   }
-  logging(`Not autoSkyMap,treat trap/BW.Cyclone quantity: ${cycloneQty}`);
+  console.plog(`Not autoSkyMap,treat trap/BW.Cyclone quantity: ${cycloneQty}`);
   let trap = null;
   // LAI
   if (isLai) trap = settings.trap.lai[powerType];
@@ -351,11 +354,11 @@ function floatingIslands() {
     if (armedBaitId === 3089 && baitQuantity < lower) {
       logging('buy CCC cheese');
       const itemType = 'sky_cheese';
-      if (cccQty > 222) completeTransaction(true, itemType, 222, false);
+      if (ccQty > 222) completeTransaction(true, itemType, 222, false);
     } else if (armedBaitId === 3274 && baitQuantity < lower) {
       logging('buy ERCC pack');
       const itemType = 'sky_cheese';
-      if (cccQty > 666)
+      if (ccQty > 666)
         completeTransaction(true, itemType, 666, false, () => {
           const itemType = 'extra_rich_sky_cheese_pack_small_convertible';
           if (meQty > 33) completeTransaction(true, itemType, 33, false);
