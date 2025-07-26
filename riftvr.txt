@@ -4,7 +4,7 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = getEnvironmentType();
   if (environmentType != targetEnvironmentType) return;
-  logging('valourRift_0.3.14.4.2');
+  logging('valourRift_0.3.14.4.3');
   const allAugmentations = {
     sigilHunter: 'hr',
     secretResearch: 'sr',
@@ -221,7 +221,8 @@ function valourRift() {
     };
     if (gscQuantity + elixirQuantity >= settings.minGscToEnter) {
       enterTower([], () => {
-        document.querySelector('a.jsDialogClose, a#jsDialogClose').click();
+        const a = document.querySelector('a.jsDialogClose, a#jsDialogClose');
+        if (a) a.click();
         valourRift();
       });
       /* hg.views.HeadsUpDisplayRiftValourView.enterTower();
