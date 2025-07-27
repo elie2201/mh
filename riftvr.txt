@@ -4,7 +4,7 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = getEnvironmentType();
   if (environmentType != targetEnvironmentType) return;
-  logging('valourRift_0.3.15.4.3');
+  logging('valourRift_0.3.15.4.4');
   const allAugmentations = {
     sigilHunter: 'hr',
     secretResearch: 'sr',
@@ -223,8 +223,8 @@ function valourRift() {
         }
         valourRift();
       }; */
-      if (!augmentations && settings.isAutoAugment) {
-        augmentations = [];
+      if (!augmentations) augmentations = [];
+      if (settings.isAutoAugment && augmentations.length === 0) {
         if (settings.isSigilHunter)
           augmentations.push(allAugmentations.sigilHunter);
         if (settings.isSecretResearch)
@@ -236,7 +236,6 @@ function valourRift() {
         if (settings.isStringStepping)
           augmentations.push(allAugmentations.stringStepping);
       }
-      if (!augmentations) augmentations = [];
       hg.views.HeadsUpDisplayRiftValourView.riftValourAjax(
         element,
         { action: 'enter_tower', augmentation_types: augmentations },
