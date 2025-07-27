@@ -4,7 +4,7 @@ function floatingIslands() {
   const targetEnvironmentType = 'floating_islands';
   const environmentType = getEnvironmentType();
   if (environmentType != targetEnvironmentType) return;
-  console.log('floatingIslands_1.4.8.3.4');
+  console.log('floatingIslands_1.4.9.4.4');
   // prettier-ignore
   const AllPowerTypes = ['arcn', 'frgttn', 'hdr', 'shdw', 'drcnc', 'law', 'phscl', 'tctcl'];
   // prettier-ignore
@@ -13,6 +13,7 @@ function floatingIslands() {
   // prettier-ignore
   const defaultSetting = {
     travelTo: '', // not empty if never hunt in launch
+    isLowCC: true,
     isAutoCjs: false,
     isSleepInCJS: false,
     isAutoLai: true,
@@ -35,7 +36,7 @@ function floatingIslands() {
     isBwAutoOffLai: false,
     isBwAutoOffHai: true,
     isBwAutoOffSP: false,
-    isHuntAfterLaiTrove: true,
+    isHuntAfterLaiTrove: false,
     isHuntAfterHaiTrove: true,
     isHuntAfterSpTrove: true,
     isAutoHuntAfterTrove: true,
@@ -45,7 +46,7 @@ function floatingIslands() {
     // SP pirate可以任選 power type,前 30 progress用來做 map
     // progress 30開始沒有一級海盜且開始最高 Peggy AR
     startPirateProgressSp: 30,
-    isAutoBuy: false,
+    isAutoBuy: true,
     // ['law', 'phscl', 'drcnc', 'shdw', 'arcn', 'tctcl', 'hdr', 'frgttn'],
     // myLaiPowerTypes: ['law', 'phscl', 'hdr', 'drcnc', 'frgttn', 'arcn', 'tctcl', 'shdw'], 
     myLaiPowerTypes: ['law'], 
@@ -55,7 +56,7 @@ function floatingIslands() {
     wantedModifier: [],
     spWheelPattern: ['tctcl', 'loot_cache', 'loot_cache', 'loot_cache', 'loot_cache'],
     trap: {
-      launch: ['Gouda', 'best.weapon.physical', 'best.base.combo', 'None', false, 'none', false],
+      launch: ['Gouda', 'best.weapon.physical', 'best.base.combo', 'Luck Charm', false, 'none', false],
       defaultLai: ['Cloud Cheesecake,Extra Rich Cloud Cheesecake,Sky Pirate Swiss Cheese', 'best.weapon.', 'best.base.combo', 'Festive Ultimate Lucky Power Charm', false, 'none', false],
       lai: {
         arcane: ['Cloud Cheesecake', 'best.weapon.', 'best.base.combo', 'Super Spooky Charm,Super Snowball Charm', false, 'none', false],
@@ -160,6 +161,8 @@ function floatingIslands() {
         settings.isHuntAfterLaiTrove = true;
         if (hasTreasureTrove) settings.isPirateHuntingLai = true;
       } else if (countArrayElement('loot_cache', modTypes) == 2)
+        settings.isHuntAfterLaiTrove = true;
+      else if (settings.isLowCC && modTypes.indexOf('sky_cheese') > -1)
         settings.isHuntAfterLaiTrove = true;
     } else if (isHai) {
       /* if (hasTreasureTrove)
