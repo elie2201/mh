@@ -4,7 +4,7 @@ function floatingIslands() {
   const targetEnvironmentType = 'floating_islands';
   const environmentType = getEnvironmentType();
   if (environmentType != targetEnvironmentType) return;
-  console.log('floatingIslands_1.4.10.4.4');
+  console.log('floatingIslands_1.4.10.4.5');
   // prettier-ignore
   const AllPowerTypes = ['arcn', 'frgttn', 'hdr', 'shdw', 'drcnc', 'law', 'phscl', 'tctcl'];
   // prettier-ignore
@@ -357,23 +357,25 @@ function floatingIslands() {
     if (armedBaitId === 3089 && baitQuantity < lower) {
       logging('buy CCC cheese');
       const itemType = 'sky_cheese';
-      completeTransaction(true, itemType, Math.min(ccQty, 222), false);
+      const itemQty = Math.min(ccQty, 222);
+      if (itemQty > 0) completeTransaction(true, itemType, itemQty, false);
       // if (ccQty > 222) completeTransaction(true, itemType, 222, false);
     } else if (armedBaitId === 3274 && baitQuantity < lower) {
       logging('buy ERCC pack');
       let itemType = 'sky_cheese';
       let itemQty = Math.min(ccQty, 666);
-      completeTransaction(true, itemType, itemQty, false, () => {
-        itemType = 'extra_rich_sky_cheese_pack_small_convertible';
-        itemQty = Math.min(Math.floor(ccQty / 20), meQty, 33);
-        completeTransaction(true, itemType, itemQty, false);
-        // if (meQty > 33) completeTransaction(true, itemType, 33, false);
-      });
+      if (itemQty > 0)
+        completeTransaction(true, itemType, itemQty, false, () => {
+          itemType = 'extra_rich_sky_cheese_pack_small_convertible';
+          itemQty = Math.min(Math.floor(ccQty / 20), meQty, 33);
+          if (itemQty > 0) completeTransaction(true, itemType, itemQty, false);
+          // if (meQty > 33) completeTransaction(true, itemType, 33, false);
+        });
     } else if (armedBaitId === 3090 && baitQuantity < lower) {
       logging('buy SPS pack');
       const itemType = 'pirate_cheese_pack_small_convertible';
       const itemQty = Math.min(spscQty, meQty, 30);
-      completeTransaction(true, itemType, itemQty, false);
+      if (itemQty > 0) completeTransaction(true, itemType, itemQty, false);
       // if (spscQty > 30 && meQty > 30) completeTransaction(true, itemType, 30, false);
     }
   };
