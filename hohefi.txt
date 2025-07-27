@@ -4,7 +4,7 @@ function floatingIslands() {
   const targetEnvironmentType = 'floating_islands';
   const environmentType = getEnvironmentType();
   if (environmentType != targetEnvironmentType) return;
-  console.log('floatingIslands_1.4.8.3.3');
+  console.log('floatingIslands_1.4.8.3.4');
   // prettier-ignore
   const AllPowerTypes = ['arcn', 'frgttn', 'hdr', 'shdw', 'drcnc', 'law', 'phscl', 'tctcl'];
   // prettier-ignore
@@ -148,7 +148,7 @@ function floatingIslands() {
     pauseByTraveling(travelTo);
     return;
   }
-  const isLai = atts.is_low_tier_island;
+  const isLai = atts.is_low_tier_island || !atts.enemy;
   const isHai = atts.is_high_tier_island;
   const isSp = atts.is_vault_island;
   const isFirst3Block = atts.island_progress < 30;
