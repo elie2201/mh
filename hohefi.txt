@@ -4,7 +4,7 @@ function floatingIslands() {
   const targetEnvironmentType = 'floating_islands';
   const environmentType = getEnvironmentType();
   if (environmentType != targetEnvironmentType) return;
-  console.log('floatingIslands_1.4.9.4.4');
+  console.log('floatingIslands_1.4.10.4.4');
   // prettier-ignore
   const AllPowerTypes = ['arcn', 'frgttn', 'hdr', 'shdw', 'drcnc', 'law', 'phscl', 'tctcl'];
   // prettier-ignore
@@ -528,7 +528,9 @@ function floatingIslands() {
       cycled(settings);
       return isSkyMapLaunched;
     }
-    return !isSkyMapLaunched;
+    // 到這邊的話 choices為空且不 cycle,直接塞第一個 powerType
+    launchSkyMap(myPowerTypes[0]);
+    return isSkyMapLaunched;
   }
   function cycled(settings) {
     const getTileTypes = () => {
