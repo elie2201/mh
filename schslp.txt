@@ -3,7 +3,8 @@
 setTimeout(() => { scheduledSleep(); }, getRandomInteger(60000, 120000));
 function scheduledSleep() {
   const environmentType = getEnvironmentType();
-  logging(`scheduledSleep_1.0.9.6.5 in ${environmentType}`);
+  logging(`scheduledSleep_1.0.10.6.5 in ${environmentType}`);
+  const storageKey = 'scheduledSleep';
   const defaultSleep = 'defaultSleep';
   // prettier-ignore
   // [sleepAt, sleepForExpr, segments]
@@ -24,11 +25,11 @@ function scheduledSleep() {
     rift_bristle_woods: { weekDefault: [[9.07, 3.3, 2]] },
     floating_islands: { weekDefault: [[9.07, 5.45, 1]] }
   };
-  const settings = getStorageToObject('scheduledSleep', defaultSettings);
+  const settings = getStorageToObject(storageKey, defaultSettings);
   const enviromentSetting = settings[environmentType];
   const enviromentSchedules = enviromentSetting
     ? enviromentSetting
-    : settings['defaultSleep'];
+    : settings[defaultSleep];
   if (
     !enviromentSchedules.isPreSleep &&
     enviromentSchedules.isPreSleep !== false
@@ -37,7 +38,7 @@ function scheduledSleep() {
   if (!enviromentSchedules.friendHunts && enviromentSchedules.friendHunts !== 0)
     enviromentSchedules.friendHunts = settings.friendHunts;
   const environmentSleep = {
-    defaultSleep: (enviromentSchedules) => {
+    defaultSleep(enviromentSchedules) {
       const daySchedule = matchSchedules(enviromentSchedules);
       if (!daySchedule) return;
       const sleepTrap = enviromentSchedules['sleepTrap'];
@@ -45,7 +46,7 @@ function scheduledSleep() {
       const isPreSleep = enviromentSchedules.isPreSleep;
       goToBed(daySchedule, isPreSleep);
     },
-    desert_warpath: (enviromentSchedules) => {
+    desert_warpath(enviromentSchedules) {
       logging('fiery warpath sleep');
       const quest = user.viewing_atts.desert_warpath;
       let streak = parseInt(quest.streak_quantity);
@@ -70,7 +71,7 @@ function scheduledSleep() {
       if (sleepTrap) armAllTraps(...sleepTrap);
       goToBed(schedule, isPreSleep);
     },
-    labyrinth: (enviromentSchedules) => {
+    labyrinth(enviromentSchedules) {
       if (!enviromentSchedules)
         enviromentSchedules = { weekDefault: [[9.07, 3.5, 2]] };
       const schedule = matchSchedules(enviromentSchedules);
@@ -108,7 +109,7 @@ function scheduledSleep() {
         return isEnoughTiles;
       }
     },
-    floating_islands: (enviromentSchedules) => {
+    floating_islands(enviromentSchedules) {
       if (!enviromentSchedules)
         enviromentSchedules = { weekDefault: [[9.07, 5.45, 1]] };
       const quest = user.quests.QuestFloatingIslands;
@@ -196,7 +197,7 @@ function scheduledSleep() {
       if (sleepTrap) armAllTraps(...sleepTrap);
       goToBed(schedule, isPreSleep);
     },
-    super_brie_factory: (enviromentSchedules) => {
+    super_brie_factory(enviromentSchedules) {
       logging(`SB factory sleep`);
       const quest = user.quests.QuestSuperBrieFactory;
       const atts = quest.factory_atts;
@@ -216,7 +217,7 @@ function scheduledSleep() {
         hg.utils.TrapControl.setBait('super_brie_cheese').go(() => {});
       goToBed(schedule, isPreSleep);
     },
-    rift_bristle_woods: (enviromentSchedules) => {
+    rift_bristle_woods(enviromentSchedules) {
       console.log('bwRift sleep');
       const quest = user.quests.QuestRiftBristleWoods;
       console.log(`quest.progress_percent: ${quest.progress_percent}`);
