@@ -3,15 +3,8 @@
 setTimeout(() => { scheduledSleep(); }, getRandomInteger(60000, 120000));
 function scheduledSleep() {
   const environmentType = getEnvironmentType();
-  logging(`scheduledSleep_1.0.9.6.4 in ${environmentType}`);
-  /* const keys = {
-    fw: 'desert_warpath',
-    laby: 'labyrinth',
-    zokor: 'ancient_city',
-    fi: 'floating_islands',
-    sbFactory: 'super_brie_factory',
-    bwRift: 'rift_bristle_woods'
-  }; */
+  logging(`scheduledSleep_1.0.9.6.5 in ${environmentType}`);
+  const defaultSleep = 'defaultSleep';
   // prettier-ignore
   // [sleepAt, sleepForExpr, segments]
   const defaultSettings = {
@@ -43,36 +36,8 @@ function scheduledSleep() {
     enviromentSchedules.isPreSleep = settings.isPreSleep;
   if (!enviromentSchedules.friendHunts && enviromentSchedules.friendHunts !== 0)
     enviromentSchedules.friendHunts = settings.friendHunts;
-  if (!environmentSleep[environmentType]) {
-    environmentSleep['defaultAction'](enviromentSchedules);
-    return;
-  }
-  environmentSleep[environmentType](enviromentSchedules);
-  /* switch (environmentType) {
-    case keys.fw:
-      fieryWarpath(enviromentSchedules);
-      break;
-    case keys.laby:
-      labyrinth(enviromentSchedules);
-      break;
-    case keys.zokor:
-      labyrinth(enviromentSchedules);
-      break;
-    case keys.fi:
-      floatingIslands(enviromentSchedules);
-      break;
-    case keys.sbFactory:
-      sbFactory(enviromentSchedules);
-      break;
-    case keys.bwRift:
-      bwRift(enviromentSchedules);
-      break;
-    default:
-      defaultAction(enviromentSchedules);
-      break;
-  } */
   const environmentSleep = {
-    defaultAction: (enviromentSchedules) => {
+    defaultSleep: (enviromentSchedules) => {
       const daySchedule = matchSchedules(enviromentSchedules);
       if (!daySchedule) return;
       const sleepTrap = enviromentSchedules['sleepTrap'];
@@ -294,6 +259,11 @@ function scheduledSleep() {
       goToBed(schedule, isPreSleep);
     }
   };
+  if (!environmentSleep[environmentType]) {
+    environmentSleep[defaultSleep](enviromentSchedules);
+    return;
+  }
+  environmentSleep[environmentType](enviromentSchedules);
   // goToBed([9.07, 5.45, 1]);
   // goToBed([9.07, '1.04+-2', 6]);
   function goToBed(schedule, isPreSleep) {
