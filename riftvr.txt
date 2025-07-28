@@ -4,7 +4,7 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = getEnvironmentType();
   if (environmentType != targetEnvironmentType) return;
-  logging('valourRift_0.3.15.4.4');
+  logging('valourRift_0.3.16.4.4');
   const allAugmentations = {
     sigilHunter: 'hr',
     secretResearch: 'sr',
@@ -27,6 +27,8 @@ function valourRift() {
     isAutoRetreat: true,
     minRetreatFloor: 3,
     forceRetreatFloor: null,
+    eclipseNeedHunts: 5,
+    eclipseUUNeedHunts: 7,
     isAutoUpgrade: true,
     isAutoBuyItem: false,
     minCheeseQty: 20,
@@ -56,7 +58,7 @@ function valourRift() {
   const vriftStates = { farming: 'farming', tower: 'tower' };
   const state = quest.state;
   const floor = quest.floor;
-  // const huntsLeft = quest.hunts_remaining;
+  const huntsLeft = quest.hunts_remaining;
   const stepsToEclipse =
     quest.prestige_total_step - 1 - quest.prestige_current_step;
   const powerUpData = quest.power_up_data;
@@ -152,6 +154,34 @@ function valourRift() {
   };
   logging('items', items);
   const autoRetreat = () => {
+    if (floor % 8 > 0) {
+      if (floor % 8 === 1) console.plog(`autoRetreat: No, in floor ${floor}`);
+      return;
+    }
+    if (quest.is_eclipse_mode) {
+      if (huntsLeft < settings.eclipseUUNeedHunts) {
+        console.plog(
+          `autoRetreat: Yes, in floor ${floor}, left: ${huntsLeft} < ${settings.eclipseUUNeedHunts}`
+        );
+        settings.forceRetreatFloor = floor;
+      } else {
+        console.plog(
+          `autoRetreat: No, in floor ${floor}, left: ${huntsLeft} >= ${settings.eclipseUUNeedHunts}`
+        );
+      }
+    } else {
+      if (huntsLeft < settings.eclipseNeedHunts) {
+        console.plog(
+          `autoRetreat: Yes, in floor ${floor}, left: ${huntsLeft} < ${settings.eclipseNeedHunts}`
+        );
+        settings.forceRetreatFloor = floor;
+      } else {
+        console.plog(
+          `autoRetreat: No, in floor ${floor}, left: ${huntsLeft} >= ${settings.eclipseNeedHunts}`
+        );
+      }
+    }
+    /* 
     // 先不處理 UU Run
     if (quest.is_eclipse_mode) return;
     // 針對那些接近但理論上到不了 eclipse floor的 upgrade,
@@ -169,6 +199,7 @@ function valourRift() {
       56, 56];
     const index = retreatUpgrades.indexOf(currentLevelsJSON);
     if (index > -1) settings.forceRetreatFloor = retreatFloor[index];
+     */
   };
   if (state === vriftStates.tower && floor >= settings.minRetreatFloor)
     autoRetreat();
