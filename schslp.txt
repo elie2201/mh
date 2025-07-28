@@ -3,7 +3,7 @@
 setTimeout(() => { scheduledSleep(); }, getRandomInteger(60000, 120000));
 function scheduledSleep() {
   const environmentType = getEnvironmentType();
-  logging(`scheduledSleep_1.0.11.6.5 in ${environmentType}`);
+  logging(`scheduledSleep_1.1.11.6.5 in ${environmentType}`);
   const storageKey = 'scheduledSleep';
   const defaultSleep = 'defaultSleep';
   // prettier-ignore
@@ -70,6 +70,36 @@ function scheduledSleep() {
       const sleepTrap = enviromentSchedules['sleepTrap'];
       if (sleepTrap) armAllTraps(...sleepTrap);
       goToBed(schedule, isPreSleep);
+    },
+    desert_oasis(enviromentSchedules) {
+      const daySchedule = matchSchedules(enviromentSchedules);
+      if (!daySchedule) return;
+      if (
+        getBaitQuantity() <
+        Math.ceil(daySchedule[1] + enviromentSchedules.friendHunts)
+      )
+        return;
+      this.defaultSleep(enviromentSchedules);
+    },
+    lost_city(enviromentSchedules) {
+      const daySchedule = matchSchedules(enviromentSchedules);
+      if (!daySchedule) return;
+      if (
+        getBaitQuantity() <
+        Math.ceil(daySchedule[1] + enviromentSchedules.friendHunts)
+      )
+        return;
+      this.defaultSleep(enviromentSchedules);
+    },
+    sand_dunes(enviromentSchedules) {
+      const daySchedule = matchSchedules(enviromentSchedules);
+      if (!daySchedule) return;
+      if (
+        getBaitQuantity() <
+        Math.ceil(daySchedule[1] + enviromentSchedules.friendHunts)
+      )
+        return;
+      this.defaultSleep(enviromentSchedules);
     },
     labyrinth(enviromentSchedules) {
       if (!enviromentSchedules)
