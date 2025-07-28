@@ -4,7 +4,7 @@ function floatingIslands() {
   const targetEnvironmentType = 'floating_islands';
   const environmentType = getEnvironmentType();
   if (environmentType != targetEnvironmentType) return;
-  console.log('floatingIslands_1.4.10.4.5');
+  console.log('floatingIslands_1.4.11.4.5');
   // prettier-ignore
   const AllPowerTypes = ['arcn', 'frgttn', 'hdr', 'shdw', 'drcnc', 'law', 'phscl', 'tctcl'];
   // prettier-ignore
@@ -211,7 +211,10 @@ function floatingIslands() {
   // **Retreat after has treasure trove and has defeated warden/paragon without reloading
   // has_defeated_enemy && has_treasure_trove
   // hg.views.HeadsUpDisplayFloatingIslandsView.retreat(this);
-  if (hasDefeatedEnemy && hasTreasureTrove) {
+  if (
+    (hasDefeatedEnemy && hasTreasureTrove) ||
+    (!atts.enemy && quest.can_retreat)
+  ) {
     if (
       (isLai && !settings.isHuntAfterLaiTrove) ||
       (isHai && !settings.isHuntAfterHaiTrove) ||
