@@ -4,7 +4,7 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = getEnvironmentType();
   if (environmentType != targetEnvironmentType) return;
-  logging('valourRift_0.3.16.4.4');
+  logging('valourRift_0.3.17.4.4');
   const allAugmentations = {
     sigilHunter: 'hr',
     secretResearch: 'sr',
@@ -165,7 +165,7 @@ function valourRift() {
         );
         settings.forceRetreatFloor = floor;
       } else {
-        console.plog(
+        storeError(
           `autoRetreat: No, in floor ${floor}, left: ${huntsLeft} >= ${settings.eclipseUUNeedHunts}`
         );
       }
@@ -176,7 +176,7 @@ function valourRift() {
         );
         settings.forceRetreatFloor = floor;
       } else {
-        console.plog(
+        storeError(
           `autoRetreat: No, in floor ${floor}, left: ${huntsLeft} >= ${settings.eclipseNeedHunts}`
         );
       }
