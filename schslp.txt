@@ -3,7 +3,7 @@
 setTimeout(() => { scheduledSleep(); }, getRandomInteger(60000, 120000));
 function scheduledSleep() {
   const environmentType = getEnvironmentType();
-  logging(`scheduledSleep_1.1.11.6.5 in ${environmentType}`);
+  logging(`scheduledSleep_1.2.11.6.5 in ${environmentType}`);
   const storageKey = 'scheduledSleep';
   const defaultSleep = 'defaultSleep';
   // prettier-ignore
@@ -288,6 +288,12 @@ function scheduledSleep() {
       const sleepTrap = enviromentSchedules['sleepTrap'];
       if (sleepTrap) armAllTraps(...sleepTrap);
       goToBed(schedule, isPreSleep);
+    },
+    rift_valour(enviromentSchedules) {
+      const quest = user.quests.QuestRiftValour;
+      const floor = quest.floor;
+      if (floor % 8 > 6) return;
+      this.defaultSleep(enviromentSchedules);
     }
   };
   if (!environmentSleep[environmentType]) {
