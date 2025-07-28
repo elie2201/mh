@@ -3,15 +3,15 @@
 setTimeout(() => { scheduledSleep(); }, getRandomInteger(60000, 120000));
 function scheduledSleep() {
   const environmentType = getEnvironmentType();
-  logging(`scheduledSleep_1.0.8.6.4 in ${environmentType}`);
-  const keys = {
+  logging(`scheduledSleep_1.0.9.6.4 in ${environmentType}`);
+  /* const keys = {
     fw: 'desert_warpath',
     laby: 'labyrinth',
     zokor: 'ancient_city',
     fi: 'floating_islands',
     sbFactory: 'super_brie_factory',
     bwRift: 'rift_bristle_woods'
-  };
+  }; */
   // prettier-ignore
   // [sleepAt, sleepForExpr, segments]
   const defaultSettings = {
@@ -43,15 +43,12 @@ function scheduledSleep() {
     enviromentSchedules.isPreSleep = settings.isPreSleep;
   if (!enviromentSchedules.friendHunts && enviromentSchedules.friendHunts !== 0)
     enviromentSchedules.friendHunts = settings.friendHunts;
-  const defaultAction = (enviromentSchedules) => {
-    const daySchedule = matchSchedules(enviromentSchedules);
-    if (!daySchedule) return;
-    const sleepTrap = enviromentSchedules['sleepTrap'];
-    if (sleepTrap) armAllTraps(...sleepTrap);
-    const isPreSleep = enviromentSchedules.isPreSleep;
-    goToBed(daySchedule, isPreSleep);
-  };
-  switch (environmentType) {
+  if (!environmentSleep[environmentType]) {
+    environmentSleep['defaultAction'](enviromentSchedules);
+    return;
+  }
+  environmentSleep[environmentType](enviromentSchedules);
+  /* switch (environmentType) {
     case keys.fw:
       fieryWarpath(enviromentSchedules);
       break;
@@ -73,220 +70,230 @@ function scheduledSleep() {
     default:
       defaultAction(enviromentSchedules);
       break;
-  }
-  function fieryWarpath(enviromentSchedules) {
-    logging('fiery warpath sleep');
-    const quest = user.viewing_atts.desert_warpath;
-    let streak = parseInt(quest.streak_quantity);
-    if (Number.isNaN(streak)) streak = 0;
-    console.log(`current streak: ${streak}`);
-    if (streak > 2) {
-      console.log('streak more than 2, not sleep!!');
-      return;
-    }
-    let wave = parseInt(quest.wave);
-    if (Number.isNaN(wave)) wave = 5;
-    console.log(`current wave: ${wave}, 5 means portal`);
-    if (wave > 3) {
-      console.log(`current wave: ${wave} is boss hunting, not sleep`);
-      return;
-    }
-    // const population = getFwPopulation();
-    const schedule = matchSchedules(enviromentSchedules);
-    if (!schedule) return;
-    const isPreSleep = enviromentSchedules.isPreSleep;
-    const sleepTrap = enviromentSchedules['sleepTrap'];
-    if (sleepTrap) armAllTraps(...sleepTrap);
-    goToBed(schedule, isPreSleep);
-  }
-  function labyrinth(enviromentSchedules) {
-    if (!enviromentSchedules)
-      enviromentSchedules = { weekDefault: [[9.07, 3.5, 2]] };
-    const schedule = matchSchedules(enviromentSchedules);
-    if (!schedule) return;
-    const sleepForHm = getSleepForHm(schedule);
-    if (!isEnoughSleep(sleepForHm, enviromentSchedules.friendHunts)) {
-      console.log('Not enough tiles for sleep, keep hunting!!');
-      return;
-    }
-    const isPreSleep = enviromentSchedules.isPreSleep;
-    const sleepTrap = enviromentSchedules['sleepTrap'];
-    if (sleepTrap) armAllTraps(...sleepTrap);
-    goToBed(schedule, isPreSleep);
-    function isEnoughSleep(sleepForHm, friendHunts) {
-      if (user.quests.QuestAncientCity) {
-        const quest = user.quests.QuestAncientCity;
-        const remaining = quest.remaining;
-        const ftc = quest.stealth_loss_ftc;
-        const hunts = Math.floor(remaining / ftc);
-        return hunts >= Math.ceil(sleepForHm + friendHunts);
-      }
-      const quest = user.quests.QuestLabyrinth;
-      if (quest.status != 'hallway') return true;
-      const hallwayLength = quest.hallway_length;
-      const tiles = quest.tiles;
-      let activeTileIndex = 0;
-      for (let i = 0; i < tiles.length; i++) {
-        activeTileIndex = i;
-        const tile = tiles[i];
-        if (tile.status == 'active') break;
-      }
-      const needTiles = Math.ceil(sleepForHm + friendHunts);
-      const isEnoughTiles = needTiles <= hallwayLength - activeTileIndex;
-      console.log(hallwayLength, activeTileIndex, needTiles, isEnoughTiles);
-      return isEnoughTiles;
-    }
-  }
-  function floatingIslands(enviromentSchedules) {
-    if (!enviromentSchedules)
-      enviromentSchedules = { weekDefault: [[9.07, 5.45, 1]] };
-    const quest = user.quests.QuestFloatingIslands;
-    const atts = quest.hunting_site_atts;
-    const isLai = atts.is_low_tier_island;
-    const isHai = atts.is_high_tier_island;
-    const isSp = atts.is_vault_island;
-    const env = user.enviroment_atts;
-    const items = env.items;
-    const cloudCurd = items.cloud_curd_crafting_item;
-    const ccQty = parseQuantity(cloudCurd.quantity);
-    const cloudCheese = items.sky_cheese;
-    const cccQty = parseQuantity(cloudCheese.quantity);
-    const settings = getStorageToObject('floating_islands');
-    // exclude not sleep
-    if (quest.jet_stream_active && !settings.isSleepInCJS) {
-      console.log('Not sleep when CJS active');
-      return;
-    }
-    const schedule = matchSchedules(enviromentSchedules);
-    if (!schedule) return;
-    const sleepForHm = getSleepForHm(schedule);
-    const checkFiSleep = () => {
-      const isOkSleep = true;
-      const hasDefeatedEnemy = atts.has_defeated_enemy;
-      const hasTreasureTrove = atts.has_treasure_trove;
-      const speed = floatingIslandsUtility.getSpeed(quest);
-      const stepsToBoss = atts.enemy_encounter_hunts_remaining; // is 0 if encountered boss
-      const huntsToBoss = Math.ceil(stepsToBoss / speed);
-      const stepsToTrove = 40 - atts.island_progress;
-      const huntsToTrove = Math.ceil(stepsToTrove / speed);
-      const huntsLeft = atts.hunts_remaining;
-      const friendHunts = enviromentSchedules.friendHunts;
-      const sleepHunts = Math.ceil(sleepForHm + friendHunts);
-      console.log(
-        `speed: ${speed}, steps to Boss: ${stepsToBoss}, hunts to Boss: ${huntsToBoss}`,
-        `, steps to Trove: ${stepsToTrove}, hunts to Trove: ${huntsToTrove}`,
-        `sleep for: ${sleepForHm} hours.`
-      );
-      if (!hasDefeatedEnemy && huntsToBoss < sleepHunts) {
-        console.log('Not sleep when approaching boss');
-        return !isOkSleep;
-      }
-      if (huntsLeft < sleepHunts) {
-        console.log('Not sleep at end of island');
-        return !isOkSleep;
-      }
-      const isHuntToEnd =
-        (isLai && settings.isHuntAfterLaiTrove) ||
-        (isHai && settings.isHuntAfterHaiTrove) ||
-        (isSp && settings.isHuntAfterSpTrove);
-      if (!hasTreasureTrove && huntsToTrove < sleepHunts && !isHuntToEnd) {
-        console.log(
-          `Not sleep when approaching trove, hunt to end: ${isHuntToEnd}`
-        );
-        return !isOkSleep;
-      }
-      console.log('It is ok to sleep');
-      return isOkSleep;
-    };
-    const altitude = floatingIslandsUtility.getAltitude(quest);
-    switch (altitude) {
-      case 'launch':
-        console.log('Not sleep on launch except low CCC');
-        if (ccQty + cccQty > 75) return;
-        break;
-      case 'lai':
-        console.log('Check sleeping on LAI');
-        if (!checkFiSleep()) return;
-        break;
-      case 'hai':
-        console.log('Check sleeping on HAI');
-        if (!checkFiSleep()) return;
-        break;
-      case 'sp':
-        console.log('Check sleeping on SP');
-        if (!checkFiSleep()) return;
-        break;
-      default:
+  } */
+  const environmentSleep = {
+    defaultAction: (enviromentSchedules) => {
+      const daySchedule = matchSchedules(enviromentSchedules);
+      if (!daySchedule) return;
+      const sleepTrap = enviromentSchedules['sleepTrap'];
+      if (sleepTrap) armAllTraps(...sleepTrap);
+      const isPreSleep = enviromentSchedules.isPreSleep;
+      goToBed(daySchedule, isPreSleep);
+    },
+    desert_warpath: (enviromentSchedules) => {
+      logging('fiery warpath sleep');
+      const quest = user.viewing_atts.desert_warpath;
+      let streak = parseInt(quest.streak_quantity);
+      if (Number.isNaN(streak)) streak = 0;
+      console.log(`current streak: ${streak}`);
+      if (streak > 2) {
+        console.log('streak more than 2, not sleep!!');
         return;
-    }
-    console.plog('goToBed:', schedule);
-    const isPreSleep = enviromentSchedules.isPreSleep;
-    const sleepTrap = enviromentSchedules['sleepTrap'];
-    if (sleepTrap) armAllTraps(...sleepTrap);
-    goToBed(schedule, isPreSleep);
-  }
-  function sbFactory(enviromentSchedules) {
-    logging(`SB factory sleep`);
-    const quest = user.quests.QuestSuperBrieFactory;
-    const atts = quest.factory_atts;
-    const items = quest.items;
-    if (atts.hunts_remaining < 5 + enviromentSchedules.friendHunts) {
-      console.log('boss coming, not sleep');
-      return;
-    }
-    const schedule = matchSchedules(enviromentSchedules);
-    if (!schedule) return;
-    const isPreSleep = enviromentSchedules.isPreSleep;
-    // if arming Coggy Colby and quantity less than 5 + enviromentSchedules.friendHunts, change to SB
-    if (
-      parseQuantity(items.coggy_colby_cheese.quantity) <
-      5 + enviromentSchedules.friendHunts
-    )
-      hg.utils.TrapControl.setBait('super_brie_cheese').go(() => {});
-    goToBed(schedule, isPreSleep);
-  }
-  function bwRift(enviromentSchedules) {
-    console.log('bwRift sleep');
-    const quest = user.quests.QuestRiftBristleWoods;
-    console.log(`quest.progress_percent: ${quest.progress_percent}`);
-    if (parseInt(quest.progress_percent) < 90) {
-      console.log('progress lower than 90, return!!');
-      return;
-    }
-    const ignoredChamberNames = [
-      'Guard Barracks',
-      'Acolyte',
-      'Hidden Treasury',
-      'Lucky Tower'
-    ];
-    const chamberName = trimToEmpty(quest.chamber_name);
-    /* if (ignoredChamberNames.indexOf(chamberName) > -1)
+      }
+      let wave = parseInt(quest.wave);
+      if (Number.isNaN(wave)) wave = 5;
+      console.log(`current wave: ${wave}, 5 means portal`);
+      if (wave > 3) {
+        console.log(`current wave: ${wave} is boss hunting, not sleep`);
+        return;
+      }
+      // const population = getFwPopulation();
+      const schedule = matchSchedules(enviromentSchedules);
+      if (!schedule) return;
+      const isPreSleep = enviromentSchedules.isPreSleep;
+      const sleepTrap = enviromentSchedules['sleepTrap'];
+      if (sleepTrap) armAllTraps(...sleepTrap);
+      goToBed(schedule, isPreSleep);
+    },
+    labyrinth: (enviromentSchedules) => {
+      if (!enviromentSchedules)
+        enviromentSchedules = { weekDefault: [[9.07, 3.5, 2]] };
+      const schedule = matchSchedules(enviromentSchedules);
+      if (!schedule) return;
+      const sleepForHm = getSleepForHm(schedule);
+      if (!isEnoughSleep(sleepForHm, enviromentSchedules.friendHunts)) {
+        console.log('Not enough tiles for sleep, keep hunting!!');
+        return;
+      }
+      const isPreSleep = enviromentSchedules.isPreSleep;
+      const sleepTrap = enviromentSchedules['sleepTrap'];
+      if (sleepTrap) armAllTraps(...sleepTrap);
+      goToBed(schedule, isPreSleep);
+      function isEnoughSleep(sleepForHm, friendHunts) {
+        if (user.quests.QuestAncientCity) {
+          const quest = user.quests.QuestAncientCity;
+          const remaining = quest.remaining;
+          const ftc = quest.stealth_loss_ftc;
+          const hunts = Math.floor(remaining / ftc);
+          return hunts >= Math.ceil(sleepForHm + friendHunts);
+        }
+        const quest = user.quests.QuestLabyrinth;
+        if (quest.status != 'hallway') return true;
+        const hallwayLength = quest.hallway_length;
+        const tiles = quest.tiles;
+        let activeTileIndex = 0;
+        for (let i = 0; i < tiles.length; i++) {
+          activeTileIndex = i;
+          const tile = tiles[i];
+          if (tile.status == 'active') break;
+        }
+        const needTiles = Math.ceil(sleepForHm + friendHunts);
+        const isEnoughTiles = needTiles <= hallwayLength - activeTileIndex;
+        console.log(hallwayLength, activeTileIndex, needTiles, isEnoughTiles);
+        return isEnoughTiles;
+      }
+    },
+    floating_islands: (enviromentSchedules) => {
+      if (!enviromentSchedules)
+        enviromentSchedules = { weekDefault: [[9.07, 5.45, 1]] };
+      const quest = user.quests.QuestFloatingIslands;
+      const atts = quest.hunting_site_atts;
+      const isLai = atts.is_low_tier_island;
+      const isHai = atts.is_high_tier_island;
+      const isSp = atts.is_vault_island;
+      const env = user.enviroment_atts;
+      const items = env.items;
+      const cloudCurd = items.cloud_curd_crafting_item;
+      const ccQty = parseQuantity(cloudCurd.quantity);
+      const cloudCheese = items.sky_cheese;
+      const cccQty = parseQuantity(cloudCheese.quantity);
+      const settings = getStorageToObject('floating_islands');
+      // exclude not sleep
+      if (quest.jet_stream_active && !settings.isSleepInCJS) {
+        console.log('Not sleep when CJS active');
+        return;
+      }
+      const schedule = matchSchedules(enviromentSchedules);
+      if (!schedule) return;
+      const sleepForHm = getSleepForHm(schedule);
+      const checkFiSleep = () => {
+        const isOkSleep = true;
+        const hasDefeatedEnemy = atts.has_defeated_enemy;
+        const hasTreasureTrove = atts.has_treasure_trove;
+        const speed = floatingIslandsUtility.getSpeed(quest);
+        const stepsToBoss = atts.enemy_encounter_hunts_remaining; // is 0 if encountered boss
+        const huntsToBoss = Math.ceil(stepsToBoss / speed);
+        const stepsToTrove = 40 - atts.island_progress;
+        const huntsToTrove = Math.ceil(stepsToTrove / speed);
+        const huntsLeft = atts.hunts_remaining;
+        const friendHunts = enviromentSchedules.friendHunts;
+        const sleepHunts = Math.ceil(sleepForHm + friendHunts);
+        console.log(
+          `speed: ${speed}, steps to Boss: ${stepsToBoss}, hunts to Boss: ${huntsToBoss}`,
+          `, steps to Trove: ${stepsToTrove}, hunts to Trove: ${huntsToTrove}`,
+          `sleep for: ${sleepForHm} hours.`
+        );
+        if (!hasDefeatedEnemy && huntsToBoss < sleepHunts) {
+          console.log('Not sleep when approaching boss');
+          return !isOkSleep;
+        }
+        if (huntsLeft < sleepHunts) {
+          console.log('Not sleep at end of island');
+          return !isOkSleep;
+        }
+        const isHuntToEnd =
+          (isLai && settings.isHuntAfterLaiTrove) ||
+          (isHai && settings.isHuntAfterHaiTrove) ||
+          (isSp && settings.isHuntAfterSpTrove);
+        if (!hasTreasureTrove && huntsToTrove < sleepHunts && !isHuntToEnd) {
+          console.log(
+            `Not sleep when approaching trove, hunt to end: ${isHuntToEnd}`
+          );
+          return !isOkSleep;
+        }
+        console.log('It is ok to sleep');
+        return isOkSleep;
+      };
+      const altitude = floatingIslandsUtility.getAltitude(quest);
+      switch (altitude) {
+        case 'launch':
+          console.log('Not sleep on launch except low CCC');
+          if (ccQty + cccQty > 75) return;
+          break;
+        case 'lai':
+          console.log('Check sleeping on LAI');
+          if (!checkFiSleep()) return;
+          break;
+        case 'hai':
+          console.log('Check sleeping on HAI');
+          if (!checkFiSleep()) return;
+          break;
+        case 'sp':
+          console.log('Check sleeping on SP');
+          if (!checkFiSleep()) return;
+          break;
+        default:
+          return;
+      }
+      console.plog('goToBed:', schedule);
+      const isPreSleep = enviromentSchedules.isPreSleep;
+      const sleepTrap = enviromentSchedules['sleepTrap'];
+      if (sleepTrap) armAllTraps(...sleepTrap);
+      goToBed(schedule, isPreSleep);
+    },
+    super_brie_factory: (enviromentSchedules) => {
+      logging(`SB factory sleep`);
+      const quest = user.quests.QuestSuperBrieFactory;
+      const atts = quest.factory_atts;
+      const items = quest.items;
+      if (atts.hunts_remaining < 5 + enviromentSchedules.friendHunts) {
+        console.log('boss coming, not sleep');
+        return;
+      }
+      const schedule = matchSchedules(enviromentSchedules);
+      if (!schedule) return;
+      const isPreSleep = enviromentSchedules.isPreSleep;
+      // if arming Coggy Colby and quantity less than 5 + enviromentSchedules.friendHunts, change to SB
+      if (
+        parseQuantity(items.coggy_colby_cheese.quantity) <
+        5 + enviromentSchedules.friendHunts
+      )
+        hg.utils.TrapControl.setBait('super_brie_cheese').go(() => {});
+      goToBed(schedule, isPreSleep);
+    },
+    rift_bristle_woods: (enviromentSchedules) => {
+      console.log('bwRift sleep');
+      const quest = user.quests.QuestRiftBristleWoods;
+      console.log(`quest.progress_percent: ${quest.progress_percent}`);
+      if (parseInt(quest.progress_percent) < 90) {
+        console.log('progress lower than 90, return!!');
+        return;
+      }
+      const ignoredChamberNames = [
+        'Guard Barracks',
+        'Acolyte',
+        'Hidden Treasury',
+        'Lucky Tower'
+      ];
+      const chamberName = trimToEmpty(quest.chamber_name);
+      /* if (ignoredChamberNames.indexOf(chamberName) > -1)
     if (
       ignoredChamberNames.indexOf('Acolyte') < 0 ||
       (quest.obelisk_percent > 45 && quest.obelisk_percent < 100) ||
       (quest.obelisk_percent == 100 && quest.acolyte_sand < 13)
     )
       return; */
-    if (ignoredChamberNames.indexOf(chamberName) > -1)
-      if (
-        ignoredChamberNames.indexOf('Acolyte') < 0 ||
-        (quest.obelisk_percent > 65 && quest.obelisk_percent < 100) ||
-        (quest.obelisk_percent == 100 && quest.acolyte_sand < 7)
-      )
-        return;
-    const schedule = matchSchedules(enviromentSchedules);
-    if (!schedule) return;
-    console.log('For sleep:', schedule);
-    if ('Runic Laboratory' == chamberName) {
-      // ancient string = 2343
-      if (parseQuantity(user.bait_item_id) != 2343)
-        hg.utils.TrapControl.setBait('ancient_string_cheese').go(() => {});
+      if (ignoredChamberNames.indexOf(chamberName) > -1)
+        if (
+          ignoredChamberNames.indexOf('Acolyte') < 0 ||
+          (quest.obelisk_percent > 65 && quest.obelisk_percent < 100) ||
+          (quest.obelisk_percent == 100 && quest.acolyte_sand < 7)
+        )
+          return;
+      const schedule = matchSchedules(enviromentSchedules);
+      if (!schedule) return;
+      console.log('For sleep:', schedule);
+      if ('Runic Laboratory' == chamberName) {
+        // ancient string = 2343
+        if (parseQuantity(user.bait_item_id) != 2343)
+          hg.utils.TrapControl.setBait('ancient_string_cheese').go(() => {});
+      }
+      const isPreSleep = enviromentSchedules.isPreSleep;
+      const sleepTrap = enviromentSchedules['sleepTrap'];
+      if (sleepTrap) armAllTraps(...sleepTrap);
+      goToBed(schedule, isPreSleep);
     }
-    const isPreSleep = enviromentSchedules.isPreSleep;
-    const sleepTrap = enviromentSchedules['sleepTrap'];
-    if (sleepTrap) armAllTraps(...sleepTrap);
-    goToBed(schedule, isPreSleep);
-  }
+  };
   // goToBed([9.07, 5.45, 1]);
   // goToBed([9.07, '1.04+-2', 6]);
   function goToBed(schedule, isPreSleep) {
