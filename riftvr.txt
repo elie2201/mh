@@ -4,7 +4,7 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = getEnvironmentType();
   if (environmentType != targetEnvironmentType) return;
-  logging('valourRift_0.3.17.4.4');
+  logging('valourRift_0.3.17.4.5');
   const allAugmentations = {
     sigilHunter: 'hr',
     secretResearch: 'sr',
@@ -154,30 +154,36 @@ function valourRift() {
   };
   logging('items', items);
   const autoRetreat = () => {
+    const noRetreatHead = `autoRetreat: No, in floor ${floor}, hunts left:`;
+    const yesRetreatHead = `autoRetreat: Yes, in floor ${floor}, hunts left:`;
     if (floor % 8 > 0) {
-      if (floor % 8 === 1) console.plog(`autoRetreat: No, in floor ${floor}`);
+      if (floor % 8 === 1) console.plog(`${noRetreatHead} ${huntsLeft}`);
       return;
     }
     if (quest.is_eclipse_mode) {
       if (huntsLeft < settings.eclipseUUNeedHunts) {
-        console.plog(
-          `autoRetreat: Yes, in floor ${floor}, left: ${huntsLeft} < ${settings.eclipseUUNeedHunts}`
-        );
-        settings.forceRetreatFloor = floor;
+        if (localStorage.displayedMessage.indexOf(noRetreatHead) < 0) {
+          storeError(
+            `${yesRetreatHead} ${huntsLeft} < ${settings.eclipseUUNeedHunts}`
+          );
+          settings.forceRetreatFloor = floor;
+        }
       } else {
         storeError(
-          `autoRetreat: No, in floor ${floor}, left: ${huntsLeft} >= ${settings.eclipseUUNeedHunts}`
+          `${noRetreatHead} ${huntsLeft} >= ${settings.eclipseUUNeedHunts}`
         );
       }
     } else {
       if (huntsLeft < settings.eclipseNeedHunts) {
-        console.plog(
-          `autoRetreat: Yes, in floor ${floor}, left: ${huntsLeft} < ${settings.eclipseNeedHunts}`
-        );
-        settings.forceRetreatFloor = floor;
+        if (localStorage.displayedMessage.indexOf(noRetreatHead) < 0) {
+          storeError(
+            `${yesRetreatHead} ${huntsLeft} < ${settings.eclipseNeedHunts}`
+          );
+          settings.forceRetreatFloor = floor;
+        }
       } else {
         storeError(
-          `autoRetreat: No, in floor ${floor}, left: ${huntsLeft} >= ${settings.eclipseNeedHunts}`
+          `${noRetreatHead} ${huntsLeft} >= ${settings.eclipseNeedHunts}`
         );
       }
     }
