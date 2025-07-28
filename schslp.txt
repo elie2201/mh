@@ -3,14 +3,14 @@
 setTimeout(() => { scheduledSleep(); }, getRandomInteger(60000, 120000));
 function scheduledSleep() {
   const environmentType = getEnvironmentType();
-  logging(`scheduledSleep_1.0.3.5.3 in ${environmentType}`);
+  logging(`scheduledSleep_1.0.3.6.4 in ${environmentType}`);
   const keys = {
-    sbFactory: 'super_brie_factory',
     fw: 'desert_warpath',
     laby: 'labyrinth',
     zokor: 'ancient_city',
-    bwRift: 'rift_bristle_woods',
-    fi: 'floating_islands'
+    fi: 'floating_islands',
+    sbFactory: 'super_brie_factory',
+    bwRift: 'rift_bristle_woods'
   };
   // prettier-ignore
   // [sleepAt, sleepForExpr, segments]
@@ -62,13 +62,13 @@ function scheduledSleep() {
       labySleep(enviromentSchedules);
       break;
     case keys.fi:
-      fiSleep(enviromentSchedules);
-      break;
-    case keys.bwRift:
-      bwRiftSleep(enviromentSchedules);
+      floatingIslandsSleep(enviromentSchedules);
       break;
     case keys.sbFactory:
       sbFactorySleep(enviromentSchedules);
+      break;
+    case keys.bwRift:
+      bwRiftSleep(enviromentSchedules);
       break;
     default:
       defaultAction(enviromentSchedules);
@@ -221,7 +221,7 @@ function toHdotMexpression(now) {
   console.log(`Now expressed in hour.minutes format: ${hm}`);
   return hm;
 }
-function fiSleep(enviromentSchedules) {
+function floatingIslandsSleep(enviromentSchedules) {
   if (!enviromentSchedules)
     enviromentSchedules = { weekDefault: [[9.07, 5.45, 1]] };
   const quest = user.quests.QuestFloatingIslands;
@@ -229,6 +229,12 @@ function fiSleep(enviromentSchedules) {
   const isLai = atts.is_low_tier_island;
   const isHai = atts.is_high_tier_island;
   const isSp = atts.is_vault_island;
+  const env = user.enviroment_atts;
+  const items = env.items;
+  const cloudCurd = items.cloud_curd_crafting_item;
+  const ccQty = parseQuantity(cloudCurd.quantity);
+  const cloudCheese = items.sky_cheese;
+  const cccQty = parseQuantity(cloudCheese.quantity);
   const settings = getStorageToObject('floating_islands');
   // exclude not sleep
   if (quest.jet_stream_active && !settings.isSleepInCJS) {
@@ -259,7 +265,7 @@ function fiSleep(enviromentSchedules) {
       return !isOkSleep;
     }
     if (huntsLeft < sleepHunts) {
-      console.log('Not sleep when approaching boss');
+      console.log('Not sleep at end of island');
       return !isOkSleep;
     }
     const isHuntToEnd =
@@ -278,8 +284,9 @@ function fiSleep(enviromentSchedules) {
   const altitude = fiAltitude(quest);
   switch (altitude) {
     case 'launch':
-      console.log('Not sleep on launch');
-      return;
+      console.log('Not sleep on launch except low CCC');
+      if (ccQty + cccQty > 75) return;
+      break;
     case 'lai':
       console.log('Check sleeping on LAI');
       if (!checkFiSleep()) return;
