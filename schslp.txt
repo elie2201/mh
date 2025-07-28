@@ -3,7 +3,7 @@
 setTimeout(() => { scheduledSleep(); }, getRandomInteger(60000, 120000));
 function scheduledSleep() {
   const environmentType = getEnvironmentType();
-  logging(`scheduledSleep_1.0.6.6.4 in ${environmentType}`);
+  logging(`scheduledSleep_1.0.7.6.4 in ${environmentType}`);
   const keys = {
     fw: 'desert_warpath',
     laby: 'labyrinth',
@@ -53,28 +53,28 @@ function scheduledSleep() {
   };
   switch (environmentType) {
     case keys.fw:
-      fieryWarpathSleep(enviromentSchedules);
+      fieryWarpath(enviromentSchedules);
       break;
     case keys.laby:
-      labyrinthSleep(enviromentSchedules);
+      labyrinth(enviromentSchedules);
       break;
     case keys.zokor:
-      labyrinthSleep(enviromentSchedules);
+      labyrinth(enviromentSchedules);
       break;
     case keys.fi:
-      floatingIslandsSleep(enviromentSchedules);
+      floatingIslands(enviromentSchedules);
       break;
     case keys.sbFactory:
-      sbFactorySleep(enviromentSchedules);
+      sbFactory(enviromentSchedules);
       break;
     case keys.bwRift:
-      bwRiftSleep(enviromentSchedules);
+      bwRift(enviromentSchedules);
       break;
     default:
       defaultAction(enviromentSchedules);
       break;
   }
-  function fieryWarpathSleep(enviromentSchedules) {
+  function fieryWarpath(enviromentSchedules) {
     logging('fiery warpath sleep');
     const quest = user.viewing_atts.desert_warpath;
     let streak = parseInt(quest.streak_quantity);
@@ -99,13 +99,13 @@ function scheduledSleep() {
     if (sleepTrap) armAllTraps(...sleepTrap);
     goToBed(schedule, isPreSleep);
   }
-  function labyrinthSleep(enviromentSchedules) {
+  function labyrinth(enviromentSchedules) {
     if (!enviromentSchedules)
       enviromentSchedules = { weekDefault: [[9.07, 3.5, 2]] };
     const schedule = matchSchedules(enviromentSchedules);
     if (!schedule) return;
     const sleepForHm = getSleepForHm(schedule);
-    if (!isEnoughSleepLaby(sleepForHm, enviromentSchedules.friendHunts)) {
+    if (!isEnoughSleep(sleepForHm, enviromentSchedules.friendHunts)) {
       console.log('Not enough tiles for sleep, keep hunting!!');
       return;
     }
@@ -113,32 +113,31 @@ function scheduledSleep() {
     const sleepTrap = enviromentSchedules['sleepTrap'];
     if (sleepTrap) armAllTraps(...sleepTrap);
     goToBed(schedule, isPreSleep);
+    function isEnoughSleep(sleepForHm, friendHunts) {
+      if (user.quests.QuestAncientCity) {
+        const quest = user.quests.QuestAncientCity;
+        const remaining = quest.remaining;
+        const ftc = quest.stealth_loss_ftc;
+        const hunts = Math.floor(remaining / ftc);
+        return hunts >= Math.ceil(sleepForHm + friendHunts);
+      }
+      const quest = user.quests.QuestLabyrinth;
+      if (quest.status != 'hallway') return true;
+      const hallwayLength = quest.hallway_length;
+      const tiles = quest.tiles;
+      let activeTileIndex = 0;
+      for (let i = 0; i < tiles.length; i++) {
+        activeTileIndex = i;
+        const tile = tiles[i];
+        if (tile.status == 'active') break;
+      }
+      const needTiles = Math.ceil(sleepForHm + friendHunts);
+      const isEnoughTiles = needTiles <= hallwayLength - activeTileIndex;
+      console.log(hallwayLength, activeTileIndex, needTiles, isEnoughTiles);
+      return isEnoughTiles;
+    }
   }
-  // prettier-ignore
-  function isEnoughSleepLaby(sleepForHm, friendHunts) {
-  if (user.quests.QuestAncientCity) {
-    const quest = user.quests.QuestAncientCity;
-    const remaining = quest.remaining;
-    const ftc = quest.stealth_loss_ftc;
-    const hunts = Math.floor(remaining / ftc);
-    return hunts >= Math.ceil(sleepForHm + friendHunts);
-  }
-  const quest = user.quests.QuestLabyrinth;
-  if (quest.status != 'hallway') return true;
-  const hallwayLength = quest.hallway_length;
-  const tiles = quest.tiles;
-  let activeTileIndex = 0;
-  for (let i = 0; i < tiles.length; i++) {
-    activeTileIndex = i;
-    const tile = tiles[i];
-    if (tile.status == 'active') break;
-  }
-  const needTiles = Math.ceil(sleepForHm + friendHunts);
-  const isEnoughTiles = needTiles <= hallwayLength - activeTileIndex;
-  console.log(hallwayLength, activeTileIndex, needTiles, isEnoughTiles);
-  return isEnoughTiles;
-}
-  function floatingIslandsSleep(enviromentSchedules) {
+  function floatingIslands(enviromentSchedules) {
     if (!enviromentSchedules)
       enviromentSchedules = { weekDefault: [[9.07, 5.45, 1]] };
     const quest = user.quests.QuestFloatingIslands;
@@ -165,15 +164,14 @@ function scheduledSleep() {
       const isOkSleep = true;
       const hasDefeatedEnemy = atts.has_defeated_enemy;
       const hasTreasureTrove = atts.has_treasure_trove;
-      const speed = floatingIslandsSpeed(quest);
+      const speed = getSpeed(quest);
       const stepsToBoss = atts.enemy_encounter_hunts_remaining; // is 0 if encountered boss
       const huntsToBoss = Math.ceil(stepsToBoss / speed);
       const stepsToTrove = 40 - atts.island_progress;
       const huntsToTrove = Math.ceil(stepsToTrove / speed);
       const huntsLeft = atts.hunts_remaining;
-      const sleepHunts = Math.ceil(
-        sleepForHm + enviromentSchedules.friendHunts
-      );
+      const friendHunts = enviromentSchedules.friendHunts;
+      const sleepHunts = Math.ceil(sleepForHm + friendHunts);
       console.log(
         `speed: ${speed}, steps to Boss: ${stepsToBoss}, hunts to Boss: ${huntsToBoss}`,
         `, steps to Trove: ${stepsToTrove}, hunts to Trove: ${huntsToTrove}`,
@@ -200,7 +198,7 @@ function scheduledSleep() {
       console.log('It is ok to sleep');
       return isOkSleep;
     };
-    const altitude = floatingIslandsAltitude(quest);
+    const altitude = getAltitude(quest);
     switch (altitude) {
       case 'launch':
         console.log('Not sleep on launch except low CCC');
@@ -226,35 +224,35 @@ function scheduledSleep() {
     const sleepTrap = enviromentSchedules['sleepTrap'];
     if (sleepTrap) armAllTraps(...sleepTrap);
     goToBed(schedule, isPreSleep);
-  }
-  function floatingIslandsSpeed(quest) {
-    if (!quest) quest = user.quests.QuestFloatingIslands;
-    const atts = quest.hunting_site_atts;
-    let speed = 1;
-    if (quest.jet_stream_active) speed += 1;
-    if (atts.is_fuel_enabled) speed += 1;
-    if (isShrineActive(quest)) speed += 1;
-    return speed;
-  }
-  function floatingIslandsAltitude(quest) {
-    const q = quest ? quest : user.quests.QuestFloatingIslands;
-    const atts = q.hunting_site_atts;
-    if (atts.is_low_tier_island) return 'lai';
-    else if (atts.is_high_tier_island) return 'hai';
-    else if (atts.is_vault_island) return 'sp';
-    return 'launch';
-  }
-  function isShrineActive(quest) {
-    const q = quest ? quest : user.quests.QuestFloatingIslands;
-    const activeMods = q.hunting_site_atts.activated_island_mod_types;
-    for (let i = 0; i < activeMods.length; i++) {
-      const mod = activeMods[i];
-      if (mod.indexOf('shrine') > -1 || mod.indexOf('paragon_cache') > -1)
-        return true;
+    function getSpeed(quest) {
+      if (!quest) quest = user.quests.QuestFloatingIslands;
+      const atts = quest.hunting_site_atts;
+      let speed = 1;
+      if (quest.jet_stream_active) speed += 1;
+      if (atts.is_fuel_enabled) speed += 1;
+      if (isShrineActive(quest)) speed += 1;
+      return speed;
     }
-    return false;
+    function isShrineActive(quest) {
+      const q = quest ? quest : user.quests.QuestFloatingIslands;
+      const activeMods = q.hunting_site_atts.activated_island_mod_types;
+      for (let i = 0; i < activeMods.length; i++) {
+        const mod = activeMods[i];
+        if (mod.indexOf('shrine') > -1 || mod.indexOf('paragon_cache') > -1)
+          return true;
+      }
+      return false;
+    }
+    function getAltitude(quest) {
+      const q = quest ? quest : user.quests.QuestFloatingIslands;
+      const atts = q.hunting_site_atts;
+      if (atts.is_low_tier_island) return 'lai';
+      else if (atts.is_high_tier_island) return 'hai';
+      else if (atts.is_vault_island) return 'sp';
+      return 'launch';
+    }
   }
-  function sbFactorySleep(enviromentSchedules) {
+  function sbFactory(enviromentSchedules) {
     logging(`SB factory sleep`);
     const quest = user.quests.QuestSuperBrieFactory;
     const atts = quest.factory_atts;
@@ -274,7 +272,7 @@ function scheduledSleep() {
       hg.utils.TrapControl.setBait('super_brie_cheese').go(() => {});
     goToBed(schedule, isPreSleep);
   }
-  function bwRiftSleep(enviromentSchedules) {
+  function bwRift(enviromentSchedules) {
     console.log('bwRift sleep');
     const quest = user.quests.QuestRiftBristleWoods;
     console.log(`quest.progress_percent: ${quest.progress_percent}`);
