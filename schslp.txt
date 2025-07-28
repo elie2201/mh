@@ -3,7 +3,7 @@
 setTimeout(() => { scheduledSleep(); }, getRandomInteger(60000, 120000));
 function scheduledSleep() {
   const environmentType = getEnvironmentType();
-  logging(`scheduledSleep_1.0.5.6.4 in ${environmentType}`);
+  logging(`scheduledSleep_1.0.6.6.4 in ${environmentType}`);
   const keys = {
     fw: 'desert_warpath',
     laby: 'labyrinth',
@@ -73,152 +73,6 @@ function scheduledSleep() {
     default:
       defaultAction(enviromentSchedules);
       break;
-  }
-  // goToBed([9.07, 5.45, 1]);
-  // goToBed([9.07, '1.04+-2', 6]);
-  function goToBed(schedule, isPreSleep) {
-    const sleepForArr = getSleepForArray(schedule);
-    const sleepForHours = sleepForArr[0];
-    const sleepForMinutes = sleepForArr[1];
-    const deviation = sleepForArr[2];
-    const duration =
-      Math.floor(sleepForHours * 3600000 + sleepForMinutes * 60000) +
-      (deviation ? getRandomInteger(-deviation * 60000, deviation * 60000) : 0);
-    const storedRoutine = isPreSleep ? localStorage.currentRoutine : 'toRest';
-    let currentRoutine = 'toRest';
-    let sleepHref =
-      'https://elie2201.github.io/mh/mhReloader.html?until=0&duration=' +
-      getRandomInteger(480000, 720000) +
-      '&fixed=true'; // pre-sleep url
-    switch (storedRoutine) {
-      case 'toRest':
-        // to Resting
-        currentRoutine = 'Resting';
-        sleepHref =
-          'https://elie2201.github.io/mh/mhReloader.html?until=0&duration=' +
-          duration +
-          (deviation || deviation === 0 ? '&fixed=true' : ''); // sleep url
-        break;
-    }
-    setTimeout(() => {
-      const currentRoutineKey = 'currentRoutine';
-      window.localStorage.setItem(currentRoutineKey, currentRoutine);
-      setTimeout(() => {
-        window.location.href = sleepHref;
-      }, 3000);
-    }, 20000);
-  }
-  // matchSchedules({ weekDefault: [[9.07, 5.45, 1]] })
-  // matchSchedules({ weekDefault: [[9.07, '1.04+-2', 6]] })
-  /** matching enviromentSchedules by day and then matching daySchedules by time  */
-  function matchSchedules(enviromentSchedules) {
-    const now = new Date();
-    // 剛過 00:00:00如果 shift出昨天,會造成 origHm < 今天的 wakeup但 nowHm > 昨天的 sleepAt的 bug
-    // const origHm = toHdotMexpression(now);
-    const nowHm = toHdotMexpression(
-      new Date(now.getTime() + getRandomInteger(-900000, 900000))
-    );
-    const day = now.getDay();
-    const daySchedules = enviromentSchedules[day];
-    const schedules = daySchedules
-      ? daySchedules
-      : enviromentSchedules['weekDefault'];
-    for (let i = 0; i < schedules.length; i++) {
-      // schedule [sleepAt, sleepForExpr, segments]
-      const schedule = schedules[i];
-      const sleepForArr = getSleepForArray(schedule); // [hours, minutes, deviation]
-      if (!sleepForArr[0] && !sleepForArr[1]) {
-        console.log(
-          `Not this. sleep for ${sleepForArr[0]} hours ${sleepForArr[1]} minutes at ${schedule[0]}`
-        );
-        continue;
-      }
-      const segments = schedule[2] ? schedule[2] : 1;
-      const sleepAtArr = getSleepAtArray(schedule); // [hours, minutes]
-      const sleepAt = sleepAtArr[0] + sleepAtArr[1] / 100;
-      const wakeUpAtArr = getWakeUpAt(sleepAtArr, sleepForArr, segments);
-      const wakeUpAt = wakeUpAtArr[0] + wakeUpAtArr[1] / 100;
-      // TODO 目前不處理 wakeUpAt超過 24:00:00問題,自行切開設定
-      if (nowHm > wakeUpAt) {
-        console.log(`Waked up. hm(${nowHm}) > wakeUpAt(${wakeUpAt})`, schedule);
-        continue;
-      }
-      if (nowHm < sleepAt) {
-        console.log(`Not this. hm(${nowHm}) < sleepAt(${sleepAt})`, schedule);
-        continue;
-      }
-      console.log(
-        `It's this: sleepAt(${sleepAt}) < hm(${nowHm}) < wakeUpAt(${wakeUpAt})`,
-        schedule
-      );
-      return schedule;
-    }
-    return null;
-  }
-  // getWakeUpAt([1, 7], [1, -120, 10], 2);
-  /** calculate wakeUpAt as [hours, minutes] */
-  function getWakeUpAt(sleepAtHmArr, sleepForHmArr, segments) {
-    console.log(sleepAtHmArr, sleepForHmArr, segments);
-    let hours = sleepAtHmArr[0] + sleepForHmArr[0] * segments;
-    // sleep結束前 40分鐘視為 wakeup
-    let minutes = sleepAtHmArr[1] + sleepForHmArr[1] * segments - 40;
-    while (minutes < 0) {
-      hours -= 1;
-      minutes += 60;
-    }
-    hours += parseInt(minutes / 60); // TODO 極端情形下可能出現負數 hours,暫不處理
-    return [hours < 0 ? 0 : hours, minutes % 60];
-  }
-  // getSleepForHm([9.07, 5.45, 1]);
-  // getSleepForHm([9.07, '1.04+-2', 1]);
-  function getSleepForHm(schedule) {
-    const sleepForArray = getSleepForArray(schedule);
-    return sleepForArray[0] + sleepForArray[1] / 100;
-  }
-  // getSleepAtArray([9.07, 5.45, 1]);
-  // getSleepAtArray([9.07, '1.04+-2', 1]);
-  /** get sleepAt as [hours, minutes] */
-  function getSleepAtArray(schedule) {
-    const sleepAtExpr = schedule[0] + '';
-    console.log(`Sleep at ${sleepAtExpr}`);
-    const sleepAtArr = splitHourMinutes(sleepAtExpr); // [hours, minutes]
-    console.log('sleepAtArray: ', sleepAtArr);
-    return sleepAtArr;
-  }
-  // getSleepForArray([9.07, 5.45, 1]);
-  // getSleepForArray([9.07, '1.04+-2', 1]);
-  /** get sleepFor as [hours, minutes, deviation] */
-  function getSleepForArray(schedule) {
-    const sleepForExpr = schedule[1] + '';
-    console.log(`Sleep for ${sleepForExpr}`);
-    const sleepForExprArr = parseSleepFor(sleepForExpr); // [hours.minutes, deviation]
-    const sleepForArr = splitHourMinutes(sleepForExprArr[0]);
-    sleepForArr.push(sleepForExprArr[1]); // [hours, minutes, deviation]
-    console.log('sleepForArr: ', sleepForArr);
-    return sleepForArr;
-  }
-  /** split argument by +- and return split result */
-  function parseSleepFor(sleepForExpr) {
-    const s1Arr = (sleepForExpr + '').split('+-');
-    return [parseFloat(s1Arr[0]), parseFloat(s1Arr[1])];
-  }
-  // splitHourMinutes(9.67); // => [9, 7]
-  function splitHourMinutes(hmExpr) {
-    const hm = (hmExpr + '').split('.');
-    const sleepForHours = parseInt(hm[0]);
-    const sleepForMunites = hm[1]
-      ? Math.floor(parseFloat('.' + hm[1]) * 100) % 60
-      : 0;
-    return [sleepForHours, sleepForMunites];
-  }
-  // toHdotMexpression(new Date());
-  // toHdotMexpression(new Date(new Date('2025-05-04T01:52:00').getTime() + getRandomInteger(-900000, 900000)));
-  /** Express now time like 14(o'clock).34(minutes) */
-  function toHdotMexpression(now) {
-    console.log(`toHdotMexpression(${now})`);
-    const hm = now.getHours() + now.getMinutes() / 100;
-    console.log(`Now expressed in hour.minutes format: ${hm}`);
-    return hm;
   }
   function fieryWarpathSleep(enviromentSchedules) {
     logging('fiery warpath sleep');
@@ -461,6 +315,152 @@ function scheduledSleep() {
     const sleepTrap = enviromentSchedules['sleepTrap'];
     if (sleepTrap) armAllTraps(...sleepTrap);
     goToBed(schedule, isPreSleep);
+  }
+  // goToBed([9.07, 5.45, 1]);
+  // goToBed([9.07, '1.04+-2', 6]);
+  function goToBed(schedule, isPreSleep) {
+    const sleepForArr = getSleepForArray(schedule);
+    const sleepForHours = sleepForArr[0];
+    const sleepForMinutes = sleepForArr[1];
+    const deviation = sleepForArr[2];
+    const duration =
+      Math.floor(sleepForHours * 3600000 + sleepForMinutes * 60000) +
+      (deviation ? getRandomInteger(-deviation * 60000, deviation * 60000) : 0);
+    const storedRoutine = isPreSleep ? localStorage.currentRoutine : 'toRest';
+    let currentRoutine = 'toRest';
+    let sleepHref =
+      'https://elie2201.github.io/mh/mhReloader.html?until=0&duration=' +
+      getRandomInteger(480000, 720000) +
+      '&fixed=true'; // pre-sleep url
+    switch (storedRoutine) {
+      case 'toRest':
+        // to Resting
+        currentRoutine = 'Resting';
+        sleepHref =
+          'https://elie2201.github.io/mh/mhReloader.html?until=0&duration=' +
+          duration +
+          (deviation || deviation === 0 ? '&fixed=true' : ''); // sleep url
+        break;
+    }
+    setTimeout(() => {
+      const currentRoutineKey = 'currentRoutine';
+      window.localStorage.setItem(currentRoutineKey, currentRoutine);
+      setTimeout(() => {
+        window.location.href = sleepHref;
+      }, 3000);
+    }, 20000);
+  }
+  // matchSchedules({ weekDefault: [[9.07, 5.45, 1]] })
+  // matchSchedules({ weekDefault: [[9.07, '1.04+-2', 6]] })
+  /** matching enviromentSchedules by day and then matching daySchedules by time  */
+  function matchSchedules(enviromentSchedules) {
+    const now = new Date();
+    // 剛過 00:00:00如果 shift出昨天,會造成 origHm < 今天的 wakeup但 nowHm > 昨天的 sleepAt的 bug
+    // const origHm = toHdotMexpression(now);
+    const nowHm = toHdotMexpression(
+      new Date(now.getTime() + getRandomInteger(-900000, 900000))
+    );
+    const day = now.getDay();
+    const daySchedules = enviromentSchedules[day];
+    const schedules = daySchedules
+      ? daySchedules
+      : enviromentSchedules['weekDefault'];
+    for (let i = 0; i < schedules.length; i++) {
+      // schedule [sleepAt, sleepForExpr, segments]
+      const schedule = schedules[i];
+      const sleepForArr = getSleepForArray(schedule); // [hours, minutes, deviation]
+      if (!sleepForArr[0] && !sleepForArr[1]) {
+        console.log(
+          `Not this. sleep for ${sleepForArr[0]} hours ${sleepForArr[1]} minutes at ${schedule[0]}`
+        );
+        continue;
+      }
+      const segments = schedule[2] ? schedule[2] : 1;
+      const sleepAtArr = getSleepAtArray(schedule); // [hours, minutes]
+      const sleepAt = sleepAtArr[0] + sleepAtArr[1] / 100;
+      const wakeUpAtArr = getWakeUpAt(sleepAtArr, sleepForArr, segments);
+      const wakeUpAt = wakeUpAtArr[0] + wakeUpAtArr[1] / 100;
+      // TODO 目前不處理 wakeUpAt超過 24:00:00問題,自行切開設定
+      if (nowHm > wakeUpAt) {
+        console.log(`Waked up. hm(${nowHm}) > wakeUpAt(${wakeUpAt})`, schedule);
+        continue;
+      }
+      if (nowHm < sleepAt) {
+        console.log(`Not this. hm(${nowHm}) < sleepAt(${sleepAt})`, schedule);
+        continue;
+      }
+      console.log(
+        `It's this: sleepAt(${sleepAt}) < hm(${nowHm}) < wakeUpAt(${wakeUpAt})`,
+        schedule
+      );
+      return schedule;
+    }
+    return null;
+  }
+  // getWakeUpAt([1, 7], [1, -120, 10], 2);
+  /** calculate wakeUpAt as [hours, minutes] */
+  function getWakeUpAt(sleepAtHmArr, sleepForHmArr, segments) {
+    console.log(sleepAtHmArr, sleepForHmArr, segments);
+    let hours = sleepAtHmArr[0] + sleepForHmArr[0] * segments;
+    // sleep結束前 40分鐘視為 wakeup
+    let minutes = sleepAtHmArr[1] + sleepForHmArr[1] * segments - 40;
+    while (minutes < 0) {
+      hours -= 1;
+      minutes += 60;
+    }
+    hours += parseInt(minutes / 60); // TODO 極端情形下可能出現負數 hours,暫不處理
+    return [hours < 0 ? 0 : hours, minutes % 60];
+  }
+  // getSleepForHm([9.07, 5.45, 1]);
+  // getSleepForHm([9.07, '1.04+-2', 1]);
+  function getSleepForHm(schedule) {
+    const sleepForArray = getSleepForArray(schedule);
+    return sleepForArray[0] + sleepForArray[1] / 100;
+  }
+  // getSleepAtArray([9.07, 5.45, 1]);
+  // getSleepAtArray([9.07, '1.04+-2', 1]);
+  /** get sleepAt as [hours, minutes] */
+  function getSleepAtArray(schedule) {
+    const sleepAtExpr = schedule[0] + '';
+    console.log(`Sleep at ${sleepAtExpr}`);
+    const sleepAtArr = splitHourMinutes(sleepAtExpr); // [hours, minutes]
+    console.log('sleepAtArray: ', sleepAtArr);
+    return sleepAtArr;
+  }
+  // getSleepForArray([9.07, 5.45, 1]);
+  // getSleepForArray([9.07, '1.04+-2', 1]);
+  /** get sleepFor as [hours, minutes, deviation] */
+  function getSleepForArray(schedule) {
+    const sleepForExpr = schedule[1] + '';
+    console.log(`Sleep for ${sleepForExpr}`);
+    const sleepForExprArr = parseSleepFor(sleepForExpr); // [hours.minutes, deviation]
+    const sleepForArr = splitHourMinutes(sleepForExprArr[0]);
+    sleepForArr.push(sleepForExprArr[1]); // [hours, minutes, deviation]
+    console.log('sleepForArr: ', sleepForArr);
+    return sleepForArr;
+  }
+  /** split argument by +- and return split result */
+  function parseSleepFor(sleepForExpr) {
+    const s1Arr = (sleepForExpr + '').split('+-');
+    return [parseFloat(s1Arr[0]), parseFloat(s1Arr[1])];
+  }
+  // splitHourMinutes(9.67); // => [9, 7]
+  function splitHourMinutes(hmExpr) {
+    const hm = (hmExpr + '').split('.');
+    const sleepForHours = parseInt(hm[0]);
+    const sleepForMunites = hm[1]
+      ? Math.floor(parseFloat('.' + hm[1]) * 100) % 60
+      : 0;
+    return [sleepForHours, sleepForMunites];
+  }
+  // toHdotMexpression(new Date());
+  // toHdotMexpression(new Date(new Date('2025-05-04T01:52:00').getTime() + getRandomInteger(-900000, 900000)));
+  /** Express now time like 14(o'clock).34(minutes) */
+  function toHdotMexpression(now) {
+    console.log(`toHdotMexpression(${now})`);
+    const hm = now.getHours() + now.getMinutes() / 100;
+    console.log(`Now expressed in hour.minutes format: ${hm}`);
+    return hm;
   }
 }
 // End scheduledSleep
