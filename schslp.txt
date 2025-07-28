@@ -3,7 +3,7 @@
 setTimeout(() => { scheduledSleep(); }, getRandomInteger(60000, 120000));
 function scheduledSleep() {
   const environmentType = getEnvironmentType();
-  logging(`scheduledSleep_1.0.10.6.5 in ${environmentType}`);
+  logging(`scheduledSleep_1.0.11.6.5 in ${environmentType}`);
   const storageKey = 'scheduledSleep';
   const defaultSleep = 'defaultSleep';
   // prettier-ignore
@@ -413,7 +413,7 @@ function scheduledSleep() {
   }
 }
 const floatingIslandsUtility = {
-  getSpeed: (quest) => {
+  getSpeed(quest) {
     if (!quest) quest = user.quests.QuestFloatingIslands;
     const atts = quest.hunting_site_atts;
     let speed = 1;
@@ -422,7 +422,7 @@ const floatingIslandsUtility = {
     if (floatingIslandsUtility.isShrineActive(quest)) speed += 1;
     return speed;
   },
-  isShrineActive: (quest) => {
+  isShrineActive(quest) {
     const q = quest ? quest : user.quests.QuestFloatingIslands;
     const activeMods = q.hunting_site_atts.activated_island_mod_types;
     for (let i = 0; i < activeMods.length; i++) {
@@ -432,7 +432,7 @@ const floatingIslandsUtility = {
     }
     return false;
   },
-  getAltitude: (quest) => {
+  getAltitude(quest) {
     const q = quest ? quest : user.quests.QuestFloatingIslands;
     const atts = q.hunting_site_atts;
     if (atts.is_low_tier_island) return 'lai';
