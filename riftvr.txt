@@ -4,7 +4,7 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = getEnvironmentType();
   if (environmentType != targetEnvironmentType) return;
-  logging('valourRift_0.4.19.6.8');
+  logging('valourRift_0.4.19.6.9');
   const valourRiftUtility = {
     augmentations: {
       sigilHunter: { type: 'hr', need: 'gold', quantity: 250000 },
@@ -189,7 +189,7 @@ function valourRift() {
     const yesRetreatHead = `autoRetreat: Yes, in floor ${floor}, hunts left:`;
     if (floor % 8 > 0) {
       if (floor % 8 === 1)
-        console.plog(`${noRetreatHead} ${huntsLeft}, CF: ${items.cf}`);
+        console.plog(`${noRetreatHead} ${huntsLeft}, CF: ${items.cf.quantity}`);
       return;
     }
     console.plog(`CF: ${items.cf.quantity}`);
