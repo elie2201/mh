@@ -4,7 +4,7 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = getEnvironmentType();
   if (environmentType != targetEnvironmentType) return;
-  logging('valourRift_0.4.19.6.9');
+  logging('valourRift_0.4.19.7.9');
   const valourRiftUtility = {
     augmentations: {
       sigilHunter: { type: 'hr', need: 'gold', quantity: 250000 },
@@ -321,8 +321,6 @@ function valourRift() {
     }
   let trap = settings.trap[trapKey][floorKey];
   if (isAtEclipse) trap = settings.trap[trapKey].eclipse;
-  /* if (isAtEclipse || trap[4]) toggleChampionFire(true);
-  else toggleChampionFire(false); */
   valourRiftUtility.toggleChampionFire(autoOffChampionFire(trap[4]));
   setTimeout(() => {
     litCandle(trap[5]);
@@ -337,7 +335,7 @@ function valourRift() {
     // prettier-ignore
     const upgradePlans = [
       [1, 1, 1], [2, 1, 1], [2, 2, 1], [3, 2, 1], [3, 3, 1], [3, 3, 2],
-      [4, 3, 2], [5, 3, 2], [5, 3, 3], [5, 4, 3], [5, 4, 4], [6, 4, 4],
+      [4, 3, 2], [5, 3, 2], [5, 4, 2], [5, 4, 3], [5, 5, 3], [6, 5, 3],
       [6, 5, 4], [6, 6, 4], [7, 6, 4], [8, 6, 4], [8, 6, 5], [9, 6, 5],
       [10, 6, 5], [10, 7, 5]
     ];
