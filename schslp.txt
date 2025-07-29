@@ -3,7 +3,36 @@
 setTimeout(() => { scheduledSleep(); }, getRandomInteger(60000, 120000));
 function scheduledSleep() {
   const environmentType = getEnvironmentType();
-  logging(`scheduledSleep_1.2.11.6.5 in ${environmentType}`);
+  logging(`scheduledSleep_1.2.11.6.6 in ${environmentType}`);
+  const floatingIslandsUtility = {
+    getSpeed(quest) {
+      if (!quest) quest = user.quests.QuestFloatingIslands;
+      const atts = quest.hunting_site_atts;
+      let speed = 1;
+      if (quest.jet_stream_active) speed += 1;
+      if (atts.is_fuel_enabled) speed += 1;
+      if (this.isShrineActive(quest)) speed += 1;
+      return speed;
+    },
+    isShrineActive(quest) {
+      const q = quest ? quest : user.quests.QuestFloatingIslands;
+      const activeMods = q.hunting_site_atts.activated_island_mod_types;
+      for (let i = 0; i < activeMods.length; i++) {
+        const mod = activeMods[i];
+        if (mod.indexOf('shrine') > -1 || mod.indexOf('paragon_cache') > -1)
+          return true;
+      }
+      return false;
+    },
+    getAltitude(quest) {
+      const q = quest ? quest : user.quests.QuestFloatingIslands;
+      const atts = q.hunting_site_atts;
+      if (atts.is_low_tier_island) return 'lai';
+      else if (atts.is_high_tier_island) return 'hai';
+      else if (atts.is_vault_island) return 'sp';
+      return 'launch';
+    }
+  };
   const storageKey = 'scheduledSleep';
   const defaultSleep = 'defaultSleep';
   // prettier-ignore
@@ -448,33 +477,4 @@ function scheduledSleep() {
     return hm;
   }
 }
-const floatingIslandsUtility = {
-  getSpeed(quest) {
-    if (!quest) quest = user.quests.QuestFloatingIslands;
-    const atts = quest.hunting_site_atts;
-    let speed = 1;
-    if (quest.jet_stream_active) speed += 1;
-    if (atts.is_fuel_enabled) speed += 1;
-    if (floatingIslandsUtility.isShrineActive(quest)) speed += 1;
-    return speed;
-  },
-  isShrineActive(quest) {
-    const q = quest ? quest : user.quests.QuestFloatingIslands;
-    const activeMods = q.hunting_site_atts.activated_island_mod_types;
-    for (let i = 0; i < activeMods.length; i++) {
-      const mod = activeMods[i];
-      if (mod.indexOf('shrine') > -1 || mod.indexOf('paragon_cache') > -1)
-        return true;
-    }
-    return false;
-  },
-  getAltitude(quest) {
-    const q = quest ? quest : user.quests.QuestFloatingIslands;
-    const atts = q.hunting_site_atts;
-    if (atts.is_low_tier_island) return 'lai';
-    else if (atts.is_high_tier_island) return 'hai';
-    else if (atts.is_vault_island) return 'sp';
-    return 'launch';
-  }
-};
 // End scheduledSleep
