@@ -1,18 +1,33 @@
 // valourRift
 if (getEnvironmentType() === 'rift_valour') valourRift();
+const valourRiftUtility = {
+  augmentations: {
+    sigilHunter: { type: 'hr', need: 'gold', quantity: 250000 },
+    secretResearch: { type: 'sr', need: 'sigil', quantity: 500 },
+    superSiphon: { type: 'ss', need: 'sigil', quantity: 1000 },
+    ultimateUmbra: { type: 'tu', need: 'frag', quantity: 75 },
+    elixirRain: { type: 'er', need: 'secret', quantity: 500 },
+    stringStepping: { type: 'sste', need: 'secret', quantity: 1500 }
+  },
+  toggleChampionFire(isToEnable) {
+    logging(`toggleChampionFire to ${isToEnable}`);
+    const quest = user.quests.QuestRiftValour;
+    const itemQuantity = parseQuantity(
+      document.querySelector(
+        'div[data-item-type="rift_gauntlet_fuel_stat_item"]'
+      ).innerText
+    );
+    if (itemQuantity < 1) return;
+    const isFuelEnabled = quest.is_fuel_enabled || false;
+    if ((isFuelEnabled === true) != isToEnable)
+      hg.views.HeadsUpDisplayRiftValourView.toggleFuel();
+  }
+};
 function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = getEnvironmentType();
   if (environmentType != targetEnvironmentType) return;
-  logging('valourRift_0.3.18.6.5');
-  const allAugmentations = {
-    sigilHunter: 'hr',
-    secretResearch: 'sr',
-    superSiphon: 'ss',
-    ultimateUmbra: 'tu',
-    elixirRain: 'er',
-    stringStepping: 'sste'
-  };
+  logging('valourRift_0.3.19.6.6');
   // trap: [<bait>, <weapon>, <base>, <trinket>, <championFireEnabled>, litCandle, doubleEgg]
   // prettier-ignore
   const defaultSetting = {
@@ -132,6 +147,7 @@ function valourRift() {
   );
   /** Valour Rift items */
   const items = {
+    gold: { type: 'gold_stat_item', quantity: user.gold },
     gsc: { type: 'gauntlet_string_cheese', quantity: gscQty },
     elixir: { type: 'gauntlet_elixir_stat_item', quantity: elixirQty },
     cf: { type: 'rift_gauntlet_fuel_stat_item', quantity: cfQty },
@@ -188,25 +204,6 @@ function valourRift() {
         );
       }
     }
-    /* 
-    // 先不處理 UU Run
-    if (quest.is_eclipse_mode) return;
-    // 針對那些接近但理論上到不了 eclipse floor的 upgrade,
-    // 萬一運氣好到了 eclipse floor就撤退,不要浪費 CF賭 Eclipse
-    // prettier-ignore
-    const retreatUpgrades = [
-      '[3,1,1]', '[5,3,2]', '[5,3,3]', '[5,4,3]', '[6,4,4]',
-      '[6,5,4]', '[7,6,4]', '[8,6,4]', '[8,6,5]', '[9,6,5]',
-      '[10,6,5]', '[10,7,5]'
-    ];
-    // prettier-ignore
-    const retreatFloor = [
-      8, 16, 16, 24, 24,
-      24, 32, 32, 40, 40,
-      56, 56];
-    const index = retreatUpgrades.indexOf(currentLevelsJSON);
-    if (index > -1) settings.forceRetreatFloor = retreatFloor[index];
-     */
   };
   if (state === vriftStates.tower && floor >= settings.minRetreatFloor)
     autoRetreat();
@@ -263,6 +260,7 @@ function valourRift() {
       }; */
       if (!augmentations) augmentations = [];
       if (settings.isAutoAugment && augmentations.length === 0) {
+        const allAugmentations = valourRiftUtility.augmentations;
         if (settings.isSigilHunter)
           augmentations.push(allAugmentations.sigilHunter);
         if (settings.isSecretResearch)
@@ -395,19 +393,4 @@ function valourRift() {
     return isToEnable;
   }
 }
-const valourRiftUtility = {
-  toggleChampionFire(isToEnable) {
-    logging(`toggleChampionFire to ${isToEnable}`);
-    const quest = user.quests.QuestRiftValour;
-    const itemQuantity = parseQuantity(
-      document.querySelector(
-        'div[data-item-type="rift_gauntlet_fuel_stat_item"]'
-      ).innerText
-    );
-    if (itemQuantity < 1) return;
-    const isFuelEnabled = quest.is_fuel_enabled || false;
-    if ((isFuelEnabled === true) != isToEnable)
-      hg.views.HeadsUpDisplayRiftValourView.toggleFuel();
-  }
-};
 // End valourRift
