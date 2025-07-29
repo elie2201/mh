@@ -4,7 +4,7 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = getEnvironmentType();
   if (environmentType != targetEnvironmentType) return;
-  logging('valourRift_0.3.19.6.7');
+  logging('valourRift_0.4.19.6.8');
   const valourRiftUtility = {
     augmentations: {
       sigilHunter: { type: 'hr', need: 'gold', quantity: 250000 },
@@ -33,6 +33,7 @@ function valourRift() {
   const defaultSetting = {
     isAutoEnter: true,
     minGscToEnter: 0,
+    isPrestigePush: false,
     isAutoAugment: true,
     isSigilHunter: false,
     isSecretResearch: false,
@@ -65,6 +66,13 @@ function valourRift() {
         16: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift 2024 Charm,Rift 2025 Charm', false, 'none', false],
         24: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift 2024 Charm,Rift 2025 Charm', false, 'none', false],
         eclipse: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift 2025 Charm,Rift 2024 Charm', true, 'none', false]
+      },
+      pp: {
+        0: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Ultimate Lucky Power Charm', true, 'none', false],
+        8: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Ultimate Lucky Power Charm', true, 'none', false],
+        16: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Ultimate Lucky Power Charm', true, 'none', false],
+        24: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Ultimate Lucky Power Charm', true, 'none', false],
+        eclipse: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Ultimate Charm', true, 'none', false]
       }
     }
   };
@@ -166,6 +174,14 @@ function valourRift() {
     if (currentLevelIndex > 7) settings.isSigilHunter = true;
     // Since 6-6-4, enable Secret Research
     if (currentLevelIndex > 12) settings.isSecretResearch = true;
+    // Prestige Push
+    if (settings.isPrestigePush) {
+      settings.isSigilHunter = true;
+      settings.isSecretResearch = true;
+      settings.isUltimateUmbra = true;
+      settings.isSuperSiphon = true;
+      settings.isStringStepping = true;
+    }
   };
   autoAugmentation();
   const autoRetreat = () => {
@@ -176,7 +192,7 @@ function valourRift() {
         console.plog(`${noRetreatHead} ${huntsLeft}, CF: ${items.cf}`);
       return;
     }
-    console.plog(`CF: ${items.cf}`);
+    console.plog(`CF: ${items.cf.quantity}`);
     if (quest.is_eclipse_mode) {
       if (huntsLeft < settings.eclipseUUNeedHunts) {
         if (localStorage.displayedMessage.indexOf(noRetreatHead) < 0) {
