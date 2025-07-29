@@ -1,33 +1,33 @@
 // valourRift
 if (getEnvironmentType() === 'rift_valour') valourRift();
-const valourRiftUtility = {
-  augmentations: {
-    sigilHunter: { type: 'hr', need: 'gold', quantity: 250000 },
-    secretResearch: { type: 'sr', need: 'sigil', quantity: 500 },
-    superSiphon: { type: 'ss', need: 'sigil', quantity: 1000 },
-    ultimateUmbra: { type: 'tu', need: 'frag', quantity: 75 },
-    elixirRain: { type: 'er', need: 'secret', quantity: 500 },
-    stringStepping: { type: 'sste', need: 'secret', quantity: 1500 }
-  },
-  toggleChampionFire(isToEnable) {
-    logging(`toggleChampionFire to ${isToEnable}`);
-    const quest = user.quests.QuestRiftValour;
-    const itemQuantity = parseQuantity(
-      document.querySelector(
-        'div[data-item-type="rift_gauntlet_fuel_stat_item"]'
-      ).innerText
-    );
-    if (itemQuantity < 1) return;
-    const isFuelEnabled = quest.is_fuel_enabled || false;
-    if ((isFuelEnabled === true) != isToEnable)
-      hg.views.HeadsUpDisplayRiftValourView.toggleFuel();
-  }
-};
 function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = getEnvironmentType();
   if (environmentType != targetEnvironmentType) return;
-  logging('valourRift_0.3.19.6.6');
+  logging('valourRift_0.3.19.6.7');
+  const valourRiftUtility = {
+    augmentations: {
+      sigilHunter: { type: 'hr', need: 'gold', quantity: 250000 },
+      secretResearch: { type: 'sr', need: 'sigil', quantity: 500 },
+      superSiphon: { type: 'ss', need: 'sigil', quantity: 1000 },
+      ultimateUmbra: { type: 'tu', need: 'frag', quantity: 75 },
+      elixirRain: { type: 'er', need: 'secret', quantity: 500 },
+      stringStepping: { type: 'sste', need: 'secret', quantity: 1500 }
+    },
+    toggleChampionFire(isToEnable) {
+      logging(`toggleChampionFire to ${isToEnable}`);
+      const quest = user.quests.QuestRiftValour;
+      const itemQuantity = parseQuantity(
+        document.querySelector(
+          'div[data-item-type="rift_gauntlet_fuel_stat_item"]'
+        ).innerText
+      );
+      if (itemQuantity < 1) return;
+      const isFuelEnabled = quest.is_fuel_enabled || false;
+      if ((isFuelEnabled === true) != isToEnable)
+        hg.views.HeadsUpDisplayRiftValourView.toggleFuel();
+    }
+  };
   // trap: [<bait>, <weapon>, <base>, <trinket>, <championFireEnabled>, litCandle, doubleEgg]
   // prettier-ignore
   const defaultSetting = {
