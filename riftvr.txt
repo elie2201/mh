@@ -4,7 +4,7 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = getEnvironmentType();
   if (environmentType != targetEnvironmentType) return;
-  logging('valourRift_0.4.19.7.10');
+  logging('valourRift_0.4.20.8.10');
   const valourRiftUtility = {
     augmentations: {
       sigilHunter: { type: 'hr', need: 'gold', quantity: 250000 },
@@ -94,6 +94,13 @@ function valourRift() {
     'upgrade_boss_extension'
   ];
   const canUpgrade = [speed.can_upgrade, sync.can_upgrade, siphon.can_upgrade];
+  // prettier-ignore
+  const upgradePlans = [
+      [1, 1, 1], [2, 1, 1], [2, 2, 1], [3, 2, 1], [3, 3, 1], [3, 3, 2],
+      [4, 3, 2], [5, 3, 2], [5, 4, 2], [5, 4, 3], [5, 5, 3], [6, 5, 3],
+      [6, 5, 4], [6, 6, 4], [7, 6, 4], [8, 6, 4], [8, 6, 5], [9, 6, 5],
+      [10, 6, 5], [10, 7, 5]
+    ];
   const currentLevels = [
     speed.current_level + 1,
     sync.current_level + 1,
@@ -101,70 +108,48 @@ function valourRift() {
   ];
   const currentLevelsJSON = JSON.stringify(currentLevels);
   // prettier-ignore
-  const upgradeLevelsJSON = [
-    '[1,1,1]', '[2,1,1]', '[2,2,1]', '[3,2,1]', '[3,3,1]', '[3,3,2]', '[4,3,2]',
-    '[5,3,2]', '[5,3,3]', '[5,4,3]', '[5,4,4]', '[6,4,4]', '[6,5,4]', '[6,6,4]',
-    '[7,6,4]', '[8,6,4]', '[8,6,5]', '[9,6,5]', '[10,6,5]', '[10,7,5]'
-  ];
+  const upgradeLevelsJSON = [];
+  for (let i = 0; i < upgradePlans.length; i++) {
+    const upgradePlan = upgradePlans[i];
+    upgradeLevelsJSON.push(JSON.stringify(upgradePlan));
+  }
   const currentLevelIndex = upgradeLevelsJSON.indexOf(currentLevelsJSON);
   // prettier-ignore
   const cheeseQuantityByUpgrade = [
-    100, 100, 100, 100, 100, 100, 100,
-    100, 100, 110, 150, 150, 150, 200,
-    200, 200, 200, 250, 250, 300
+    100, 100, 100, 100, 100, 100,
+    100, 100, 100, 110, 150, 150,
+    150, 200, 200, 200, 200, 250,
+    250, 300
   ];
   console.log(
+    'can upgrade? ',
     canUpgrade,
     currentLevels,
+    upgradeLevelsJSON,
     `current upgrade level index: ${currentLevelIndex}`
-  );
-  const gscQty = parseQuantity(
-    document.querySelector('div[data-item-type="gauntlet_string_cheese"]')
-      .innerText
-  );
-  const elixirQty = parseQuantity(
-    document.querySelector('div[data-item-type="gauntlet_elixir_stat_item"]')
-      .innerText
-  );
-  const cfQty = parseQuantity(
-    document.querySelector('div[data-item-type="rift_gauntlet_fuel_stat_item"]')
-      .innerText
-  );
-  const sigilQty = parseQuantity(
-    document.querySelector(
-      'div[data-item-type="rift_gaunt_upgrade_a_stat_item"]'
-    ).innerText
-  );
-  const secretQty = parseQuantity(
-    document.querySelector(
-      'div[data-item-type="rift_gaunt_upgrade_b_stat_item"]'
-    ).innerText
-  );
-  const fragQty = parseQuantity(
-    document.querySelector(
-      'div[data-item-type="shade_eclipse_resource_stat_item"]'
-    ).innerText
-  );
-  const coreQty = parseQuantity(
-    document.querySelector(
-      'div[data-item-type="total_eclipse_resource_stat_item"]'
-    ).innerText
-  );
-  logging(
-    `GSC: ${gscQty}, Elixir: ${elixirQty}, Sigils: ${sigilQty}, Secrets: ${secretQty}, Fragments: ${fragQty}, Cores: ${coreQty}`
   );
   /** Valour Rift items */
   const items = {
     gold: { type: 'gold_stat_item', quantity: user.gold },
-    gsc: { type: 'gauntlet_string_cheese', quantity: gscQty },
-    elixir: { type: 'gauntlet_elixir_stat_item', quantity: elixirQty },
-    cf: { type: 'rift_gauntlet_fuel_stat_item', quantity: cfQty },
-    sigil: { type: 'rift_gaunt_upgrade_a_stat_item', quantity: sigilQty },
-    secret: { type: 'rift_gaunt_upgrade_b_stat_item', quantity: secretQty },
-    frag: { type: 'shade_eclipse_resource_stat_item', quantity: fragQty },
-    core: { type: 'total_eclipse_resource_stat_item', quantity: coreQty }
+    gsc: { type: 'gauntlet_string_cheese', quantity: 0 },
+    elixir: { type: 'gauntlet_elixir_stat_item', quantity: 0 },
+    cf: { type: 'rift_gauntlet_fuel_stat_item', quantity: 0 },
+    sigil: { type: 'rift_gaunt_upgrade_a_stat_item', quantity: 0 },
+    secret: { type: 'rift_gaunt_upgrade_b_stat_item', quantity: 0 },
+    frag: { type: 'shade_eclipse_resource_stat_item', quantity: 0 },
+    core: { type: 'total_eclipse_resource_stat_item', quantity: 0 }
   };
-  logging('items', items);
+  for (const key in items) {
+    if (key === 'gold') continue;
+    if (Object.prototype.hasOwnProperty.call(items, key)) {
+      const item = items[key];
+      item.quantity = parseQuantity(
+        document.querySelector('div[data-item-type="' + item.type + '"]')
+          .innerText
+      );
+    }
+  }
+  console.log('items', items);
   // Auto enter cheese quantity by upgrade
   if (!settings.minCheeseQty)
     settings.minCheeseQty = cheeseQuantityByUpgrade[currentLevelIndex];
@@ -294,16 +279,12 @@ function valourRift() {
         completionCallback
       );
     };
-    if (gscQty + elixirQty >= settings.minGscToEnter) {
+    if (items.gsc.quantity + items.elixir.quantity >= settings.minGscToEnter) {
       enterTower([], () => {
         const a = document.querySelector('a.jsDialogClose, a#jsDialogClose');
         if (a) a.click();
         valourRift();
       });
-      /* hg.views.HeadsUpDisplayRiftValourView.enterTower();
-      setTimeout(() => {
-        valourRift();
-      }, 3000); */
       return;
     }
   }
@@ -332,13 +313,6 @@ function valourRift() {
   // checkUpgrade();
   const checkUpgrade = () => {
     console.log('check upgrade');
-    // prettier-ignore
-    const upgradePlans = [
-      [1, 1, 1], [2, 1, 1], [2, 2, 1], [3, 2, 1], [3, 3, 1], [3, 3, 2],
-      [4, 3, 2], [5, 3, 2], [5, 4, 2], [5, 4, 3], [5, 5, 3], [6, 5, 3],
-      [6, 5, 4], [6, 6, 4], [7, 6, 4], [8, 6, 4], [8, 6, 5], [9, 6, 5],
-      [10, 6, 5], [10, 7, 5]
-    ];
     if (canUpgrade.indexOf(true) < 0) return;
     for (let i = 0; i < upgradePlans.length; i++) {
       const plan = upgradePlans[i];
@@ -368,10 +342,10 @@ function valourRift() {
     }, 6000);
   const autoBuy = () => {
     logging(`autoBuy in ${environmentType}`);
-    if (gscQty < getRandomInteger(17, 26)) {
+    if (items.gsc.quantity < getRandomInteger(17, 26)) {
       logging('auto buy Gauntlet');
       const itemType = 'gauntlet_string_cheese';
-      const itemQuantity = Math.min(elixirQty, 55);
+      const itemQuantity = Math.min(items.elixir.quantity, 55);
       completeTransaction(true, itemType, itemQuantity, false);
     }
     if (
