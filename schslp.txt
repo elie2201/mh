@@ -3,7 +3,7 @@
 setTimeout(() => { scheduledSleep(); }, getRandomInteger(60000, 120000));
 function scheduledSleep() {
   const environmentType = getEnvironmentType();
-  logging(`scheduledSleep_1.2.11.6.6 in ${environmentType}`);
+  logging(`scheduledSleep_1.2.12.6.7 in ${environmentType}`);
   const floatingIslandsUtility = {
     getSpeed(quest) {
       if (!quest) quest = user.quests.QuestFloatingIslands;
@@ -321,7 +321,9 @@ function scheduledSleep() {
     rift_valour(enviromentSchedules) {
       const quest = user.quests.QuestRiftValour;
       const floor = quest.floor;
-      if (floor % 8 > 6) return;
+      if (floor % 8 > 6 || floor % 8 === 0) return;
+      const huntsLeft = quest.hunts_remaining;
+      if (huntsLeft < 6) return;
       this.defaultSleep(enviromentSchedules);
     }
   };
