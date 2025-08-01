@@ -1,15 +1,19 @@
 // forewordFarm
 if (getEnvironmentType() === 'foreword_farm') forewordFarm();
 function forewordFarm() {
+  const isProd = true; // TODO true if production
+  const forewordFarmType = 'foreword_farm';
   const enviromentType = getEnvironmentType();
-  if (enviromentType !== 'foreword_farm') return;
-  logging(`forewordFarm_0.1.0.0.0`);
-  const quest = user.quests.QuestForewordFarm;
+  if (enviromentType !== forewordFarmType) return;
+  logging('forewordFarm_0.1.1.0.0');
   const plantRowTypes = [
     ['ordinary_farm_plant', 'ordinary_magic_farm_plant'],
     ['legendary_farm_plant', 'legendary_magic_farm_plant'],
     ['twisted_legendary_farm_plant', 'twisted_legendary_magic_farm_plant']
   ];
+  const quest = user.quests.QuestForewordFarm;
+  const miceState = quest.mice_state;
+  const plots = quest.plots;
   // prettier-ignore
   const defaultSettings = {
     isAutoClaim: true,
@@ -23,51 +27,279 @@ function forewordFarm() {
       one_plants: ['Gouda Cheese', 'best.weapon.tactical', 'best.base.combo', 'Luck Charm', false],
       two_plants: ['Gouda Cheese', 'best.weapon.tactical', 'best.base.combo', 'Luck Charm', false],
       three_plants: ['Gouda Cheese', 'best.weapon.tactical', 'best.base.combo', 'Luck Charm', false],
-      three_papyrus: ['Gouda Cheese', 'best.weapon.tactical', 'best.base.combo', 'Super Snowball Charm', false]
+      three_papyrus: ['Gouda Cheese', 'best.weapon.tactical', 'best.base.combo', 'Super Snowball Charm', false],
+      boss: ['Super', 'best.weapon.tactical', 'best.base.combo', 'Ultimate Lucky Power Charm,Festive Ultimate Lucky Power Charm', false]
     }
   };
-  const ajax = (element, params, successCallback) => {
-    params['last_read_journal_entry_id'] = $('#journallatestentry').data(
-      'entry-id'
-    );
-    params['uh'] = user.unique_hash;
-    $.ajax({
-      data: params,
-      dataType: 'json',
-      type: 'post',
-      url: MOUSEHUNT_BASE_URL + 'managers/ajax/environment/foreword_farm.php',
-      success: function (data) {
-        if (successCallback) {
-          successCallback(data);
+  const settings = isProd
+    ? getStorageToObject(enviromentType, defaultSettings)
+    : defaultSettings;
+  const forewordFarmUtility = {
+    isPlantable: false,
+    is3Plantable: true,
+    plotsPlantable: [],
+    // ajax
+    ajax(element, params, successCallback, errorCallback) {
+      params['last_read_journal_entry_id'] = $('#journallatestentry').data(
+        'entry-id'
+      );
+      params['uh'] = user.unique_hash;
+      $.ajax({
+        data: params,
+        dataType: 'json',
+        type: 'post',
+        url: isProd
+          ? MOUSEHUNT_BASE_URL + 'managers/ajax/environment/foreword_farm.php'
+          : '',
+        success: function (data) {
+          eventRegistry.doEvent('ajax_response', data);
+          if (successCallback) {
+            successCallback(data);
+          }
+        },
+        error: function (data) {
+          // eslint-disable-next-line new-cap
+          const popup = new jsDialog();
+          popup.setTemplate('error');
+          popup.addToken('{*title*}', 'An error has occurred.');
+          popup.addToken('{*content*}', 'An error occurred. Please try again!');
+          popup.show();
+          if (errorCallback) errorCallback(data);
         }
-      },
-      error: function () {
-        // eslint-disable-next-line new-cap
-        const popup = new jsDialog();
-        popup.setTemplate('error');
-        popup.addToken('{*title*}', 'An error has occurred.');
-        popup.addToken('{*content*}', 'An error occurred. Please try again!');
-        popup.show();
-      }
-    });
+      });
+    },
+    /** true if isPlant3AtOnce and all 3 plot plantable
+     *  or not isPlant3AtOnce and any of plot plantable */
+    initPlantableStatePromise() {
+      logging('run initPlantableStatePromise');
+      const isBreak = true;
+      return new Promise((resolve, reject) => {
+        this.isPlantable = false;
+        this.is3Plantable = true;
+        this.plotsPlantable = [];
+        for (let i = 0; i < plots.length; i++) {
+          const plot = plots[i];
+          this.isPlantable ||= plot.can_plant_anything;
+          this.is3Plantable &&= plot.can_plant_anything;
+          this.plotsPlantable.push(plot.can_plant_anything);
+        }
+        if (settings.isPlant3AtOnce && !this.is3Plantable) {
+          this.isPlantable = false;
+          this.plotsPlantable = [false, false, false];
+        }
+        console.log(
+          'Plots plantable State: ',
+          this.isPlantable,
+          this.is3Plantable,
+          this.plotsPlantable
+        );
+        resolve({ isBreak: !isBreak });
+      });
+    },
+    /** stupidly check if need to plant by index */
+    stupidPlantPromise(i) {
+      logging('run stupidPlantPromise');
+      return new Promise((resolve, reject) => {
+        if (!settings.isAutoPlant || !this.isPlantable) {
+          console.log('Nothing plantable, next do nothing');
+          resolve();
+          return;
+        }
+        const plotPlantable = this.plotsPlantable[i];
+        console.log(this.plotsPlantable, i, plotPlantable);
+        if (plotPlantable) {
+          console.log(`plant plot ${i}`);
+          isProd
+            ? this.startGrowing(
+                i,
+                plantRowTypes[settings.plantTypeRow][
+                  settings.isPlantWithMe ? 1 : 0
+                ],
+                () => {
+                  console.log('try plant next plot');
+                  resolve();
+                }
+              )
+            : this.startGrowingMock(
+                i,
+                plantRowTypes[settings.plantTypeRow][
+                  settings.isPlantWithMe ? 1 : 0
+                ],
+                () => {
+                  console.log('try plant next plot');
+                  resolve();
+                }
+              );
+          return;
+        }
+        console.log('try plant next plot');
+        resolve();
+      });
+    },
+    /** check if need to plant */
+    plantPromise() {
+      logging('run plantPromise');
+      const isBreak = true;
+      return new Promise((resolve, reject) => {
+        if (!settings.isAutoPlant || !this.isPlantable) {
+          console.log('Nothing plantable, go next');
+          resolve({ isBreak: !isBreak });
+          return;
+        }
+        console.log(this.plotsPlantable);
+        for (let i = 0; i < this.plotsPlantable.length; i++) {
+          const plotPlantable = this.plotsPlantable[i];
+          console.log(i, plotPlantable);
+          if (plotPlantable) {
+            console.log(`plant plot ${i}`);
+            isProd
+              ? this.startGrowing(
+                  i,
+                  plantRowTypes[settings.plantTypeRow][
+                    settings.isPlantWithMe ? 1 : 0
+                  ],
+                  () => {
+                    forewordFarm();
+                    resolve({
+                      isBreak: isBreak,
+                      msg: `plantPromise plot${i} break then chain and re-run forewordFarm`
+                    });
+                  }
+                )
+              : this.startGrowingMock(
+                  i,
+                  plantRowTypes[settings.plantTypeRow][
+                    settings.isPlantWithMe ? 1 : 0
+                  ],
+                  () => {
+                    // forewordFarm();
+                    this.plotsPlantable[i] = false;
+                    this.plantPromise();
+                    resolve({
+                      isBreak: isBreak,
+                      msg: `plantPromise plot${i} break then chain and re-run forewordFarm`
+                    });
+                  }
+                );
+            return;
+          }
+        }
+        console.log('all planted, go next');
+        resolve({ isBreak: !isBreak });
+      });
+    },
+    /** startGrowing */
+    startGrowing(slot, plantType, callback) {
+      logging('run startGrowing');
+      const params = {
+        action: 'start_growing',
+        slot: slot,
+        plant_type: plantType
+      };
+      this.ajax('<a/>', params, function (data) {
+        console.log(`startGrowing: ${data.success ? 'success' : 'failure'}`);
+        if (data.success) {
+          if (callback) callback(data);
+        }
+      });
+    },
+    /** start growing mock */
+    startGrowingMock(slot, plantType, callback) {
+      logging('run startGrowingMock');
+      setTimeout(() => {
+        console.log(`Started growing ${plantType} at ${slot}`);
+        user.quests.QuestForewordFarm.plots[slot].can_plant_anything = null;
+        if (callback) {
+          callback();
+        }
+      }, 3000);
+    },
+    /** handle trap promise */
+    handleTrapPromise() {
+      logging('run handleTrapPromise');
+      return new Promise((resolve, reject) => {
+        const trap = settings.traps[miceState];
+        if (trap) armAllTraps(...trap);
+        resolve();
+      });
+    },
+    /** claim harvest */
+    claimHarvest(callback) {
+      logging('run claimHarvest');
+      const params = {
+        action: 'claim_harvest'
+      };
+      this.ajax('<a/>', params, (data) => {
+        console.log(
+          `claim harvest result: ${data.success ? 'success' : 'failure'}`,
+          data.foreword_farm_harvest_bin
+        );
+        callback(data);
+      });
+    },
+    /** claim harvest mock */
+    claimHarvestMock(callback) {
+      console.log('run claimHarvestMock');
+      setTimeout(() => {
+        quest.harvest_bin.can_claim = null;
+        const data = {
+          success: 1,
+          foreword_farm_harvest_bin: quest.harvest_bin
+        };
+        console.log(
+          `claim harvest result: ${data.success ? 'success' : 'failure'}`,
+          data.foreword_farm_harvest_bin
+        );
+        callback(data);
+      }, 3000);
+    },
+    /** claim harvest promise */
+    claimHarvestPromise() {
+      logging('run claimHarvestPromise');
+      return new Promise((resolve, reject) => {
+        console.log('try claiming harvest');
+        if (settings.isAutoClaim && quest.harvest_bin.can_claim) {
+          const min = isProd ? 17000 : 3000;
+          const max = isProd ? 24000 : 6000;
+          setTimeout(() => {
+            isProd
+              ? this.claimHarvest(resolve)
+              : this.claimHarvestMock(resolve);
+          }, getRandomInteger(min, max));
+        }
+      });
+    }
   };
-  const settings = getStorageToObject(enviromentType, defaultSettings);
-  const miceState = quest.mice_state;
-  const trap = settings.traps[miceState];
-  armAllTraps(...trap);
-  const claimHarvest = () => {
-    const params = {
-      action: 'claim_harvest'
-    };
-    ajax(null, params, function (data) {
-      if (data.success) {
-        console.log(`claimed harvest: ${data.foreword_farm_harvest_bin}`);
-      }
+  forewordFarmUtility
+    .initPlantableStatePromise()
+    .then((result) => {
+      return forewordFarmUtility.stupidPlantPromise(0);
+    })
+    .then((result) => {
+      return forewordFarmUtility.stupidPlantPromise(1);
+    })
+    .then((result) => {
+      return forewordFarmUtility.stupidPlantPromise(2);
+    })
+    .then((result) => {
+      return forewordFarmUtility.handleTrapPromise();
+    })
+    // .then((result) => {
+    //   if (result.isBreak) {
+    //     throw new Error(result.msg);
+    //   }
+    //   console.log('Keep going to handleTrapPromise');
+    //   return forewordFarmUtility.handleTrapPromise();
+    // })
+    .then(() => {
+      console.log('handled trap');
+      return forewordFarmUtility.claimHarvestPromise();
+    })
+    .then((data) => {
+      console.log(
+        `Finish claiming harvest: ${data.success ? 'success' : 'failure'}`,
+        data.foreword_farm_harvest_bin
+      );
     });
-  };
-  if (settings.isAutoClaim && quest.harvest_bin.can_claim)
-    setTimeout(() => {
-      claimHarvest();
-    }, getRandomInteger(10000, 17000));
 }
 // End forewordFarm
