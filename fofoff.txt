@@ -1,11 +1,11 @@
 // forewordFarm
 if (getEnvironmentType() === 'foreword_farm') forewordFarm();
 function forewordFarm() {
-  const isProd = true; // TODO true if production
+  const isProd = false;
   const forewordFarmType = 'foreword_farm';
   const enviromentType = getEnvironmentType();
   if (enviromentType !== forewordFarmType) return;
-  logging('forewordFarm_0.1.1.0.0');
+  logging('forewordFarm_0.2.0.0.0');
   const plantRowTypes = [
     ['ordinary_farm_plant', 'ordinary_magic_farm_plant'],
     ['legendary_farm_plant', 'legendary_magic_farm_plant'],
@@ -23,12 +23,12 @@ function forewordFarm() {
     isPlantWithMe: false,
     isAutoPlantType: false,
     traps: {
-      no_plants: ['Gouda Cheese', 'best.weapon.tactical', 'best.base.combo', 'Luck Charm', false],
-      one_plants: ['Gouda Cheese', 'best.weapon.tactical', 'best.base.combo', 'Luck Charm', false],
-      two_plants: ['Gouda Cheese', 'best.weapon.tactical', 'best.base.combo', 'Luck Charm', false],
-      three_plants: ['Gouda Cheese', 'best.weapon.tactical', 'best.base.combo', 'Luck Charm', false],
-      three_papyrus: ['Gouda Cheese', 'best.weapon.tactical', 'best.base.combo', 'Super Snowball Charm', false],
-      boss: ['Super', 'best.weapon.tactical', 'best.base.combo', 'Ultimate Lucky Power Charm,Festive Ultimate Lucky Power Charm', false]
+      no_plants: ['Gouda Cheese', 'best.weapon.tactical', 'best.base.combo', 'Luck Charm', false, 'none', false],
+      one_plants: ['Gouda Cheese', 'best.weapon.tactical', 'best.base.combo', 'Luck Charm', false, 'none', false],
+      two_plants: ['Gouda Cheese', 'best.weapon.tactical', 'best.base.combo', 'Luck Charm', false, 'none', false],
+      three_plants: ['Gouda Cheese', 'best.weapon.tactical', 'best.base.combo', 'Luck Charm', false, 'none', false],
+      three_papyrus: ['Gouda Cheese', 'best.weapon.tactical', 'best.base.combo', 'Super Snowball Charm', false, 'none', false],
+      boss: ['Super', 'best.weapon.tactical', 'best.base.combo', 'Ultimate Lucky Power Charm,Festive Ultimate Lucky Power Charm', false, 'none', false]
     }
   };
   const settings = isProd
@@ -36,7 +36,7 @@ function forewordFarm() {
     : defaultSettings;
   const forewordFarmUtility = {
     isPlantable: false,
-    is3Plantable: true,
+    is3Plantable: false,
     plotsPlantable: [],
     // ajax
     ajax(element, params, successCallback, errorCallback) {
@@ -68,21 +68,32 @@ function forewordFarm() {
         }
       });
     },
+    run() {
+      logging('start running forewordFarm');
+      this.initPromise();
+    },
+    initPromise() {
+      logging('run initPromise');
+      return new Promise((resolve, reject) => {
+        this.initPlantableStatePromise();
+      });
+    },
     /** true if isPlant3AtOnce and all 3 plot plantable
      *  or not isPlant3AtOnce and any of plot plantable */
     initPlantableStatePromise() {
       logging('run initPlantableStatePromise');
-      const isBreak = true;
       return new Promise((resolve, reject) => {
         this.isPlantable = false;
-        this.is3Plantable = true;
+        this.is3Plantable = false;
         this.plotsPlantable = [];
+        let temp3 = true;
         for (let i = 0; i < plots.length; i++) {
           const plot = plots[i];
           this.isPlantable ||= plot.can_plant_anything;
-          this.is3Plantable &&= plot.can_plant_anything;
+          temp3 &&= plot.can_plant_anything;
           this.plotsPlantable.push(plot.can_plant_anything);
         }
+        this.is3Plantable = temp3;
         if (settings.isPlant3AtOnce && !this.is3Plantable) {
           this.isPlantable = false;
           this.plotsPlantable = [false, false, false];
@@ -93,99 +104,48 @@ function forewordFarm() {
           this.is3Plantable,
           this.plotsPlantable
         );
-        resolve({ isBreak: !isBreak });
-      });
-    },
-    /** stupidly check if need to plant by index */
-    stupidPlantPromise(i) {
-      logging('run stupidPlantPromise');
-      return new Promise((resolve, reject) => {
-        if (!settings.isAutoPlant || !this.isPlantable) {
-          console.log('Nothing plantable, next do nothing');
-          resolve();
+        if (this.isPlantable) {
+          this.plantPromise();
           return;
         }
-        const plotPlantable = this.plotsPlantable[i];
-        console.log(this.plotsPlantable, i, plotPlantable);
-        if (plotPlantable) {
-          console.log(`plant plot ${i}`);
-          isProd
-            ? this.startGrowing(
-                i,
-                plantRowTypes[settings.plantTypeRow][
-                  settings.isPlantWithMe ? 1 : 0
-                ],
-                () => {
-                  console.log('try plant next plot');
-                  resolve();
-                }
-              )
-            : this.startGrowingMock(
-                i,
-                plantRowTypes[settings.plantTypeRow][
-                  settings.isPlantWithMe ? 1 : 0
-                ],
-                () => {
-                  console.log('try plant next plot');
-                  resolve();
-                }
-              );
-          return;
-        }
-        console.log('try plant next plot');
-        resolve();
+        console.log('Nothing plantable, go handleTrapPromise');
+        this.handleTrapPromise();
       });
     },
     /** check if need to plant */
     plantPromise() {
       logging('run plantPromise');
-      const isBreak = true;
       return new Promise((resolve, reject) => {
         if (!settings.isAutoPlant || !this.isPlantable) {
-          console.log('Nothing plantable, go next');
-          resolve({ isBreak: !isBreak });
+          console.log('Nothing plantable, go handleTrapPromise');
+          this.handleTrapPromise();
           return;
         }
-        console.log(this.plotsPlantable);
+        console.log('Need to plant', this.plotsPlantable);
         for (let i = 0; i < this.plotsPlantable.length; i++) {
           const plotPlantable = this.plotsPlantable[i];
-          console.log(i, plotPlantable);
-          if (plotPlantable) {
-            console.log(`plant plot ${i}`);
-            isProd
-              ? this.startGrowing(
-                  i,
-                  plantRowTypes[settings.plantTypeRow][
-                    settings.isPlantWithMe ? 1 : 0
-                  ],
-                  () => {
-                    forewordFarm();
-                    resolve({
-                      isBreak: isBreak,
-                      msg: `plantPromise plot${i} break then chain and re-run forewordFarm`
-                    });
-                  }
-                )
-              : this.startGrowingMock(
-                  i,
-                  plantRowTypes[settings.plantTypeRow][
-                    settings.isPlantWithMe ? 1 : 0
-                  ],
-                  () => {
-                    // forewordFarm();
-                    this.plotsPlantable[i] = false;
-                    this.plantPromise();
-                    resolve({
-                      isBreak: isBreak,
-                      msg: `plantPromise plot${i} break then chain and re-run forewordFarm`
-                    });
-                  }
-                );
-            return;
-          }
+          console.log(`Is plot(${i}) plantable? ${plotPlantable}`);
+          if (!plotPlantable) continue;
+          console.log(`plant plot ${i}`);
+          const startGrowing = isProd
+            ? this.startGrowing
+            : this.startGrowingMock;
+          startGrowing(
+            i,
+            plantRowTypes[settings.plantTypeRow][
+              settings.isPlantWithMe ? 1 : 0
+            ],
+            () => {
+              this.plotsPlantable[i] = false;
+              this.plantPromise();
+            }
+          );
+          return;
         }
-        console.log('all planted, go next');
-        resolve({ isBreak: !isBreak });
+        console.log('all planted, double check plotPlantableState');
+        setTimeout(() => {
+          this.initPlantableStatePromise();
+        }, 3000);
       });
     },
     /** startGrowing */
@@ -220,7 +180,21 @@ function forewordFarm() {
       return new Promise((resolve, reject) => {
         const trap = settings.traps[miceState];
         if (trap) armAllTraps(...trap);
-        resolve();
+        this.claimHarvestPromise();
+      });
+    },
+    /** claim harvest promise */
+    claimHarvestPromise() {
+      logging('run claimHarvestPromise');
+      return new Promise((resolve, reject) => {
+        console.log('try claiming harvest');
+        if (settings.isAutoClaim && quest.harvest_bin.can_claim) {
+          const min = isProd ? 17000 : 2000;
+          const max = isProd ? 24000 : 5000;
+          setTimeout(() => {
+            isProd ? this.claimHarvest() : this.claimHarvestMock();
+          }, getRandomInteger(min, max));
+        }
       });
     },
     /** claim harvest */
@@ -234,7 +208,7 @@ function forewordFarm() {
           `claim harvest result: ${data.success ? 'success' : 'failure'}`,
           data.foreword_farm_harvest_bin
         );
-        callback(data);
+        if (callback) callback(data);
       });
     },
     /** claim harvest mock */
@@ -250,56 +224,10 @@ function forewordFarm() {
           `claim harvest result: ${data.success ? 'success' : 'failure'}`,
           data.foreword_farm_harvest_bin
         );
-        callback(data);
+        if (callback) callback(data);
       }, 3000);
-    },
-    /** claim harvest promise */
-    claimHarvestPromise() {
-      logging('run claimHarvestPromise');
-      return new Promise((resolve, reject) => {
-        console.log('try claiming harvest');
-        if (settings.isAutoClaim && quest.harvest_bin.can_claim) {
-          const min = isProd ? 17000 : 3000;
-          const max = isProd ? 24000 : 6000;
-          setTimeout(() => {
-            isProd
-              ? this.claimHarvest(resolve)
-              : this.claimHarvestMock(resolve);
-          }, getRandomInteger(min, max));
-        }
-      });
     }
   };
-  forewordFarmUtility
-    .initPlantableStatePromise()
-    .then((result) => {
-      return forewordFarmUtility.stupidPlantPromise(0);
-    })
-    .then((result) => {
-      return forewordFarmUtility.stupidPlantPromise(1);
-    })
-    .then((result) => {
-      return forewordFarmUtility.stupidPlantPromise(2);
-    })
-    .then((result) => {
-      return forewordFarmUtility.handleTrapPromise();
-    })
-    // .then((result) => {
-    //   if (result.isBreak) {
-    //     throw new Error(result.msg);
-    //   }
-    //   console.log('Keep going to handleTrapPromise');
-    //   return forewordFarmUtility.handleTrapPromise();
-    // })
-    .then(() => {
-      console.log('handled trap');
-      return forewordFarmUtility.claimHarvestPromise();
-    })
-    .then((data) => {
-      console.log(
-        `Finish claiming harvest: ${data.success ? 'success' : 'failure'}`,
-        data.foreword_farm_harvest_bin
-      );
-    });
+  forewordFarmUtility.run();
 }
 // End forewordFarm
