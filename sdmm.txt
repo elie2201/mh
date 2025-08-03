@@ -1,0 +1,26 @@
+// muridaeMarket
+if (user.environment_type == 'desert_city') muridaeMarket();
+function muridaeMarket() {
+  const targetEnvironmentType = 'desert_city';
+  const enviromentType = getEnvironmentType();
+  if (enviromentType !== targetEnvironmentType) return;
+  logging('muridaeMarket_0.1.0.0.0');
+  const quest = user.quests.QuestDesertMarketRebuild;
+  const items = quest.items;
+  const papyrusQty = items.papyrus_crafting_item;
+  const bait = TrapType.bait;
+  const weapon = TrapType.weapon;
+  const base = TrapType.base;
+  const trinket = TrapType.trinket;
+  const sort = 'sort';
+  const name = 'name';
+  const settings = JSON.parse(localStorage['locationSetup'])[enviromentType];
+  const charmName = getCharmName();
+  if (charmName.indexOf('Artisan') == 0 && papyrusQty > 24)
+    settings[trinket][name] = '2025 Charm';
+  checkThenArm(settings[bait][sort], bait, settings[bait][name]);
+  checkThenArm(settings[weapon][sort], weapon, settings[weapon][name]);
+  checkThenArm(settings[base][sort], base, settings[base][name]);
+  checkThenArm(settings[trinket][sort], trinket, settings[trinket][name]);
+}
+// End muridaeMarket
