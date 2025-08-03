@@ -4,7 +4,7 @@ function floatingIslands() {
   const targetEnvironmentType = 'floating_islands';
   const environmentType = getEnvironmentType();
   if (environmentType != targetEnvironmentType) return;
-  console.log('floatingIslands_1.4.11.4.5');
+  console.log('floatingIslands_1.4.12.5.5');
   // prettier-ignore
   const AllPowerTypes = ['arcn', 'frgttn', 'hdr', 'shdw', 'drcnc', 'law', 'phscl', 'tctcl'];
   // prettier-ignore
@@ -39,7 +39,7 @@ function floatingIslands() {
     isHuntAfterLaiTrove: false,
     isHuntAfterHaiTrove: true,
     isHuntAfterSpTrove: true,
-    isAutoHuntAfterTrove: true,
+    isAutoHuntAfterTrove: false,
     isPirateHuntingLai: false,
     isPirateHuntingHai: false,
     isPirateHuntingSp: true,
@@ -48,9 +48,9 @@ function floatingIslands() {
     startPirateProgressSp: 30,
     isAutoBuy: true,
     // ['law', 'phscl', 'drcnc', 'shdw', 'arcn', 'tctcl', 'hdr', 'frgttn'],
-    // myLaiPowerTypes: ['law', 'phscl', 'hdr', 'drcnc', 'frgttn', 'arcn', 'tctcl', 'shdw'], 
-    myLaiPowerTypes: ['law'], 
-    myHaiPowerTypes: ['law'],
+    // myLaiPowerTypes: ['law', 'phscl', 'hdr', 'drcnc', 'frgttn', 'arcn', 'tctcl', 'shdw'],
+    myLaiPowerTypes: ['law', 'phscl', 'frgttn', 'arcn', 'drcnc', 'tctcl', 'hdr', 'shdw'],
+    myHaiPowerTypes: [],
     mySpPowerTypes: ['law'],
     shrineMaxIndex: 4,
     wantedModifier: [],
@@ -234,13 +234,19 @@ function floatingIslands() {
       return;
     }
   }
-  // **Travel to FI or reload from retreating to launch pad.
+  // When travel to FI or reload from retreating to launch pad.
   if (
     isLaunch &&
     cccQty + ccQty > 75 &&
-    ((settings.isAutoLai && atts.sky_wardens_caught < 4) ||
-      (settings.isAutoHai && atts.sky_wardens_caught == 4) ||
-      (settings.isAutoSp && stormCellQty > 49))
+    ((settings.isAutoLai &&
+      settings.myLaiPowerTypes.length !== 0 &&
+      atts.sky_wardens_caught < 4) ||
+      (settings.isAutoHai &&
+        settings.myHaiPowerTypes.length !== 0 &&
+        atts.sky_wardens_caught == 4) ||
+      (settings.isAutoSp &&
+        settings.mySpPowerTypes.length !== 0 &&
+        stormCellQty > 49))
   ) {
     console.plog(`Cyclone quantity before sky map: ${cycloneQty}`);
     autoSkyMap(settings);
