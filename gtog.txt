@@ -1,0 +1,60 @@
+// townOfGnawnia
+if (getEnvironmentType() == 'town_of_gnawnia') townOfGnawnia();
+function townOfGnawnia() {
+  // const isProd = false;
+  const targetEnvironmentType = 'town_of_gnawnia';
+  const enviromentType = getEnvironmentType();
+  if (enviromentType !== targetEnvironmentType) return;
+  logging('townOfGnawnia_1.0.0.0.0');
+  defaultBait = 'Gouda Cheese';
+  const quest = user.quests.QuestTownOfGnawnia;
+  const townOfGnawniaUtils = {
+    run() {
+      logging('start running townOfGnawnia');
+      this.initPromise();
+    },
+    initPromise() {
+      logging('run initPromise');
+      return new Promise((resolve, reject) => {
+        if (quest.state === 'allBountiesComplete') {
+          console.log(`allBountiesComplete`);
+          return;
+        }
+        this.claimRewardPromise();
+      });
+    },
+    claimRewardPromise() {
+      console.log(`run claimRewardPromise`);
+      return new Promise((resolve, reject) => {
+        if (quest.can_claim !== 'disabled') {
+          console.log(`claimReward`);
+          hg.views.HeadsUpDisplayTownOfGnawniaView.claimReward();
+          setTimeout(() => {
+            const close = document.querySelector(
+              'a.jsDialogClose, a#jsDialogClose'
+            );
+            if (close) close.click();
+            this.run();
+          }, 6000);
+          return;
+        }
+        this.acceptBountyPromise();
+      });
+    },
+    acceptBountyPromise() {
+      console.log(`run acceptBountyPromise`);
+      return new Promise((resolve, reject) => {
+        if (quest.can_accept !== 'disabled') {
+          hg.views.HeadsUpDisplayTownOfGnawniaView.acceptBounty();
+          setTimeout(() => {
+            let love = user.quests.QuestTownOfGnawnia.bait_love_name;
+            if (love.indexOf('SUPER') === 0) love = 'Brie Cheese';
+            checkThenArm(null, 'bait', love);
+          }, 6000);
+        }
+      });
+    }
+  };
+  townOfGnawniaUtils.run();
+}
+// End townOfGnawnia
