@@ -1,0 +1,14 @@
+// hasCaughtTargetByDataMouseType
+(() => {
+  if (hasCaughtTargetByDataMouseType('grandfather')) {
+    if (getEnvironmentType() == 'cape_clawed') {
+      travel('nerg_plains', 2000, () => {
+        checkThenArm(null, 'bait', 'Gouda Cheese');
+        // checkThenArm(null, 'weapon', 'None');
+        // checkThenArm(null, 'base', 'Gouda Cheese');
+        checkThenArm(null, 'trinket', 'None');
+      });
+    }
+  }
+})();
+// End hasCaughtTargetByDataMouseType
