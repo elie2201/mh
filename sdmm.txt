@@ -1,10 +1,11 @@
 // muridaeMarket
 if (user.environment_type == 'desert_city') muridaeMarket();
 function muridaeMarket() {
+  // const isProd = false;
   const targetEnvironmentType = 'desert_city';
   const enviromentType = getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('muridaeMarket_1.0.0.0.0');
+  logging('muridaeMarket_1.0.0.1.0');
   defaultBait = 'Gouda Cheese';
   const quest = user.quests.QuestDesertMarketRebuild;
   const items = quest.items;
