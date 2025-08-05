@@ -1,0 +1,20 @@
+// hasCaughtAction
+hasCaughtAction();
+function hasCaughtAction(isByType) {
+  // const isProd = false;
+  logging('hasCaughtAction_1.0.0.0.0');
+  const check = {
+    nowEnvironmentType: 'desert_warpath',
+    target: 'desert_boss',
+    callback() {
+      travel('desert_city');
+    }
+  };
+  if (getEnvironmentType() === check.nowEnvironmentType)
+    if (
+      (isByType && hasCaughtTargetByDataMouseType(check.target)) ||
+      (!isByType && hasCaughtTargetByMouseName(check.target))
+    )
+      if (check.callback) check.callback();
+}
+// End hasCaughtAction
