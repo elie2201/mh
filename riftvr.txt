@@ -5,7 +5,8 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = getEnvironmentType();
   if (environmentType !== targetEnvironmentType) return;
-  logging('valourRift_0.4.23.11.13');
+  logging('valourRift_0.4.23.12.14');
+  defaultBait = 'Brie String';
   const valourRiftUtility = {
     augmentations: {
       sigilHunter: { type: 'hr', need: 'gold', quantity: 250000 },
@@ -396,7 +397,7 @@ function valourRift() {
       logging('Turn off CF');
       return false;
     }
-    logging('Keep CF');
+    logging('Saving CF');
     return isToEnable;
   }
 }
