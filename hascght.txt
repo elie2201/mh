@@ -1,9 +1,9 @@
 // hasCaughtAction
 const checkedProperty = { isByMouseType: true, isByMouseName: false };
 let check = {
-  nowEnvironmentType: 'desert_warpath',
+  atEnvironmentType: 'desert_warpath',
   target: 'desert_boss',
-  callback() {
+  successCallback() {
     travel('desert_city', 3000, () => {
       checkThenArm(null, 'bait', 'Gouda Cheese');
       checkThenArm(null, 'weapon', parseTrapName('best.weapon.physical'));
@@ -13,26 +13,41 @@ let check = {
   }
 };
 check = {
-  nowEnvironmentType: 'cape_clawed',
+  atEnvironmentType: 'cape_clawed',
   target: 'elder',
-  callback() {
-    travel('elub_shore', 3000, () => {
+  successCallback() {
+    travel('nerg_plains', 3000, () => {
       checkThenArm(null, 'bait', 'Gouda Cheese');
-      // checkThenArm(null, 'weapon', parseTrapName('best.weapon.physical'));
+      checkThenArm(null, 'weapon', 'Horrific Venus');
       // checkThenArm(null, 'base', parseTrapName('best.base.combo'));
       checkThenArm(null, 'trinket', 'None');
     });
+  },
+  beforeSuccessCallback() {
+    console.log(getBaitItemId());
+    if (getBaitItemId() === 80)
+      travel('elub_shore', 3000, () => {
+        checkThenArm(null, 'bait', 'Gouda Cheese');
+        // checkThenArm(null, 'weapon', parseTrapName('best.weapon.physical'));
+        // checkThenArm(null, 'base', parseTrapName('best.base.combo'));
+        checkThenArm(null, 'trinket', 'None');
+      });
   }
 };
 hasCaughtAction(checkedProperty.isByMouseType, check);
 function hasCaughtAction(isByType, check) {
   // const isProd = false;
-  logging('hasCaughtAction_1.0.1.0.0');
-  if (getEnvironmentType() === check.nowEnvironmentType)
+  logging('hasCaughtAction_1.0.2.1.0, isByType', isByType, check);
+  if (getEnvironmentType() === check.atEnvironmentType)
     if (
       (isByType && hasCaughtTargetByDataMouseType(check.target)) ||
       (!isByType && hasCaughtTargetByMouseName(check.target))
-    )
-      if (check.callback) check.callback();
+    ) {
+      if (check.successCallback) {
+        check.successCallback();
+        return;
+      }
+    }
+  if (check.beforeSuccessCallback) check.beforeSuccessCallback();
 }
 // End hasCaughtAction
