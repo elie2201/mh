@@ -2,18 +2,11 @@
 if (getEnvironmentType() === 'foreword_farm') forewordFarm();
 function forewordFarm() {
   const isProd = false;
-  const forewordFarmType = 'foreword_farm';
+  const targetEnvironmentType = 'foreword_farm';
   const enviromentType = getEnvironmentType();
-  if (enviromentType !== forewordFarmType) return;
-  logging('forewordFarm_0.2.0.0.0');
-  const plantRowTypes = [
-    ['ordinary_farm_plant', 'ordinary_magic_farm_plant'],
-    ['legendary_farm_plant', 'legendary_magic_farm_plant'],
-    ['twisted_legendary_farm_plant', 'twisted_legendary_magic_farm_plant']
-  ];
-  const quest = user.quests.QuestForewordFarm;
-  const miceState = quest.mice_state;
-  const plots = quest.plots;
+  if (enviromentType !== targetEnvironmentType) return;
+  logging('forewordFarm_0.3.0.1.0');
+  defaultBait = 'Gouda Cheese';
   // prettier-ignore
   const defaultSettings = {
     isAutoClaim: true,
@@ -32,8 +25,16 @@ function forewordFarm() {
     }
   };
   const settings = isProd
-    ? getStorageToObject(enviromentType, defaultSettings)
+    ? getStorageToObject(targetEnvironmentType, defaultSettings)
     : defaultSettings;
+  const plantRowTypes = [
+    ['ordinary_farm_plant', 'ordinary_magic_farm_plant'],
+    ['legendary_farm_plant', 'legendary_magic_farm_plant'],
+    ['twisted_legendary_farm_plant', 'twisted_legendary_magic_farm_plant']
+  ];
+  const quest = isProd ? user.quests.QuestForewordFarm : QuestForewordFarm;
+  const miceState = quest.mice_state;
+  const plots = quest.plots;
   const forewordFarmUtility = {
     isPlantable: false,
     is3Plantable: false,
@@ -73,7 +74,7 @@ function forewordFarm() {
       this.initPromise();
     },
     initPromise() {
-      logging('run initPromise');
+      logging('run initPromise: initialize states for running');
       return new Promise((resolve, reject) => {
         this.initPlantableStatePromise();
       });
@@ -144,7 +145,8 @@ function forewordFarm() {
         }
         console.log('all planted, double check plotPlantableState');
         setTimeout(() => {
-          this.initPlantableStatePromise();
+          // this.initPlantableStatePromise();
+          reloadWithMessage('After planted, Reloading...', false);
         }, 3000);
       });
     },
