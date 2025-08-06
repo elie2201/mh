@@ -1,16 +1,32 @@
 // hasCaughtAction
 const checkedProperty = { isByMouseType: true, isByMouseName: false };
-hasCaughtAction(checkedProperty.isByMouseType);
-function hasCaughtAction(isByType) {
+/* const check = {
+  nowEnvironmentType: 'desert_warpath',
+  target: 'desert_boss',
+  callback() {
+    travel('desert_city', 3000, () => {
+      checkThenArm(null, 'bait', 'Gouda Cheese');
+      checkThenArm(null, 'weapon', parseTrapName('best.weapon.physical'));
+      checkThenArm(null, 'base', parseTrapName('best.base.combo'));
+      checkThenArm(null, 'trinket', 'Artisan Charm');
+    });
+  }
+}; */
+hasCaughtAction(checkedProperty.isByMouseType, {
+  nowEnvironmentType: 'desert_warpath',
+  target: 'desert_boss',
+  callback() {
+    travel('desert_city', 3000, () => {
+      checkThenArm(null, 'bait', 'Empowered Brie');
+      checkThenArm(null, 'weapon', parseTrapName('best.weapon.physical'));
+      checkThenArm(null, 'base', parseTrapName('best.base.combo'));
+      checkThenArm(null, 'trinket', ['Artisan Charm', '2025 Charm']);
+    });
+  }
+});
+function hasCaughtAction(isByType, check) {
   // const isProd = false;
-  logging('hasCaughtAction_1.0.0.0.1');
-  const check = {
-    nowEnvironmentType: 'desert_warpath',
-    target: 'desert_boss',
-    callback() {
-      travel('desert_city');
-    }
-  };
+  logging('hasCaughtAction_1.0.1.0.0');
   if (getEnvironmentType() === check.nowEnvironmentType)
     if (
       (isByType && hasCaughtTargetByDataMouseType(check.target)) ||
