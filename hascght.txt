@@ -1,6 +1,6 @@
 // hasCaughtAction
 const checkedProperty = { isByMouseType: true, isByMouseName: false };
-/* const check = {
+let check = {
   nowEnvironmentType: 'desert_warpath',
   target: 'desert_boss',
   callback() {
@@ -8,22 +8,23 @@ const checkedProperty = { isByMouseType: true, isByMouseName: false };
       checkThenArm(null, 'bait', 'Gouda Cheese');
       checkThenArm(null, 'weapon', parseTrapName('best.weapon.physical'));
       checkThenArm(null, 'base', parseTrapName('best.base.combo'));
-      checkThenArm(null, 'trinket', 'Artisan Charm');
-    });
-  }
-}; */
-hasCaughtAction(checkedProperty.isByMouseType, {
-  nowEnvironmentType: 'desert_warpath',
-  target: 'desert_boss',
-  callback() {
-    travel('desert_city', 3000, () => {
-      checkThenArm(null, 'bait', 'Empowered Brie');
-      checkThenArm(null, 'weapon', parseTrapName('best.weapon.physical'));
-      checkThenArm(null, 'base', parseTrapName('best.base.combo'));
       checkThenArm(null, 'trinket', ['Artisan Charm', '2025 Charm']);
     });
   }
-});
+};
+check = {
+  nowEnvironmentType: 'cape_clawed',
+  target: 'elder',
+  callback() {
+    travel('elub_shore', 3000, () => {
+      checkThenArm(null, 'bait', 'Gouda Cheese');
+      // checkThenArm(null, 'weapon', parseTrapName('best.weapon.physical'));
+      // checkThenArm(null, 'base', parseTrapName('best.base.combo'));
+      checkThenArm(null, 'trinket', 'None');
+    });
+  }
+};
+hasCaughtAction(checkedProperty.isByMouseType, check);
 function hasCaughtAction(isByType, check) {
   // const isProd = false;
   logging('hasCaughtAction_1.0.1.0.0');
