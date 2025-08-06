@@ -1,8 +1,9 @@
 // hasCaughtAction
-hasCaughtAction();
+const checkedProperty = { isByMouseType: true, isByMouseName: false };
+hasCaughtAction(checkedProperty.isByMouseType);
 function hasCaughtAction(isByType) {
   // const isProd = false;
-  logging('hasCaughtAction_1.0.0.0.0');
+  logging('hasCaughtAction_1.0.0.0.1');
   const check = {
     nowEnvironmentType: 'desert_warpath',
     target: 'desert_boss',
