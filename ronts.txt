@@ -1,7 +1,58 @@
-// travelingShoppe
+const QuestRonza = {
+  num_chrome_bits_found: 20,
+  num_chrome_bits: 20,
+  num_chrome_vouchers: 0,
+  num_chrome_bit_first_voucher: 100,
+  num_chrome_bit_second_voucher: 200,
+  percent: 10,
+  state: 'default',
+  claimed_first_voucher: null,
+  claimed_second_voucher: null,
+  is_shutdown: null,
+  is_ronza: true,
+  at_ronza: true,
+  shutdown_date: 'Wednesday, July 16',
+  event_end_date: 'Tuesday, July 22',
+  timer_bar_start_date: '2025-07-02T14:45:00.000Z',
+  timer_bar_end_date: '2025-07-16T15:00:00.000Z'
+};
+// const MOUSEHUNT_BASE_URL = 'https://www.mousehuntgame.com/';
+const user = {};
+user.quests = {};
+user.quests.QuestRonza = QuestRonza;
+// const hg = {};
+function getEnvironmentType() {}
+function logging(...any) {}
+function getStorageToObject(key, defaultObject) {}
+function armAllTraps(bait, weapon, base, charm) {
+  logging(bait, weapon, base, charm);
+}
+function parseQuantity(qty) {
+  const strQty = (qty || 0) + '';
+  const rtn = parseInt(strQty.replaceAll(',', ''));
+  return Number.isNaN(rtn) ? 0 : rtn;
+}
+function trimToEmpty(str) {}
+// Utility
+function getQuantityByUrlThen(itemType, callback) {
+  /* const url = MOUSEHUNT_BASE_URL + 'item.php?item_type=' + itemType;
+  $.get(url, (data) => {
+    const key = 'You Own: ';
+    const text = data.split(key)[1];
+    const key2 = '</div>';
+    const endIndex = text.indexOf(key2);
+    const qtyText = text.substring(0, endIndex).trim();
+    logging(qtyText);
+    const qty = parseQuantity(qtyText.split('/')[0]);
+    if (callback) callback(qty);
+  }); */
+}
+// End Utility
+
+// #travelingShoppe
 if (getEnvironmentType() == 'ronzas_traveling_shoppe') travelingShoppe();
 function travelingShoppe() {
-  console.log(`travelingShoppe_0.1.4.1.6`);
+  console.log(`travelingShoppe_0.1.4.2.6`);
   // const quest = user.quests.QuestRonza;
   const goudaType = 'gouda_cheese';
   const rockforthType = 'rockforth_cheese';
@@ -75,4 +126,4 @@ function travelingShoppe() {
     }
   }
 }
-// End travelingShoppe
+// End #travelingShoppe
