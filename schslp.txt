@@ -1,9 +1,9 @@
-// scheduledSleep
+// #scheduledSleep
 // prettier-ignore
 setTimeout(() => { scheduledSleep(); }, getRandomInteger(60000, 120000));
 function scheduledSleep() {
   const environmentType = getEnvironmentType();
-  logging(`scheduledSleep_1.2.13.6.9 in ${environmentType}`);
+  logging(`scheduledSleep_1.2.13.7.9 in ${environmentType}`);
   const floatingIslandsUtility = {
     getSpeed(quest) {
       if (!quest) quest = user.quests.QuestFloatingIslands;
@@ -485,4 +485,772 @@ function scheduledSleep() {
     return hm;
   }
 }
-// End scheduledSleep
+// End #scheduledSleep
+
+function getRandomInteger(min, max) {
+  return parseInt(min + Math.random() * (max - min));
+}
+
+// function $() {}
+function getStorageToObject(key, obj) {}
+function logging(...any) {}
+function getEnvironmentType() {}
+// function getFwPopulation() {}
+function trimToEmpty(any) {}
+// function trimToDefault(any, defaultValue) {}
+function parseQuantity(expr) {}
+function armAllTraps(bait, weapon, base, trinket) {}
+function getBaitQuantity() {}
+function getBaitItemId() {}
+
+const hg = {};
+const user = {};
+user.quests = {};
+user.quests.QuestFloatingIslands = QuestFloatingIslands;
+user.quests.QuestLabyrinth = QuestLabyrinth;
+user.quests.QuestAncientCity = QuestAncientCity;
+
+let QuestFloatingIslands = {
+  hunting_site_atts: {
+    num_hunts_per_mod: 10,
+    island_mod_panels: [],
+    island_loot: [
+      {
+        type: 'floating_islands_cloud_gem_stat_item',
+        name: 'Sky Glass',
+        thumb:
+          'https://www.mousehuntgame.com/images/items/stats/275d274836db81086a24e89f29de4cbf.gif?cv=3',
+        quantity: 1
+      },
+      {
+        type: 'floating_islands_sky_ore_stat_item',
+        name: 'Sky Ore',
+        thumb:
+          'https://www.mousehuntgame.com/images/items/stats/246e7d6fc6f428b15effaf0b4200b838.gif?cv=3',
+        quantity: 1
+      }
+    ],
+    is_fuel_enabled: null,
+    is_island_fully_explored: null,
+    warden_stones: {
+      fog_shrine: null,
+      frost_shrine: null,
+      rain_shrine: null,
+      wind_shrine: null
+    },
+    island_type: 'launch_pad_island',
+    island_power_type: 'launch_pad_island',
+    island_name: 'Launch Pad',
+    island_name_indefinite_article: 'a',
+    island_term: 'island',
+    island_mod_types: [],
+    activated_island_mod_types: [],
+    island_progress: 0,
+    enemy_progress: 0,
+    hunts_remaining: 75,
+    sky_wardens_caught: 0,
+    is_low_tier_island: null,
+    is_high_tier_island: null,
+    is_vault_island: null,
+    is_high_altitude: null,
+    has_enemy: null,
+    enemy: null,
+    is_enemy_encounter: false,
+    has_encountered_enemy: null,
+    has_defeated_enemy: null,
+    enemy_encounter_hunts_remaining: 40,
+    one_time_reward: [],
+    has_treasure_trove: null
+  },
+  airship: {
+    user_id: 4265273,
+    oculus_level: 7,
+    sail: {
+      type: 'airship_sail_spring_stat_item',
+      image:
+        'https://www.mousehuntgame.com/images/ui/hud/floating_islands/airship/sail/airship_sail_spring_stat_item.png'
+    },
+    hull: {
+      type: 'airship_hull_spring_stat_item',
+      image:
+        'https://www.mousehuntgame.com/images/ui/hud/floating_islands/airship/hull/airship_hull_spring_stat_item.png'
+    },
+    balloon: {
+      type: 'airship_balloon_spring_stat_item',
+      image:
+        'https://www.mousehuntgame.com/images/ui/hud/floating_islands/airship/balloon/airship_balloon_spring_stat_item.png'
+    },
+    can_upgrade_oculus: null,
+    other_property: true,
+    can_purchase_sky_vault_upgrade: null,
+    has_sky_vault_upgrade: null,
+    is_animation_disabled: true
+  },
+  saved_trap_setup: {
+    name: 'Launch Pad',
+    can_arm_setup: null,
+    has_setup: null,
+    is_active: null,
+    items: {
+      base: {
+        classification: 'base',
+        is_empty: true
+      },
+      weapon: {
+        classification: 'weapon',
+        is_empty: true
+      },
+      bait: {
+        classification: 'bait',
+        is_empty: true
+      },
+      trinket: {
+        classification: 'trinket',
+        is_empty: true
+      }
+    }
+  },
+  can_retreat: null,
+  can_show_palace: null,
+  is_at_sky_palace: null,
+  can_launch_palace: null,
+  jet_stream_active: false
+};
+QuestFloatingIslands = {
+  hunting_site_atts: {
+    num_hunts_per_mod: 10,
+    island_mod_panels: [
+      {
+        type: 'rain_shrine',
+        name: 'Shrine of Rain',
+        description: 'A shrine dedicated to the Warden of Rain!',
+        level: 1,
+        pips: [
+          {
+            owner: 'player',
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: 'player',
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: 'player',
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: 'player',
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: 'player',
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: 'player',
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: 'player',
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: 'player',
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: 'player',
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: 'player',
+            has_changed: null,
+            is_current: false
+          }
+        ],
+        sign: '+',
+        is_complete: true,
+        is_failed: null,
+        is_active: null,
+        is_enemy_active: null,
+        rewards: [],
+        has_rewards: null,
+        special_effect_description: {
+          short: '+1 Speed',
+          full: 'Progress through the island faster.'
+        },
+        has_special_effect_description: true,
+        loot_cache_multiplier: 2,
+        has_loot_cache_multiplier: null,
+        has_high_tier_island_multiplier: null
+      },
+      {
+        type: 'loot_cache',
+        name: 'Loot Cache',
+        description:
+          'Ore, Glass, Curds, and Empyrean Seal drops are all doubled!',
+        level: 1,
+        pips: [
+          {
+            owner: 'player',
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: 'player',
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: 'player',
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: 'player',
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: 'player',
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: 'player',
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: 'player',
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: 'player',
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: 'player',
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: 'player',
+            has_changed: null,
+            is_current: false
+          }
+        ],
+        sign: '+',
+        is_complete: true,
+        is_failed: null,
+        is_active: null,
+        is_enemy_active: null,
+        rewards: [],
+        has_rewards: null,
+        special_effect_description: {
+          short: 'Loot x2',
+          full: 'BOOSTS Loot!'
+        },
+        has_special_effect_description: true,
+        loot_cache_multiplier: 2,
+        has_loot_cache_multiplier: null,
+        has_high_tier_island_multiplier: null
+      },
+      {
+        type: 'ore_bonus',
+        name: 'Sky Ore Deposit',
+        description: 'An exposed vein of Sky Ore, ready to be mined!',
+        level: 1,
+        pips: [
+          {
+            owner: 'player',
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: 'player',
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: 'player',
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: 'player',
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: 'player',
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: 'player',
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: 'player',
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: 'player',
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: 'player',
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: 'player',
+            has_changed: null,
+            is_current: false
+          }
+        ],
+        sign: 'x',
+        is_complete: true,
+        is_failed: null,
+        is_active: null,
+        is_enemy_active: null,
+        rewards: [
+          {
+            type: 'floating_islands_sky_ore_stat_item',
+            name: 'Sky Ore',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/246e7d6fc6f428b15effaf0b4200b838.gif?cv=5',
+            quantity: 2,
+            loot_cache_quantity: 2,
+            total_quantity: 4
+          }
+        ],
+        has_rewards: true,
+        special_effect_description: null,
+        has_special_effect_description: null,
+        loot_cache_multiplier: 2,
+        has_loot_cache_multiplier: true,
+        has_high_tier_island_multiplier: null
+      },
+      {
+        type: 'sky_cheese',
+        name: 'Cloud Curd Bonus',
+        description: 'Plumes of cheesey clouds rain down curds!',
+        level: 1,
+        pips: [
+          {
+            owner: 'player',
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: 'player',
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: 'player',
+            has_changed: null,
+            is_current: true
+          },
+          {
+            owner: null,
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: null,
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: null,
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: null,
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: null,
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: null,
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: null,
+            has_changed: null,
+            is_current: false
+          }
+        ],
+        sign: '+',
+        is_complete: null,
+        is_failed: null,
+        is_active: true,
+        is_enemy_active: null,
+        rewards: [
+          {
+            type: 'cloud_curd_crafting_item',
+            name: 'Cloud Curd',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/crafting_items/thumbnails/044b2af27e74a06750e68c489c9165df.gif?cv=5',
+            quantity: 2,
+            loot_cache_quantity: 2,
+            total_quantity: 4
+          }
+        ],
+        has_rewards: true,
+        special_effect_description: null,
+        has_special_effect_description: null,
+        loot_cache_multiplier: 2,
+        has_loot_cache_multiplier: true,
+        has_high_tier_island_multiplier: null
+      }
+    ],
+    island_loot: [
+      {
+        type: 'floating_islands_cloud_gem_stat_item',
+        name: 'Sky Glass',
+        thumb:
+          'https://www.mousehuntgame.com/images/items/stats/275d274836db81086a24e89f29de4cbf.gif?cv=5',
+        quantity: 3
+      },
+      {
+        type: 'floating_islands_sky_ore_stat_item',
+        name: 'Sky Ore',
+        thumb:
+          'https://www.mousehuntgame.com/images/items/stats/246e7d6fc6f428b15effaf0b4200b838.gif?cv=5',
+        quantity: 5
+      },
+      {
+        type: 'cloud_curd_crafting_item',
+        name: 'Cloud Curd',
+        thumb:
+          'https://www.mousehuntgame.com/images/items/crafting_items/thumbnails/044b2af27e74a06750e68c489c9165df.gif?cv=5',
+        quantity: 5
+      }
+    ],
+    is_fuel_enabled: true,
+    is_island_fully_explored: null,
+    warden_stones: {
+      fog_shrine: null,
+      frost_shrine: null,
+      rain_shrine: null,
+      wind_shrine: null
+    },
+    island_type: 'law_island',
+    island_power_type: 'law',
+    island_name: 'Law Island',
+    island_name_indefinite_article: 'a',
+    island_term: 'island',
+    island_mod_types: ['rain_shrine', 'loot_cache', 'ore_bonus', 'sky_cheese'],
+    activated_island_mod_types: [
+      'rain_shrine',
+      'loot_cache',
+      'ore_bonus',
+      'sky_cheese'
+    ],
+    island_progress: 33,
+    enemy_progress: 0,
+    hunts_remaining: 64,
+    sky_wardens_caught: 0,
+    is_low_tier_island: true,
+    is_high_tier_island: null,
+    is_vault_island: null,
+    is_high_altitude: null,
+    has_enemy: true,
+    enemy: {
+      id: 1045,
+      type: 'rain_warden',
+      name: 'Warden of Rain',
+      abbreviated_name: 'Warden of Rain',
+      thumb:
+        'https://www.mousehuntgame.com/images/mice/thumb/307e244aca09fac281ec1837b9f5ef7a.gif?cv=5'
+    },
+    is_enemy_encounter: false,
+    has_encountered_enemy: null,
+    has_defeated_enemy: null,
+    enemy_encounter_hunts_remaining: 7,
+    one_time_reward: [
+      {
+        type: 'light_floating_loot_cache_convertible',
+        name: 'Low Altitude Treasure Trove',
+        thumb:
+          'https://www.mousehuntgame.com/images/items/convertibles/671b9528a32b0190c2579ec18830f594.gif?cv=5'
+      },
+      {
+        type: 'sky_conqueror_egg_convertible',
+        name: 'Sky Conqueror Egg',
+        thumb:
+          'https://www.mousehuntgame.com/images/items/convertibles/91ca841f03e1710428ebe7c70f019102.gif?cv=5'
+      }
+    ],
+    has_treasure_trove: null
+  },
+  airship: {
+    user_id: 4265273,
+    oculus_level: 9,
+    sail: {
+      type: 'airship_sail_spring_stat_item',
+      image:
+        'https://www.mousehuntgame.com/images/ui/hud/floating_islands/airship/sail/airship_sail_spring_stat_item.png'
+    },
+    hull: {
+      type: 'airship_hull_spring_stat_item',
+      image:
+        'https://www.mousehuntgame.com/images/ui/hud/floating_islands/airship/hull/airship_hull_spring_stat_item.png'
+    },
+    balloon: {
+      type: 'airship_balloon_spring_stat_item',
+      image:
+        'https://www.mousehuntgame.com/images/ui/hud/floating_islands/airship/balloon/airship_balloon_spring_stat_item.png'
+    },
+    can_upgrade_oculus: null,
+    other_property: true,
+    can_purchase_sky_vault_upgrade: null,
+    has_sky_vault_upgrade: true,
+    is_animation_disabled: true
+  },
+  saved_trap_setup: {
+    name: 'Law',
+    can_arm_setup: null,
+    has_setup: null,
+    is_active: null,
+    items: {
+      base: {
+        classification: 'base',
+        is_empty: true
+      },
+      weapon: {
+        classification: 'weapon',
+        is_empty: true
+      },
+      bait: {
+        classification: 'bait',
+        is_empty: true
+      },
+      trinket: {
+        classification: 'trinket',
+        is_empty: true
+      }
+    }
+  },
+  can_retreat: null,
+  can_show_palace: true,
+  is_at_sky_palace: null,
+  can_launch_palace: null,
+  jet_stream_active: false
+};
+const QuestLabyrinth = {
+  bait_warning: 'active',
+  bait_status: '',
+  hallway_name: 'Short Plain Fealty Hallway',
+  hallway_length: 10,
+  hallway_clue: 'y',
+  hallway_tier: 1,
+  status: 'hallway',
+  total_clues: 6,
+  power_type_warning: 'active',
+  can_scramble_doors: 'disabled hallway',
+  can_scramble_clues: 'active',
+  can_retreat: 'active',
+  lantern_status: 'inactive',
+  scramble_door_warning: true,
+  items: {
+    labyrinth_scramble_doors_stat_item: 17,
+    labyrinth_scramble_clues_stat_item: 6,
+    labyrinth_lantern_fuel: 174,
+    glowing_gruyere_cheese: 264,
+    cave_nightshade_crafting_item: 34,
+    cavern_fungus_crafting_item: 315,
+    plate_of_fealty_crafting_item: 18,
+    tech_power_core_crafting_item: 33,
+    ancient_scholar_scroll_crafting_item: 6
+  },
+  can_craft_3: 'disabled',
+  can_craft_5: 'disabled',
+  tiles: [
+    {
+      index: 0,
+      status: 'complete bad'
+    },
+    {
+      index: 1,
+      status: 'complete bad'
+    },
+    {
+      index: 2,
+      status: 'complete bad'
+    },
+    {
+      index: 3,
+      status: 'complete bad'
+    },
+    {
+      index: 4,
+      status: 'complete bad'
+    },
+    {
+      index: 5,
+      status: 'complete bad'
+    },
+    {
+      index: 6,
+      status: 'active'
+    },
+    {
+      index: 7,
+      status: 'locked'
+    },
+    {
+      index: 8,
+      status: 'locked'
+    },
+    {
+      index: 9,
+      status: 'locked'
+    }
+  ],
+  doors: [
+    {
+      name: '???',
+      choice: null,
+      css_class: 'disabled mystery'
+    },
+    {
+      name: '???',
+      choice: null,
+      css_class: 'disabled mystery'
+    },
+    {
+      name: '???',
+      choice: null,
+      css_class: 'disabled mystery'
+    }
+  ],
+  clues: [
+    {
+      name: 'Dead End',
+      type: 'm',
+      quantity: 6,
+      width: 100
+    }
+  ],
+  clue_progress_width: 6,
+  all_clues: [
+    {
+      name: 'Fealty',
+      quantity: 0,
+      width: 0,
+      type: 'y',
+      tier: 'empty'
+    },
+    {
+      name: 'Tech',
+      quantity: 0,
+      width: 0,
+      type: 'h',
+      tier: 'empty'
+    },
+    {
+      name: 'Scholar',
+      quantity: 0,
+      width: 0,
+      type: 's',
+      tier: 'empty'
+    },
+    {
+      name: 'Treasury',
+      quantity: 0,
+      width: 0,
+      type: 't',
+      tier: 'empty'
+    },
+    {
+      name: 'Farming',
+      quantity: 0,
+      width: 0,
+      type: 'f',
+      tier: 1
+    },
+    {
+      name: 'Dead End',
+      quantity: 6,
+      width: 7.5,
+      type: 'm',
+      tier: 0
+    }
+  ]
+};
+const QuestAncientCity = {
+  status: '',
+  bait_warning: '',
+  bait_status: 'active',
+  power_type_warning: '',
+  boss: 'INCOMING',
+  countdown: 14,
+  total: 92,
+  remaining: 77,
+  width: 83.69565217391305,
+  district_tier: 3,
+  district_type: 's',
+  clue_name: 'Scholar',
+  district_name: 'The Dark Scholar Library',
+  items: {
+    cave_nightshade_crafting_item: {
+      quantity: 76,
+      status: ''
+    },
+    cavern_fungus_crafting_item: {
+      quantity: 770,
+      status: ''
+    },
+    plate_of_fealty_crafting_item: {
+      quantity: 263,
+      status: ''
+    },
+    tech_power_core_crafting_item: {
+      quantity: 9,
+      status: ''
+    },
+    ancient_scholar_scroll_crafting_item: {
+      quantity: 12,
+      status: 'active'
+    },
+    glowing_gruyere_cheese: {
+      quantity: 133
+    }
+  },
+  show_thief_base: null,
+  is_thief_base_armed: null,
+  thief_base_mode: 'stealth',
+  is_stealth_mode: null,
+  is_heist_mode: null,
+  stealth_mode_stealth_effect_chance: 50,
+  heist_mode_stealth_multiplier: 2,
+  stealth_loss_catch: 1,
+  stealth_loss_fta: 1,
+  stealth_loss_ftc: 3,
+  canvas_page_url: 'https://www.mousehuntgame.com/'
+};
