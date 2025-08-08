@@ -1,10 +1,1100 @@
-// floatingIslands
+/* eslint-disable new-cap */
+const QuestFloatingIslands = {
+  hunting_site_atts: {
+    num_hunts_per_mod: 10,
+    island_mod_panels: [],
+    island_loot: [
+      {
+        type: 'floating_islands_cloud_gem_stat_item',
+        name: 'Sky Glass',
+        thumb:
+          'https://www.mousehuntgame.com/images/items/stats/275d274836db81086a24e89f29de4cbf.gif?cv=3',
+        quantity: 1
+      },
+      {
+        type: 'floating_islands_sky_ore_stat_item',
+        name: 'Sky Ore',
+        thumb:
+          'https://www.mousehuntgame.com/images/items/stats/246e7d6fc6f428b15effaf0b4200b838.gif?cv=3',
+        quantity: 1
+      }
+    ],
+    is_fuel_enabled: null,
+    is_island_fully_explored: null,
+    warden_stones: {
+      fog_shrine: null,
+      frost_shrine: null,
+      rain_shrine: null,
+      wind_shrine: null
+    },
+    island_type: 'launch_pad_island',
+    island_power_type: 'launch_pad_island',
+    island_name: 'Launch Pad',
+    island_name_indefinite_article: 'a',
+    island_term: 'island',
+    island_mod_types: [],
+    activated_island_mod_types: [],
+    island_progress: 0,
+    enemy_progress: 0,
+    hunts_remaining: 75,
+    sky_wardens_caught: 0,
+    is_low_tier_island: null,
+    is_high_tier_island: null,
+    is_vault_island: null,
+    is_high_altitude: null,
+    has_enemy: null,
+    enemy: null,
+    is_enemy_encounter: false,
+    has_encountered_enemy: null,
+    has_defeated_enemy: null,
+    enemy_encounter_hunts_remaining: 40,
+    one_time_reward: [],
+    has_treasure_trove: null
+  },
+  airship: {
+    user_id: 4265273,
+    oculus_level: 7,
+    sail: {
+      type: 'airship_sail_spring_stat_item',
+      image:
+        'https://www.mousehuntgame.com/images/ui/hud/floating_islands/airship/sail/airship_sail_spring_stat_item.png'
+    },
+    hull: {
+      type: 'airship_hull_spring_stat_item',
+      image:
+        'https://www.mousehuntgame.com/images/ui/hud/floating_islands/airship/hull/airship_hull_spring_stat_item.png'
+    },
+    balloon: {
+      type: 'airship_balloon_spring_stat_item',
+      image:
+        'https://www.mousehuntgame.com/images/ui/hud/floating_islands/airship/balloon/airship_balloon_spring_stat_item.png'
+    },
+    can_upgrade_oculus: null,
+    other_property: true,
+    can_purchase_sky_vault_upgrade: null,
+    has_sky_vault_upgrade: null,
+    is_animation_disabled: true
+  },
+  saved_trap_setup: {
+    name: 'Launch Pad',
+    can_arm_setup: null,
+    has_setup: null,
+    is_active: null,
+    items: {
+      base: {
+        classification: 'base',
+        is_empty: true
+      },
+      weapon: {
+        classification: 'weapon',
+        is_empty: true
+      },
+      bait: {
+        classification: 'bait',
+        is_empty: true
+      },
+      trinket: {
+        classification: 'trinket',
+        is_empty: true
+      }
+    }
+  },
+  can_retreat: null,
+  can_show_palace: null,
+  is_at_sky_palace: null,
+  can_launch_palace: null,
+  jet_stream_active: false
+};
+const enviromentAtts = {
+  hunting_site_atts: {
+    num_hunts_per_mod: 10,
+    island_mod_panels: [
+      {
+        type: 'rain_shrine',
+        name: 'Shrine of Rain',
+        description: 'A shrine dedicated to the Warden of Rain!',
+        level: 1,
+        pips: [
+          {
+            owner: 'player',
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: 'player',
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: 'player',
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: 'player',
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: 'player',
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: 'player',
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: 'player',
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: 'player',
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: 'player',
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: 'player',
+            has_changed: null,
+            is_current: false
+          }
+        ],
+        sign: '+',
+        is_complete: true,
+        is_failed: null,
+        is_active: null,
+        is_enemy_active: null,
+        rewards: [],
+        has_rewards: null,
+        special_effect_description: {
+          short: '+1 Speed',
+          full: 'Progress through the island faster.'
+        },
+        has_special_effect_description: true,
+        loot_cache_multiplier: 1,
+        has_loot_cache_multiplier: null,
+        has_high_tier_island_multiplier: null,
+        canvas_page_url: 'https://www.mousehuntgame.com/'
+      },
+      {
+        type: 'gem_bonus',
+        name: 'Sky Glass Formation',
+        description:
+          'A crystalline growth of Sky Glass, waiting to be plucked!',
+        level: 1,
+        pips: [
+          {
+            owner: 'player',
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: 'player',
+            has_changed: null,
+            is_current: true
+          },
+          {
+            owner: null,
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: null,
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: null,
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: null,
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: null,
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: null,
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: null,
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: null,
+            has_changed: null,
+            is_current: false
+          }
+        ],
+        sign: 'x',
+        is_complete: null,
+        is_failed: null,
+        is_active: true,
+        is_enemy_active: null,
+        rewards: [
+          {
+            type: 'floating_islands_cloud_gem_stat_item',
+            name: 'Sky Glass',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/275d274836db81086a24e89f29de4cbf.gif?cv=5',
+            quantity: 2,
+            loot_cache_quantity: 0,
+            total_quantity: 2
+          }
+        ],
+        has_rewards: true,
+        special_effect_description: null,
+        has_special_effect_description: null,
+        loot_cache_multiplier: 1,
+        has_loot_cache_multiplier: null,
+        has_high_tier_island_multiplier: null,
+        canvas_page_url: 'https://www.mousehuntgame.com/'
+      },
+      {
+        type: 'sky_cheese',
+        name: 'Cloud Curd Bonus',
+        description: 'Plumes of cheesey clouds rain down curds!',
+        level: 1,
+        pips: [
+          {
+            owner: null,
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: null,
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: null,
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: null,
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: null,
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: null,
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: null,
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: null,
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: null,
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: null,
+            has_changed: null,
+            is_current: false
+          }
+        ],
+        sign: '+',
+        is_complete: null,
+        is_failed: null,
+        is_active: null,
+        is_enemy_active: null,
+        rewards: [
+          {
+            type: 'cloud_curd_crafting_item',
+            name: 'Cloud Curd',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/crafting_items/thumbnails/044b2af27e74a06750e68c489c9165df.gif?cv=5',
+            quantity: 2,
+            loot_cache_quantity: 0,
+            total_quantity: 2
+          }
+        ],
+        has_rewards: true,
+        special_effect_description: null,
+        has_special_effect_description: null,
+        loot_cache_multiplier: 1,
+        has_loot_cache_multiplier: null,
+        has_high_tier_island_multiplier: null,
+        canvas_page_url: 'https://www.mousehuntgame.com/'
+      },
+      {
+        type: 'ore_bonus',
+        name: 'Sky Ore Deposit',
+        description: 'An exposed vein of Sky Ore, ready to be mined!',
+        level: 1,
+        pips: [
+          {
+            owner: null,
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: null,
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: null,
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: null,
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: null,
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: null,
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: null,
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: null,
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: null,
+            has_changed: null,
+            is_current: false
+          },
+          {
+            owner: 'enemy',
+            has_changed: null,
+            is_current: true
+          }
+        ],
+        sign: 'x',
+        is_complete: null,
+        is_failed: null,
+        is_active: null,
+        is_enemy_active: true,
+        rewards: [
+          {
+            type: 'floating_islands_sky_ore_stat_item',
+            name: 'Sky Ore',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/246e7d6fc6f428b15effaf0b4200b838.gif?cv=5',
+            quantity: 2,
+            loot_cache_quantity: 0,
+            total_quantity: 2
+          }
+        ],
+        has_rewards: true,
+        special_effect_description: null,
+        has_special_effect_description: null,
+        loot_cache_multiplier: 1,
+        has_loot_cache_multiplier: null,
+        has_high_tier_island_multiplier: null,
+        canvas_page_url: 'https://www.mousehuntgame.com/'
+      }
+    ],
+    island_loot: [
+      {
+        type: 'floating_islands_cloud_gem_stat_item',
+        name: 'Sky Glass',
+        thumb:
+          'https://www.mousehuntgame.com/images/items/stats/275d274836db81086a24e89f29de4cbf.gif?cv=5',
+        quantity: 3
+      },
+      {
+        type: 'floating_islands_sky_ore_stat_item',
+        name: 'Sky Ore',
+        thumb:
+          'https://www.mousehuntgame.com/images/items/stats/246e7d6fc6f428b15effaf0b4200b838.gif?cv=5',
+        quantity: 2
+      }
+    ],
+    is_fuel_enabled: true,
+    is_island_fully_explored: null,
+    warden_stones: {
+      fog_shrine: true,
+      frost_shrine: null,
+      rain_shrine: null,
+      wind_shrine: null
+    },
+    island_type: 'tactical_island',
+    island_power_type: 'tctcl',
+    island_name: 'Tactical Island',
+    island_name_indefinite_article: 'a',
+    island_term: 'island',
+    island_mod_types: ['rain_shrine', 'gem_bonus', 'sky_cheese', 'ore_bonus'],
+    activated_island_mod_types: ['rain_shrine', 'gem_bonus'],
+    island_progress: 12,
+    enemy_progress: 1,
+    hunts_remaining: 71,
+    sky_wardens_caught: 1,
+    is_low_tier_island: true,
+    is_high_tier_island: null,
+    is_vault_island: null,
+    is_high_altitude: null,
+    has_enemy: true,
+    enemy: {
+      id: 1045,
+      type: 'rain_warden',
+      name: 'Warden of Rain',
+      abbreviated_name: 'Warden of Rain',
+      thumb:
+        'https://www.mousehuntgame.com/images/mice/thumb/307e244aca09fac281ec1837b9f5ef7a.gif?cv=5'
+    },
+    is_enemy_encounter: false,
+    has_encountered_enemy: null,
+    has_defeated_enemy: null,
+    enemy_encounter_hunts_remaining: 27,
+    one_time_reward: [
+      {
+        type: 'light_floating_loot_cache_convertible',
+        name: 'Low Altitude Treasure Trove',
+        thumb:
+          'https://www.mousehuntgame.com/images/items/convertibles/671b9528a32b0190c2579ec18830f594.gif?cv=5'
+      },
+      {
+        type: 'sky_conqueror_egg_convertible',
+        name: 'Sky Conqueror Egg',
+        thumb:
+          'https://www.mousehuntgame.com/images/items/convertibles/91ca841f03e1710428ebe7c70f019102.gif?cv=5'
+      }
+    ],
+    has_treasure_trove: null
+  },
+  airship: {
+    user_id: 7892652,
+    oculus_level: 9,
+    sail: {
+      type: 'airship_sail_holiday_express_stat_item',
+      image:
+        'https://www.mousehuntgame.com/images/ui/hud/floating_islands/airship/sail/airship_sail_holiday_express_stat_item.png'
+    },
+    hull: {
+      type: 'airship_hull_winter_stat_item',
+      image:
+        'https://www.mousehuntgame.com/images/ui/hud/floating_islands/airship/hull/airship_hull_winter_stat_item.png'
+    },
+    balloon: {
+      type: 'airship_balloon_winter_stat_item',
+      image:
+        'https://www.mousehuntgame.com/images/ui/hud/floating_islands/airship/balloon/airship_balloon_winter_stat_item.png'
+    },
+    can_upgrade_oculus: null,
+    other_property: true,
+    can_purchase_sky_vault_upgrade: null,
+    has_sky_vault_upgrade: true,
+    is_animation_disabled: true
+  },
+  saved_trap_setup: {
+    name: 'Tactical',
+    can_arm_setup: null,
+    has_setup: null,
+    is_active: null,
+    items: {
+      base: {
+        classification: 'base',
+        is_empty: true
+      },
+      weapon: {
+        classification: 'weapon',
+        is_empty: true
+      },
+      bait: {
+        classification: 'bait',
+        is_empty: true
+      },
+      trinket: {
+        classification: 'trinket',
+        is_empty: true
+      }
+    }
+  },
+  can_retreat: null,
+  can_show_palace: true,
+  is_at_sky_palace: null,
+  can_launch_palace: true,
+  jet_stream_active: true,
+  power_type_name: 'Tactical',
+  island_paper_doll: {
+    is_high_tier: false,
+    type: 'tactical_island',
+    mods: [
+      {
+        type: 'rain_shrine',
+        level: 1
+      },
+      {
+        type: 'gem_bonus',
+        level: 1
+      },
+      {
+        type: 'sky_cheese',
+        level: 1
+      },
+      {
+        type: 'ore_bonus',
+        level: 1
+      }
+    ],
+    canvas_page_url: 'https://www.mousehuntgame.com/'
+  },
+  sky_wardens_total: 4,
+  sky_cheese_recipe: {
+    result: {
+      type: 'sky_cheese',
+      name: 'Cloud Cheesecake',
+      description:
+        'A decadent, mouth-watering cheesecake so light and fluffy that it actually floats! Made with only the finest, hand-picked Cloud Curds, churned into a rich, luscious cream, and baked in morning sunlight.<br />\n<br />\nThis exquisite dessert is a staple of the Floating Islands diet and simply irresistible to its denizens.',
+      thumb:
+        'https://www.mousehuntgame.com/images/items/bait/935f840dbea4d7be71323b9a148cca62.gif?cv=5',
+      thumb_transparent:
+        'https://www.mousehuntgame.com/images/items/bait/transparent_thumb/cc862646ed49a6d7bed008bd76d7af82.png?cv=5',
+      large:
+        'https://www.mousehuntgame.com/images/items/bait/large/b6bf3d7d2a0fb563572f7eb4f03071b9.png?cv=5',
+      owned: 411
+    },
+    vanilla: {
+      items: [
+        {
+          type: 'cloud_curd_crafting_item',
+          name: 'Cloud Curd',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/crafting_items/thumbnails/044b2af27e74a06750e68c489c9165df.gif?cv=5',
+          required_quantity: 1,
+          is_duplicate_item: null
+        },
+        {
+          type: 'gold_stat_item',
+          name: 'Gold',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/d8f90a569d52e7ea228ad0f1cc51516d.gif?cv=5',
+          required_quantity: 1000,
+          is_duplicate_item: null
+        }
+      ],
+      action: {
+        label: 'Craft Cloud Cheesecake for best results on the islands.',
+        css_class: 'vanilla',
+        result_quantity: 1,
+        name: 'Cloud Cheesecake',
+        subject_type: 'sky_cheese',
+        shop_environment: 'floating_islands',
+        action_type: 'shop'
+      }
+    },
+    upsell: {
+      items: [
+        {
+          type: 'cloud_curd_crafting_item',
+          name: 'Cloud Curd',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/crafting_items/thumbnails/044b2af27e74a06750e68c489c9165df.gif?cv=5',
+          required_quantity: 1,
+          is_duplicate_item: null
+        },
+        {
+          type: 'magic_essence_craft_item',
+          name: 'Magic Essence',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/crafting_items/thumbnails/f8f0bb0476b1a7d481407fa797525622.gif?cv=5',
+          required_quantity: 1,
+          is_duplicate_item: null
+        }
+      ],
+      action: {
+        label: 'Craft with Magic Essence for an increased yield!',
+        css_class: 'upsell',
+        result_quantity: 2,
+        name: 'Cloud Cheesecake',
+        subject_type: 'sky_cheese_pack_small_convertible',
+        shop_environment: 'floating_islands',
+        action_type: 'shop'
+      }
+    },
+    has_upsell: true,
+    show_full_recipes: true
+  },
+  pirate_cheese_recipe: {
+    result: {
+      type: 'sky_pirate_cheese',
+      name: 'Sky Pirate Swiss Cheese',
+      description:
+        "A secret recipe stolen from a prestigious affineur that normally creates a rare form of blind swiss with a twist! Churning Corsair's Curd in a cannon full of pistol shot, hanging just above sea level, creates this swashbuckling swiss full of eyes that reek of gunpowder and the briny sea air. Dressed in a tricorne hat and eye patch to reflect the pride that the pirates put into their work... and their lack of financial literacy.<br />\n<br />\nArm this villainous cheese to attract Sky Pirate mice on islands after discovering a Sky Pirate Den!",
+      thumb:
+        'https://www.mousehuntgame.com/images/items/bait/d3d3578292674d2a242f70211c040cfa.gif?cv=5',
+      thumb_transparent:
+        'https://www.mousehuntgame.com/images/items/bait/transparent_thumb/f16532f4d67b1bb7ec803b636947be2a.png?cv=5',
+      large:
+        'https://www.mousehuntgame.com/images/items/bait/large/1e7bf5043a13043d8f1d05a752d55469.png?cv=5',
+      owned: 42
+    },
+    vanilla: {
+      items: [
+        {
+          type: 'sky_pirate_cheese_curd_crafting_item',
+          name: "Corsair's Curd",
+          thumb:
+            'https://www.mousehuntgame.com/images/items/crafting_items/thumbnails/c07822d0195ffbd72dfed12b647ea6b9.gif?cv=5',
+          required_quantity: 20,
+          is_duplicate_item: null
+        },
+        {
+          type: 'gold_stat_item',
+          name: 'Gold',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/d8f90a569d52e7ea228ad0f1cc51516d.gif?cv=5',
+          required_quantity: 2000,
+          is_duplicate_item: null
+        }
+      ],
+      action: {
+        label: 'Craft Sky Pirate Swiss Cheese to attract those corsairs.',
+        css_class: 'vanilla',
+        result_quantity: 1,
+        name: 'Sky Pirate Swiss',
+        subject_type: 'sky_pirate_cheese',
+        shop_environment: 'floating_islands',
+        action_type: 'shop'
+      }
+    },
+    upsell: {
+      items: [
+        {
+          type: 'sky_pirate_cheese_curd_crafting_item',
+          name: "Corsair's Curd",
+          thumb:
+            'https://www.mousehuntgame.com/images/items/crafting_items/thumbnails/c07822d0195ffbd72dfed12b647ea6b9.gif?cv=5',
+          required_quantity: 20,
+          is_duplicate_item: null
+        },
+        {
+          type: 'magic_essence_craft_item',
+          name: 'Magic Essence',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/crafting_items/thumbnails/f8f0bb0476b1a7d481407fa797525622.gif?cv=5',
+          required_quantity: 1,
+          is_duplicate_item: null
+        }
+      ],
+      action: {
+        label: 'Craft with Magic Essence for an increased yield!',
+        css_class: 'upsell',
+        result_quantity: 2,
+        name: 'Sky Pirate Swiss',
+        subject_type: 'pirate_cheese_pack_small_convertible',
+        shop_environment: 'floating_islands',
+        action_type: 'shop'
+      }
+    },
+    has_upsell: true,
+    show_full_recipes: true
+  },
+  extra_rich_sky_cheese_recipe: {
+    result: {
+      type: 'extra_rich_sky_cheese',
+      name: 'Extra Rich Cloud Cheesecake',
+      description:
+        'This decadent delight is created by condensing and triple-churning large quantities of traditional cloud cheesecake, seasoning the mixture with finely ground Sky Ore and Sky Glass, and then aging it for many years in the centre of a cirrocumulus castellanus. Its aroma is so potent and distinctive that it will attract more lucrative mice more often while repelling Cloud Commoners such as the Kite Flyer and Daydreamer throughout the Floating Islands.<br/>\n<br />\nThe extremely rich flavour of this delicacy is a favourite among the Empyrean Guard and other Sky Palace nobility. It can lure some of the more illustrious breeds out of their hiding places within the many treasure vaults of the Empyrean Sky Palace.<br />\n<br />\nImbued with the power of Sky Ore and Sky Glass, this cheese provides a 20% Power Bonus and +5 Luck bonus when hunting anywhere in the Floating Islands.',
+      thumb:
+        'https://www.mousehuntgame.com/images/items/bait/4de8e0b9680cb50a980fcb40de11c8a2_v2.gif?cv=5',
+      thumb_transparent:
+        'https://www.mousehuntgame.com/images/items/bait/transparent_thumb/9a64013a061e08b8d1f89ce1d2d02801_v2.png?cv=5',
+      large:
+        'https://www.mousehuntgame.com/images/items/bait/large/0ae707c97067446e1dffa95eca697c3b_v2.png?cv=5',
+      owned: 37
+    },
+    vanilla: {
+      items: [
+        {
+          type: 'sky_cheese',
+          name: 'Cloud Cheesecake',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/bait/935f840dbea4d7be71323b9a148cca62.gif?cv=5',
+          required_quantity: 20,
+          is_duplicate_item: null
+        },
+        {
+          type: 'floating_islands_sky_ore_stat_item',
+          name: 'Sky Ore',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/246e7d6fc6f428b15effaf0b4200b838.gif?cv=5',
+          required_quantity: 2,
+          is_duplicate_item: null
+        },
+        {
+          type: 'floating_islands_cloud_gem_stat_item',
+          name: 'Sky Glass',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/275d274836db81086a24e89f29de4cbf.gif?cv=5',
+          required_quantity: 2,
+          is_duplicate_item: null
+        },
+        {
+          type: 'gold_stat_item',
+          name: 'Gold',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/d8f90a569d52e7ea228ad0f1cc51516d.gif?cv=5',
+          required_quantity: 1000,
+          is_duplicate_item: null
+        }
+      ],
+      action: {
+        label:
+          'Craft Extra Rich Cloud Cheesecake to attract the most lucrative breeds.',
+        css_class: 'vanilla',
+        result_quantity: 1,
+        name: 'Extra Rich Cloud Cheesecake',
+        subject_type: 'extra_rich_sky_cheese',
+        shop_environment: 'floating_islands',
+        action_type: 'shop'
+      }
+    },
+    upsell: {
+      items: [
+        {
+          type: 'sky_cheese',
+          name: 'Cloud Cheesecake',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/bait/935f840dbea4d7be71323b9a148cca62.gif?cv=5',
+          required_quantity: 20,
+          is_duplicate_item: null
+        },
+        {
+          type: 'floating_islands_sky_ore_stat_item',
+          name: 'Sky Ore',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/246e7d6fc6f428b15effaf0b4200b838.gif?cv=5',
+          required_quantity: 2,
+          is_duplicate_item: null
+        },
+        {
+          type: 'floating_islands_cloud_gem_stat_item',
+          name: 'Sky Glass',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/275d274836db81086a24e89f29de4cbf.gif?cv=5',
+          required_quantity: 2,
+          is_duplicate_item: null
+        },
+        {
+          type: 'magic_essence_craft_item',
+          name: 'Magic Essence',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/crafting_items/thumbnails/f8f0bb0476b1a7d481407fa797525622.gif?cv=5',
+          required_quantity: 1,
+          is_duplicate_item: null
+        }
+      ],
+      action: {
+        label: false,
+        css_class: 'upsell',
+        result_quantity: 2,
+        name: 'Extra Rich Cloud Cheesecake',
+        subject_type: 'extra_rich_sky_cheese_pack_small_convertible',
+        shop_environment: 'floating_islands',
+        action_type: 'shop'
+      }
+    },
+    has_upsell: true,
+    show_full_recipes: true
+  },
+  items: {
+    bottled_wind_stat_item: {
+      name: 'Bottled Wind',
+      quantity: '1,378',
+      status: 'active',
+      is_visible: true,
+      is_bag_item: true,
+      is_sky_palace_bag_item: null
+    },
+    sky_scrambler_stat_item: {
+      name: 'Cyclone Stone',
+      quantity: 878,
+      status: '',
+      is_visible: true,
+      is_bag_item: true,
+      is_sky_palace_bag_item: null
+    },
+    sky_sprocket_stat_item: {
+      name: 'Sky Sprocket',
+      quantity: 4,
+      status: '',
+      is_visible: true,
+      is_bag_item: true,
+      is_sky_palace_bag_item: null
+    },
+    skysoft_silk_stat_item: {
+      name: 'Skysoft Silk',
+      quantity: 1,
+      status: '',
+      is_visible: true,
+      is_bag_item: true,
+      is_sky_palace_bag_item: null
+    },
+    enchanted_wing_stat_item: {
+      name: 'Enchanted Wing',
+      quantity: 4,
+      status: '',
+      is_visible: true,
+      is_bag_item: true,
+      is_sky_palace_bag_item: null
+    },
+    cloudstone_bangle_stat_item: {
+      name: 'Cloudstone Bangle',
+      quantity: 1,
+      status: '',
+      is_visible: true,
+      is_bag_item: true,
+      is_sky_palace_bag_item: null
+    },
+    sky_pirate_seal_stat_item: {
+      name: 'Sky Pirate Seal',
+      quantity: 219,
+      status: '',
+      is_visible: null,
+      is_bag_item: true,
+      is_sky_palace_bag_item: null
+    },
+    raw_ancient_jade_stat_item: {
+      name: 'Raw Ancient Jade',
+      quantity: '1,989',
+      status: '',
+      is_visible: null,
+      is_bag_item: true,
+      is_sky_palace_bag_item: true
+    },
+    empyrean_seal_stat_item: {
+      name: 'Empyrean Seal',
+      quantity: '54,677',
+      status: '',
+      is_visible: null,
+      is_bag_item: true,
+      is_sky_palace_bag_item: true
+    },
+    floating_trap_upgrade_stat_item: {
+      name: 'Adorned Empyrean Jewel',
+      quantity: 86,
+      status: '',
+      is_visible: null,
+      is_bag_item: true,
+      is_sky_palace_bag_item: true
+    },
+    airship_rocket_fuel_stat_item: {
+      name: 'Storm Cell',
+      quantity: 142,
+      status: '',
+      is_visible: null,
+      is_bag_item: true,
+      is_sky_palace_bag_item: true
+    },
+    light_floating_loot_cache_convertible: {
+      name: 'Low Altitude Treasure Trove',
+      quantity: 83,
+      status: '',
+      is_visible: null,
+      is_bag_item: true,
+      is_sky_palace_bag_item: null
+    },
+    heavy_floating_loot_cache_convertible: {
+      name: 'High Altitude Treasure Trove',
+      quantity: 68,
+      status: '',
+      is_visible: null,
+      is_bag_item: true,
+      is_sky_palace_bag_item: null
+    },
+    empyrean_floating_loot_cache_convertible: {
+      name: 'Empyrean Treasure Trove',
+      quantity: 15,
+      status: '',
+      is_visible: null,
+      is_bag_item: true,
+      is_sky_palace_bag_item: true
+    },
+    sky_cheese: {
+      name: 'Cloud Cheesecake',
+      quantity: 411,
+      status: 'active',
+      is_visible: null,
+      is_bag_item: null,
+      is_sky_palace_bag_item: null,
+      can_purchase: true
+    },
+    extra_rich_sky_cheese: {
+      name: 'Extra Rich Cloud Cheesecake',
+      quantity: 37,
+      status: '',
+      is_visible: null,
+      is_bag_item: null,
+      is_sky_palace_bag_item: null,
+      can_purchase: true
+    },
+    sky_pirate_cheese: {
+      name: 'Sky Pirate Swiss Cheese',
+      quantity: 42,
+      status: '',
+      is_visible: null,
+      is_bag_item: null,
+      is_sky_palace_bag_item: null,
+      can_purchase: true
+    },
+    floating_islands_sky_ore_stat_item: {
+      name: 'Sky Ore',
+      quantity: 432,
+      status: '',
+      is_visible: null,
+      is_bag_item: null,
+      is_sky_palace_bag_item: null
+    },
+    floating_islands_cloud_gem_stat_item: {
+      name: 'Sky Glass',
+      quantity: 968,
+      status: '',
+      is_visible: null,
+      is_bag_item: null,
+      is_sky_palace_bag_item: null
+    },
+    cloud_curd_crafting_item: {
+      name: 'Cloud Curd',
+      quantity: '24,606',
+      status: '',
+      is_visible: null,
+      is_bag_item: null,
+      is_sky_palace_bag_item: null
+    },
+    sky_pirate_cheese_curd_crafting_item: {
+      name: "Corsair's Curd",
+      quantity: '1,625',
+      status: '',
+      is_visible: null,
+      is_bag_item: null,
+      is_sky_palace_bag_item: null
+    },
+    gold_stat_item: {
+      name: 'Gold',
+      quantity: '88,136,802',
+      status: '',
+      is_visible: null,
+      is_bag_item: null,
+      is_sky_palace_bag_item: null
+    },
+    magic_essence_craft_item: {
+      name: 'Magic Essence',
+      quantity: 809,
+      status: '',
+      is_visible: null,
+      is_bag_item: null,
+      is_sky_palace_bag_item: null
+    }
+  },
+  has_flight_log: null,
+  has_power_type_warning: null,
+  has_sky_cheese_warning: null,
+  has_sky_pirate_cheese_warning: null,
+  on_island: true,
+  enemy_state: 'enemyApproaching',
+  island_reward_state: 'rewardUnclaimed',
+  hunts_remaining_css_class: 'default',
+  hunts_remaining: 71,
+  hunts: 'hunts',
+  can_show_sky_palace_tutorial: null,
+  num_visible_items: 6,
+  canvas_page_url: 'https://www.mousehuntgame.com/'
+};
+
+function $() {}
+function getStorageToObject(key, obj) {}
+function armAllTraps(bait, weapon, base, charm) {
+  console.log(bait, weapon, base, charm);
+}
+function logging(...any) {}
+// function travel(environmentType, milliseconds, callback) {}
+function pauseByTraveling(environmentType, milliseconds, callback) {}
+function getEnvironmentType() {}
+function parseQuantity(any) {}
+function completeTransaction(
+  isPurchase,
+  itemType,
+  itemQuantity,
+  isKingsCartItem,
+  successCallback
+) {}
+function getRandomInteger(min, max) {}
+function getQuantityByUrlThen(itemType, callback) {}
+function countArrayElement(value, arrIn) {}
+function distinctArray(array) {}
+
+function doubleEgg(isToEnable) {}
+function litCandle(actionType) {}
+
+const MOUSEHUNT_BASE_URL = 'https://www.mousehuntgame.com/';
+const jsDialog = {};
+const hg = {};
+const user = {};
+user.quests = {};
+user.quests.QuestFloatingIslands = QuestFloatingIslands;
+user.environment_type = 'floating_islands';
+user.enviroment_atts = enviromentAtts;
+
+// sleep
+(() => {
+  const q = user.quests.QuestFloatingIslands;
+  const h = q.hunting_site_atts;
+  console.log(
+    h.enemy_encounter_hunts_remaining,
+    h.island_progress,
+    40 - (h.island_progress + h.enemy_progress)
+  );
+})();
+// auto CJS
+(() => {
+  const quest = user.quests.QuestFloatingIslands;
+  const atts = quest.hunting_site_atts;
+  if (!quest.jet_stream_active && atts.has_encountered_enemy)
+    console.log('use CJS');
+})();
+
+// #floatingIslands
 if (getEnvironmentType() === 'floating_islands') floatingIslands();
 function floatingIslands() {
   const targetEnvironmentType = 'floating_islands';
   const environmentType = getEnvironmentType();
   if (environmentType != targetEnvironmentType) return;
-  console.log('floatingIslands_1.4.12.5.5');
+  logging('floatingIslands_1.4.12.6.5');
   // prettier-ignore
   const AllPowerTypes = ['arcn', 'frgttn', 'hdr', 'shdw', 'drcnc', 'law', 'phscl', 'tctcl'];
   // prettier-ignore
@@ -927,4 +2017,4 @@ function floatingIslands() {
   }
   // End autoSkyMap
 }
-// End floatingIslands
+// End #floatingIslands
