@@ -1,13 +1,92 @@
-// townOfGnawnia
+const QuestTownOfGnawnia = {
+  current_bounty_position: '0',
+  bounty: {
+    mouse_type: 'cowardly',
+    bait_types: {
+      cheddar_cheese: 150,
+      marble_cheese: 500
+    },
+    sb_rarity: 1000,
+    rewards: {
+      gold_stat_item: 250
+    }
+  },
+  status: 'accepted',
+  can_claim: 'disabled',
+  can_accept: 'disabled',
+  mouse_name: 'Cowardly Mouse',
+  mouse_thumb:
+    'https://www.mousehuntgame.com/images/mice/medium/172650c9fe6f11952a867d16dc7112a4.jpg?cv=5',
+  mouse_type: 'cowardly',
+  bait_like_name: 'Cheddar Cheese',
+  bait_like_image:
+    'https://www.mousehuntgame.com/images/items/bait/2b9b0e07644529ae7c86e44ecff2807d.gif?cv=5',
+  bait_like_type: 'cheddar_cheese',
+  bait_like_armed: '',
+  bait_love_name: 'Marble Cheese',
+  bait_love_image:
+    'https://www.mousehuntgame.com/images/items/bait/8cef6dfbd8629c0b12de463a45c0618f.gif?cv=5',
+  bait_love_type: 'marble_cheese',
+  bait_love_armed: 'armed',
+  rewards: [
+    {
+      name: 'Gold',
+      thumb:
+        'https://www.mousehuntgame.com/images/items/stats/d8f90a569d52e7ea228ad0f1cc51516d.gif?cv=5',
+      quantity: '250'
+    }
+  ],
+  state: 'hasBounties',
+  bounties: [
+    {
+      abbreviated_name: 'Cowardly',
+      status: 'active',
+      type: 'cowardly',
+      thumb:
+        'https://www.mousehuntgame.com/images/mice/thumb/174f7584e111cdb8e6540e190c0df392.gif?cv=5'
+    },
+    {
+      abbreviated_name: '???',
+      status: 'locked'
+    },
+    {
+      abbreviated_name: '???',
+      status: 'locked'
+    },
+    {
+      abbreviated_name: '???',
+      status: 'locked'
+    },
+    {
+      abbreviated_name: '???',
+      status: 'locked'
+    },
+    {
+      abbreviated_name: '???',
+      status: 'locked'
+    }
+  ]
+};
+const user = {};
+user.quests = {};
+user.quests.QuestTownOfGnawnia = QuestTownOfGnawnia;
+const hg = {};
+function getEnvironmentType() {}
+function logging(...any) {}
+function checkThenArm(sort, category, name, isForce) {}
+let defaultBait = 'Bland Queso';
+console.log(defaultBait);
+
+// #townOfGnawnia
 if (getEnvironmentType() == 'town_of_gnawnia') townOfGnawnia();
 function townOfGnawnia() {
-  // const isProd = false;
+  const isProd = false;
   const targetEnvironmentType = 'town_of_gnawnia';
   const enviromentType = getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('townOfGnawnia_1.0.0.0.0');
-  defaultBait = 'Gouda Cheese';
-  const quest = user.quests.QuestTownOfGnawnia;
+  logging('townOfGnawnia_1.0.1.1.0');
+  defaultBait = 'Swiss Cheese';
+  const quest = isProd ? user.quests.QuestTownOfGnawnia : QuestTownOfGnawnia;
   const townOfGnawniaUtils = {
     run() {
       logging('start running townOfGnawnia');
@@ -57,4 +136,9 @@ function townOfGnawnia() {
   };
   townOfGnawniaUtils.run();
 }
-// End townOfGnawnia
+// End #townOfGnawnia
+
+// (() => {
+//   hg.views.HeadsUpDisplayTownOfGnawniaView.acceptBounty();
+//   hg.views.HeadsUpDisplayTownOfGnawniaView.claimReward();
+// })();
