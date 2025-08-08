@@ -1035,7 +1035,14 @@ const enviromentAtts = {
   num_visible_items: 6,
   canvas_page_url: 'https://www.mousehuntgame.com/'
 };
-
+const MOUSEHUNT_BASE_URL = 'https://www.mousehuntgame.com/';
+const jsDialog = {};
+const hg = {};
+const user = {};
+user.quests = {};
+user.quests.QuestFloatingIslands = QuestFloatingIslands;
+user.environment_type = 'floating_islands';
+user.enviroment_atts = enviromentAtts;
 function $() {}
 function getStorageToObject(key, obj) {}
 function armAllTraps(bait, weapon, base, charm) {
@@ -1057,19 +1064,10 @@ function getRandomInteger(min, max) {}
 function getQuantityByUrlThen(itemType, callback) {}
 function countArrayElement(value, arrIn) {}
 function distinctArray(array) {}
-
 function doubleEgg(isToEnable) {}
 function litCandle(actionType) {}
-
-const MOUSEHUNT_BASE_URL = 'https://www.mousehuntgame.com/';
-const jsDialog = {};
-const hg = {};
-const user = {};
-user.quests = {};
-user.quests.QuestFloatingIslands = QuestFloatingIslands;
-user.environment_type = 'floating_islands';
-user.enviroment_atts = enviromentAtts;
-
+let defaultBait = 'Bland Queso';
+console.log(defaultBait);
 // sleep
 (() => {
   const q = user.quests.QuestFloatingIslands;
@@ -1091,10 +1089,12 @@ user.enviroment_atts = enviromentAtts;
 // #floatingIslands
 if (getEnvironmentType() === 'floating_islands') floatingIslands();
 function floatingIslands() {
+  const isProd = false;
   const targetEnvironmentType = 'floating_islands';
   const environmentType = getEnvironmentType();
   if (environmentType != targetEnvironmentType) return;
-  logging('floatingIslands_1.4.12.6.5');
+  logging('floatingIslands_1.4.13.6.5');
+  defaultBait = 'Gouda Cheese';
   // prettier-ignore
   const AllPowerTypes = ['arcn', 'frgttn', 'hdr', 'shdw', 'drcnc', 'law', 'phscl', 'tctcl'];
   // prettier-ignore
@@ -1202,10 +1202,14 @@ function floatingIslands() {
       empress: ['Empowered SUPER', 'best.weapon.forgotten', 'best.base.combo', 'Ultimate Lucky Power Charm,Festive Ultimate Lucky Power Charm', false, 'red', true]
     }
   };
-  const settings = getStorageToObject(targetEnvironmentType, defaultSetting);
-  const quest = user.quests.QuestFloatingIslands;
+  const settings = isProd
+    ? getStorageToObject(targetEnvironmentType, defaultSetting)
+    : defaultSetting;
+  const quest = isProd
+    ? user.quests.QuestFloatingIslands
+    : QuestFloatingIslands;
+  const env = isProd ? user.enviroment_atts : enviromentAtts;
   const atts = quest.hunting_site_atts;
-  const env = user.enviroment_atts;
   const items = env.items;
   const stormCell = items.airship_rocket_fuel_stat_item;
   const stormCellQty = parseQuantity(stormCell.quantity);
