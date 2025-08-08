@@ -1961,7 +1961,6 @@ user.environment_type = 'foreword_farm';
 user.quests = {};
 user.quests.QuestRiftValour = QuestRiftValour;
 // const activejsDialog = {};
-
 // function $() {}
 function getEnvironmentType() {
   const rtn = trimToEmpty(user.environment_type);
@@ -2051,6 +2050,7 @@ function completeTransaction(
 function doubleEgg(isToEnable) {}
 function litCandle(actionType) {}
 function storeError() {}
+function getBaitItemId() {}
 let defaultBait = 'Bland Queso';
 console.log(defaultBait);
 
@@ -2061,7 +2061,7 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = getEnvironmentType();
   if (environmentType !== targetEnvironmentType) return;
-  logging('valourRift_0.4.25.12.15');
+  logging('valourRift_0.4.25.13.15');
   defaultBait = 'Brie String';
   // trap: [<bait>, <weapon>, <base>, <trinket>, <championFireEnabled>, litCandle, doubleEgg]
   // prettier-ignore
