@@ -2061,7 +2061,7 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = getEnvironmentType();
   if (environmentType !== targetEnvironmentType) return;
-  logging('valourRift_0.4.24.12.14');
+  logging('valourRift_0.4.25.12.15');
   defaultBait = 'Brie String';
   // trap: [<bait>, <weapon>, <base>, <trinket>, <championFireEnabled>, litCandle, doubleEgg]
   // prettier-ignore
@@ -2284,16 +2284,17 @@ function valourRift() {
     hg.views.HeadsUpDisplayRiftValourView.riftValourAjax(
       element,
       { action: 'claim_cache' },
-      callback
+      () => {
+        // document.querySelector('a.jsDialogClose, a#jsDialogClose').click();
+        setTimeout(() => {
+          // if (callback) callback();
+          window.location.href = MOUSEHUNT_BASE_URL;
+        }, 2000);
+      }
     );
   };
   if (quest.can_claim) {
-    claimCache(() => {
-      // document.querySelector('a.jsDialogClose, a#jsDialogClose').click();
-      setTimeout(() => {
-        window.location.href = MOUSEHUNT_BASE_URL;
-      }, 2000);
-    });
+    claimCache();
     return;
   }
   // retreat();
@@ -2304,12 +2305,7 @@ function valourRift() {
       element,
       { action: 'retreat' },
       () => {
-        claimCache(() => {
-          // document.querySelector('a.jsDialogClose, a#jsDialogClose').click();
-          setTimeout(() => {
-            window.location.href = MOUSEHUNT_BASE_URL;
-          }, 2000);
-        });
+        claimCache();
       }
     );
   };
@@ -2419,10 +2415,17 @@ function valourRift() {
     }, 6000);
   const autoBuy = () => {
     logging(`autoBuy in ${environmentType}`);
-    if (items.gsc.quantity < getRandomInteger(17, 26)) {
+    if (
+      getBaitItemId() === 2906 &&
+      items.gsc.quantity <
+        getRandomInteger(settings.minCheeseQty - 5, settings.minCheeseQty + 5)
+    ) {
       logging('auto buy Gauntlet');
       const itemType = 'gauntlet_string_cheese';
-      const itemQuantity = Math.min(items.elixir.quantity, 55);
+      const itemQuantity = Math.min(
+        items.elixir.quantity,
+        settings.buyCheeseQty
+      );
       completeTransaction(true, itemType, itemQuantity, false);
     }
     // if (
