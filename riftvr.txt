@@ -2061,7 +2061,7 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = getEnvironmentType();
   if (environmentType !== targetEnvironmentType) return;
-  logging('valourRift_0.4.25.13.15');
+  logging('valourRift_0.4.27.14.15');
   defaultBait = 'Brie String';
   // trap: [<bait>, <weapon>, <base>, <trinket>, <championFireEnabled>, litCandle, doubleEgg]
   // prettier-ignore
@@ -2114,7 +2114,33 @@ function valourRift() {
   const settings = isProd
     ? getStorageToObject(targetEnvironmentType, defaultSetting)
     : defaultSetting;
-  const quest = user.quests.QuestRiftValour;
+  const upgradeTypes = [
+    'upgrade_long_stride',
+    'upgrade_hunt_limit',
+    'upgrade_boss_extension'
+  ];
+  // prettier-ignore
+  const upgradePlans = [
+    [1, 1, 1], [2, 1, 1], [2, 2, 1], [3, 2, 1], [3, 3, 1], [3, 3, 2],
+    [4, 3, 2], [5, 3, 2], [5, 4, 2], [5, 4, 3], [5, 5, 3], [6, 5, 3],
+    [6, 5, 4], [6, 6, 4], [7, 6, 4], [8, 6, 4], [8, 6, 5], [9, 6, 5],
+    [10, 6, 5], [10, 7, 5]
+  ];
+  // prettier-ignore
+  const upgradeLevelsJSON = [];
+  for (let i = 0; i < upgradePlans.length; i++) {
+    const upgradePlan = upgradePlans[i];
+    upgradeLevelsJSON.push(JSON.stringify(upgradePlan));
+  }
+  /** total hunts = sync + eclipse * siphon */
+  // prettier-ignore
+  const cheeseQuantityByUpgrade = [
+    50, 50, 60, 60, 70, 70,
+    70, 100, 110, 120, 130, 130,
+    140, 170, 170, 170, 210, 230,
+    260, 280
+  ];
+  const quest = isProd ? user.quests.QuestRiftValour : QuestRiftValour;
   const vriftStates = { farming: 'farming', tower: 'tower' };
   const state = trimToEmpty(quest.state);
   const floor = quest.floor;
@@ -2125,40 +2151,14 @@ function valourRift() {
   const speed = powerUpData.long_stride;
   const sync = powerUpData.hunt_limit;
   const siphon = powerUpData.boss_extension;
-  const upgradeTypes = [
-    'upgrade_long_stride',
-    'upgrade_hunt_limit',
-    'upgrade_boss_extension'
-  ];
   const canUpgrade = [speed.can_upgrade, sync.can_upgrade, siphon.can_upgrade];
-  // prettier-ignore
-  const upgradePlans = [
-    [1, 1, 1], [2, 1, 1], [2, 2, 1], [3, 2, 1], [3, 3, 1], [3, 3, 2],
-    [4, 3, 2], [5, 3, 2], [5, 4, 2], [5, 4, 3], [5, 5, 3], [6, 5, 3],
-    [6, 5, 4], [6, 6, 4], [7, 6, 4], [8, 6, 4], [8, 6, 5], [9, 6, 5],
-    [10, 6, 5], [10, 7, 5]
-  ];
   const currentLevels = [
     speed.current_level + 1,
     sync.current_level + 1,
     siphon.current_level + 1
   ];
   const currentLevelsJSON = JSON.stringify(currentLevels);
-  // prettier-ignore
-  const upgradeLevelsJSON = [];
-  for (let i = 0; i < upgradePlans.length; i++) {
-    const upgradePlan = upgradePlans[i];
-    upgradeLevelsJSON.push(JSON.stringify(upgradePlan));
-  }
   const currentLevelIndex = upgradeLevelsJSON.indexOf(currentLevelsJSON);
-  // total hunts = sync + eclipse * siphon
-  // prettier-ignore
-  const cheeseQuantityByUpgrade = [
-    50, 50, 60, 60, 70, 70,
-    70, 90, 100, 110, 120, 120,
-    130, 160, 160, 160, 200, 220,
-    250, 270
-  ];
   console.log(
     'can upgrade? ',
     canUpgrade,
@@ -2345,7 +2345,7 @@ function valourRift() {
         completionCallback
       );
     };
-    if (items.gsc.quantity + items.elixir.quantity >= settings.minGscToEnter) {
+    if (items.gsc.quantity + items.elixir.quantity > settings.minGscToEnter) {
       enterTower([], () => {
         const a = document.querySelector('a.jsDialogClose, a#jsDialogClose');
         if (a) a.click();
