@@ -52,8 +52,6 @@ const user = {};
 user.environment_type = 'desert_city';
 user.quests = {};
 user.quests.QuestDesertMarketRebuild = QuestDesertMarketRebuild;
-let defaultBait = 'Bland Queso';
-console.log(defaultBait);
 
 // #muridaeMarket
 if (user.environment_type == 'desert_city') muridaeMarket();
@@ -62,11 +60,33 @@ function muridaeMarket() {
   const targetEnvironmentType = 'desert_city';
   const enviromentType = getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('muridaeMarket_1.0.1.2.2');
-  defaultBait = 'Gouda Cheese';
+  logging('muridaeMarket_1.0.1.2.3');
   const sort = 'sort';
   const name = 'name';
-  const settings = JSON.parse(localStorage['locationSetup'])[enviromentType];
+  const defaultSettings = {
+    bait: {
+      sort: 'any',
+      name: 'Gouda Cheese,Empowered Brie,Empowered SUPER'
+    },
+    weapon: {
+      sort: 'best',
+      name: 'best.weapon.physical'
+    },
+    base: {
+      sort: 'best',
+      name: 'best.base.combo'
+    },
+    trinket: {
+      sort: 'any',
+      name: '202,Artisan Charm'
+    },
+    litCandle: 'none',
+    doubleEgg: false,
+    isAutoCharm: false
+  };
+  const settings = isProd
+    ? JSON.parse(localStorage['locationSetup'])[enviromentType]
+    : defaultSettings;
   const quest = isProd
     ? user.quests.QuestDesertMarketRebuild
     : QuestDesertMarketRebuild;
