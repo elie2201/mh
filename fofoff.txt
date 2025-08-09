@@ -1533,8 +1533,6 @@ function reloadWithMessage(msg, soundHorn) {
     // reloadPage(soundHorn);
   }, 1000);
 }
-let defaultBait = '';
-console.log(defaultBait);
 
 // #forewordFarm
 if (getEnvironmentType() === 'foreword_farm') forewordFarm();
@@ -1543,8 +1541,7 @@ function forewordFarm() {
   const targetEnvironmentType = 'foreword_farm';
   const enviromentType = getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('forewordFarm_0.2.1.1.0');
-  defaultBait = 'Gouda Cheese';
+  logging('forewordFarm_0.2.1.1.1');
   const plantRowTypes = [
     ['ordinary_farm_plant', 'ordinary_magic_farm_plant'],
     ['legendary_farm_plant', 'legendary_magic_farm_plant'],
