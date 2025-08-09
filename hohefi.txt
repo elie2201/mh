@@ -1628,7 +1628,8 @@ function floatingIslands() {
     // Use Cyclone or choose third-tile island?
     // If use cyclone: terminate running autoSkyMap > confirm cycled > call treatSkyMap in cycled again
     // TODO 不測試 cycled()時用這行 const isCycle = false;
-    const isCycle = isHai ? settings.isCycleHai : settings.isCycleLai;
+    const isCycle =
+      (isHai ? settings.isCycleHai : settings.isCycleLai) && cycloneQty > 0;
     if (isCycle) {
       cycled(settings);
       return isSkyMapLaunched;
