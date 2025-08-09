@@ -1066,8 +1066,6 @@ function countArrayElement(value, arrIn) {}
 function distinctArray(array) {}
 function doubleEgg(isToEnable) {}
 function litCandle(actionType) {}
-let defaultBait = 'Bland Queso';
-console.log(defaultBait);
 // sleep
 (() => {
   const q = user.quests.QuestFloatingIslands;
@@ -1093,8 +1091,7 @@ function floatingIslands() {
   const targetEnvironmentType = 'floating_islands';
   const environmentType = getEnvironmentType();
   if (environmentType != targetEnvironmentType) return;
-  logging('floatingIslands_1.4.13.6.5');
-  defaultBait = 'Gouda Cheese';
+  logging('floatingIslands_1.4.13.6.6');
   // prettier-ignore
   const AllPowerTypes = ['arcn', 'frgttn', 'hdr', 'shdw', 'drcnc', 'law', 'phscl', 'tctcl'];
   // prettier-ignore
