@@ -2059,7 +2059,7 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = getEnvironmentType();
   if (environmentType !== targetEnvironmentType) return;
-  logging('valourRift_0.4.27.15.16');
+  logging('valourRift_0.5.27.15.16');
   // trap: [<bait>, <weapon>, <base>, <trinket>, <championFireEnabled>, litCandle, doubleEgg]
   // prettier-ignore
   const defaultSetting = {
@@ -2111,6 +2111,7 @@ function valourRift() {
   const settings = isProd
     ? getStorageToObject(targetEnvironmentType, defaultSetting)
     : defaultSetting;
+  const vriftStates = { farming: 'farming', tower: 'tower' };
   const upgradeTypes = [
     'upgrade_long_stride',
     'upgrade_hunt_limit',
@@ -2118,10 +2119,10 @@ function valourRift() {
   ];
   // prettier-ignore
   const upgradePlans = [
-    [1, 1, 1], [2, 1, 1], [2, 2, 1], [3, 2, 1], [3, 3, 1], [3, 3, 2],
-    [4, 3, 2], [5, 3, 2], [5, 4, 2], [5, 4, 3], [5, 5, 3], [6, 5, 3],
-    [6, 5, 4], [6, 6, 4], [7, 6, 4], [8, 6, 4], [8, 6, 5], [9, 6, 5],
-    [10, 6, 5], [10, 7, 5]
+    [1, 40, 5], [2, 40, 5], [2, 50, 5], [3, 50, 5], [3, 60, 5],
+    [3, 60, 10], [4, 60, 10], [5, 60, 10], [5, 70, 10], [5, 70, 15],
+    [5, 80, 15], [6, 80, 15], [6, 80, 20], [6, 90, 20], [7, 90, 20],
+    [8, 90, 20], [8, 90, 25], [9, 90, 25], [10, 90, 25], [10, 100, 25]
   ];
   // prettier-ignore
   const upgradeLevelsJSON = [];
@@ -2132,13 +2133,12 @@ function valourRift() {
   /** total hunts = sync + eclipse * siphon */
   // prettier-ignore
   const cheeseQuantityByUpgrade = [
-    50, 50, 60, 60, 70, 70,
-    70, 100, 110, 120, 130, 130,
-    150, 150, 150, 200, 200, 250,
-    250, 300
+    50, 50, 60, 60, 70,
+    70, 70, 100, 110, 120,
+    130, 130, 150, 300, 300,
+    300, 550, 550, 550, 550
   ];
   const quest = isProd ? user.quests.QuestRiftValour : QuestRiftValour;
-  const vriftStates = { farming: 'farming', tower: 'tower' };
   const state = trimToEmpty(quest.state);
   const floor = quest.floor;
   const huntsLeft = quest.hunts_remaining;
@@ -2150,9 +2150,9 @@ function valourRift() {
   const siphon = powerUpData.boss_extension;
   const canUpgrade = [speed.can_upgrade, sync.can_upgrade, siphon.can_upgrade];
   const currentLevels = [
-    speed.current_level + 1,
-    sync.current_level + 1,
-    siphon.current_level + 1
+    speed.current_value,
+    sync.current_value,
+    siphon.current_value
   ];
   const currentLevelsJSON = JSON.stringify(currentLevels);
   const currentLevelIndex = upgradeLevelsJSON.indexOf(currentLevelsJSON);
@@ -2163,71 +2163,140 @@ function valourRift() {
     upgradeLevelsJSON,
     `current upgrade level index: ${currentLevelIndex}`
   );
-  /** Valour Rift items */
-  const items = {
-    gold: { type: 'gold_stat_item', quantity: user.gold },
-    gsc: { type: 'gauntlet_string_cheese', quantity: 0 },
-    elixir: { type: 'gauntlet_elixir_stat_item', quantity: 0 },
-    cf: { type: 'rift_gauntlet_fuel_stat_item', quantity: 0 },
-    sigil: { type: 'rift_gaunt_upgrade_a_stat_item', quantity: 0 },
-    secret: { type: 'rift_gaunt_upgrade_b_stat_item', quantity: 0 },
-    frag: { type: 'shade_eclipse_resource_stat_item', quantity: 0 },
-    core: { type: 'total_eclipse_resource_stat_item', quantity: 0 }
-  };
-  for (const key in items) {
-    if (key === 'gold') continue;
-    if (Object.prototype.hasOwnProperty.call(items, key)) {
-      const item = items[key];
-      item.quantity = parseQuantity(
-        document.querySelector('div[data-item-type="' + item.type + '"]')
-          .innerText
-      );
+  /** function prototype valourRiftUtility */
+  const valourRiftUtility = (function () {
+    const utils = {
+      /** Valour Rift items */
+      items: {
+        gold: { type: 'gold_stat_item', quantity: user.gold },
+        gsc: { type: 'gauntlet_string_cheese', quantity: 0 },
+        elixir: { type: 'gauntlet_elixir_stat_item', quantity: 0 },
+        cf: { type: 'rift_gauntlet_fuel_stat_item', quantity: 0 },
+        sigil: { type: 'rift_gaunt_upgrade_a_stat_item', quantity: 0 },
+        secret: { type: 'rift_gaunt_upgrade_b_stat_item', quantity: 0 },
+        frag: { type: 'shade_eclipse_resource_stat_item', quantity: 0 },
+        core: { type: 'total_eclipse_resource_stat_item', quantity: 0 }
+      },
+      /** Valour Rift augmentations */
+      // prettier-ignore
+      augmentations: {
+        sigilHunter: { type: 'hr', need: 'gold', quantity: 250000, isUnlock: null },
+        secretResearch: { type: 'sr', need: 'sigil', quantity: 500, isUnlock: null },
+        superSiphon: { type: 'ss', need: 'sigil', quantity: 1000, isUnlock: null },
+        ultimateUmbra: { type: 'tu', need: 'frag', quantity: 75, isUnlock: null },
+        elixirRain: { type: 'er', need: 'secret', quantity: 500, isUnlock: null },
+        stringStepping: { type: 'sste', need: 'secret', quantity: 1500, isUnlock: null }
+      },
+      /** toggle champion's fire */
+      toggleChampionFire(isToEnable) {
+        logging(`toggleChampionFire to ${isToEnable}`);
+        const quest = user.quests.QuestRiftValour;
+        const itemQuantity = parseQuantity(
+          document.querySelector(
+            'div[data-item-type="rift_gauntlet_fuel_stat_item"]'
+          ).innerText
+        );
+        if (itemQuantity < 1) return;
+        const isFuelEnabled = quest.is_fuel_enabled || false;
+        if ((isFuelEnabled === true) != isToEnable)
+          hg.views.HeadsUpDisplayRiftValourView.toggleFuel();
+      },
+      /** Auto augmentation */
+      autoAugmentation() {
+        // Since 5-3-3, enable Sigil Hunter
+        if (
+          currentLevelIndex > 7 &&
+          this.items.gold.quantity > this.augmentations.sigilHunter.need
+        ) {
+          console.log(
+            `enable sigilHunter: ${currentLevelsJSON}, ${this.items.gold.quantity}>${this.augmentations.sigilHunter.need}`
+          );
+          settings.isSigilHunter = true;
+        }
+        // Since 6-6-4, enable Secret Research when enough sigil.
+        // If unlocked UU and have enough gold/sigil, UU
+        if (currentLevelIndex > 12) {
+          if (
+            this.items.sigil.quantity > this.augmentations.secretResearch.need
+          ) {
+            console.log(
+              `enable secretResearch: ${currentLevelsJSON}, ${this.items.sigil.quantity}>${this.augmentations.secretResearch.need}`
+            );
+            settings.isSecretResearch = true;
+          }
+          // sste not unlocked, check gold/sigil/frag
+          const isOkUU =
+            this.augmentations.ultimateUmbra.isUnlock &&
+            this.items.gold.quantity > this.augmentations.sigilHunter.need &&
+            this.items.sigil.quantity >
+              this.augmentations.secretResearch.need +
+                this.augmentations.superSiphon.need &&
+            this.items.frag.quantity >= this.augmentations.ultimateUmbra.need;
+          // sste unlocked, check gold/sigil/frag/secret
+          const isOkSsteUU =
+            isOkUU &&
+            this.augmentations.stringStepping.isUnlock &&
+            this.items.secret.quantity >=
+              this.augmentations.stringStepping.need;
+          console.log(
+            `Is UU ok? ${isOkUU}, Is UU with stringStepping ok? ${isOkSsteUU}`
+          );
+          if (this.augmentations.stringStepping.isUnlock) {
+            console.log(
+              `stringStepping unlocked. Is UU ok? ${isOkUU}, Is UU with stringStepping ok? ${isOkSsteUU}`
+            );
+            if (isOkSsteUU) {
+              settings.isUltimateUmbra = true;
+              settings.isSuperSiphon = true;
+              settings.isStringStepping = true;
+            }
+          } else {
+            console.log(
+              `stringStepping not unlocked. Is UU ok? ${isOkUU}, Is UU with stringStepping ok? ${isOkSsteUU}`
+            );
+            if (isOkUU) {
+              settings.isUltimateUmbra = true;
+              settings.isSuperSiphon = true;
+            }
+          }
+        }
+        // Prestige Push
+        if (settings.isPrestigePush) {
+          settings.isSigilHunter = true;
+          settings.isSecretResearch = true;
+          settings.isUltimateUmbra = true;
+          settings.isSuperSiphon = true;
+          settings.isStringStepping = true;
+        }
+      }
+    };
+    function init(quest) {
+      const augs = utils.augmentations;
+      augs.sigilHunter.isUnlock = !quest.augmentation_data.hr.is_locked;
+      augs.secretResearch.isUnlock = !quest.augmentation_data.sr.is_locked;
+      augs.superSiphon.isUnlock = !quest.augmentation_data.ss.is_locked;
+      augs.ultimateUmbra.isUnlock = !quest.augmentation_data.tu.is_locked;
+      augs.elixirRain.isUnlock = !quest.augmentation_data.er.is_locked;
+      augs.stringStepping.isUnlock = !quest.augmentation_data.sste.is_locked;
+      console.log('augmentation data:', utils.augmentations);
+      for (const key in utils.items) {
+        if (key === 'gold') continue;
+        if (Object.prototype.hasOwnProperty.call(utils.items, key)) {
+          const item = utils.items[key];
+          item.quantity = parseQuantity(
+            document.querySelector('div[data-item-type="' + item.type + '"]')
+              .innerText
+          );
+        }
+      }
+      console.log('items', utils.items);
     }
-  }
-  console.log('items', items);
-  const valourRiftUtility = {
-    // prettier-ignore
-    augmentations: {
-      sigilHunter: { type: 'hr', need: 'gold', quantity: 250000, isUnlock: !quest.augmentation_data.hr.is_locked },
-      secretResearch: { type: 'sr', need: 'sigil', quantity: 500, isUnlock: !quest.augmentation_data.sr.is_locked },
-      superSiphon: { type: 'ss', need: 'sigil', quantity: 1000, isUnlock: !quest.augmentation_data.ss.is_locked },
-      ultimateUmbra: { type: 'tu', need: 'frag', quantity: 75, isUnlock: !quest.augmentation_data.tu.is_locked },
-      elixirRain: { type: 'er', need: 'secret', quantity: 500, isUnlock: !quest.augmentation_data.er.is_locked },
-      stringStepping: { type: 'sste', need: 'secret', quantity: 1500, isUnlock: !quest.augmentation_data.sste.is_locked }
-    },
-    toggleChampionFire(isToEnable) {
-      logging(`toggleChampionFire to ${isToEnable}`);
-      const quest = user.quests.QuestRiftValour;
-      const itemQuantity = parseQuantity(
-        document.querySelector(
-          'div[data-item-type="rift_gauntlet_fuel_stat_item"]'
-        ).innerText
-      );
-      if (itemQuantity < 1) return;
-      const isFuelEnabled = quest.is_fuel_enabled || false;
-      if ((isFuelEnabled === true) != isToEnable)
-        hg.views.HeadsUpDisplayRiftValourView.toggleFuel();
-    }
-  };
+    if (user.quests.QuestRiftValour) init(user.quests.QuestRiftValour);
+    return utils;
+  })();
   // Auto enter cheese quantity by upgrade
   if (!settings.minGscToEnter)
     settings.minGscToEnter = cheeseQuantityByUpgrade[currentLevelIndex];
-  // Auto augmentation
-  const autoAugmentation = () => {
-    // Since 5-3-3, enable Sigil Hunter
-    if (currentLevelIndex > 7) settings.isSigilHunter = true;
-    // Since 6-6-4, enable Secret Research
-    if (currentLevelIndex > 12) settings.isSecretResearch = true;
-    // Prestige Push
-    if (settings.isPrestigePush) {
-      settings.isSigilHunter = true;
-      settings.isSecretResearch = true;
-      settings.isUltimateUmbra = true;
-      settings.isSuperSiphon = true;
-      settings.isStringStepping = true;
-    }
-  };
-  autoAugmentation();
   // Auto stop toggle CF and auto-retreat by upgrade
   if (currentLevelIndex === upgradePlans.length - 1) {
     settings.trap.tower.eclipse[4] = false;
@@ -2240,6 +2309,7 @@ function valourRift() {
   const autoRetreat = () => {
     const noRetreatHead = `autoRetreat: No, in floor ${floor}, hunts left:`;
     const yesRetreatHead = `autoRetreat: Yes, in floor ${floor}, hunts left:`;
+    const items = valourRiftUtility.items;
     if (floor % 8 > 0) {
       if (floor % 8 === 1)
         console.plog(`${noRetreatHead} ${huntsLeft}, CF: ${items.cf.quantity}`);
@@ -2342,7 +2412,12 @@ function valourRift() {
         completionCallback
       );
     };
-    if (items.gsc.quantity + items.elixir.quantity > settings.minGscToEnter) {
+    if (
+      valourRiftUtility.items.gsc.quantity +
+        valourRiftUtility.items.elixir.quantity >
+      settings.minGscToEnter
+    ) {
+      valourRiftUtility.autoAugmentation();
       enterTower([], () => {
         const a = document.querySelector('a.jsDialogClose, a#jsDialogClose');
         if (a) a.click();
@@ -2387,15 +2462,15 @@ function valourRift() {
     for (let i = 0; i < upgradePlans.length; i++) {
       const plan = upgradePlans[i];
       for (let j = 0; j < plan.length; j++) {
-        const level = plan[j];
+        const value = plan[j];
         // console.log(
         //   `upgrade ${upgradeTypes[j]} from level ${
         //     currentLevels[j]
         //   } to ${level}? ${canUpgrade[j] === true}`
         // );
-        if (currentLevels[j] < level) {
+        if (currentLevels[j] < value) {
           console.log(
-            `find goal ${upgradeTypes[j]}, from level${currentLevels[j]} to level${level}`
+            `find goal ${upgradeTypes[j]}, from level${currentLevels[j]} to level${value}`
           );
           if (canUpgrade[j] === true)
             hg.views.HeadsUpDisplayRiftValourView.riftValourAjax('<a/>', {
@@ -2414,13 +2489,13 @@ function valourRift() {
     logging(`autoBuy in ${environmentType}`);
     if (
       getBaitItemId() === 2906 &&
-      items.gsc.quantity <
+      valourRiftUtility.items.gsc.quantity <
         getRandomInteger(settings.minCheeseQty - 5, settings.minCheeseQty + 5)
     ) {
       logging('auto buy Gauntlet');
       const itemType = 'gauntlet_string_cheese';
       const itemQuantity = Math.min(
-        items.elixir.quantity,
+        valourRiftUtility.items.elixir.quantity,
         settings.buyCheeseQty
       );
       completeTransaction(true, itemType, itemQuantity, false);
