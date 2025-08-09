@@ -74,8 +74,6 @@ const hg = {};
 function getEnvironmentType() {}
 function logging(...any) {}
 function checkThenArm(sort, category, name, isForce) {}
-let defaultBait = 'Bland Queso';
-console.log(defaultBait);
 
 // #townOfGnawnia
 if (getEnvironmentType() == 'town_of_gnawnia') townOfGnawnia();
@@ -84,8 +82,7 @@ function townOfGnawnia() {
   const targetEnvironmentType = 'town_of_gnawnia';
   const enviromentType = getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('townOfGnawnia_1.0.1.1.0');
-  defaultBait = 'Swiss Cheese';
+  logging('townOfGnawnia_1.0.1.1.1');
   const quest = isProd ? user.quests.QuestTownOfGnawnia : QuestTownOfGnawnia;
   const townOfGnawniaUtils = {
     run() {
