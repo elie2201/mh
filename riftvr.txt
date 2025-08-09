@@ -2059,7 +2059,7 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = getEnvironmentType();
   if (environmentType !== targetEnvironmentType) return;
-  logging('valourRift_0.5.27.15.16');
+  logging('valourRift_0.5.27.16.17');
   // trap: [<bait>, <weapon>, <base>, <trinket>, <championFireEnabled>, litCandle, doubleEgg]
   // prettier-ignore
   const defaultSetting = {
@@ -2206,10 +2206,10 @@ function valourRift() {
         // Since 5-3-3, enable Sigil Hunter
         if (
           currentLevelIndex > 7 &&
-          this.items.gold.quantity > this.augmentations.sigilHunter.need
+          this.items.gold.quantity > this.augmentations.sigilHunter.quantity
         ) {
-          console.log(
-            `enable sigilHunter: ${currentLevelsJSON}, ${this.items.gold.quantity}>${this.augmentations.sigilHunter.need}`
+          console.plog(
+            `enable sigilHunter: ${currentLevelsJSON}, ${this.items.gold.quantity}>${this.augmentations.sigilHunter.quantity}`
           );
           settings.isSigilHunter = true;
         }
@@ -2217,32 +2217,35 @@ function valourRift() {
         // If unlocked UU and have enough gold/sigil, UU
         if (currentLevelIndex > 12) {
           if (
-            this.items.sigil.quantity > this.augmentations.secretResearch.need
+            this.items.sigil.quantity >
+            this.augmentations.secretResearch.quantity
           ) {
-            console.log(
-              `enable secretResearch: ${currentLevelsJSON}, ${this.items.sigil.quantity}>${this.augmentations.secretResearch.need}`
+            console.plog(
+              `enable secretResearch: ${currentLevelsJSON}, ${this.items.sigil.quantity}>${this.augmentations.secretResearch.quantity}`
             );
             settings.isSecretResearch = true;
           }
           // sste not unlocked, check gold/sigil/frag
           const isOkUU =
             this.augmentations.ultimateUmbra.isUnlock &&
-            this.items.gold.quantity > this.augmentations.sigilHunter.need &&
+            this.items.gold.quantity >
+              this.augmentations.sigilHunter.quantity &&
             this.items.sigil.quantity >
-              this.augmentations.secretResearch.need +
-                this.augmentations.superSiphon.need &&
-            this.items.frag.quantity >= this.augmentations.ultimateUmbra.need;
+              this.augmentations.secretResearch.quantity +
+                this.augmentations.superSiphon.quantity &&
+            this.items.frag.quantity >=
+              this.augmentations.ultimateUmbra.quantity;
           // sste unlocked, check gold/sigil/frag/secret
           const isOkSsteUU =
             isOkUU &&
             this.augmentations.stringStepping.isUnlock &&
             this.items.secret.quantity >=
-              this.augmentations.stringStepping.need;
-          console.log(
+              this.augmentations.stringStepping.quantity;
+          console.plog(
             `Is UU ok? ${isOkUU}, Is UU with stringStepping ok? ${isOkSsteUU}`
           );
           if (this.augmentations.stringStepping.isUnlock) {
-            console.log(
+            console.plog(
               `stringStepping unlocked. Is UU ok? ${isOkUU}, Is UU with stringStepping ok? ${isOkSsteUU}`
             );
             if (isOkSsteUU) {
@@ -2251,7 +2254,7 @@ function valourRift() {
               settings.isStringStepping = true;
             }
           } else {
-            console.log(
+            console.plog(
               `stringStepping not unlocked. Is UU ok? ${isOkUU}, Is UU with stringStepping ok? ${isOkSsteUU}`
             );
             if (isOkUU) {
@@ -2470,7 +2473,7 @@ function valourRift() {
         // );
         if (currentLevels[j] < value) {
           console.log(
-            `find goal ${upgradeTypes[j]}, from level${currentLevels[j]} to level${value}`
+            `find goal ${upgradeTypes[j]}, from value${currentLevels[j]} to value${value}`
           );
           if (canUpgrade[j] === true)
             hg.views.HeadsUpDisplayRiftValourView.riftValourAjax('<a/>', {
