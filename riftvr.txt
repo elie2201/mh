@@ -2059,7 +2059,7 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = getEnvironmentType();
   if (environmentType !== targetEnvironmentType) return;
-  logging('valourRift_0.5.27.18.17');
+  logging('valourRift_0.5.28.18.17');
   // trap: [<bait>, <weapon>, <base>, <trinket>, <championFireEnabled>, litCandle, doubleEgg]
   // prettier-ignore
   const defaultSetting = {
@@ -2180,12 +2180,12 @@ function valourRift() {
       /** Valour Rift augmentations */
       // prettier-ignore
       augmentations: {
-        sigilHunter: { type: 'hr', need: 'gold', quantity: 250000, isUnlock: null },
-        secretResearch: { type: 'sr', need: 'sigil', quantity: 500, isUnlock: null },
-        superSiphon: { type: 'ss', need: 'sigil', quantity: 1000, isUnlock: null },
-        ultimateUmbra: { type: 'tu', need: 'frag', quantity: 75, isUnlock: null },
-        elixirRain: { type: 'er', need: 'secret', quantity: 500, isUnlock: null },
-        stringStepping: { type: 'sste', need: 'secret', quantity: 1500, isUnlock: null }
+        sigilHunter: { type: 'hr', whatNeed: 'gold', howMuchNeed: 250000, isUnlock: null },
+        secretResearch: { type: 'sr', whatNeed: 'sigil', howMuchNeed: 500, isUnlock: null },
+        superSiphon: { type: 'ss', whatNeed: 'sigil', howMuchNeed: 1000, isUnlock: null },
+        ultimateUmbra: { type: 'tu', whatNeed: 'frag', howMuchNeed: 75, isUnlock: null },
+        elixirRain: { type: 'er', whatNeed: 'secret', howMuchNeed: 500, isUnlock: null },
+        stringStepping: { type: 'sste', whatNeed: 'secret', howMuchNeed: 1500, isUnlock: null }
       },
       /** toggle champion's fire */
       toggleChampionFire(isToEnable) {
@@ -2206,10 +2206,10 @@ function valourRift() {
         // Since 5-3-3, enable Sigil Hunter
         if (
           currentLevelIndex > 7 &&
-          this.items.gold.quantity > this.augmentations.sigilHunter.quantity
+          this.items.gold.quantity > this.augmentations.sigilHunter.howMuchNeed
         ) {
           console.plog(
-            `enable sigilHunter: ${currentLevelsJSON}, ${this.items.gold.quantity}>${this.augmentations.sigilHunter.quantity}`
+            `enable sigilHunter: ${currentLevelsJSON}, ${this.items.gold.quantity}>${this.augmentations.sigilHunter.howMuchNeed}`
           );
           settings.isSigilHunter = true;
         }
@@ -2218,10 +2218,10 @@ function valourRift() {
         if (currentLevelIndex > 12) {
           if (
             this.items.sigil.quantity >
-            this.augmentations.secretResearch.quantity
+            this.augmentations.secretResearch.howMuchNeed
           ) {
             console.plog(
-              `enable secretResearch: ${currentLevelsJSON}, ${this.items.sigil.quantity}>${this.augmentations.secretResearch.quantity}`
+              `enable secretResearch: ${currentLevelsJSON}, ${this.items.sigil.quantity}>${this.augmentations.secretResearch.howMuchNeed}`
             );
             settings.isSecretResearch = true;
           }
@@ -2229,18 +2229,18 @@ function valourRift() {
           const isOkUU =
             this.augmentations.ultimateUmbra.isUnlock &&
             this.items.gold.quantity >
-              this.augmentations.sigilHunter.quantity &&
+              this.augmentations.sigilHunter.howMuchNeed &&
             this.items.sigil.quantity >
-              this.augmentations.secretResearch.quantity +
-                this.augmentations.superSiphon.quantity &&
+              this.augmentations.secretResearch.howMuchNeed +
+                this.augmentations.superSiphon.howMuchNeed &&
             this.items.frag.quantity >=
-              this.augmentations.ultimateUmbra.quantity;
+              this.augmentations.ultimateUmbra.howMuchNeed;
           // sste unlocked, check gold/sigil/frag/secret
           const isOkSsteUU =
             isOkUU &&
             this.augmentations.stringStepping.isUnlock &&
             this.items.secret.quantity >=
-              this.augmentations.stringStepping.quantity;
+              this.augmentations.stringStepping.howMuchNeed;
           console.plog(
             `Is UU ok? ${isOkUU}, Is UU with stringStepping ok? ${isOkSsteUU}`
           );
