@@ -2059,7 +2059,7 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = getEnvironmentType();
   if (environmentType !== targetEnvironmentType) return;
-  logging('valourRift_0.5.27.16.17');
+  logging('valourRift_0.5.27.17.17');
   // trap: [<bait>, <weapon>, <base>, <trinket>, <championFireEnabled>, litCandle, doubleEgg]
   // prettier-ignore
   const defaultSetting = {
@@ -2135,7 +2135,7 @@ function valourRift() {
   const cheeseQuantityByUpgrade = [
     50, 50, 60, 60, 70,
     70, 70, 100, 110, 120,
-    130, 130, 150, 300, 300,
+    130, 150, 150, 300, 300,
     300, 550, 550, 550, 550
   ];
   const quest = isProd ? user.quests.QuestRiftValour : QuestRiftValour;
