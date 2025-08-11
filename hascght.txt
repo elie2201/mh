@@ -10,7 +10,7 @@ function getBaitItemId() {}
 // #hasCaughtAction
 const checkedProperty = { isByMouseType: true, isByMouseName: false };
 // Fiery Warpath check Warmonger
-let check = [
+let checks = [
   {
     isByMouseType: checkedProperty.isByMouseType,
     atEnvironmentType: 'desert_warpath',
@@ -26,7 +26,7 @@ let check = [
   }
 ];
 // Cape Clawed check Grandfather/Elder/Aged
-check = [
+checks = [
   {
     isByMouseType: checkedProperty.isByMouseType,
     atEnvironmentType: 'cape_clawed',
@@ -75,11 +75,11 @@ check = [
   }
 ];
 // run hasCaughtAction
-hasCaughtAction(check);
+hasCaughtAction(checks);
 /** check journal to find if caught target mouse(by data-mouse-type/mouse name) */
 function hasCaughtAction(isByType, checks) {
   // const isProd = false;
-  logging('hasCaughtAction_1.1.2.1.0, isByType', isByType, checks);
+  logging('hasCaughtAction_1.1.2.1.1, isByType', isByType, checks);
   for (let i = 0; i < checks.length; i++) {
     const check = checks[i];
     if (getEnvironmentType() !== check.atEnvironmentType) continue;
