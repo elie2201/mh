@@ -1,53 +1,98 @@
-// hasCaughtAction
+function logging(...any) {}
+function hasCaughtTargetByDataMouseType(dataMouseType) {}
+function hasCaughtTargetByMouseName(keyword) {}
+function getEnvironmentType() {}
+function travel(environmentType, milliseconds, callback) {}
+function checkThenArm(sort, category, name, isForce) {}
+function parseTrapName(trapName) {}
+function getBaitItemId() {}
+
+// #hasCaughtAction
 const checkedProperty = { isByMouseType: true, isByMouseName: false };
-let check = {
-  atEnvironmentType: 'desert_warpath',
-  target: 'desert_boss',
-  successCallback() {
-    travel('desert_city', 3000, () => {
-      checkThenArm(null, 'bait', 'Gouda Cheese');
-      checkThenArm(null, 'weapon', parseTrapName('best.weapon.physical'));
-      checkThenArm(null, 'base', parseTrapName('best.base.combo'));
-      checkThenArm(null, 'trinket', ['Artisan Charm', '2025 Charm']);
-    });
-  }
-};
-check = {
-  atEnvironmentType: 'cape_clawed',
-  target: 'elder',
-  successCallback() {
-    travel('nerg_plains', 3000, () => {
-      checkThenArm(null, 'bait', 'Gouda Cheese');
-      checkThenArm(null, 'weapon', 'Horrific Venus');
-      // checkThenArm(null, 'base', parseTrapName('best.base.combo'));
-      checkThenArm(null, 'trinket', 'None');
-    });
-  },
-  beforeSuccessCallback() {
-    console.log(getBaitItemId());
-    if (getBaitItemId() === 80)
-      travel('elub_shore', 3000, () => {
+// Fiery Warpath check Warmonger
+let check = [
+  {
+    isByMouseType: checkedProperty.isByMouseType,
+    atEnvironmentType: 'desert_warpath',
+    target: 'desert_boss',
+    successCallback() {
+      travel('desert_city', 3000, () => {
         checkThenArm(null, 'bait', 'Gouda Cheese');
-        // checkThenArm(null, 'weapon', parseTrapName('best.weapon.physical'));
+        checkThenArm(null, 'weapon', parseTrapName('best.weapon.physical'));
+        checkThenArm(null, 'base', parseTrapName('best.base.combo'));
+        checkThenArm(null, 'trinket', ['Artisan Charm', '2025 Charm']);
+      });
+    }
+  }
+];
+// Cape Clawed check Grandfather/Elder/Aged
+check = [
+  {
+    isByMouseType: checkedProperty.isByMouseType,
+    atEnvironmentType: 'cape_clawed',
+    target: 'elder',
+    successCallback() {
+      travel('nerg_plains', 3000, () => {
+        checkThenArm(null, 'bait', 'Gouda Cheese');
+        checkThenArm(null, 'weapon', 'Horrific Venus');
         // checkThenArm(null, 'base', parseTrapName('best.base.combo'));
         checkThenArm(null, 'trinket', 'None');
       });
+    },
+    beforeSuccessCallback() {
+      console.log(getBaitItemId());
+      if (getBaitItemId() === 80)
+        travel('elub_shore', 3000, () => {
+          checkThenArm(null, 'bait', 'Gouda Cheese');
+          // checkThenArm(null, 'weapon', parseTrapName('best.weapon.physical'));
+          // checkThenArm(null, 'base', parseTrapName('best.base.combo'));
+          checkThenArm(null, 'trinket', 'None');
+        });
+    }
+  },
+  {
+    isByMouseType: checkedProperty.isByMouseType,
+    atEnvironmentType: 'cape_clawed',
+    target: 'grandfather',
+    successCallback() {
+      travel('elub_shore', 3000, () => {
+        checkThenArm(null, 'bait', 'Gouda Cheese');
+        checkThenArm(null, 'weapon', 'Net Cannon');
+        // checkThenArm(null, 'base', parseTrapName('best.base.combo'));
+        checkThenArm(null, 'trinket', 'None');
+      });
+    },
+    beforeSuccessCallback() {
+      console.log(getBaitItemId());
+      if (getBaitItemId() === 80)
+        travel('nerg_plains', 3000, () => {
+          checkThenArm(null, 'bait', 'Gouda Cheese');
+          // checkThenArm(null, 'weapon', parseTrapName('best.weapon.physical'));
+          // checkThenArm(null, 'base', parseTrapName('best.base.combo'));
+          checkThenArm(null, 'trinket', 'None');
+        });
+    }
   }
-};
-hasCaughtAction(checkedProperty.isByMouseType, check);
-function hasCaughtAction(isByType, check) {
+];
+// run hasCaughtAction
+hasCaughtAction(check);
+/** check journal to find if caught target mouse(by data-mouse-type/mouse name) */
+function hasCaughtAction(isByType, checks) {
   // const isProd = false;
-  logging('hasCaughtAction_1.0.2.1.0, isByType', isByType, check);
-  if (getEnvironmentType() === check.atEnvironmentType)
+  logging('hasCaughtAction_1.1.2.1.0, isByType', isByType, checks);
+  for (let i = 0; i < checks.length; i++) {
+    const check = checks[i];
+    if (getEnvironmentType() !== check.atEnvironmentType) continue;
     if (
-      (isByType && hasCaughtTargetByDataMouseType(check.target)) ||
-      (!isByType && hasCaughtTargetByMouseName(check.target))
+      (check.isByMouseType && hasCaughtTargetByDataMouseType(check.target)) ||
+      (!check.isByType && hasCaughtTargetByMouseName(check.target))
     ) {
       if (check.successCallback) {
         check.successCallback();
         return;
       }
     }
-  if (check.beforeSuccessCallback) check.beforeSuccessCallback();
+    if (check.beforeSuccessCallback) check.beforeSuccessCallback();
+  }
 }
-// End hasCaughtAction
+// End #hasCaughtAction
