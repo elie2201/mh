@@ -3,7 +3,7 @@
 setTimeout(() => { scheduledSleep(); }, getRandomInteger(60000, 120000));
 function scheduledSleep() {
   const environmentType = getEnvironmentType();
-  logging(`scheduledSleep_1.2.13.7.9 in ${environmentType}`);
+  logging(`scheduledSleep_1.2.14.7.9 in ${environmentType}`);
   const floatingIslandsUtility = {
     getSpeed(quest) {
       if (!quest) quest = user.quests.QuestFloatingIslands;
@@ -233,7 +233,8 @@ function scheduledSleep() {
       switch (altitude) {
         case 'launch':
           console.log('Not sleep on launch except low CCC');
-          if (ccQty + cccQty > 75) return;
+          if (!settings.isLowCC) return;
+          // if (ccQty + cccQty > 75) return;
           break;
         case 'lai':
           console.log('Check sleeping on LAI');
