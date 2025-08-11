@@ -3,7 +3,7 @@
 setTimeout(() => { scheduledSleep(); }, getRandomInteger(60000, 120000));
 function scheduledSleep() {
   const environmentType = getEnvironmentType();
-  logging(`scheduledSleep_1.2.14.7.9 in ${environmentType}`);
+  logging(`scheduledSleep_1.2.15.7.9 in ${environmentType}`);
   const floatingIslandsUtility = {
     getSpeed(quest) {
       if (!quest) quest = user.quests.QuestFloatingIslands;
@@ -176,12 +176,12 @@ function scheduledSleep() {
       const isLai = atts.is_low_tier_island;
       const isHai = atts.is_high_tier_island;
       const isSp = atts.is_vault_island;
-      const env = user.enviroment_atts;
-      const items = env.items;
-      const cloudCurd = items.cloud_curd_crafting_item;
-      const ccQty = parseQuantity(cloudCurd.quantity);
-      const cloudCheese = items.sky_cheese;
-      const cccQty = parseQuantity(cloudCheese.quantity);
+      // const env = user.enviroment_atts;
+      // const items = env.items;
+      // const cloudCurd = items.cloud_curd_crafting_item;
+      // const ccQty = parseQuantity(cloudCurd.quantity);
+      // const cloudCheese = items.sky_cheese;
+      // const cccQty = parseQuantity(cloudCheese.quantity);
       const settings = getStorageToObject('floating_islands');
       // exclude not sleep
       if (quest.jet_stream_active && !settings.isSleepInCJS) {
