@@ -77,12 +77,13 @@ checks = [
 // run hasCaughtAction
 hasCaughtAction(checks);
 /** check journal to find if caught target mouse(by data-mouse-type/mouse name) */
-function hasCaughtAction(isByType, checks) {
+function hasCaughtAction(checks) {
   // const isProd = false;
-  logging('hasCaughtAction_1.1.2.1.1, isByType', isByType, checks);
+  logging('hasCaughtAction_1.1.2.1.2', checks);
   for (let i = 0; i < checks.length; i++) {
     const check = checks[i];
     if (getEnvironmentType() !== check.atEnvironmentType) continue;
+    console.log(`Is by data mouse type? ${check.isByMouseType}`);
     if (
       (check.isByMouseType && hasCaughtTargetByDataMouseType(check.target)) ||
       (!check.isByType && hasCaughtTargetByMouseName(check.target))
