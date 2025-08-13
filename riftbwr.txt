@@ -1,0 +1,358 @@
+// const MOUSEHUNT_BASE_URL = 'https://www.mousehuntgame.com/';
+// const jsDialog = {};
+const QuestRiftBristleWoods = {
+  chamber_type: 'potion_chamber',
+  chamber_name: 'Ancient Lab',
+  chamber_description:
+    'Collect <b>Ancient String Potions</b> to create <b>Ancient String Cheese</b> which will help you find better loot.',
+  is_bonus: null,
+  is_normal: true,
+  no_debuff: '',
+  cleaver_status: 'available',
+  progress_percent: 72,
+  progress_goal: 35,
+  progress_remaining: 25,
+  portals: [
+    {
+      type: 'closed',
+      name: '',
+      status: 'disabled'
+    },
+    {
+      type: 'closed',
+      name: '',
+      status: 'disabled'
+    },
+    {
+      type: 'closed',
+      name: '',
+      status: 'disabled'
+    }
+  ],
+  chamber_status: 'closed',
+  equipment_warning: 'active baitWarning',
+  acolyte_catches: 9,
+  acolyte_crown: 'default',
+  acolyte_sand: 0,
+  obelisk_percent: 0,
+  has_obelisk_charge: '',
+  status_effects: {
+    ng: 'active',
+    ac: 'active',
+    ex: 'default',
+    fr: 'removed',
+    st: 'default',
+    un: 'removed'
+  },
+  items: {
+    marble_string_cheese: {
+      quantity: 3,
+      status: 'hidden highlight'
+    },
+    swiss_string_cheese: {
+      quantity: 129,
+      status: 'hidden highlight'
+    },
+    brie_string_cheese: {
+      quantity: 148,
+      status: 'hidden highlight'
+    },
+    magical_string_cheese: {
+      quantity: 207,
+      status: 'highlight'
+    },
+    ancient_string_cheese: {
+      quantity: 242,
+      status: ''
+    },
+    runic_string_cheese: {
+      quantity: 30,
+      status: ''
+    },
+    rift_anti_skele_trinket: {
+      quantity: 20,
+      status: ''
+    },
+    rift_scramble_portals_stat_item: {
+      quantity: 4,
+      status: 'disabled noPortals'
+    },
+    rift_quantum_quartz_stat_item: {
+      quantity: 202,
+      status: ''
+    },
+    rift_hourglass_stat_item: {
+      quantity: 1,
+      status: ''
+    },
+    rift_hourglass_sand_stat_item: {
+      quantity: 40,
+      status: 'active'
+    },
+    rift_portal_warmer_stat_item: {
+      quantity: 2,
+      status: 'disabled'
+    },
+    ancient_string_cheese_potion: {
+      quantity: 14,
+      status: 'highlight'
+    },
+    runic_string_cheese_potion: {
+      quantity: 40,
+      status: ''
+    }
+  },
+  minigame: {
+    potion_chamber: []
+  },
+  canvas_page_url: 'https://www.mousehuntgame.com/'
+};
+const user = {};
+user.quests = {};
+user.environment_type = 'rift_bristle_woods';
+const hg = {};
+function $() {}
+function logging(...any) {}
+// function trimToEmpty(params) {}
+function getEnvironmentType() {}
+// function completeTransaction(
+//   isPurchase,
+//   itemType,
+//   itemQuantity,
+//   isKingsCartItem,
+//   success
+// ) {}
+function parseQuantity(params) {}
+function getRandomInteger(min, max) {}
+
+// #bristleWoodsRiftAddon
+if (getEnvironmentType() === 'rift_bristle_woods') bristleWoodsRiftAddon();
+function bristleWoodsRiftAddon() {
+  const isProd = false;
+  const targetEnvironmentType = 'rift_bristle_woods';
+  const environmentType = getEnvironmentType();
+  if (environmentType !== targetEnvironmentType) return;
+  logging(`bristleWoodsRiftAddon_1.3.1.0.0`);
+  const quest = isProd
+    ? user.quests.QuestRiftBristleWoods
+    : QuestRiftBristleWoods;
+  // const acolyteCatches = parseQuantity(quest.acolyte_catches);
+  const items = quest.items;
+  const ascpQuantity = parseQuantity(
+    items.ancient_string_cheese_potion.quantity
+  );
+  const ascQuantity = parseQuantity(items.ancient_string_cheese.quantity);
+  const rscpQuantity = parseQuantity(items.runic_string_cheese_potion.quantity);
+  const rscQuantity = parseQuantity(items.runic_string_cheese.quantity);
+  // const charmArmed = trimToEmpty(user.trinket_name);
+  // const charmQuantity = parseQuantity(user.trinket_quantity);
+  /** buy shoppe item with checking correct itemType and itemQuantity
+  const buyShoppeItem = (itemType, itemQuantity, itemName) => {
+    if (trimToEmpty(itemType) != '' && itemQuantity > 0)
+      completeTransaction(true, itemType, itemQuantity, false, () => {
+        logging(`bought ${itemQuantity} ${itemName}`);
+      });
+  }; */
+  /** Simply buy by gold
+  const buyRiftItem = () => {
+    let itemType = 'brie_string_cheese';
+    let itemQuantity = 444;
+    let itemName = 'Brie String';
+    const nowQuantity = parseQuantity(items[itemType].quantity);
+    if (nowQuantity < getRandomInteger(40, 60)) {
+      logging(`auto buy ${itemName}`);
+      buyShoppeItem(itemType, itemQuantity, itemName);
+    }
+    itemType = 'rift_vacuum_trinket';
+    itemQuantity = 333;
+    itemName = 'Rift Vacuum';
+    if (
+      charmArmed.indexOf(itemName) > -1 &&
+      charmQuantity < getRandomInteger(40, 60)
+    ) {
+      logging(`auto buy ${itemName} Charm`);
+      buyShoppeItem(itemType, itemQuantity, itemName);
+    }
+  }; */
+  /** Need loot to buy
+  const buyAntiSkele = () => {
+    const itemType = 'rift_anti_skele_trinket';
+    const itemQuantity = getRandomInteger(12, 17);
+    const itemName = 'Rift Antiskele';
+    logging(`auto buy ${itemName} Charm`);
+    const nowQuantity = parseQuantity(items[itemType].quantity);
+    if (nowQuantity < 11) {
+      buyShoppeItem(itemType, itemQuantity, itemName);
+    }
+  }; */
+  /** get using timesand log
+  const getUsingLog = () => {
+    let timesandLogs = localStorage.timesandLogs;
+    if (!timesandLogs) localStorage.timesandLogs = '[]';
+    timesandLogs = JSON.parse(localStorage.timesandLogs);
+    if (!timesandLogs[acolyteCatches])
+      timesandLogs[acolyteCatches] = [-1, -1, -1, -1, -1, -1];
+    return timesandLogs;
+  }; */
+  /** log timesand
+  const logTimesand = () => {
+    const chamberName = trimToEmpty(quest.chamber_name);
+    const acolyteSand = parseQuantity(quest.acolyte_sand);
+    const obeliskPercent = parseQuantity(quest.obelisk_percent);
+    const timesand = parseQuantity(
+      items.rift_hourglass_sand_stat_item.quantity
+    );
+    if (chamberName.toUpperCase() != 'ACOLYTE') return;
+    logging('Log timesand: entered Acolyte');
+    // prettier-ignore
+    if (obeliskPercent != 100 && acolyteSand < 2) {
+      logging('Log timesand: Beginning charging Obelisk');
+      const timesandLogs = getUsingLog();
+      const newLog = timesandLogs[acolyteCatches];
+      if (newLog[0] == -1) {
+        logging('Log timesand: beginning charging, timesand:', timesand,'acolyte sand:' , acolyteSand);
+        newLog[0] = timesand;
+        newLog[1] = acolyteSand;
+        localStorage.timesandLogs = JSON.stringify(timesandLogs);
+      }
+    } else if (obeliskPercent == 100) {
+      logging('Log timesand: Obelisk fully charged');
+      const timesandLogs = getUsingLog();
+      const newLog = timesandLogs[acolyteCatches];
+      if (acolyteSand > 15) {
+        logging('Log timesand: Obelisk fully charged, acolyteSand > 15');
+        if (newLog[2] == -1) {
+          logging(`Log timesand: beginning draining, timesand: ${timesand}, acolyte sand: ${acolyteSand}`);
+          newLog[2] = timesand;
+          newLog[3] = acolyteSand;
+          localStorage.timesandLogs = JSON.stringify(timesandLogs);
+        }
+      }
+      if (acolyteSand == 0) {
+        logging('Log timesand: Acolyte sand drained');
+        if (newLog[4] == -1) {
+          logging(`Log timesand: beginning AA hunt, timesand: ${timesand}`);
+          newLog[4] = timesand;
+        }
+        logging(`Log timesand: progressing AA hunt, timesand: ${timesand}`);
+        newLog[5] = timesand;
+        localStorage.timesandLogs = JSON.stringify(timesandLogs);
+      }
+    }
+  }; */
+  const autoBrewBWPotion = () => {
+    // prettier-ignore
+    logging(`ascp: ${ascpQuantity}, asc: ${ascQuantity}, rscp: ${rscpQuantity}, rsc: ${rscQuantity}`);
+    // let itemType = 'ancient_string_cheese_potion';
+    // let recipeIndex = 0;// ex. brew ASCP is 0 with BSC and is 1 with MSC
+    // let confirmQuantity = ascpQuantity;
+    const randomLower = getRandomInteger(5, 10);
+    if (ascpQuantity > randomLower) {
+      const itemType = 'ancient_string_cheese_potion';
+      const recipeIndex = 0;
+      const confirmQuantity = ascpQuantity;
+      if (itemType && confirmQuantity > 0) {
+        logging(`Use ${confirmQuantity} ancient potion!!`);
+        // prettier-ignore
+        setTimeout(() => {
+          hg.utils.UserInventory.usePotion(itemType, recipeIndex, confirmQuantity, () => { document.querySelector('a.jsDialogClose, a#jsDialogClose').click(); });
+        }, 10000);
+      }
+    }
+    if (rscQuantity < 20) {
+      const itemType = 'runic_string_cheese_potion';
+      const recipeIndex = 0;
+      // prettier-ignore
+      const confirmQuantity = Math.min(11, parseInt(ascQuantity / 2), rscpQuantity);
+      if (itemType && confirmQuantity > 0) {
+        logging(`Use ${confirmQuantity} runic potion!!`);
+        // prettier-ignore
+        setTimeout(() => {
+          hg.utils.UserInventory.usePotion(itemType, recipeIndex, confirmQuantity, () => { document.querySelector('a.jsDialogClose, a#jsDialogClose').click(); });
+        }, 13000);
+      }
+    }
+  };
+  // buyAntiSkele();
+  // buyRiftItem();
+  // logTimesand();
+  autoBrewBWPotion();
+}
+// End #bristleWoodsRiftAddon
+
+bwRiftSleepWhenEnterNewPortal(0, 7);
+// prettier-ignore
+function bwRiftSleepWhenEnterNewPortal(sleepAfter, sleepFor) {
+  if (0 != sleepAfter && !sleepAfter) sleepAfter = 9;
+  if (0 != sleepFor && !sleepFor) sleepFor = 8;
+  const quest = user.quests.QuestRiftBristleWoods;
+  const now = new Date();
+  const modedDay = now.getDay() % 3;
+  sleepAfter += (modedDay == 0 ? 3 : modedDay) * 3;
+  // sleepAfter -= (modedDay % 3) * 3;
+  const hr = now.getHours();
+  const min = now.getMinutes();
+  const minPerc = parseInt(min / 15);
+  const sleepAt = hr + 0.25 * minPerc;
+  console.log('sleepAfter:', sleepAfter, 'now time', hr, ':', min, ', mod by 15 min.:', minPerc, ', to sleepAt:', sleepAt);
+  if (hr >= sleepAfter + sleepFor - 1) {
+    console.log('Waked up!!');
+    return;
+  }
+  if (hr < sleepAfter) {
+    const restTimes = localStorage.getItem('restTimes');
+    console.log('No sleep!! restTimes is', restTimes);
+    if (restTimes != '[[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]]') {
+      console.log('Set to no sleep!!');
+      localStorage.setItem('restTimes','[[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]]');
+    }
+    return;
+  }
+  console.log('quest.progress_percent', quest.progress_percent);
+  if (parseInt(quest.progress_percent) < 90) {
+    console.log('progress lower than 90, return!!');
+    return;
+  }
+  const ignoredChamberNames = ['Guard Barracks','Acolyte','Hidden Treasury','Lucky Tower'];
+  if (ignoredChamberNames.indexOf(quest.chamber_name || '') > -1)
+    if (ignoredChamberNames.indexOf('Acolyte') < 0 || quest.obelisk_percent < 100 || quest.acolyte_sand < 14)
+      return;
+  const a = JSON.parse(localStorage.restTimes);
+  a[0][0] = sleepAt;
+  a[0][1] = sleepFor;
+  // localStorage.restTimes = JSON.stringify(a);
+  // const nowTime = (Date.now() + 8 * 60 * 60 * 1000) % (24 * 60 * 60 * 1000);
+  const duration = a[0][1] * 60 * 60 * 1000;
+  // a[0][0] * 60 * 60 * 1000 + a[0][1] * 60 * 60 * 1000 - nowTime;
+  const sleepHref ='https://elie2201.github.io/mh/mhReloader.html?until=0&duration=' + duration;
+  $.ajax('https://www.mousehuntgame.com/journal.php');
+  setTimeout(() => {
+    if ('Runic Laboratory' == (quest.chamber_name || '')) {
+      // ancient string = 2343
+      if (parseInt(user.bait_item_id) != 2343)
+        hg.utils.TrapControl.setBait('ancient_string_cheese').go(() => {});
+    }
+    const currentRoutineKey = 'currentRoutine';
+    window.localStorage.setItem(currentRoutineKey, 'Resting');
+    setTimeout(() => {
+      window.open(sleepHref, '_self');
+    }, 3000);
+  }, 20000);
+  console.log('BWRift restTimes:', JSON.stringify(a)); // localStorage.restTimes);
+}
+
+/* const minigameNames = ['Guard Barracks', 'Frozen Alcove', 'Ingress Chamber', 'Runic Laboratory', 'Ancient Lab'];
+  if (
+    minigameNames.indexOf(user.quests.QuestRiftBristleWoods.chamber_name) > -1
+  )
+    return; */
+/*
+'use strict';if("rift_bristle_woods"==user.environment_type){bwRiftSleepWhenEnterNewPortal(9,7);const a=user.quests.QuestRiftBristleWoods.items.ancient_string_cheese_potion.quantity||0;4<a&&(console.log("Use ancient potion!!"),setTimeout(()=>{hg.utils.UserInventory.usePotion("ancient_string_cheese_potion",0,a);setTimeout(()=>{$(".jsDialogClose").click()},2E3)},1E4))}
+function bwRiftSleepWhenEnterNewPortal(a,b){a||=9;b||=8;a-=(new Date).getDay()%3*3;var c=new Date;const d=c.getHours(),e=c.getMinutes(),f=parseInt(e/15);c=d+.25*f;console.log("sleepAfter:",a,"now time",d,":",e,", mod by 15 min.:",f,", to sleepAt:",c);d>=a+b-1?console.log("Waked up!!"):d<a?(b=localStorage.getItem("restTimes"),console.log("No sleep!! restTimes is",b),"[[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]]"!=b&&(console.log("Set to no sleep!!"),localStorage.setItem("restTimes","[[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]]"))):
+user.quests.QuestRiftBristleWoods.progress_goal!=user.quests.QuestRiftBristleWoods.progress_remaining||-1<["Guard Barracks","Runic Laboratory"].indexOf(user.quests.QuestRiftBristleWoods.chamber_name)||(a=JSON.parse(localStorage.restTimes),a[0][0]=c,a[0][1]=b,localStorage.restTimes=JSON.stringify(a),console.log("BWRift restTimes:",localStorage.restTimes))};
+*/
+/* if (
+    user.quests.QuestRiftBristleWoods.progress_goal !=
+    user.quests.QuestRiftBristleWoods.progress_remaining
+  )
+    return; */
