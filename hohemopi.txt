@@ -1,0 +1,293 @@
+/* let trapIndex = -1;
+  if (percent > 99) trapIndex = 3;
+  else if (percent > 79) trapIndex = 2;
+  else if (percent > 34) trapIndex = 1;
+  else trapIndex = 0;
+  const trap = setup.trap[focus][trapIndex];
+  armAllTraps(...trap);
+  toggleTorch(trap[4]); */
+/* console.log('Until 20 rainy left');
+  if (rainyCheeseQty > 20) return 'rain';
+  console.log('Until 20 windy left');
+  if (windyCheeseQty > 20) return 'wind';
+  console.log('Until wind 100 percent but not run out of windy');
+  if (windPercent < 100 && rainPercent == 0 && windyCheeseQty > 2) return 'wind_minluck';
+  console.log('keep hunting with dragonvine.');
+  if (Math.abs(rainPercent - windPercent) <= 5) return 'storm';
+  console.log('rain up to 18 with rainy and wind down to 82');
+  if (rainPercent < 18) return 'rain_minluck';
+  console.log('rain up to 36 with dragonvine and wind up to 100');
+  if (rainPercent < 36) return 'storm';
+  console.log('rain up to 69 with rainy and minluck and wind down to 67<- Overrided by diff <= 8?');
+  if (rainPercent < 69 && windPercent > 67) return 'rain_minluck';
+  return null; */
+const hg = {};
+function getEnvironmentType() {}
+function getStorageToObject(key, obj) {}
+function armAllTraps(bait, weapon, base, charm) {}
+function travel(environmentType) {}
+function parseQuantity(any) {}
+const QuestMoussuPicchu = {
+  is_torch_active: false,
+  power_type_name: 'Arcane',
+  power_type: {
+    shdw: 'default',
+    arcn: 'default'
+  },
+  power_type_warning: '',
+  elements: {
+    wind: {
+      percent: 0,
+      direction: 'empty',
+      level: 'none'
+    },
+    rain: {
+      percent: 0,
+      direction: 'empty',
+      level: 'none'
+    },
+    storm: {
+      level: 'none'
+    }
+  },
+  items: {
+    wind_cheese: {
+      quantity: 6,
+      status: ''
+    },
+    rain_cheese: {
+      quantity: 9,
+      status: ''
+    },
+    dragonvine_cheese: {
+      quantity: 9,
+      status: ''
+    },
+    swiss_cheese: {
+      quantity: '1,202',
+      status: 'hidden'
+    },
+    brie_cheese: {
+      quantity: '1,724',
+      status: 'hidden'
+    },
+    gouda_cheese: {
+      quantity: '1,325',
+      status: 'active'
+    },
+    super_brie_cheese: {
+      quantity: '3,859',
+      status: ''
+    },
+    glowing_gruyere_cheese: {
+      quantity: 108,
+      status: ''
+    },
+    shadowvine_crafting_item: {
+      quantity: 0,
+      status: 'disabled'
+    },
+    arcanevine_crafting_item: {
+      quantity: 0,
+      status: 'disabled'
+    },
+    wind_cheese_potion: {
+      quantity: 21,
+      status: ''
+    },
+    rain_cheese_potion: {
+      quantity: 15,
+      status: ''
+    },
+    tiki_fuel_stat_item: {
+      quantity: 2,
+      status: 'default'
+    },
+    dragon_scale_crafting_item: {
+      quantity: 16,
+      status: ''
+    }
+  },
+  recipes: {
+    dragonvine_small_recipe: 'disabled',
+    dragonvine_large_recipe: 'disabled',
+    glowing_gruyere_cheese_3_pieces: 'disabled',
+    glowing_gruyere_cheese_5_pieces: 'disabled'
+  }
+};
+const user = {};
+user.quests = {};
+user.quests.QuestMoussuPicchu = QuestMoussuPicchu;
+
+// #moussuPicchu
+if (getEnvironmentType() === 'moussu_picchu') {
+  moussuPicchu();
+}
+function moussuPicchu() {
+  if (getEnvironmentType() !== 'moussu_picchu') return;
+  // prettier-ignore
+  const defaultSetup = {
+    huntingPlan: 'auto',
+    trap: {
+      none: ['Gouda Cheese', 'Boiling Cauldron', "Alchemist's Cookbook", 'Airship Charm,Super Snowball Charm', false],
+      wind: [
+        ['Windy Cheese', 'Boiling Cauldron', "Seasonal Gift", 'Airship Charm,Tarnished Charm,Unstable', false, 35],
+        ['Windy Cheese', 'best.weapon.arcane', 'best.base.combo', 'Ancient Charm', false, 80],
+        ['Windy Cheese', 'best.weapon.arcane', 'best.base.combo', 'Regal Charm,Super Regal Charm,Ancient Charm', false, 94],
+        ['Windy Cheese', 'best.weapon.arcane', 'best.base.combo', 'Festive Ultimate Luck Charm,Ultimate Luck Charm', false, 101]
+      ],
+      wind_minluck: [
+        ['Windy Cheese', 'Boiling Cauldron', "Seasonal Gift", 'Airship Charm,Tarnished Charm,Unstable', false, 35],
+        ['Windy Cheese', 'best.weapon.arcane', 'Seasonal Gift', 'Extreme Chrome Charm', false, 80],
+        ['Windy Cheese', 'best.weapon.arcane', 'best.base.combo', 'Festive Ultimate Luck Charm,Ultimate Luck Charm', false, 94],
+        ['Windy Cheese', 'best.weapon.arcane', 'best.base.combo', 'Festive Ultimate Luck Charm,Ultimate Luck Charm', false, 101]
+      ],
+      rain: [
+        ['Rainy Cheese', 'best.weapon.shadow', "Seasonal Gift", 'Airship Charm,Tarnished Charm,Unstable', false, 35],
+        ['Rainy Cheese', 'best.weapon.shadow', 'best.base.combo', 'Ancient Charm', false, 80],
+        ['Rainy Cheese', 'best.weapon.shadow', 'best.base.combo', 'Regal Charm,Super Regal Charm,Ancient Charm', false, 94],
+        ['Rainy Cheese', 'best.weapon.shadow', 'best.base.combo', 'Festive Ultimate Luck Charm,Ultimate Luck Charm', false, 101]
+      ],
+      rain_minluck: [
+        ['Rainy Cheese', 'best.weapon.shadow', "Seasonal Gift", 'Airship Charm,Tarnished Charm,Unstable', false, 35],
+        ['Rainy Cheese', 'best.weapon.shadow', 'Seasonal Gift', 'Extreme Chrome Charm', false, 80],
+        ['Rainy Cheese', 'best.weapon.shadow', 'best.base.combo', 'Festive Ultimate Luck Charm,Ultimate Luck Charm', false, 94],
+        ['Rainy Cheese', 'best.weapon.shadow', 'best.base.combo', 'Festive Ultimate Luck Charm,Ultimate Luck Charm', false, 101]
+      ],
+      storm: [
+        ['Dragonvine Cheese', 'best.weapon.draconic', "Seasonal Gift", 'Airship Charm,Luck Charm', false, 35],
+        ['Dragonvine Cheese', 'best.weapon.draconic', 'best.base.combo', 'Dragonbane Charm', false, 80],
+        ['Dragonvine Cheese', 'best.weapon.draconic', 'best.base.combo', 'Dragonbane Charm', true, 94],
+        ['Dragonvine Cheese', 'best.weapon.draconic', 'best.base.combo', 'Dragonbane Charm', true, 101]
+      ]
+    }
+  };
+  const setup = getStorageToObject('moussuPicchu', defaultSetup); // defaultSetup;
+  const focus = autoFocus(setup); // setup.huntingPlan;
+  if (!focus) {
+    setTimeout(() => {
+      travel('rift_furoma');
+    }, 6000);
+    return;
+  }
+  if (focus == 'none') {
+    armAllTraps(...setup.trap.none);
+    toggleTorch(setup.trap.none[4]);
+    return;
+  }
+  const quest = user.quests.QuestMoussuPicchu;
+  const elementKey = focus.split('_')[0];
+  let percent = quest.elements[elementKey].percent;
+  if (elementKey == 'storm')
+    percent = Math.min(
+      quest.elements.rain.percent,
+      quest.elements.wind.percent
+    );
+  const traps = setup.trap[focus];
+  for (let i = 0; i < traps.length; i++) {
+    const trap = traps[i];
+    if (percent < trap[5]) {
+      console.log('Choosen trap:', trap);
+      armAllTraps(...trap);
+      toggleTorch(trap[4]);
+      return;
+    }
+  }
+}
+// prettier-ignore
+function autoFocus(setup) {
+  if (setup.huntingPlan != 'auto') return setup.huntingPlan;
+  const quest = user.quests.QuestMoussuPicchu;
+  const items = quest.items;
+  const fuelQty = items.tiki_fuel_stat_item.quantity;
+  const rainyCheeseQty = items.rain_cheese.quantity;
+  const windyCheeseQty = items.wind_cheese.quantity;
+  const dragonCheeseQty = items.dragonvine_cheese.quantity;
+  const rainPercent = quest.elements.rain.percent;
+  const windPercent = quest.elements.wind.percent;
+  // const stormPercent = Math.min(rainPercent, windPercent);
+  // prettier-ignore
+  const stages = ['rain','wind','wind_minluck','rain_minluck','storm','rain_minluck','storm'];
+  let stage = localStorage.moussuPicchuStage;
+  if (!stage) {
+    stage = 0;
+    localStorage.moussuPicchuStage = stage;
+    return stages[stage];
+  }
+  if (stage == -1) return 'none';
+  if (stage == 0) {
+    console.log('rainy until 20 left => wind');
+    // TODO cheeseQty/percent設法寫活
+    if (rainyCheeseQty > 20) return stages[stage];
+    if (rainPercent == 100) return stages[stage];
+    stage = 1;
+    localStorage.moussuPicchuStage = stage;
+    return stages[stage];
+  }
+  if (stage == 1) {
+    console.log('windy until 20 left => wind_minluck');
+    if (windyCheeseQty > 20) return stages[stage];
+    if (windPercent == 100) {
+      stage = 3;
+      localStorage.moussuPicchuStage = stage;
+      return stages[stage];
+    }
+    stage = 2;
+    localStorage.moussuPicchuStage = stage;
+    return stages[stage];
+  }
+  if (stage == 2) {
+    console.log('windy until wind 100 but not run out of windy');
+    if (windPercent < 100)
+      if (windyCheeseQty > 1) return stages[stage];
+      else return null;
+    stage = 3;
+    localStorage.moussuPicchuStage = stage;
+    return stages[stage];
+  }
+  if (stage == 3) {
+    console.log('rainy to rain 18 and wind 82 => storm');
+    // (18,82) (21,79)
+    if (rainPercent < 18) return stages[stage];
+    stage = 4;
+    localStorage.moussuPicchuStage = stage;
+    return stages[stage];
+  }
+  if (stage == 4) {
+    console.log('DVC to rain 36 and wind 100 => rain_minluck');
+    // (36,100)(39,100)(36,98) (36,94)(39,97)(34,92=>37,95)
+    if (rainPercent < 36) return stages[stage];
+    stage = 5;
+    localStorage.moussuPicchuStage = stage;
+    return stages[stage];
+  }
+  if (stage == 5) {
+    console.log('rainy to rain 69 and wind 67 => storm');
+    // (69,67)(72,64) (69,70)(72,67) (69,65)(72,62) (69,61)(72,58) (69,67)(70,62)
+    if (Math.abs(rainPercent - windPercent) < 3) {
+      stage = 6;
+      localStorage.moussuPicchuStage = stage;
+      return stages[stage];
+    }
+    if (rainPercent < 69) return stages[stage];
+    stage = 6;
+    localStorage.moussuPicchuStage = stage;
+    return stages[stage];
+  }
+  if (stage == 6) {
+    console.log('keep hunting with dragonvine.');
+    if (dragonCheeseQty > 1 && fuelQty > 1) return stages[stage];
+    return null;
+  }
+  return null;
+}
+// toggleTorch(false);
+function toggleTorch(isEnabled) {
+  const quest = user.quests.QuestMoussuPicchu;
+  if (parseQuantity(quest.items.tiki_fuel_stat_item.quantity) === 0) return;
+  const isFuelEnabled = quest.is_torch_active;
+  if ((isFuelEnabled == true) != isEnabled)
+    hg.views.HeadsUpDisplayMoussuPicchuView.toggleTorch();
+}
+// End toggleTorch(false);
+// End #moussuPicchu
