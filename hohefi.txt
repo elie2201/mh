@@ -1091,7 +1091,7 @@ function floatingIslands() {
   const targetEnvironmentType = 'floating_islands';
   const environmentType = getEnvironmentType();
   if (environmentType != targetEnvironmentType) return;
-  logging('floatingIslands_1.4.16.6.6');
+  logging('floatingIslands_1.4.16.6.7');
   // prettier-ignore
   const AllPowerTypes = ['arcn', 'frgttn', 'hdr', 'shdw', 'drcnc', 'law', 'phscl', 'tctcl'];
   // prettier-ignore
@@ -1405,8 +1405,8 @@ function floatingIslands() {
   if (settingTrap) trap = settingTrap;
   // weapon by power type
   if (trap[1] == 'best.weapon.') trap[1] += powerType;
-  // last shot to trove trap
-  if (isLastShotTrove) {
+  // trap for last shot to trove.排除 pirate因為 CR提升有限
+  if (!isPirate && isLastShotTrove) {
     const setLastShotTroveTrap = (lastShotTroveTrap, trap) => {
       if (lastShotTroveTrap[0] !== '') trap[0] = lastShotTroveTrap[0];
       if (lastShotTroveTrap[1] !== '') trap[1] = lastShotTroveTrap[1];
@@ -1414,11 +1414,11 @@ function floatingIslands() {
       if (lastShotTroveTrap[3] !== '') trap[3] = lastShotTroveTrap[3];
     };
     const lastShotTroveTrap = isLai
-      ? settings.lastShotTroveLaiTrap
+      ? settings.trap.lastShotTroveLaiTrap
       : isHai
-      ? settings.lastShotTroveHaiTrap
+      ? settings.trap.lastShotTroveHaiTrap
       : isSp
-      ? settings.lastShotTroveSpTrap
+      ? settings.trap.lastShotTroveSpTrap
       : null;
     if (lastShotTroveTrap) setLastShotTroveTrap(lastShotTroveTrap, trap);
   }
