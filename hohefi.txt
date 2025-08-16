@@ -1091,7 +1091,7 @@ function floatingIslands() {
   const targetEnvironmentType = 'floating_islands';
   const environmentType = getEnvironmentType();
   if (environmentType != targetEnvironmentType) return;
-  logging('floatingIslands_1.4.13.6.6');
+  logging('floatingIslands_1.4.16.6.6');
   // prettier-ignore
   const AllPowerTypes = ['arcn', 'frgttn', 'hdr', 'shdw', 'drcnc', 'law', 'phscl', 'tctcl'];
   // prettier-ignore
@@ -1144,6 +1144,9 @@ function floatingIslands() {
     spWheelPattern: ['tctcl', 'loot_cache', 'loot_cache', 'loot_cache', 'loot_cache'],
     trap: {
       launch: ['Gouda', 'best.weapon.physical', 'best.base.combo', 'Luck Charm', false, 'none', false],
+      lastShotTroveLaiTrap: ['', '', '', '', false, 'none', false],
+      lastShotTroveHaiTrap: ['', '', '', '', false, 'none', false],
+      lastShotTroveSpTrap: ['', '', '', '', false, 'none', false],
       defaultLai: ['Cloud Cheesecake,Extra Rich Cloud Cheesecake,Sky Pirate Swiss Cheese', 'best.weapon.', 'best.base.combo', 'Festive Ultimate Lucky Power Charm', false, 'none', false],
       lai: {
         arcane: ['Cloud Cheesecake', 'best.weapon.', 'best.base.combo', 'Super Spooky Charm,Super Snowball Charm', false, 'none', false],
@@ -1243,7 +1246,17 @@ function floatingIslands() {
   const isLai = atts.is_low_tier_island || !atts.enemy;
   const isHai = atts.is_high_tier_island;
   const isSp = atts.is_vault_island;
-  const isFirst3Block = atts.island_progress < 30;
+  const isCjsOn = quest.jet_stream_active;
+  const islandProgress = atts.island_progress;
+  const isFirst3Block = islandProgress < 30;
+  const speed =
+    (isLaunch ? 0 : 1) +
+    (hasSpeedUp ? 1 : 0) +
+    (atts.is_fuel_enabled ? 1 : 0) +
+    (isCjsOn ? 1 : 0);
+  console.log('current speed:', speed);
+  const isBossHunt = atts.has_enemy && atts.is_enemy_encounter;
+  const isLastShotTrove = !isBossHunt && islandProgress + speed > 39;
   const hasDefeatedEnemy = atts.has_defeated_enemy;
   const hasTreasureTrove = atts.has_treasure_trove;
   const autoHuntAfterTrove = () => {
@@ -1366,7 +1379,7 @@ function floatingIslands() {
     else if (
       isSp &&
       settings.isPirateHuntingSp &&
-      atts.island_progress >= settings.startPirateProgressSp
+      islandProgress >= settings.startPirateProgressSp
     )
       trap = settings.trap.pirate['sp'];
   /* if (
@@ -1375,37 +1388,54 @@ function floatingIslands() {
       (isHai && settings.isPirateHuntingHai) ||
       (isSp &&
         settings.isPirateHuntingSp &&
-        atts.island_progress >= settings.startPirateProgressSp))
+        islandProgress >= settings.startPirateProgressSp))
   )
     trap = settings.trap.pirate; */
   // warden
-  const isWarden = isLai && atts.is_enemy_encounter;
+  const isWarden = isLai && isBossHunt;
   if (isWarden) trap = settings.trap.warden;
   // paragon
-  const isParagon = isHai && atts.is_enemy_encounter;
+  const isParagon = isHai && isBossHunt;
   if (isParagon) trap = settings.trap.paragon;
   // empress
-  const isEmpress = isSp && atts.is_enemy_encounter;
+  const isEmpress = isSp && isBossHunt;
   if (isEmpress) trap = settings.trap.empress;
   // trap by setting
   const settingTrap = settings.trap[powerType];
   if (settingTrap) trap = settingTrap;
   // weapon by power type
   if (trap[1] == 'best.weapon.') trap[1] += powerType;
+  // last shot to trove trap
+  if (isLastShotTrove) {
+    const setLastShotTroveTrap = (lastShotTroveTrap, trap) => {
+      if (lastShotTroveTrap[0] !== '') trap[0] = lastShotTroveTrap[0];
+      if (lastShotTroveTrap[1] !== '') trap[1] = lastShotTroveTrap[1];
+      if (lastShotTroveTrap[2] !== '') trap[2] = lastShotTroveTrap[2];
+      if (lastShotTroveTrap[3] !== '') trap[3] = lastShotTroveTrap[3];
+    };
+    const lastShotTroveTrap = isLai
+      ? settings.lastShotTroveLaiTrap
+      : isHai
+      ? settings.lastShotTroveHaiTrap
+      : isSp
+      ? settings.lastShotTroveSpTrap
+      : null;
+    if (lastShotTroveTrap) setLastShotTroveTrap(lastShotTroveTrap, trap);
+  }
   const isBottledWindBoss =
     (isWarden && settings.isBottledWindWarden) ||
     (isParagon && settings.isBottledWindParagon) ||
     (isEmpress && settings.isBottledWindEmpress);
   if (
     settings.isBottledWind &&
-    atts.island_progress < 38 &&
+    islandProgress < 38 &&
     (isFirst3Block ||
       (isLai && settings.isBwLaiLastBlock) ||
       (isHai && settings.isBwHaiLastBlock) ||
       (isSp && settings.isBwSpLastBlock)) &&
     !isLaunch &&
     !hasTreasureTrove &&
-    (!atts.is_enemy_encounter || (isBottledWindBoss && atts.enemy_progress > 2))
+    (!isBossHunt || (isBottledWindBoss && atts.enemy_progress > 2))
   )
     toggleBottledWind(true);
   else toggleBottledWind(false);
@@ -1424,7 +1454,7 @@ function floatingIslands() {
       !isHai ||
       !atts.has_encountered_enemy ||
       atts.has_defeated_enemy ||
-      quest.jet_stream_active
+      isCjsOn
     )
       return;
     console.plog('Try using CJS');
