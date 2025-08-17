@@ -2059,7 +2059,7 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = getEnvironmentType();
   if (environmentType !== targetEnvironmentType) return;
-  logging('valourRift_0.5.28.18.17');
+  logging('valourRift_0.5.31.19.17');
   // trap: [<bait>, <weapon>, <base>, <trinket>, <championFireEnabled>, litCandle, doubleEgg]
   // prettier-ignore
   const defaultSetting = {
@@ -2067,6 +2067,7 @@ function valourRift() {
     minGscToEnter: 0,
     isPrestigePush: false,
     isAutoAugment: true,
+    uuRunExtraSecret: 500,
     isSigilHunter: false,
     isSecretResearch: false,
     isSuperSiphon: false,
@@ -2093,18 +2094,18 @@ function valourRift() {
         eclipse: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift 2025 Charm,Rift 2024 Charm', true, 'none', false]
       },
       uu: {
-        0: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift 2024 Charm,Rift 2025 Charm', false, 'none', false],
-        8: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift 2024 Charm,Rift 2025 Charm', false, 'none', false],
-        16: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift 2024 Charm,Rift 2025 Charm', false, 'none', false],
-        24: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift 2024 Charm,Rift 2025 Charm', false, 'none', false],
-        eclipse: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift 2025 Charm,Rift 2024 Charm', true, 'none', false]
+        0: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Ultimate Power Charm,Rift 2025 Charm,Rift 2024 Charm', false, 'none', false],
+        8: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Ultimate Power Charm,Rift 2025 Charm,Rift 2024 Charm', false, 'none', false],
+        16: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Ultimate Power Charm,Rift 2025 Charm,Rift 2024 Charm', false, 'none', false],
+        24: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Ultimate Power Charm,Rift 2025 Charm,Rift 2024 Charm', false, 'none', false],
+        eclipse: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Ultimate Power Charm,Rift 2025 Charm,Rift 2024 Charm', true, 'none', false]
       },
       pp: {
-        0: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Ultimate Lucky Power Charm', true, 'none', false],
-        8: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Ultimate Lucky Power Charm', true, 'none', false],
-        16: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Ultimate Lucky Power Charm', true, 'none', false],
-        24: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Ultimate Lucky Power Charm', true, 'none', false],
-        eclipse: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Ultimate Charm', true, 'none', false]
+        0: ['Gauntlet String', 'best.weapon.rift', 'Signature Series Denture', 'Rift Ultimate Lucky Power Charm', true, 'white', false],
+        8: ['Gauntlet String', 'best.weapon.rift', 'Signature Series Denture', 'Rift Ultimate Lucky Power Charm', true, 'white', false],
+        16: ['Gauntlet String', 'best.weapon.rift', 'Signature Series Denture', 'Rift Ultimate Lucky Power Charm', true, 'white', false],
+        24: ['Gauntlet String', 'best.weapon.rift', 'Signature Series Denture', 'Rift Ultimate Lucky Power Charm', true, 'white', false],
+        eclipse: ['Gauntlet String', 'best.weapon.rift', 'Signature Series Denture', 'Ultimate Charm', true, 'white', false]
       }
     }
   };
@@ -2144,6 +2145,8 @@ function valourRift() {
   const huntsLeft = quest.hunts_remaining;
   const stepsToEclipse =
     quest.prestige_total_step - 1 - quest.prestige_current_step;
+  const isUU = quest.is_eclipse_mode;
+  const isAtEclipse = quest.is_at_eclipse;
   const powerUpData = quest.power_up_data;
   const speed = powerUpData.long_stride;
   const sync = powerUpData.hunt_limit;
@@ -2187,6 +2190,9 @@ function valourRift() {
         elixirRain: { type: 'er', whatNeed: 'secret', howMuchNeed: 500, isUnlock: null },
         stringStepping: { type: 'sste', whatNeed: 'secret', howMuchNeed: 1500, isUnlock: null }
       },
+      isOkUU: false,
+      isOkSsteUU: false,
+      isOkPP: false,
       /** toggle champion's fire */
       toggleChampionFire(isToEnable) {
         logging(`toggleChampionFire to ${isToEnable}`);
@@ -2203,14 +2209,14 @@ function valourRift() {
       },
       /** Auto augmentation */
       autoAugmentation() {
+        let msg = null;
         // Since 5-3-3, enable Sigil Hunter
         if (
           currentLevelIndex > 7 &&
           this.items.gold.quantity > this.augmentations.sigilHunter.howMuchNeed
         ) {
-          console.plog(
-            `enable sigilHunter: ${currentLevelsJSON}, ${this.items.gold.quantity}>${this.augmentations.sigilHunter.howMuchNeed}`
-          );
+          msg = `enable sigilHunter: ${currentLevelsJSON}, ${this.items.gold.quantity}>${this.augmentations.sigilHunter.howMuchNeed}`;
+          isProd ? console.plog(msg) : console.log(msg);
           settings.isSigilHunter = true;
         }
         // Since 6-6-4, enable Secret Research when enough sigil.
@@ -2220,60 +2226,83 @@ function valourRift() {
             this.items.sigil.quantity >
             this.augmentations.secretResearch.howMuchNeed
           ) {
-            console.plog(
-              `enable secretResearch: ${currentLevelsJSON}, ${this.items.sigil.quantity}>${this.augmentations.secretResearch.howMuchNeed}`
-            );
+            msg = `enable secretResearch: ${currentLevelsJSON}, ${this.items.sigil.quantity}>${this.augmentations.secretResearch.howMuchNeed}`;
+            isProd ? console.plog(msg) : console.log(msg);
             settings.isSecretResearch = true;
           }
           // sste not unlocked, check gold/sigil/frag
-          const isOkUU =
+          this.isOkUU =
             this.augmentations.ultimateUmbra.isUnlock &&
             this.items.gold.quantity >
               this.augmentations.sigilHunter.howMuchNeed &&
-            this.items.sigil.quantity >
+            this.items.sigil.quantity >=
               this.augmentations.secretResearch.howMuchNeed +
                 this.augmentations.superSiphon.howMuchNeed &&
+            this.items.secret.quantity >= settings.uuRunExtraSecret &&
             this.items.frag.quantity >=
               this.augmentations.ultimateUmbra.howMuchNeed;
           // sste unlocked, check gold/sigil/frag/secret
-          const isOkSsteUU =
-            isOkUU &&
+          this.isOkSsteUU =
+            this.isOkUU &&
             this.augmentations.stringStepping.isUnlock &&
             this.items.secret.quantity >=
-              this.augmentations.stringStepping.howMuchNeed;
-          console.plog(
-            `Is UU ok? ${isOkUU}, Is UU with stringStepping ok? ${isOkSsteUU}`
-          );
+              this.augmentations.stringStepping.howMuchNeed +
+                settings.uuRunExtraSecret;
+          msg = `Is UU ok? ${this.isOkUU}, Is UU with stringStepping ok? ${this.isOkSsteUU}`;
+          isProd ? console.plog(msg) : console.log(msg);
           if (this.augmentations.stringStepping.isUnlock) {
-            console.plog(
-              `stringStepping unlocked. Is UU ok? ${isOkUU}, Is UU with stringStepping ok? ${isOkSsteUU}`
-            );
-            if (isOkSsteUU) {
+            // Prestige Push
+            if (settings.isPrestigePush) {
+              // 滿足必要條件才啟動 PP auto.
+              if (this.isReadyPP()) {
+                settings.isSigilHunter = true;
+                settings.isSecretResearch = true;
+                settings.isUltimateUmbra = true;
+                settings.isSuperSiphon = true;
+                settings.isStringStepping = true;
+                return;
+              }
+              // 不滿足時後面的 UU auto不跑,在 normal tower農資源
+              console.log('Not PP ready, keep farming in normal tower');
+              return;
+            }
+            msg = `stringStepping unlocked. Is UU ok? ${this.isOkUU}, Is UU with stringStepping ok? ${this.isOkSsteUU}`;
+            isProd ? console.plog(msg) : console.log(msg);
+            if (this.isOkSsteUU) {
               settings.isUltimateUmbra = true;
               settings.isSuperSiphon = true;
               settings.isStringStepping = true;
             }
           } else {
-            console.plog(
-              `stringStepping not unlocked. Is UU ok? ${isOkUU}, Is UU with stringStepping ok? ${isOkSsteUU}`
-            );
-            if (isOkUU) {
+            msg = `stringStepping not unlocked. Is UU ok? ${this.isOkUU}, Is UU with stringStepping ok? ${this.isOkSsteUU}`;
+            isProd ? console.plog(msg) : console.log(msg);
+            if (this.isOkUU) {
               settings.isUltimateUmbra = true;
               settings.isSuperSiphon = true;
             }
           }
         }
-        // Prestige Push
-        if (settings.isPrestigePush) {
-          settings.isSigilHunter = true;
-          settings.isSecretResearch = true;
-          settings.isUltimateUmbra = true;
-          settings.isSuperSiphon = true;
-          settings.isStringStepping = true;
-        }
+      },
+      /** 檢查是否滿足 Prestige Push必須條件 */
+      isReadyPP() {
+        let rtn = true;
+        // 基本條件
+        // cheese and CF quantity
+        rtn &&=
+          this.items.cf.quantity > 900 &&
+          this.items.gsc.quantity + this.items.elixir.quantity > 900;
+        // augmentation
+        rtn &&= this.isOkSsteUU;
+        this.isOkPP = rtn;
+        /* if (!this.isOkPP) {
+          console.log('Not ready for PP, isPrestigePush has to be false');
+          settings.isPrestigePush = false;
+        } */
+        return this.isOkPP;
       }
     };
     function init(quest) {
+      // augmentations state
       const augs = utils.augmentations;
       augs.sigilHunter.isUnlock = !quest.augmentation_data.hr.is_locked;
       augs.secretResearch.isUnlock = !quest.augmentation_data.sr.is_locked;
@@ -2282,6 +2311,7 @@ function valourRift() {
       augs.elixirRain.isUnlock = !quest.augmentation_data.er.is_locked;
       augs.stringStepping.isUnlock = !quest.augmentation_data.sste.is_locked;
       console.log('augmentation data:', utils.augmentations);
+      // items state
       for (const key in utils.items) {
         if (key === 'gold') continue;
         if (Object.prototype.hasOwnProperty.call(utils.items, key)) {
@@ -2293,11 +2323,14 @@ function valourRift() {
         }
       }
       console.log('items', utils.items);
+      utils.autoAugmentation();
+      isProd ? console.plog(settings) : console.log(settings);
     }
     if (user.quests.QuestRiftValour) init(user.quests.QuestRiftValour);
+    isProd ? console.plog(utils) : console.log(utils);
     return utils;
   })();
-  // Auto enter cheese quantity by upgrade
+  // Auto enter cheese required by upgrade
   if (!settings.minGscToEnter)
     settings.minGscToEnter = cheeseQuantityByUpgrade[currentLevelIndex];
   // Auto stop toggle CF and auto-retreat by upgrade
@@ -2307,19 +2340,23 @@ function valourRift() {
     settings.isAutoRetreat = false;
   } else if (currentLevelIndex > 9) {
     settings.trap.tower.eclipse[4] = false;
-    if (!quest.is_eclipse_mode) settings.isAutoRetreat = false;
+    if (!isUU) settings.isAutoRetreat = false;
   }
   const autoRetreat = () => {
+    let msg = '';
     const noRetreatHead = `autoRetreat: No, in floor ${floor}, hunts left:`;
     const yesRetreatHead = `autoRetreat: Yes, in floor ${floor}, hunts left:`;
     const items = valourRiftUtility.items;
     if (floor % 8 > 0) {
-      if (floor % 8 === 1)
-        console.plog(`${noRetreatHead} ${huntsLeft}, CF: ${items.cf.quantity}`);
+      if (floor % 8 === 1) {
+        msg = `${noRetreatHead} ${huntsLeft}, CF: ${items.cf.quantity}`;
+        isProd ? console.plog(msg) : console.log(msg);
+      }
       return;
     }
-    console.plog(`CF: ${items.cf.quantity}`);
-    if (quest.is_eclipse_mode) {
+    msg = `CF: ${items.cf.quantity}`;
+    isProd ? console.plog(msg) : console.log(msg);
+    if (isUU) {
       if (huntsLeft < settings.eclipseUUNeedHunts) {
         if (localStorage.displayedMessage.indexOf(noRetreatHead) < 0) {
           storeError(
@@ -2386,7 +2423,7 @@ function valourRift() {
     }
   }
   if (state === vriftStates.farming && settings.isAutoEnter) {
-    const enterTower = (augmentations, completionCallback) => {
+    const enterTower = (augs, completionCallback) => {
       const element = '<a/>';
       /* const completionCallback = () => {
         document.querySelector('a.jsDialogClose, a#jsDialogClose').click();
@@ -2395,23 +2432,18 @@ function valourRift() {
         }
         valourRift();
       }; */
-      if (!augmentations) augmentations = [];
-      if (settings.isAutoAugment && augmentations.length === 0) {
-        const allAugmentations = valourRiftUtility.augmentations;
-        if (settings.isSigilHunter)
-          augmentations.push(allAugmentations.sigilHunter.type);
-        if (settings.isSecretResearch)
-          augmentations.push(allAugmentations.secretResearch.type);
-        if (settings.isSuperSiphon)
-          augmentations.push(allAugmentations.superSiphon.type);
-        if (settings.isUltimateUmbra)
-          augmentations.push(allAugmentations.ultimateUmbra.type);
-        if (settings.isStringStepping)
-          augmentations.push(allAugmentations.stringStepping.type);
+      if (!augs) augs = [];
+      if (settings.isAutoAugment && augs.length === 0) {
+        const allAugs = valourRiftUtility.augmentations;
+        if (settings.isSigilHunter) augs.push(allAugs.sigilHunter.type);
+        if (settings.isSecretResearch) augs.push(allAugs.secretResearch.type);
+        if (settings.isSuperSiphon) augs.push(allAugs.superSiphon.type);
+        if (settings.isUltimateUmbra) augs.push(allAugs.ultimateUmbra.type);
+        if (settings.isStringStepping) augs.push(allAugs.stringStepping.type);
       }
       hg.views.HeadsUpDisplayRiftValourView.riftValourAjax(
         element,
-        { action: 'enter_tower', augmentation_types: augmentations },
+        { action: 'enter_tower', augmentation_types: augs },
         completionCallback
       );
     };
@@ -2420,7 +2452,7 @@ function valourRift() {
         valourRiftUtility.items.elixir.quantity >
       settings.minGscToEnter
     ) {
-      valourRiftUtility.autoAugmentation();
+      // valourRiftUtility.autoAugmentation();
       enterTower([], () => {
         const a = document.querySelector('a.jsDialogClose, a#jsDialogClose');
         if (a) a.click();
@@ -2436,8 +2468,8 @@ function valourRift() {
       return;
     }
   }
-  const isAtEclipse = quest.is_at_eclipse;
-  const trapKey = quest.is_eclipse_mode ? 'uu' : state;
+  const trapKey = isUU ? (settings.isPrestigePush ? 'pp' : 'uu') : state;
+  // const trapKey = isUU ? 'uu' : state;
   const floorSegments = [24, 16, 8];
   let floorKey = 0;
   if (state !== vriftStates.farming)
