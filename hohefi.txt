@@ -1091,7 +1091,7 @@ function floatingIslands() {
   const targetEnvironmentType = 'floating_islands';
   const environmentType = getEnvironmentType();
   if (environmentType != targetEnvironmentType) return;
-  logging('floatingIslands_1.4.16.6.7');
+  logging('floatingIslands_1.4.17.6.7');
   // prettier-ignore
   const AllPowerTypes = ['arcn', 'frgttn', 'hdr', 'shdw', 'drcnc', 'law', 'phscl', 'tctcl'];
   // prettier-ignore
@@ -1171,6 +1171,16 @@ function floatingIslands() {
           tactical: ['Cloud Cheesecake', 'best.weapon.', 'best.base.combo', 'Extreme Spooky Charm,Extreme Snowball Charm,Super Regal Charm,Extreme Regal Charm,Super Snowball Charm', false, 'none', false]
         },
         after: {
+          arcane: ['Cloud Cheesecake', 'best.weapon.', 'best.base.combo', 'Extreme Spooky Charm,Extreme Snowball Charm,Super Regal Charm,Extreme Regal Charm,Super Snowball Charm', false, 'none', false],
+          draconic: ['Cloud Cheesecake', 'best.weapon.', 'best.base.combo', 'Extreme Spooky Charm,Extreme Snowball Charm,Super Regal Charm,Extreme Regal Charm,Super Snowball Charm', false, 'none', false],
+          forgotten: ['Cloud Cheesecake', 'best.weapon.', 'best.base.combo', 'Extreme Spooky Charm,Extreme Snowball Charm,Super Regal Charm,Extreme Regal Charm,Super Snowball Charm', false, 'none', false],
+          hydro: ['Cloud Cheesecake', 'best.weapon.', 'best.base.combo', 'Extreme Spooky Charm,Extreme Snowball Charm,Super Regal Charm,Extreme Regal Charm,Super Snowball Charm', false, 'none', false],
+          law: ['Cloud Cheesecake', 'best.weapon.', 'best.base.combo', 'Extreme Spooky Charm,Extreme Snowball Charm,Super Regal Charm,Extreme Regal Charm,Super Snowball Charm', false, 'none', false],
+          physical: ['Cloud Cheesecake', 'best.weapon.', 'best.base.combo', 'Extreme Spooky Charm,Extreme Snowball Charm,Super Regal Charm,Extreme Regal Charm,Super Snowball Charm', false, 'none', false],
+          shadow: ['Cloud Cheesecake', 'best.weapon.', 'best.base.combo', 'Extreme Spooky Charm,Extreme Snowball Charm,Super Regal Charm,Extreme Regal Charm,Super Snowball Charm', false, 'none', false],
+          tactical: ['Cloud Cheesecake', 'best.weapon.', 'best.base.combo', 'Extreme Spooky Charm,Extreme Snowball Charm,Super Regal Charm,Extreme Regal Charm,Super Snowball Charm', false, 'none', false]
+        },
+        afterTrove: {
           arcane: ['Cloud Cheesecake', 'best.weapon.', 'best.base.combo', 'Extreme Spooky Charm,Extreme Snowball Charm,Super Regal Charm,Extreme Regal Charm,Super Snowball Charm', false, 'none', false],
           draconic: ['Cloud Cheesecake', 'best.weapon.', 'best.base.combo', 'Extreme Spooky Charm,Extreme Snowball Charm,Super Regal Charm,Extreme Regal Charm,Super Snowball Charm', false, 'none', false],
           forgotten: ['Cloud Cheesecake', 'best.weapon.', 'best.base.combo', 'Extreme Spooky Charm,Extreme Snowball Charm,Super Regal Charm,Extreme Regal Charm,Super Snowball Charm', false, 'none', false],
@@ -1363,8 +1373,11 @@ function floatingIslands() {
   // HAI-after是指 after get all modifier,而非 after boss/get trove.
   // isHuntAfterHaiTrove == false代表快刷,也不使用 after
   if (isHai) {
-    // if (!isFirst3Block && hasDefeatedEnemy && settings.isHuntAfterHaiTrove)
-    if (!isFirst3Block && settings.isHuntAfterHaiTrove)
+    if (hasTreasureTrove && settings.isHuntAfterHaiTrove)
+      trap = settings.trap.hai['afterTrove'][powerType];
+    else if (!isFirst3Block)
+      // else if (!isFirst3Block && hasDefeatedEnemy && settings.isHuntAfterHaiTrove)
+      // else if (!isFirst3Block && settings.isHuntAfterHaiTrove)
       trap = settings.trap.hai['after'][powerType];
     else trap = settings.trap.hai['before'][powerType];
   }
