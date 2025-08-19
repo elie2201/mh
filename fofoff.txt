@@ -1546,7 +1546,7 @@ function forewordFarm() {
   const targetEnvironmentType = 'foreword_farm';
   const enviromentType = getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('forewordFarm_0.3.2.2.3');
+  logging('forewordFarm_0.3.2.2.4');
   const plantRowTypes = [
     ['ordinary_farm_plant', 'ordinary_magic_farm_plant'],
     ['legendary_farm_plant', 'legendary_magic_farm_plant'],
@@ -1608,7 +1608,7 @@ function forewordFarm() {
           const seeds = parseQuantity(items.papyrus_seed_stat_item.quantity);
           if (seeds < 30) settings.isAutoPlant = false;
           if (mulch < 60) settings.plantTypeRow = 0;
-          else settings.plantRowTypes = 1;
+          else settings.plantTypeRow = 1;
           this.plantPromise();
         });
       },
