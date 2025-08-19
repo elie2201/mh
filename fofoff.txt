@@ -1517,6 +1517,11 @@ function getStorageToObject(keyName, objDefault) {
     return isResave;
   }
 }
+function parseQuantity(qty) {
+  const strQty = (qty || 0) + '';
+  const rtn = parseInt(strQty.replaceAll(',', ''));
+  return Number.isNaN(rtn) ? 0 : rtn;
+}
 function getRandomInteger(min, max) {
   return parseInt(min + Math.random() * (max - min));
 }
@@ -1541,7 +1546,7 @@ function forewordFarm() {
   const targetEnvironmentType = 'foreword_farm';
   const enviromentType = getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('forewordFarm_0.3.2.2.2');
+  logging('forewordFarm_0.3.2.2.3');
   const plantRowTypes = [
     ['ordinary_farm_plant', 'ordinary_magic_farm_plant'],
     ['legendary_farm_plant', 'legendary_magic_farm_plant'],
@@ -1599,8 +1604,8 @@ function forewordFarm() {
         logging('run initPromise: initialize states for running');
         return new Promise((resolve, reject) => {
           // auto settings for running if necessary and then invoke next promise
-          const mulch = items.mythical_mulch_stat_item.quantity;
-          const seeds = items.papyrus_seed_stat_item.quantity;
+          const mulch = parseQuantity(items.mythical_mulch_stat_item.quantity);
+          const seeds = parseQuantity(items.papyrus_seed_stat_item.quantity);
           if (seeds < 30) settings.isAutoPlant = false;
           if (mulch < 60) settings.plantTypeRow = 0;
           else settings.plantRowTypes = 1;
