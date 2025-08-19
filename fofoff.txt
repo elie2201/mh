@@ -1541,7 +1541,7 @@ function forewordFarm() {
   const targetEnvironmentType = 'foreword_farm';
   const enviromentType = getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('forewordFarm_0.3.1.2.2');
+  logging('forewordFarm_0.3.2.2.2');
   const plantRowTypes = [
     ['ordinary_farm_plant', 'ordinary_magic_farm_plant'],
     ['legendary_farm_plant', 'legendary_magic_farm_plant'],
@@ -1569,6 +1569,7 @@ function forewordFarm() {
     : defaultSettings;
   const quest = isProd ? user.quests.QuestForewordFarm : QuestForewordFarm;
   const miceState = quest.mice_state;
+  const items = quest.items;
   const plots = quest.plots;
   const forewordFarmUtility = (function () {
     let isPlantable = false;
@@ -1598,6 +1599,11 @@ function forewordFarm() {
         logging('run initPromise: initialize states for running');
         return new Promise((resolve, reject) => {
           // auto settings for running if necessary and then invoke next promise
+          const mulch = items.mythical_mulch_stat_item.quantity;
+          const seeds = items.papyrus_seed_stat_item.quantity;
+          if (seeds < 30) settings.isAutoPlant = false;
+          if (mulch < 60) settings.plantTypeRow = 0;
+          else settings.plantRowTypes = 1;
           this.plantPromise();
         });
       },
