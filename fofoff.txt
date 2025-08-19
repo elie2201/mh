@@ -1541,7 +1541,7 @@ function forewordFarm() {
   const targetEnvironmentType = 'foreword_farm';
   const enviromentType = getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('forewordFarm_0.3.1.1.1');
+  logging('forewordFarm_0.3.1.2.2');
   const plantRowTypes = [
     ['ordinary_farm_plant', 'ordinary_magic_farm_plant'],
     ['legendary_farm_plant', 'legendary_magic_farm_plant'],
@@ -1651,7 +1651,8 @@ function forewordFarm() {
           slot: slot,
           plant_type: plantType
         };
-        this.ajax('<a/>', params, function (data) {
+        // TODO only ajax cannot be invoked by this.
+        utils.ajax('<a/>', params, function (data) {
           console.log(`startGrowing: ${data.success ? 'success' : 'failure'}`);
           if (data.success) {
             if (callback) callback(data);
@@ -1722,7 +1723,7 @@ function forewordFarm() {
           if (callback) callback(data);
         }, 3000);
       },
-      // ajax
+      /** MH ajax */
       ajax(element, params, successCallback, errorCallback) {
         params['last_read_journal_entry_id'] = $('#journallatestentry').data(
           'entry-id'
