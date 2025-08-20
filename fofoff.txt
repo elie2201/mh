@@ -1553,7 +1553,7 @@ function forewordFarm() {
   const targetEnvironmentType = 'foreword_farm';
   const enviromentType = getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('forewordFarm_0.4.3.2.4');
+  logging('forewordFarm_0.4.4.3.4');
   const plantRowTypes = [
     ['ordinary_farm_plant', 'ordinary_magic_farm_plant'],
     ['legendary_farm_plant', 'legendary_magic_farm_plant'],
@@ -1749,7 +1749,7 @@ function forewordFarm() {
           if (callback)
             setTimeout(() => {
               callback(data);
-            }, 1000);
+            }, 2000);
         });
       },
       /** claim harvest mock */
