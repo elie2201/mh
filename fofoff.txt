@@ -1529,7 +1529,7 @@ function parseQuantity(qty) {
 function armAllTraps(bait, weapon, base, charm) {
   console.log(bait, weapon, base, charm);
 }
-function reloadWithMessage(msg, soundHorn) {
+/* function reloadWithMessage(msg, soundHorn) {
   console.log('reloadWithMessage: ', msg, ',', soundHorn);
   // display the message
   // displayTimer(msg, msg, msg);
@@ -1538,7 +1538,7 @@ function reloadWithMessage(msg, soundHorn) {
   setTimeout(function () {
     // reloadPage(soundHorn);
   }, 1000);
-}
+} */
 function doubleEgg(isToEnable) {
   console.log('double egg?', isToEnable);
 }
@@ -1604,8 +1604,10 @@ function forewordFarm() {
         }
       },
       run() {
-        logging('start running forewordFarm');
-        this.claimHarvestPromise();
+        logging('start running forewordFarmUtility');
+        this.claimHarvestPromise().then(() => {
+          this.autoSettingsPromise();
+        });
       },
       autoSettingsPromise() {
         logging('run initPromise: initialize states for running');
@@ -1651,13 +1653,7 @@ function forewordFarm() {
           }
           console.log('all planted, double check plotPlantableState');
           setTimeout(() => {
-            isProd
-              ? reloadWithMessage('After planted, Reloading...', false)
-              : (() => {
-                  isPlantable = false;
-                  is3Plantable = false;
-                  this.run();
-                })();
+            forewordFarm();
           }, 3000);
         });
       },
@@ -1673,6 +1669,7 @@ function forewordFarm() {
         utils.ajax('<a/>', params, function (data) {
           console.log(`startGrowing: ${data.success ? 'success' : 'failure'}`);
           if (data.success) {
+            user.quests.QuestForewordFarm.plots[slot].can_plant_anything = null;
             if (callback) callback(data);
           }
         });
@@ -1727,14 +1724,15 @@ function forewordFarm() {
             console.log('claiming harvest');
             isProd
               ? this.claimHarvest(() => {
-                  this.run();
+                  // this.run()不會更新遊戲參數, forewordFarm()才會
+                  forewordFarm();
                 })
               : this.claimHarvestMock(() => {
-                  this.run();
+                  forewordFarm();
                 });
             return;
           }
-          this.autoSettingsPromise();
+          resolve();
         });
       },
       /** claim harvest */
