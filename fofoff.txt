@@ -1553,7 +1553,7 @@ function forewordFarm() {
   const targetEnvironmentType = 'foreword_farm';
   const enviromentType = getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('forewordFarm_0.4.4.3.5');
+  logging('forewordFarm_0.4.4.3.6');
   const plantRowTypes = [
     ['ordinary_farm_plant', 'ordinary_magic_farm_plant'],
     ['legendary_farm_plant', 'legendary_magic_farm_plant'],
@@ -1605,9 +1605,7 @@ function forewordFarm() {
       },
       run() {
         logging('start running forewordFarm');
-        this.claimHarvestPromise().then(() => {
-          this.autoSettingsPromise();
-        });
+        this.claimHarvestPromise();
       },
       autoSettingsPromise() {
         logging('run initPromise: initialize states for running');
@@ -1736,7 +1734,7 @@ function forewordFarm() {
                 });
             return;
           }
-          resolve();
+          this.autoSettingsPromise();
         });
       },
       /** claim harvest */
