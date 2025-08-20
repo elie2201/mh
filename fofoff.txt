@@ -1546,7 +1546,7 @@ function forewordFarm() {
   const targetEnvironmentType = 'foreword_farm';
   const enviromentType = getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('forewordFarm_0.3.2.2.4');
+  logging('forewordFarm_0.4.2.2.4');
   const plantRowTypes = [
     ['ordinary_farm_plant', 'ordinary_magic_farm_plant'],
     ['legendary_farm_plant', 'legendary_magic_farm_plant'],
@@ -1598,7 +1598,9 @@ function forewordFarm() {
       },
       run() {
         logging('start running forewordFarm');
-        this.autoSettingsPromise();
+        this.claimHarvestPromise().then(() => {
+          this.autoSettingsPromise();
+        });
       },
       autoSettingsPromise() {
         logging('run initPromise: initialize states for running');
@@ -1687,7 +1689,6 @@ function forewordFarm() {
         return new Promise((resolve, reject) => {
           const trap = settings.traps[miceState];
           if (trap) armAllTraps(...trap);
-          this.claimHarvestPromise();
         });
       },
       /** claim harvest promise */
@@ -1696,12 +1697,13 @@ function forewordFarm() {
         return new Promise((resolve, reject) => {
           console.log('try claiming harvest');
           if (settings.isAutoClaim && quest.harvest_bin.can_claim) {
-            const min = isProd ? 17000 : 2000;
-            const max = isProd ? 24000 : 5000;
-            setTimeout(() => {
-              isProd ? this.claimHarvest() : this.claimHarvestMock();
-            }, getRandomInteger(min, max));
+            console.log('claiming harvest');
+            isProd
+              ? this.claimHarvest(resolve)
+              : this.claimHarvestMock(resolve);
+            return;
           }
+          resolve();
         });
       },
       /** claim harvest */
