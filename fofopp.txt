@@ -1,0 +1,1417 @@
+// MH constants
+const QuestProloguePond = {
+  pond_state: 'shallow_water',
+  chum_state: 'canEnable',
+  is_chum_enabled: null,
+  can_enable_chum: true,
+  current_loot_range: {
+    type: 'pond_penny_stat_item',
+    name: 'Pond Penny',
+    min: 1,
+    max: 3,
+    is_disabled: null
+  },
+  has_tackle_box: true,
+  has_fishing_rod: null,
+  has_fish_net: null,
+  has_fridge_bait_box: true,
+  has_steam_reel: null,
+  has_fishing_line: null,
+  environment_type: 'prologue_pond',
+  bait: 'grubbeen_cheese',
+  is_fuel_enabled: null,
+  can_enable_fuel: true,
+  items: {
+    ingenuity_grub_stat_item: {
+      quantity: 143,
+      status: '',
+      is_highlighted: false
+    },
+    cleverness_clam_stat_item: {
+      quantity: 116,
+      status: '',
+      is_highlighted: false
+    },
+    inspiration_ink_stat_item: {
+      quantity: 12,
+      status: '',
+      is_highlighted: false
+    },
+    grubbeen_cheese: {
+      quantity: 90,
+      status: 'active',
+      is_highlighted: false,
+      can_purchase: true
+    },
+    clamembert_cheese: {
+      quantity: 97,
+      status: '',
+      is_highlighted: false,
+      can_purchase: true
+    },
+    brainstorm_chum_stat_item: {
+      quantity: 1,
+      status: '',
+      is_highlighted: false,
+      can_purchase: true
+    },
+    stormy_clamembert_cheese: {
+      quantity: 113,
+      status: '',
+      is_highlighted: false,
+      can_purchase: null
+    },
+    papyrus_crafting_item: {
+      quantity: 0,
+      status: 'disabled',
+      is_highlighted: false
+    },
+    papyrus_seed_stat_item: {
+      quantity: 410,
+      status: '',
+      is_highlighted: false
+    },
+    mythical_mulch_stat_item: {
+      quantity: 140,
+      status: '',
+      is_highlighted: false
+    },
+    crop_coin_stat_item: {
+      quantity: 40,
+      status: '',
+      is_highlighted: false
+    },
+    pond_penny_stat_item: {
+      quantity: 15,
+      status: '',
+      is_highlighted: true
+    },
+    draft_derby_curd_stat_item: {
+      quantity: 685,
+      status: '',
+      is_highlighted: false
+    },
+    gnawbel_prize_stat_item: {
+      quantity: 137,
+      status: '',
+      is_highlighted: false
+    },
+    condensed_creativity_stat_item: {
+      quantity: 166,
+      status: '',
+      is_highlighted: false
+    },
+    parable_papyrus_stat_item: {
+      quantity: '5,830',
+      status: '',
+      is_highlighted: false
+    },
+    magic_essence_craft_item: {
+      quantity: 849,
+      status: '',
+      is_highlighted: false
+    },
+    toxic_brie_cheese: {
+      quantity: '1,131',
+      status: '',
+      is_highlighted: false
+    },
+    brie_cheese: {
+      quantity: '1,114',
+      status: '',
+      is_highlighted: false
+    },
+    gouda_cheese: {
+      quantity: '1,418',
+      status: '',
+      is_highlighted: false
+    },
+    super_brie_cheese: {
+      quantity: '11,428',
+      status: '',
+      is_highlighted: false
+    },
+    toxic_super_brie_cheese: {
+      quantity: 818,
+      status: '',
+      is_highlighted: false
+    },
+    gold_stat_item: {
+      quantity: '81,516,135',
+      status: '',
+      is_highlighted: false
+    }
+  },
+  can_upgrade_anything: null,
+  upgrades: [
+    {
+      type: 'binding_thread',
+      name: 'Silk Binding Thread',
+      description:
+        'Doubles Draft Derby Curd loot drops on all mice in the Table of Contents!',
+      is_unlocked: true,
+      can_unlock: false,
+      environment: 'table_of_contents',
+      costs: [
+        {
+          type: 'gold_stat_item',
+          name: 'Gold',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/d8f90a569d52e7ea228ad0f1cc51516d.gif?cv=5',
+          thumb_transparent:
+            'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/dccbaeebbdfa745340ff9363749f35ba.png?cv=5',
+          quantity: 150000,
+          owned: 81516135
+        },
+        {
+          type: 'gnawbel_prize_stat_item',
+          name: 'Gnawbel Prize for Literature',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/e86c0be44a76baa861c3f17816d838a2.gif?cv=5',
+          thumb_transparent:
+            'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/8767d5e6f8ed5f4d2a66ae605b545a3f.png?cv=5',
+          quantity: 5,
+          owned: 137
+        }
+      ],
+      has_requirements: null,
+      requirements: [],
+      display_order: 0,
+      thumbnail:
+        'https://www.mousehuntgame.com/images/folklore_forest_upgrades/binding_thread_thumb.png?cv=5',
+      large:
+        'https://www.mousehuntgame.com/images/folklore_forest_upgrades/binding_thread_large.png?cv=5'
+    },
+    {
+      type: 'tackle_box',
+      name: 'Reinforced Tackle Box',
+      description:
+        'Doubles all Ingenuity Grub loot drops in the Prologue Pond!',
+      is_unlocked: true,
+      can_unlock: false,
+      environment: 'prologue_pond',
+      costs: [
+        {
+          type: 'gold_stat_item',
+          name: 'Gold',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/d8f90a569d52e7ea228ad0f1cc51516d.gif?cv=5',
+          thumb_transparent:
+            'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/dccbaeebbdfa745340ff9363749f35ba.png?cv=5',
+          quantity: 150000,
+          owned: 81516135
+        },
+        {
+          type: 'pond_penny_stat_item',
+          name: 'Pond Penny',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/95785918c8ff5209ced2a45509873d4e.gif?cv=5',
+          thumb_transparent:
+            'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/0d9c27478f6e2a38f683da6ff0d274bd.png?cv=5',
+          quantity: 25,
+          owned: 15
+        }
+      ],
+      has_requirements: null,
+      requirements: [],
+      display_order: 0,
+      thumbnail:
+        'https://www.mousehuntgame.com/images/folklore_forest_upgrades/tackle_box_thumb.png?cv=5',
+      large:
+        'https://www.mousehuntgame.com/images/folklore_forest_upgrades/tackle_box_large.png?cv=5'
+    },
+    {
+      type: 'farm_plot_2',
+      name: 'Unlock 2nd Farm Plot',
+      description: 'Unlock a second plot in the Foreword Farm!',
+      is_unlocked: true,
+      can_unlock: false,
+      environment: 'foreword_farm',
+      costs: [
+        {
+          type: 'gold_stat_item',
+          name: 'Gold',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/d8f90a569d52e7ea228ad0f1cc51516d.gif?cv=5',
+          thumb_transparent:
+            'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/dccbaeebbdfa745340ff9363749f35ba.png?cv=5',
+          quantity: 150000,
+          owned: 81516135
+        },
+        {
+          type: 'crop_coin_stat_item',
+          name: 'Crop Coin',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/8a136bf53ad8944b44a1a555c0723a77.gif?cv=5',
+          thumb_transparent:
+            'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/d684728c0097e077c32ea0ecb211a542.png?cv=5',
+          quantity: 15,
+          owned: 40
+        }
+      ],
+      has_requirements: null,
+      requirements: [],
+      display_order: 0,
+      thumbnail:
+        'https://www.mousehuntgame.com/images/folklore_forest_upgrades/farm_plot_2_thumb.png?cv=5',
+      large:
+        'https://www.mousehuntgame.com/images/folklore_forest_upgrades/farm_plot_2_large.png?cv=5'
+    },
+    {
+      type: 'hire_farmhands',
+      name: 'Hire Farmhands',
+      description:
+        'Doubles loot drops of Papyrus Seeds and Crop Coins in the Foreword Farm!',
+      is_unlocked: true,
+      can_unlock: false,
+      environment: 'foreword_farm',
+      costs: [
+        {
+          type: 'gold_stat_item',
+          name: 'Gold',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/d8f90a569d52e7ea228ad0f1cc51516d.gif?cv=5',
+          thumb_transparent:
+            'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/dccbaeebbdfa745340ff9363749f35ba.png?cv=5',
+          quantity: 500000,
+          owned: 81516135
+        },
+        {
+          type: 'crop_coin_stat_item',
+          name: 'Crop Coin',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/8a136bf53ad8944b44a1a555c0723a77.gif?cv=5',
+          thumb_transparent:
+            'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/d684728c0097e077c32ea0ecb211a542.png?cv=5',
+          quantity: 50,
+          owned: 40
+        }
+      ],
+      has_requirements: null,
+      requirements: [],
+      display_order: 1,
+      thumbnail:
+        'https://www.mousehuntgame.com/images/folklore_forest_upgrades/hire_farmhands_thumb.png?cv=5',
+      large:
+        'https://www.mousehuntgame.com/images/folklore_forest_upgrades/hire_farmhands_large.png?cv=5'
+    },
+    {
+      type: 'leather_cover',
+      name: 'Leather Bound Cover',
+      description:
+        'Adds bonus loot drops of items from the Foreword Farm and Prologue Pond to all mice in the Table of Contents!',
+      is_unlocked: true,
+      can_unlock: false,
+      environment: 'table_of_contents',
+      costs: [
+        {
+          type: 'gold_stat_item',
+          name: 'Gold',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/d8f90a569d52e7ea228ad0f1cc51516d.gif?cv=5',
+          thumb_transparent:
+            'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/dccbaeebbdfa745340ff9363749f35ba.png?cv=5',
+          quantity: 500000,
+          owned: 81516135
+        },
+        {
+          type: 'gnawbel_prize_stat_item',
+          name: 'Gnawbel Prize for Literature',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/e86c0be44a76baa861c3f17816d838a2.gif?cv=5',
+          thumb_transparent:
+            'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/8767d5e6f8ed5f4d2a66ae605b545a3f.png?cv=5',
+          quantity: 30,
+          owned: 137
+        }
+      ],
+      has_requirements: null,
+      requirements: [],
+      display_order: 1,
+      thumbnail:
+        'https://www.mousehuntgame.com/images/folklore_forest_upgrades/leather_cover_thumb.png?cv=5',
+      large:
+        'https://www.mousehuntgame.com/images/folklore_forest_upgrades/leather_cover_large.png?cv=5'
+    },
+    {
+      type: 'fridge_bait_box',
+      name: 'Refrigerated Bait Box',
+      description:
+        'Doubles all Cleverness Clam loot drops in the Prologue Pond!',
+      is_unlocked: true,
+      can_unlock: false,
+      environment: 'prologue_pond',
+      costs: [
+        {
+          type: 'gold_stat_item',
+          name: 'Gold',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/d8f90a569d52e7ea228ad0f1cc51516d.gif?cv=5',
+          thumb_transparent:
+            'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/dccbaeebbdfa745340ff9363749f35ba.png?cv=5',
+          quantity: 500000,
+          owned: 81516135
+        },
+        {
+          type: 'pond_penny_stat_item',
+          name: 'Pond Penny',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/95785918c8ff5209ced2a45509873d4e.gif?cv=5',
+          thumb_transparent:
+            'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/0d9c27478f6e2a38f683da6ff0d274bd.png?cv=5',
+          quantity: 100,
+          owned: 15
+        }
+      ],
+      has_requirements: null,
+      requirements: [],
+      display_order: 1,
+      thumbnail:
+        'https://www.mousehuntgame.com/images/folklore_forest_upgrades/fridge_bait_box_thumb.png?cv=5',
+      large:
+        'https://www.mousehuntgame.com/images/folklore_forest_upgrades/fridge_bait_box_large.png?cv=5'
+    },
+    {
+      type: 'farm_plot_3',
+      name: 'Unlock 3rd Farm Plot',
+      description: 'Unlock a third plot in the Foreword Farm!',
+      is_unlocked: true,
+      can_unlock: false,
+      environment: 'foreword_farm',
+      costs: [
+        {
+          type: 'gold_stat_item',
+          name: 'Gold',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/d8f90a569d52e7ea228ad0f1cc51516d.gif?cv=5',
+          thumb_transparent:
+            'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/dccbaeebbdfa745340ff9363749f35ba.png?cv=5',
+          quantity: 1000000,
+          owned: 81516135
+        },
+        {
+          type: 'crop_coin_stat_item',
+          name: 'Crop Coin',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/8a136bf53ad8944b44a1a555c0723a77.gif?cv=5',
+          thumb_transparent:
+            'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/d684728c0097e077c32ea0ecb211a542.png?cv=5',
+          quantity: 200,
+          owned: 40
+        }
+      ],
+      has_requirements: true,
+      requirements: [
+        {
+          name: 'Unlock 2nd Farm Plot',
+          type: 'farm_plot_2',
+          meets_requirement: true
+        }
+      ],
+      display_order: 2,
+      thumbnail:
+        'https://www.mousehuntgame.com/images/folklore_forest_upgrades/farm_plot_3_thumb.png?cv=5',
+      large:
+        'https://www.mousehuntgame.com/images/folklore_forest_upgrades/farm_plot_3_large.png?cv=5'
+    },
+    {
+      type: 'fishing_rod',
+      name: 'Carbon Fibre Fishing Rod',
+      description:
+        'Doubles all Inspiration Ink loot drops in the Prologue Pond!',
+      is_unlocked: false,
+      can_unlock: false,
+      environment: 'prologue_pond',
+      costs: [
+        {
+          type: 'gold_stat_item',
+          name: 'Gold',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/d8f90a569d52e7ea228ad0f1cc51516d.gif?cv=5',
+          thumb_transparent:
+            'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/dccbaeebbdfa745340ff9363749f35ba.png?cv=5',
+          quantity: 1000000,
+          owned: 81516135
+        },
+        {
+          type: 'pond_penny_stat_item',
+          name: 'Pond Penny',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/95785918c8ff5209ced2a45509873d4e.gif?cv=5',
+          thumb_transparent:
+            'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/0d9c27478f6e2a38f683da6ff0d274bd.png?cv=5',
+          quantity: 500,
+          owned: 15
+        }
+      ],
+      has_requirements: null,
+      requirements: [],
+      display_order: 2,
+      thumbnail:
+        'https://www.mousehuntgame.com/images/folklore_forest_upgrades/fishing_rod_thumb.png?cv=5',
+      large:
+        'https://www.mousehuntgame.com/images/folklore_forest_upgrades/fishing_rod_large.png?cv=5'
+    },
+    {
+      type: 'edge_gilding',
+      name: 'Edge Gilding',
+      description:
+        'Doubles loot drops of Draft Derby Curds, Gnawbel Prizes, and bonus items from the Leather Bound Cover on all mice in the Table of Contents!',
+      is_unlocked: false,
+      can_unlock: false,
+      environment: 'table_of_contents',
+      costs: [
+        {
+          type: 'gold_stat_item',
+          name: 'Gold',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/d8f90a569d52e7ea228ad0f1cc51516d.gif?cv=5',
+          thumb_transparent:
+            'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/dccbaeebbdfa745340ff9363749f35ba.png?cv=5',
+          quantity: 1000000,
+          owned: 81516135
+        },
+        {
+          type: 'gnawbel_prize_stat_item',
+          name: 'Gnawbel Prize for Literature',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/e86c0be44a76baa861c3f17816d838a2.gif?cv=5',
+          thumb_transparent:
+            'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/8767d5e6f8ed5f4d2a66ae605b545a3f.png?cv=5',
+          quantity: 300,
+          owned: 137
+        }
+      ],
+      has_requirements: null,
+      requirements: [],
+      display_order: 2,
+      thumbnail:
+        'https://www.mousehuntgame.com/images/folklore_forest_upgrades/edge_gilding_thumb.png?cv=5',
+      large:
+        'https://www.mousehuntgame.com/images/folklore_forest_upgrades/edge_gilding_large.png?cv=5'
+    },
+    {
+      type: 'pollinator',
+      name: 'Hyper Pollinator',
+      description: 'Adds 5 Papyrus Seeds to all plant yields!',
+      is_unlocked: false,
+      can_unlock: false,
+      environment: 'foreword_farm',
+      costs: [
+        {
+          type: 'gold_stat_item',
+          name: 'Gold',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/d8f90a569d52e7ea228ad0f1cc51516d.gif?cv=5',
+          thumb_transparent:
+            'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/dccbaeebbdfa745340ff9363749f35ba.png?cv=5',
+          quantity: 2500000,
+          owned: 81516135
+        },
+        {
+          type: 'crop_coin_stat_item',
+          name: 'Crop Coin',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/8a136bf53ad8944b44a1a555c0723a77.gif?cv=5',
+          thumb_transparent:
+            'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/d684728c0097e077c32ea0ecb211a542.png?cv=5',
+          quantity: 500,
+          owned: 40
+        },
+        {
+          type: 'gnawbel_prize_stat_item',
+          name: 'Gnawbel Prize for Literature',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/e86c0be44a76baa861c3f17816d838a2.gif?cv=5',
+          thumb_transparent:
+            'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/8767d5e6f8ed5f4d2a66ae605b545a3f.png?cv=5',
+          quantity: 15,
+          owned: 137
+        }
+      ],
+      has_requirements: null,
+      requirements: [],
+      display_order: 3,
+      thumbnail:
+        'https://www.mousehuntgame.com/images/folklore_forest_upgrades/pollinator_thumb.png?cv=5',
+      large:
+        'https://www.mousehuntgame.com/images/folklore_forest_upgrades/pollinator_large.png?cv=5'
+    },
+    {
+      type: 'gold_foil',
+      name: 'Gold Foil Printing',
+      description: 'Doubles Gnawbel Prizes for Literature in all book rewards!',
+      is_unlocked: false,
+      can_unlock: false,
+      environment: 'table_of_contents',
+      costs: [
+        {
+          type: 'gold_stat_item',
+          name: 'Gold',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/d8f90a569d52e7ea228ad0f1cc51516d.gif?cv=5',
+          thumb_transparent:
+            'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/dccbaeebbdfa745340ff9363749f35ba.png?cv=5',
+          quantity: 2500000,
+          owned: 81516135
+        },
+        {
+          type: 'gnawbel_prize_stat_item',
+          name: 'Gnawbel Prize for Literature',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/e86c0be44a76baa861c3f17816d838a2.gif?cv=5',
+          thumb_transparent:
+            'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/8767d5e6f8ed5f4d2a66ae605b545a3f.png?cv=5',
+          quantity: 1000,
+          owned: 137
+        },
+        {
+          type: 'crop_coin_stat_item',
+          name: 'Crop Coin',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/8a136bf53ad8944b44a1a555c0723a77.gif?cv=5',
+          thumb_transparent:
+            'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/d684728c0097e077c32ea0ecb211a542.png?cv=5',
+          quantity: 1500,
+          owned: 40
+        },
+        {
+          type: 'pond_penny_stat_item',
+          name: 'Pond Penny',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/95785918c8ff5209ced2a45509873d4e.gif?cv=5',
+          thumb_transparent:
+            'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/0d9c27478f6e2a38f683da6ff0d274bd.png?cv=5',
+          quantity: 2000,
+          owned: 15
+        }
+      ],
+      has_requirements: null,
+      requirements: [],
+      display_order: 3,
+      thumbnail:
+        'https://www.mousehuntgame.com/images/folklore_forest_upgrades/gold_foil_thumb.png?cv=5',
+      large:
+        'https://www.mousehuntgame.com/images/folklore_forest_upgrades/gold_foil_large.png?cv=5'
+    },
+    {
+      type: 'fish_net',
+      name: 'Chainmail Fishing Net',
+      description: 'Doubles all Pond Penny loot drops in the Prologue Pond!',
+      is_unlocked: false,
+      can_unlock: false,
+      environment: 'prologue_pond',
+      costs: [
+        {
+          type: 'gold_stat_item',
+          name: 'Gold',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/d8f90a569d52e7ea228ad0f1cc51516d.gif?cv=5',
+          thumb_transparent:
+            'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/dccbaeebbdfa745340ff9363749f35ba.png?cv=5',
+          quantity: 2500000,
+          owned: 81516135
+        },
+        {
+          type: 'pond_penny_stat_item',
+          name: 'Pond Penny',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/95785918c8ff5209ced2a45509873d4e.gif?cv=5',
+          thumb_transparent:
+            'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/0d9c27478f6e2a38f683da6ff0d274bd.png?cv=5',
+          quantity: 1000,
+          owned: 15
+        },
+        {
+          type: 'gnawbel_prize_stat_item',
+          name: 'Gnawbel Prize for Literature',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/e86c0be44a76baa861c3f17816d838a2.gif?cv=5',
+          thumb_transparent:
+            'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/8767d5e6f8ed5f4d2a66ae605b545a3f.png?cv=5',
+          quantity: 150,
+          owned: 137
+        }
+      ],
+      has_requirements: null,
+      requirements: [],
+      display_order: 3,
+      thumbnail:
+        'https://www.mousehuntgame.com/images/folklore_forest_upgrades/fish_net_thumb.png?cv=5',
+      large:
+        'https://www.mousehuntgame.com/images/folklore_forest_upgrades/fish_net_large.png?cv=5'
+    },
+    {
+      type: 'fishing_line',
+      name: 'High Tension Fishing Line',
+      description:
+        'Doubles all Inspiration Ink loot drops in the Prologue Pond again!',
+      is_unlocked: false,
+      can_unlock: false,
+      environment: 'prologue_pond',
+      costs: [
+        {
+          type: 'gold_stat_item',
+          name: 'Gold',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/d8f90a569d52e7ea228ad0f1cc51516d.gif?cv=5',
+          thumb_transparent:
+            'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/dccbaeebbdfa745340ff9363749f35ba.png?cv=5',
+          quantity: 5000000,
+          owned: 81516135
+        },
+        {
+          type: 'pond_penny_stat_item',
+          name: 'Pond Penny',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/95785918c8ff5209ced2a45509873d4e.gif?cv=5',
+          thumb_transparent:
+            'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/0d9c27478f6e2a38f683da6ff0d274bd.png?cv=5',
+          quantity: 2000,
+          owned: 15
+        },
+        {
+          type: 'gnawbel_prize_stat_item',
+          name: 'Gnawbel Prize for Literature',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/e86c0be44a76baa861c3f17816d838a2.gif?cv=5',
+          thumb_transparent:
+            'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/8767d5e6f8ed5f4d2a66ae605b545a3f.png?cv=5',
+          quantity: 500,
+          owned: 137
+        }
+      ],
+      has_requirements: null,
+      requirements: [],
+      display_order: 4,
+      thumbnail:
+        'https://www.mousehuntgame.com/images/folklore_forest_upgrades/fishing_line_thumb.png?cv=5',
+      large:
+        'https://www.mousehuntgame.com/images/folklore_forest_upgrades/fishing_line_large.png?cv=5'
+    },
+    {
+      type: 'silver_quill',
+      name: 'Silver Quill',
+      description: 'Adds 25% more words per catch!',
+      is_unlocked: false,
+      can_unlock: false,
+      environment: 'table_of_contents',
+      costs: [
+        {
+          type: 'gold_stat_item',
+          name: 'Gold',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/d8f90a569d52e7ea228ad0f1cc51516d.gif?cv=5',
+          thumb_transparent:
+            'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/dccbaeebbdfa745340ff9363749f35ba.png?cv=5',
+          quantity: 5000000,
+          owned: 81516135
+        },
+        {
+          type: 'gnawbel_prize_stat_item',
+          name: 'Gnawbel Prize for Literature',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/e86c0be44a76baa861c3f17816d838a2.gif?cv=5',
+          thumb_transparent:
+            'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/8767d5e6f8ed5f4d2a66ae605b545a3f.png?cv=5',
+          quantity: 2000,
+          owned: 137
+        },
+        {
+          type: 'crop_coin_stat_item',
+          name: 'Crop Coin',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/8a136bf53ad8944b44a1a555c0723a77.gif?cv=5',
+          thumb_transparent:
+            'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/d684728c0097e077c32ea0ecb211a542.png?cv=5',
+          quantity: 2500,
+          owned: 40
+        },
+        {
+          type: 'pond_penny_stat_item',
+          name: 'Pond Penny',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/95785918c8ff5209ced2a45509873d4e.gif?cv=5',
+          thumb_transparent:
+            'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/0d9c27478f6e2a38f683da6ff0d274bd.png?cv=5',
+          quantity: 4000,
+          owned: 15
+        }
+      ],
+      has_requirements: null,
+      requirements: [],
+      display_order: 4,
+      thumbnail:
+        'https://www.mousehuntgame.com/images/folklore_forest_upgrades/silver_quill_thumb.png?cv=5',
+      large:
+        'https://www.mousehuntgame.com/images/folklore_forest_upgrades/silver_quill_large.png?cv=5'
+    },
+    {
+      type: 'well_water',
+      name: 'Filtered Well Water',
+      description:
+        'Adds 10 Mythical Mulch to the yield from all Mythical Mulch Plants!',
+      is_unlocked: false,
+      can_unlock: false,
+      environment: 'foreword_farm',
+      costs: [
+        {
+          type: 'gold_stat_item',
+          name: 'Gold',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/d8f90a569d52e7ea228ad0f1cc51516d.gif?cv=5',
+          thumb_transparent:
+            'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/dccbaeebbdfa745340ff9363749f35ba.png?cv=5',
+          quantity: 5000000,
+          owned: 81516135
+        },
+        {
+          type: 'crop_coin_stat_item',
+          name: 'Crop Coin',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/8a136bf53ad8944b44a1a555c0723a77.gif?cv=5',
+          thumb_transparent:
+            'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/d684728c0097e077c32ea0ecb211a542.png?cv=5',
+          quantity: 1000,
+          owned: 40
+        },
+        {
+          type: 'gnawbel_prize_stat_item',
+          name: 'Gnawbel Prize for Literature',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/e86c0be44a76baa861c3f17816d838a2.gif?cv=5',
+          thumb_transparent:
+            'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/8767d5e6f8ed5f4d2a66ae605b545a3f.png?cv=5',
+          quantity: 150,
+          owned: 137
+        }
+      ],
+      has_requirements: null,
+      requirements: [],
+      display_order: 4,
+      thumbnail:
+        'https://www.mousehuntgame.com/images/folklore_forest_upgrades/well_water_thumb.png?cv=5',
+      large:
+        'https://www.mousehuntgame.com/images/folklore_forest_upgrades/well_water_large.png?cv=5'
+    },
+    {
+      type: 'golden_quill',
+      name: 'Golden Quill',
+      description: 'Adds 50% more words per catch!',
+      is_unlocked: false,
+      can_unlock: false,
+      environment: 'table_of_contents',
+      costs: [
+        {
+          type: 'gold_stat_item',
+          name: 'Gold',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/d8f90a569d52e7ea228ad0f1cc51516d.gif?cv=5',
+          thumb_transparent:
+            'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/dccbaeebbdfa745340ff9363749f35ba.png?cv=5',
+          quantity: 10000000,
+          owned: 81516135
+        },
+        {
+          type: 'gnawbel_prize_stat_item',
+          name: 'Gnawbel Prize for Literature',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/e86c0be44a76baa861c3f17816d838a2.gif?cv=5',
+          thumb_transparent:
+            'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/8767d5e6f8ed5f4d2a66ae605b545a3f.png?cv=5',
+          quantity: 5000,
+          owned: 137
+        },
+        {
+          type: 'crop_coin_stat_item',
+          name: 'Crop Coin',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/8a136bf53ad8944b44a1a555c0723a77.gif?cv=5',
+          thumb_transparent:
+            'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/d684728c0097e077c32ea0ecb211a542.png?cv=5',
+          quantity: 5000,
+          owned: 40
+        },
+        {
+          type: 'pond_penny_stat_item',
+          name: 'Pond Penny',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/95785918c8ff5209ced2a45509873d4e.gif?cv=5',
+          thumb_transparent:
+            'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/0d9c27478f6e2a38f683da6ff0d274bd.png?cv=5',
+          quantity: 8000,
+          owned: 15
+        }
+      ],
+      has_requirements: null,
+      requirements: [],
+      display_order: 5,
+      thumbnail:
+        'https://www.mousehuntgame.com/images/folklore_forest_upgrades/golden_quill_thumb.png?cv=5',
+      large:
+        'https://www.mousehuntgame.com/images/folklore_forest_upgrades/golden_quill_large.png?cv=5'
+    },
+    {
+      type: 'steam_reel',
+      name: 'Steam-powered Fishing Reel',
+      description:
+        'Doubles all Inspiration Ink loot drops in the Prologue Pond yet again!',
+      is_unlocked: false,
+      can_unlock: false,
+      environment: 'prologue_pond',
+      costs: [
+        {
+          type: 'gold_stat_item',
+          name: 'Gold',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/d8f90a569d52e7ea228ad0f1cc51516d.gif?cv=5',
+          thumb_transparent:
+            'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/dccbaeebbdfa745340ff9363749f35ba.png?cv=5',
+          quantity: 10000000,
+          owned: 81516135
+        },
+        {
+          type: 'pond_penny_stat_item',
+          name: 'Pond Penny',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/95785918c8ff5209ced2a45509873d4e.gif?cv=5',
+          thumb_transparent:
+            'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/0d9c27478f6e2a38f683da6ff0d274bd.png?cv=5',
+          quantity: 4000,
+          owned: 15
+        },
+        {
+          type: 'gnawbel_prize_stat_item',
+          name: 'Gnawbel Prize for Literature',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/e86c0be44a76baa861c3f17816d838a2.gif?cv=5',
+          thumb_transparent:
+            'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/8767d5e6f8ed5f4d2a66ae605b545a3f.png?cv=5',
+          quantity: 2500,
+          owned: 137
+        }
+      ],
+      has_requirements: null,
+      requirements: [],
+      display_order: 5,
+      thumbnail:
+        'https://www.mousehuntgame.com/images/folklore_forest_upgrades/steam_reel_thumb.png?cv=5',
+      large:
+        'https://www.mousehuntgame.com/images/folklore_forest_upgrades/steam_reel_large.png?cv=5'
+    },
+    {
+      type: 'enriched_soil',
+      name: 'Enriched Soil',
+      description:
+        'Adds 100 Parable Papyrus to the yield from all Parable Papyrus Plants!',
+      is_unlocked: false,
+      can_unlock: false,
+      environment: 'foreword_farm',
+      costs: [
+        {
+          type: 'gold_stat_item',
+          name: 'Gold',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/d8f90a569d52e7ea228ad0f1cc51516d.gif?cv=5',
+          thumb_transparent:
+            'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/dccbaeebbdfa745340ff9363749f35ba.png?cv=5',
+          quantity: 10000000,
+          owned: 81516135
+        },
+        {
+          type: 'crop_coin_stat_item',
+          name: 'Crop Coin',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/8a136bf53ad8944b44a1a555c0723a77.gif?cv=5',
+          thumb_transparent:
+            'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/d684728c0097e077c32ea0ecb211a542.png?cv=5',
+          quantity: 1500,
+          owned: 40
+        },
+        {
+          type: 'gnawbel_prize_stat_item',
+          name: 'Gnawbel Prize for Literature',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/e86c0be44a76baa861c3f17816d838a2.gif?cv=5',
+          thumb_transparent:
+            'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/8767d5e6f8ed5f4d2a66ae605b545a3f.png?cv=5',
+          quantity: 500,
+          owned: 137
+        }
+      ],
+      has_requirements: null,
+      requirements: [],
+      display_order: 5,
+      thumbnail:
+        'https://www.mousehuntgame.com/images/folklore_forest_upgrades/enriched_soil_thumb.png?cv=5',
+      large:
+        'https://www.mousehuntgame.com/images/folklore_forest_upgrades/enriched_soil_large.png?cv=5'
+    },
+    {
+      type: 'pruning',
+      name: 'Titanium Pruning Shears',
+      description: 'Doubles the harvest yield of Parable Papyrus!',
+      is_unlocked: false,
+      can_unlock: false,
+      environment: 'foreword_farm',
+      costs: [
+        {
+          type: 'gold_stat_item',
+          name: 'Gold',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/d8f90a569d52e7ea228ad0f1cc51516d.gif?cv=5',
+          thumb_transparent:
+            'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/dccbaeebbdfa745340ff9363749f35ba.png?cv=5',
+          quantity: 10000000,
+          owned: 81516135
+        },
+        {
+          type: 'crop_coin_stat_item',
+          name: 'Crop Coin',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/8a136bf53ad8944b44a1a555c0723a77.gif?cv=5',
+          thumb_transparent:
+            'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/d684728c0097e077c32ea0ecb211a542.png?cv=5',
+          quantity: 3000,
+          owned: 40
+        },
+        {
+          type: 'gnawbel_prize_stat_item',
+          name: 'Gnawbel Prize for Literature',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/e86c0be44a76baa861c3f17816d838a2.gif?cv=5',
+          thumb_transparent:
+            'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/8767d5e6f8ed5f4d2a66ae605b545a3f.png?cv=5',
+          quantity: 2500,
+          owned: 137
+        }
+      ],
+      has_requirements: null,
+      requirements: [],
+      display_order: 6,
+      thumbnail:
+        'https://www.mousehuntgame.com/images/folklore_forest_upgrades/pruning_thumb.png?cv=5',
+      large:
+        'https://www.mousehuntgame.com/images/folklore_forest_upgrades/pruning_large.png?cv=5'
+    }
+  ],
+  trap_warnings: {
+    power_type: null,
+    bait: null,
+    misc: null
+  },
+  has_trap_warning: null,
+  standard_bait_choice: 'super_brie_cheese'
+};
+const MOUSEHUNT_BASE_URL = 'https://www.mousehuntgame.com/';
+const hg = {};
+const eventRegistry = {};
+const jsDialog = {};
+const user = {};
+user.gold = 47000000;
+user.environment_type = 'prologue_pond';
+user.quests = {};
+user.quests.QuestProloguePond = QuestProloguePond;
+// MH functions
+function $() {}
+// my-mh-aid constants
+// MH & my-mh-aid functions
+function getEnvironmentType() {
+  const rtn = trimToEmpty(user.environment_type);
+  // console.plog(`Current location environment_type: ${rtn}`);
+  return rtn;
+}
+function trimToEmpty(str) {
+  return trimToDefault(str);
+}
+function trimToDefault(str, deflt) {
+  return str === 0 ? '0' : ((str || (deflt ? deflt : '')) + '').trim();
+}
+function logging(...any) {
+  const debug = true;
+  if (debug) {
+    console.groupCollapsed(new Date(), ...any);
+    console.log(Error().stack);
+    console.groupEnd();
+  }
+}
+function getStorageToObject(keyName, objDefault) {
+  let obj = getStorage(keyName);
+  let bCheckNewProp = true;
+  if (isNullOrUndefined(obj)) {
+    obj = JSON.stringify(objDefault);
+    setStorage(keyName, obj);
+    bCheckNewProp = false;
+  }
+  obj = JSON.parse(obj);
+  if (bCheckNewProp) {
+    if (assignMissingDefault(obj, objDefault)) {
+      setStorage(keyName, JSON.stringify(obj));
+    }
+  }
+  return obj;
+  function getStorage(name) {
+    // check if the web browser support HTML5 storage
+    if ('localStorage' in window && !isNullOrUndefined(window.localStorage)) {
+      return window.localStorage.getItem(name);
+    }
+  }
+  function setStorage(name, value) {
+    // check if the web browser support HTML5 storage
+    if ('localStorage' in window && !isNullOrUndefined(window.localStorage)) {
+      window.localStorage.setItem(name, value);
+    }
+  }
+  function isNullOrUndefined(obj) {
+    return (
+      obj === null || obj === undefined || obj === 'null' || obj === 'undefined'
+    );
+  }
+  function assignMissingDefault(target, source) {
+    let isResave = false;
+    for (const key in source) {
+      if (
+        Object.prototype.hasOwnProperty.call(source, key) &&
+        !Object.prototype.hasOwnProperty.call(target, key)
+      ) {
+        const element = source[key];
+        target[key] = element;
+        isResave = true;
+      }
+    }
+    return isResave;
+  }
+}
+// function travel(environmentType, milliseconds, callback) {
+//   console.log(`travel to ${environmentType}`);
+// }
+function parseQuantity(qty) {
+  const strQty = (qty || 0) + '';
+  const rtn = parseInt(strQty.replaceAll(',', ''));
+  return Number.isNaN(rtn) ? 0 : rtn;
+}
+// function getRandomInteger(min, max) {
+//   return parseInt(min + Math.random() * (max - min));
+// }
+function armAllTraps(bait, weapon, base, charm) {
+  console.log(bait, weapon, base, charm);
+}
+// function reloadWithMessage(msg, soundHorn) {
+//   console.plog('reloadWithMessage: ', msg, ',', soundHorn);
+//   // display the message
+//   // displayTimer(msg, msg, msg);
+
+//   // reload the page
+//   setTimeout(function () {
+//     // reloadPage(soundHorn);
+//   }, 1000);
+// }
+function completeTransaction(
+  isPurchase,
+  itemType,
+  itemQuantity,
+  isKingsCartItem,
+  successCallback
+) {
+  console.log(`bought ${itemQuantity} ${itemType}!!`);
+  if (successCallback)
+    setTimeout(() => {
+      successCallback();
+    }, 2000);
+}
+function doubleEgg(isToEnable) {
+  console.log('double egg?', isToEnable);
+}
+function litCandle(actionType) {
+  console.log('lit candle to', actionType);
+}
+
+// #prologuePond
+if (getEnvironmentType() === 'prologue_pond') prologuePond();
+function prologuePond() {
+  const isProd = false;
+  const targetEnvironmentType = 'prologue_pond';
+  const enviromentType = getEnvironmentType();
+  if (enviromentType !== targetEnvironmentType) return;
+  logging('prologuePond_0.0.0.0.1');
+  // localStorage settings
+  // prettier-ignore
+  const defaultSettings = {
+    changeBaitQuantity: 30,
+    extraPenny: 25,
+    isOkStormy: false,
+    isOkChum: false,
+    traps: {
+      gouda_cheese: ['Gouda Cheese', 'best.weapon.hydro', 'best.base.combo', 'Luck Charm', false, 'none', false],
+      grubbeen_cheese: [ 'Grubbeen Cheese', 'best.weapon.hydro', 'best.base.combo', 'Luck Charm', false, 'none', false],
+      clamembert_cheese: ['Clamembert Cheese', 'best.weapon.hydro', 'best.base.combo', 'Luck Charm', false, 'none', false],
+      stormy_clamembert_cheese: ['Stormy Clamembert Cheese', 'best.weapon.hydro', 'best.base.combo', 'Ultimate Lucky Power Charm,Festive Ultimate Lucky Power Charm', true, 'none', false]
+    }
+  };
+  const settings = isProd
+    ? getStorageToObject(targetEnvironmentType, defaultSettings)
+    : defaultSettings;
+  // my own hard-coded constants
+  const gouda = 'gouda_cheese';
+  const grubbeen = 'grubbeen_cheese';
+  const clamembert = 'clamembert_cheese';
+  const stormy = 'stormy_clamembert_cheese';
+  const grub = 'ingenuity_grub_stat_item';
+  const clam = 'cleverness_clam_stat_item';
+  const penny = 'pond_penny_stat_item';
+  const chum = 'brainstorm_chum_stat_item';
+  const CC = 'condensed_creativity_stat_item';
+  // MH constants
+  const quest = isProd ? user.quests.QuestProloguePond : QuestProloguePond;
+  const items = {
+    gold: user.gold,
+    grubbeen: {
+      type: grubbeen,
+      qty: parseQuantity(quest.items[grubbeen].quantity)
+    },
+    clamembert: {
+      type: clamembert,
+      qty: parseQuantity(quest.items[clamembert].quantity)
+    },
+    stormy: {
+      type: stormy,
+      qty: parseQuantity(quest.items[stormy].quantity)
+    },
+    grub: {
+      type: grub,
+      qty: parseQuantity(quest.items[grub].quantity)
+    },
+    clam: {
+      type: clam,
+      qty: parseQuantity(quest.items[clam].quantity)
+    },
+    penny: {
+      type: penny,
+      qty: parseQuantity(quest.items[penny].quantity)
+    },
+    chum: {
+      type: chum,
+      qty: parseQuantity(quest.items[chum].quantity)
+    },
+    CC: {
+      type: CC,
+      qty: parseQuantity(quest.items[CC].quantity)
+    }
+  };
+  console.log('items: ', items);
+  const prologuePondUtility = (() => {
+    const utils = {
+      // values
+      URI: 'managers/ajax/environment/prologue_pond.php',
+      /** Set immutable fields */
+      setImmutable() {
+        const immutableFields = ['URI'];
+        for (let i = 0; i < immutableFields.length; i++) {
+          const immutableField = immutableFields[i];
+          Object.defineProperty(utils, immutableField, {
+            // value: 'This cannot be changed',
+            writable: false, // Makes the field immutable
+            configurable: false, // Prevents deletion or re-configuration of the field
+            enumerable: true // Makes the field visible during enumeration (e.g., in a for...in loop)
+          });
+        }
+      },
+      trapState: gouda,
+      /** start running */
+      run() {
+        logging('start running prologuePond');
+        this.autoBuyPromise(() => {
+          this.autoSettingsPromise();
+        });
+      },
+      autoBuyPromise() {
+        logging('run autoBuyPromise');
+        new Promise((resolve, reject) => {
+          let itemQuantity = Math.min(
+            items.clam.qty,
+            Math.floor(items.gold / 5000)
+          );
+          if (itemQuantity > settings.changeBaitQuantity) {
+            console.log(`auto buy ${items.clamembert.type}`);
+            completeTransaction(
+              true,
+              items.clamembert.type,
+              itemQuantity,
+              false,
+              () => {
+                items.clam.qty -= itemQuantity;
+                this.autoBuyPromise();
+              }
+            );
+            return;
+          }
+          itemQuantity = Math.min(
+            settings.changeBaitQuantity + 1,
+            items.penny.qty,
+            Math.floor(items.gold / 1000)
+          );
+          if (
+            itemQuantity > settings.changeBaitQuantity &&
+            items.penny.qty > settings.changeBaitQuantity + settings.extraPenny
+          ) {
+            console.log(`auto buy ${items.chum.type}`);
+            completeTransaction(
+              true,
+              items.chum.type,
+              itemQuantity,
+              false,
+              () => {
+                items.penny.qty -= itemQuantity;
+                items.chum.qty += itemQuantity;
+                this.autoBuyPromise();
+              }
+            );
+            return;
+          }
+          itemQuantity = Math.min(
+            items.grub.qty,
+            Math.floor(items.gold / 1000)
+          );
+          if (itemQuantity > settings.changeBaitQuantity) {
+            console.log(`auto buy ${items.grubbeen.type}`);
+            completeTransaction(
+              true,
+              items.grubbeen.type,
+              itemQuantity,
+              false,
+              () => {
+                items.grub.qty -= itemQuantity;
+                items.grubbeen.qty += itemQuantity;
+                this.autoBuyPromise();
+              }
+            );
+            return;
+          }
+          this.autoSettingsPromise();
+        });
+      },
+      /** auto settings */
+      autoSettingsPromise() {
+        logging('run initPromise: initialize states for running');
+        return new Promise((resolve, reject) => {
+          // auto settings for running if necessary and then invoke next promise
+          // trap state
+          if (
+            settings.isOkStormy &&
+            items.stormy.qty > settings.changeBaitQuantity
+          )
+            this.trapState = stormy;
+          else if (items.clamembert.qty > settings.changeBaitQuantity)
+            this.trapState = clamembert;
+          else if (items.grubbeen.qty > settings.changeBaitQuantity) {
+            this.trapState = grubbeen;
+            if (items.chum.qty > settings.changeBaitQuantity)
+              settings.isOkChum = true;
+          } else this.trapState = gouda;
+          this.handleTrapPromise();
+        });
+      },
+      /** handle trap promise */
+      handleTrapPromise() {
+        logging('run handleTrapPromise');
+        return new Promise((resolve, reject) => {
+          const trap = settings.traps[this.trapState];
+          if (trap) {
+            this.toggleCC(trap[4]);
+            setTimeout(() => {
+              litCandle(trap[5]);
+              doubleEgg(trap[6]);
+            }, 500);
+            setTimeout(() => {
+              if (settings.isOkChum)
+                isProd
+                  ? hg.views.HeadsUpDisplayProloguePondView.toggleChum('<a/>')
+                  : console.log('scatter chum');
+              armAllTraps(...trap);
+            }, 1500);
+          }
+        });
+      },
+      /** toggle condensed creativity */
+      toggleCC(isToEnable) {
+        logging(`toggleCC to ${isToEnable}`);
+        if (items.CC.qty < 1) return;
+        const isFuelEnabled = quest.is_fuel_enabled || false;
+        if ((isFuelEnabled === true) != isToEnable)
+          isProd
+            ? hg.views.HeadsUpDisplayFolkloreForestRegionView.toggleFuel()
+            : console.log('toggled CC');
+      },
+      /** location ajax */
+      ajax(element, params, successCallback, errorCallback) {
+        params['last_read_journal_entry_id'] = $('#journallatestentry').data(
+          'entry-id'
+        );
+        params['uh'] = user.unique_hash;
+        $.ajax({
+          data: params,
+          dataType: 'json',
+          type: isProd ? 'post' : 'get',
+          url: isProd
+            ? MOUSEHUNT_BASE_URL + this.URI
+            : 'https://elie2201.github.io/mh/jobs.txt',
+          success: function (data) {
+            eventRegistry.doEvent('ajax_response', data);
+            if (successCallback) {
+              successCallback(data);
+            }
+          },
+          error: function (data) {
+            // eslint-disable-next-line new-cap
+            const popup = new jsDialog();
+            popup.setTemplate('error');
+            popup.addToken('{*title*}', 'An error has occurred.');
+            popup.addToken(
+              '{*content*}',
+              'An error occurred. Please try again!'
+            );
+            popup.show();
+            if (errorCallback) errorCallback(data);
+          }
+        });
+      }
+    };
+    // initial utils
+    function init() {
+      // make fields immutable
+      utils.setImmutable();
+      // initialize values in utils if necessary
+    }
+    init();
+    return utils;
+  })();
+  prologuePondUtility.run();
+}
+// End #prologuePond
+
+// adventure
+/* 
+(() => {
+  if (getEnvironmentType() === 'prologue_pond') {
+    const quest = user.quests.QuestProloguePond;
+    const items = quest.items;
+    const inkQty = parseQuantity(
+      items.inspiration_ink_stat_item.quantity
+    );
+    if (inkQty > 1000) {
+      travel('table_of_contents', 2000, () => {});
+    } else {
+      const chumQty = parseQuantity(
+        items.brainstorm_chum_stat_item.quantity
+      );
+      if (chumQty < 3) {
+        const itemType = 'brainstorm_chum_stat_item';
+        completeTransaction(true, itemType, 33, false);
+      }
+    }
+  } else if (getEnvironmentType() === 'table_of_contents') {
+    tableOfContents();
+  }
+})();
+ */
+// End adventure
