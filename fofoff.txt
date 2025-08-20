@@ -1553,7 +1553,7 @@ function forewordFarm() {
   const targetEnvironmentType = 'foreword_farm';
   const enviromentType = getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('forewordFarm_0.4.4.3.4');
+  logging('forewordFarm_0.4.4.3.5');
   const plantRowTypes = [
     ['ordinary_farm_plant', 'ordinary_magic_farm_plant'],
     ['legendary_farm_plant', 'legendary_magic_farm_plant'],
@@ -1728,8 +1728,12 @@ function forewordFarm() {
           if (settings.isAutoClaim && quest.harvest_bin.can_claim) {
             console.log('claiming harvest');
             isProd
-              ? this.claimHarvest(resolve)
-              : this.claimHarvestMock(resolve);
+              ? this.claimHarvest(() => {
+                  this.run();
+                })
+              : this.claimHarvestMock(() => {
+                  this.run();
+                });
             return;
           }
           resolve();
@@ -1742,14 +1746,12 @@ function forewordFarm() {
           action: 'claim_harvest'
         };
         this.ajax('<a/>', params, (data) => {
+          quest.harvest_bin.can_claim = null;
           console.log(
             `claim harvest result: ${data.success ? 'success' : 'failure'}`,
             data.foreword_farm_harvest_bin
           );
-          if (callback)
-            setTimeout(() => {
-              callback(data);
-            }, 2000);
+          if (callback) callback(data);
         });
       },
       /** claim harvest mock */
