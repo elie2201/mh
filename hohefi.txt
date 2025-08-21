@@ -1091,7 +1091,7 @@ function floatingIslands() {
   const targetEnvironmentType = 'floating_islands';
   const environmentType = getEnvironmentType();
   if (environmentType != targetEnvironmentType) return;
-  logging('floatingIslands_1.4.17.6.7');
+  logging('floatingIslands_1.4.17.6.8');
   // prettier-ignore
   const AllPowerTypes = ['arcn', 'frgttn', 'hdr', 'shdw', 'drcnc', 'law', 'phscl', 'tctcl'];
   // prettier-ignore
@@ -1266,9 +1266,10 @@ function floatingIslands() {
     (isCjsOn ? 1 : 0);
   console.log('current speed:', speed);
   const isBossHunt = atts.has_enemy && atts.is_enemy_encounter;
-  const isLastShotTrove = !isBossHunt && islandProgress + speed > 39;
   const hasDefeatedEnemy = atts.has_defeated_enemy;
   const hasTreasureTrove = atts.has_treasure_trove;
+  const isLastShotTrove =
+    !isBossHunt && !hasTreasureTrove && islandProgress + speed > 39;
   const autoHuntAfterTrove = () => {
     if (isLai) {
       if (countArrayElement('sky_pirates', modTypes) == 2) {
