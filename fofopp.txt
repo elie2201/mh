@@ -1133,11 +1133,12 @@ function prologuePond() {
   const targetEnvironmentType = 'prologue_pond';
   const enviromentType = getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('prologuePond_0.0.1.0.5');
+  logging('prologuePond_0.1.1.0.5');
   // localStorage settings
   // prettier-ignore
   const defaultSettings = {
-    changeBaitQuantity: 30,
+    useBaitQuantity: 32,
+    changeBaitQuantity: 3,
     extraPenny: 25,
     isOkStormy: false,
     isOkChum: false,
@@ -1216,7 +1217,8 @@ function prologuePond() {
           });
         }
       },
-      trapState: gouda,
+      /** trapState, default: clamembert */
+      trapState: clamembert,
       /** start running */
       run() {
         logging('start running prologuePond');
@@ -1227,11 +1229,21 @@ function prologuePond() {
       autoBuyPromise() {
         logging('run autoBuyPromise');
         new Promise((resolve, reject) => {
+          // clamembert: with chum=>ink, without=>penny
+          // 能買多少 clamembert?
           let itemQuantity = Math.min(
             items.clam.qty,
+            // settings.useBaitQuantity - items.clamembert,
             Math.floor(items.gold / 5000)
           );
-          if (itemQuantity > settings.changeBaitQuantity) {
+          if (
+            // 該買 clamembert了沒?
+            items.clamembert.qty < settings.changeBaitQuantity &&
+            // 需要買嗎?如果該買了, itemQuantity一定大於 0
+            // itemQuantity > 0 &&
+            // clam/gold夠買嗎?
+            itemQuantity > settings.useBaitQuantity - items.clamembert.qty
+          ) {
             console.log(`auto buy ${itemQuantity} ${items.clamembert.type}`);
             completeTransaction(
               true,
@@ -1240,16 +1252,51 @@ function prologuePond() {
               false,
               () => {
                 items.clam.qty -= itemQuantity;
+                items.clamembert.qty += itemQuantity;
                 this.autoBuyPromise();
               }
             );
             return;
           }
+          // 能買多少 chum?
+          itemQuantity = Math.min(
+            items.penny.qty - settings.extraPenny,
+            Math.floor(items.gold / 1000)
+          );
+          if (
+            // 要買跟 clamembert等量的 chum嗎?
+            items.chum.qty < items.clamembert.qty &&
+            // 需要買嗎?如果該買了, itemQuantity一定大於 0
+            // itemQuantity > 0 &&
+            // penny/gold夠買嗎?
+            itemQuantity > items.clamembert.qty - items.chum.qty
+          ) {
+            console.log(`auto buy ${itemQuantity} ${items.chum.type}`);
+            completeTransaction(
+              true,
+              items.chum.type,
+              itemQuantity,
+              false,
+              () => {
+                items.penny.qty -= itemQuantity;
+                items.chum.qty += itemQuantity;
+                this.autoBuyPromise();
+              }
+            );
+            return;
+          }
+          // 能買多少 grubbeen?
           itemQuantity = Math.min(
             items.grub.qty,
             Math.floor(items.gold / 1000)
           );
-          if (itemQuantity > settings.changeBaitQuantity) {
+          // grubbeen: with chum=>clam, without=>penny
+          if (
+            // 該買 grubbeen了沒?
+            items.grubbeen.qty < settings.changeBaitQuantity &&
+            // grub/gold夠買嗎?
+            itemQuantity > settings.useBaitQuantity - items.grubbeen.qty
+          ) {
             console.log(`auto buy ${itemQuantity} ${items.grubbeen.type}`);
             completeTransaction(
               true,
@@ -1264,15 +1311,18 @@ function prologuePond() {
             );
             return;
           }
+          // 能買多少 chum?
           itemQuantity = Math.min(
-            items.grubbeen.qty - items.chum.qty,
             items.penny.qty - settings.extraPenny,
             Math.floor(items.gold / 1000)
           );
           if (
-            itemQuantity > 0 &&
-            itemQuantity + items.chum.qty >= items.grubbeen.qty &&
-            items.penny.qty > itemQuantity + settings.extraPenny
+            // 要買跟 grubbeen等量的 chum嗎?
+            items.chum.qty < items.grubbeen.qty &&
+            // 需要買嗎?如果該買了, itemQuantity一定大於 0
+            // itemQuantity > 0 &&
+            // penny/gold夠買嗎?
+            itemQuantity > items.grubbeen.qty - items.chum.qty
           ) {
             console.log(`auto buy ${itemQuantity} ${items.chum.type}`);
             completeTransaction(
@@ -1296,21 +1346,24 @@ function prologuePond() {
         logging('run initPromise: initialize states for running');
         return new Promise((resolve, reject) => {
           // auto settings for running if necessary and then invoke next promise
-          // trap state
+          // trapState, default: clamembert
           if (
             settings.isOkStormy &&
-            items.stormy.qty > settings.changeBaitQuantity
+            items.stormy.qty > settings.useBaitQuantity
           ) {
             this.trapState = stormy;
-          } else if (!settings.isOkStormy || items.stormy.qty < 3) {
-            if (items.clamembert.qty > settings.changeBaitQuantity) {
+          } else if (
+            !settings.isOkStormy ||
+            items.stormy.qty < settings.changeBaitQuantity
+          ) {
+            if (items.clamembert.qty >= settings.useBaitQuantity) {
               this.trapState = clamembert;
-            } else if (items.clamembert.qty < 3) {
-              if (items.grubbeen.qty > settings.changeBaitQuantity) {
+            } else if (items.clamembert.qty < settings.changeBaitQuantity) {
+              if (items.grubbeen.qty >= settings.useBaitQuantity) {
                 this.trapState = grubbeen;
-                if (items.penny.qty > settings.extraPenny)
+                if (items.chum.qty >= settings.useBaitQuantity)
                   settings.isOkChum = true;
-              } else if (items.grubbeen.qty < 3) {
+              } else if (items.grubbeen.qty < settings.changeBaitQuantity) {
                 this.trapState = gouda;
               }
             }
