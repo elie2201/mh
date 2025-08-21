@@ -1133,7 +1133,7 @@ function prologuePond() {
   const targetEnvironmentType = 'prologue_pond';
   const enviromentType = getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('prologuePond_0.0.0.0.1');
+  logging('prologuePond_0.0.3.0.1');
   // localStorage settings
   // prettier-ignore
   const defaultSettings = {
@@ -1232,7 +1232,7 @@ function prologuePond() {
             Math.floor(items.gold / 5000)
           );
           if (itemQuantity > settings.changeBaitQuantity) {
-            console.log(`auto buy ${items.clamembert.type}`);
+            console.log(`auto buy ${itemQuantity} ${items.clamembert.type}`);
             completeTransaction(
               true,
               items.clamembert.type,
@@ -1246,15 +1246,16 @@ function prologuePond() {
             return;
           }
           itemQuantity = Math.min(
-            settings.changeBaitQuantity + 1,
-            items.penny.qty,
+            settings.changeBaitQuantity + 1 - items.chum.qty,
+            items.penny.qty - settings.extraPenny,
             Math.floor(items.gold / 1000)
           );
           if (
-            itemQuantity > settings.changeBaitQuantity &&
-            items.penny.qty > settings.changeBaitQuantity + settings.extraPenny
+            itemQuantity > 0 &&
+            itemQuantity + items.chum.qty > settings.changeBaitQuantity &&
+            items.penny.qty > itemQuantity + settings.extraPenny
           ) {
-            console.log(`auto buy ${items.chum.type}`);
+            console.log(`auto buy ${itemQuantity} ${items.chum.type}`);
             completeTransaction(
               true,
               items.chum.type,
@@ -1273,7 +1274,7 @@ function prologuePond() {
             Math.floor(items.gold / 1000)
           );
           if (itemQuantity > settings.changeBaitQuantity) {
-            console.log(`auto buy ${items.grubbeen.type}`);
+            console.log(`auto buy ${itemQuantity} ${items.grubbeen.type}`);
             completeTransaction(
               true,
               items.grubbeen.type,
@@ -1299,15 +1300,21 @@ function prologuePond() {
           if (
             settings.isOkStormy &&
             items.stormy.qty > settings.changeBaitQuantity
-          )
+          ) {
             this.trapState = stormy;
-          else if (items.clamembert.qty > settings.changeBaitQuantity)
-            this.trapState = clamembert;
-          else if (items.grubbeen.qty > settings.changeBaitQuantity) {
-            this.trapState = grubbeen;
-            if (items.chum.qty > settings.changeBaitQuantity)
-              settings.isOkChum = true;
-          } else this.trapState = gouda;
+          } else if (!settings.isOkStormy || items.stormy.qty < 3) {
+            if (items.clamembert.qty > settings.changeBaitQuantity) {
+              this.trapState = clamembert;
+            } else if (items.clamembert.qty < 3) {
+              if (items.grubbeen.qty > settings.changeBaitQuantity) {
+                this.trapState = grubbeen;
+                if (items.chum.qty > settings.changeBaitQuantity)
+                  settings.isOkChum = true;
+              } else if (items.grubbeen.qty < 3) {
+                this.trapState = gouda;
+              }
+            }
+          }
           this.handleTrapPromise();
         });
       },
