@@ -1,0 +1,48 @@
+// #scheduledTravel
+// scheduledTravel('2024-09-27T04:50:00','2024-09-27T05:10:00','ancient_city');
+// scheduledTravel('2024-10-14T06:35:00','2024-10-14T06:59:00','train_station');
+// scheduledTravel('2024-10-17T06:35:00','2024-10-17T06:59:00','claw_shot_city');
+scheduledTravel('2025-08-23T08:01:00', '2025-08-23T08:30:00', 'rift_furoma');
+// scheduledTravel('2025-02-06T08:01:00','2025-02-06T08:30:00','fort_rox');
+// scheduledTravel('2025-02-06T08:01:00', '2025-02-06T08:30:00', 'laboratory');
+// prettier-ignore
+function scheduledTravel(beginTime, endTime, environmentType, timeout, callback) {
+  logging('scheduledTravel_1.0.0.0.0');
+  const isoDate = new Date().toLocaleDateString('en-CA');
+  if (beginTime.indexOf('T') < 0) beginTime = isoDate + 'T' + beginTime;
+  if (endTime.indexOf('T') < 0) endTime = isoDate + 'T' + endTime;
+  console.plog(beginTime, endTime);
+  if (user.environment_type === environmentType) return;
+  if (Date.now() < Date.parse(beginTime)) return;
+  if (Date.now() > Date.parse(endTime)) return;
+  console.plog(environmentType, beginTime, endTime, callback);
+  travel(environmentType, timeout, callback);
+}
+function travel(environmentType, milliseconds, callback) {
+  if (user.environment_type == environmentType) return;
+  const timeout = milliseconds ? milliseconds : 2000;
+  user.environment_type = environmentType;
+  user.environment_id = environmentTypeIdDictionary[environmentType];
+  app.pages.TravelPage.travel(environmentType);
+  if (timeout >= 0 && callback) {
+    setTimeout(() => {
+      callback();
+    }, timeout);
+    return;
+  }
+  if (timeout >= 0) {
+    window.setTimeout(function () {
+      window.location.href = MOUSEHUNT_BASE_URL;
+    }, timeout);
+  }
+}
+// End #scheduledTravel
+
+const environmentTypeIdDictionary = {};
+const MOUSEHUNT_BASE_URL = 'https://www.mousehuntgame.com/';
+const user = {};
+const app = {};
+
+function logging(...any) {
+  console.log(...any);
+}
