@@ -1133,7 +1133,7 @@ function prologuePond() {
   const targetEnvironmentType = 'prologue_pond';
   const enviromentType = getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('prologuePond_0.1.1.0.5');
+  logging('prologuePond_0.1.1.0.6');
   // localStorage settings
   // prettier-ignore
   const defaultSettings = {
@@ -1358,6 +1358,8 @@ function prologuePond() {
           ) {
             if (items.clamembert.qty >= settings.useBaitQuantity) {
               this.trapState = clamembert;
+              if (items.chum.qty >= settings.useBaitQuantity)
+                settings.isOkChum = true;
             } else if (items.clamembert.qty < settings.changeBaitQuantity) {
               if (items.grubbeen.qty >= settings.useBaitQuantity) {
                 this.trapState = grubbeen;
