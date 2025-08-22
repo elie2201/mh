@@ -18,11 +18,11 @@ function hasLootByItemName(itemName) {
 function travel(environmentType, milliseconds, callback) {}
 function armAllTraps(bait, weapon, base, charm) {}
 
-// hasLootAction
+// #hasLootAction
 hasLootAction();
 function hasLootAction() {
   // const isProd = false;
-  logging('hasLootAction_1.0.0.0.1');
+  logging('hasLootAction_1.0.0.1.1');
   let checks = [
     {
       nowEnvironmentType: 'kings_gauntlet',
@@ -117,7 +117,7 @@ function hasLootAction() {
     if (check.target === 'firstCheckNotUseTarget')
       if (check.callback) check.callback();
 }
-// End hasLootAction
+// End #hasLootAction
 
 // prettier-ignore
 if (getEnvironmentType() === 'kings_gauntlet')
