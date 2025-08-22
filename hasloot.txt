@@ -1,0 +1,199 @@
+const user = {};
+function logging(...any) {}
+function getEnvironmentType() {}
+function hasLootByItemName(itemName) {
+  const nodes = document.querySelectorAll(
+    'div[data-entry-id] > div.journalbody > div.journaltext'
+  );
+  for (let i = 0; i < nodes.length; i++) {
+    const node = nodes[i];
+    const text = node.innerText;
+    if (text && text.indexOf(itemName) > -1) {
+      console.log(text);
+      return true;
+    }
+  }
+  return false;
+}
+function travel(environmentType, milliseconds, callback) {}
+function armAllTraps(bait, weapon, base, charm) {}
+
+// hasLootAction
+hasLootAction();
+function hasLootAction() {
+  // const isProd = false;
+  logging('hasLootAction_1.0.0.0.1');
+  let checks = [
+    {
+      nowEnvironmentType: 'kings_gauntlet',
+      target: 'firstCheckNotUseTarget',
+      callback() {
+        armAllTraps(
+          'Gauntlet Cheese Tier 8',
+          'best.weapon.forgotten',
+          'Chocolate Bar Base',
+          'Baitkeeper'
+        );
+      }
+    },
+    {
+      nowEnvironmentType: 'kings_gauntlet',
+      target: 'Eclipse Egg',
+      callback() {
+        armAllTraps(
+          'Gauntlet Cheese Tier 5',
+          'best.weapon.shadow',
+          'Chocolate Bar Base',
+          'Snowball Charm'
+        );
+      }
+    },
+    {
+      nowEnvironmentType: 'kings_gauntlet',
+      target: 'Gauntlet Magic Egg',
+      callback() {
+        armAllTraps(
+          'Gauntlet Cheese Tier 4',
+          'best.weapon.tactical',
+          'Chocolate Bar Base',
+          'Super Cactus Charm'
+        );
+      }
+    },
+    {
+      nowEnvironmentType: 'kings_gauntlet',
+      target: 'Gauntlet Bard Egg',
+      callback() {
+        travel('tournament_hall', 2000, () => {
+          armAllTraps(
+            'Gouda Cheese',
+            'best.weapon.tactical',
+            'Chocolate Bar Base',
+            'None'
+          );
+        });
+      }
+    },
+    {
+      nowEnvironmentType: 'tournament_hall',
+      target: 'Valour Egg',
+      callback() {
+        travel('moussu_picchu', 3000, () => {
+          armAllTraps(
+            'Gouda Cheese',
+            'Boiling Cauldron',
+            'Chocolate Bar Base',
+            'Super Snowball Charm'
+          );
+        });
+      }
+    }
+  ];
+  checks = [
+    {
+      nowEnvironmentType: 'rift_burroughs',
+      target: 'Rift Circuitry',
+      callback() {
+        armAllTraps(
+          'Gauntlet Cheese Tier 8',
+          'best.weapon.forgotten',
+          'Chocolate Bar Base',
+          'Baitkeeper'
+        );
+      }
+    }
+  ];
+  for (let i = checks.length; --i > 0; ) {
+    const check = checks[i];
+    if (getEnvironmentType() === check.nowEnvironmentType)
+      if (hasLootByItemName(check.target))
+        if (check.callback) {
+          check.callback();
+          return;
+        }
+  }
+  const check = checks[0];
+  if (getEnvironmentType() === check.nowEnvironmentType)
+    if (check.target === 'firstCheckNotUseTarget')
+      if (check.callback) check.callback();
+}
+// End hasLootAction
+
+// prettier-ignore
+if (getEnvironmentType() === 'kings_gauntlet')
+  if (hasLootByItemName('Gauntlet Bard Egg'))
+    travel('moussu_picchu', 3000, () => {
+      armAllTraps('Gouda Cheese', 'Boiling Cauldron', 'Chocolate Bar Base', 'Super Snowball Charm');
+    });
+  else if (hasLootByItemName('Gauntlet Magic Egg'))
+    armAllTraps('Gauntlet Cheese Tier 4', 'best.weapon.tactical', 'Chocolate Bar Base', 'Super Cactus Charm');
+  else if (hasLootByItemName('Eclipse Egg'))
+    armAllTraps('Gauntlet Cheese Tier 5', 'best.weapon.shadow', 'Chocolate Bar Base', 'Snowball Charm');
+// prettier-ignore
+if (getEnvironmentType() === 'tournament_hall')
+  if (hasLootByItemName('Valour Egg')) {
+    travel('lagoon', 3000, () => {
+      armAllTraps('Wicked Gnarly Cheese', 'Steam AugerBot 3000', '', 'Luck Charm');
+    });
+  }
+// prettier-ignore
+if (getEnvironmentType() === 'lagoon')
+  if (hasLootByItemName('Silth Egg')) {
+    travel('tournament_hall', 3000, () => {
+      armAllTraps('Gouda Cheese', 'Boiling Cauldron', '', 'None');
+    });
+  }
+// prettier-ignore
+if (getEnvironmentType() === 'mousoleum')
+  if (hasLootByItemName('Black Widow Egg')) {
+    travel('tournament_hall', 3000, () => {
+      armAllTraps('Gouda Cheese', 'Boiling Cauldron', '', 'None');
+    });
+  }
+// prettier-ignore
+if (getEnvironmentType() === 'town_of_gnawnia') {
+  if (user.quests.QuestSpringHunt.area_found === 8) {
+    travel('windmill', 3000, () => {
+      armAllTraps('Grilled Cheese', 'Boiling Cauldron', '', 'None');
+    });
+  }
+}
+// prettier-ignored
+(() => {
+  if (getEnvironmentType() !== 'windmill') return;
+  if (hasLootByItemName('Spud Egg')) {
+    travel('mountain', 3000, () => {
+      armAllTraps('SUPER', 'Boiling Cauldron', '', 'Power Charm');
+    });
+  } else if (hasLootByItemName('Croissant Egg')) {
+    // travel('harbour', 3000, () => {
+    armAllTraps('Gouda Cheese', 'Boiling Cauldron', '', 'None');
+    // });
+  }
+  /* if (user.quests.QuestSpringHunt.area_found === 8) {
+  } */
+})();
+// prettier-ignore
+if (getEnvironmentType() === 'elub_shore') {
+  if (hasLootByItemName('Elub Egg')) {
+    travel('derr_dunes', 3000, () => {
+      armAllTraps('Crunchy Cheese', 'best.weapon.physical', '', 'Cactus Charm');
+    });
+  }
+}
+// prettier-ignore
+if (getEnvironmentType() === 'dracano') {
+  if (hasLootByItemName('Dragon Egg')) {
+    travel('moussu_picchu', 3000, () => {
+      armAllTraps('Gouda Cheese', 'Boiling Cauldron', 'Chocolate Bar Base', 'Super Snowball Charm');
+    });
+  }
+}
+// prettier-ignore
+if (getEnvironmentType() === 'dojo') {
+  if (user.quests.QuestSpringHunt.area_found === 3) {
+    travel('ss_huntington_ii', 3000, () => {
+      armAllTraps('Gouda Cheese', 'best.weapon.hydro', 'Chocolate Bar Base', 'Luck Charm');
+    });
+  }
+}
