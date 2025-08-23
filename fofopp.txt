@@ -1133,7 +1133,7 @@ function prologuePond() {
   const targetEnvironmentType = 'prologue_pond';
   const enviromentType = getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('prologuePond_0.1.1.0.6');
+  logging('prologuePond_0.1.1.0.7');
   // localStorage settings
   // prettier-ignore
   const defaultSettings = {
@@ -1386,13 +1386,21 @@ function prologuePond() {
             }, 500);
             setTimeout(() => {
               if (items.chum.qty > 0 && settings.isOkChum)
-                isProd
-                  ? hg.views.HeadsUpDisplayProloguePondView.toggleChum('<a/>')
-                  : console.log('scatter chum');
+                this.toggleChum(true);
               armAllTraps(...trap);
             }, 1500);
           }
         });
+      },
+      /** toggle chum */
+      toggleChum(isToEnable) {
+        logging(`toggleChum to ${isToEnable}`);
+        if (items.chum.qty < 1) return;
+        const isFuelEnabled = quest.is_chum_enabled || false;
+        if ((isFuelEnabled === true) != isToEnable)
+          isProd
+            ? hg.views.HeadsUpDisplayProloguePondView.toggleChum('<a/>')
+            : console.log('scatter chum');
       },
       /** toggle condensed creativity */
       toggleCC(isToEnable) {
