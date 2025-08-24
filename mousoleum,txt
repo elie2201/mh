@@ -1,0 +1,236 @@
+// MH constants
+const QuestMousoleum = {
+  bait_type: 'radioactive_blue_cheese',
+  has_wall: true,
+  wall_health: 26,
+  wall_percent: 87,
+  wall_materials: 40,
+  wall_health_status: 'good',
+  wall_cost_quantity: 4,
+  can_build: null,
+  can_repair: true,
+  can_craft: true,
+  items: {
+    radioactive_blue_cheese_potion: {
+      quantity: '505',
+      status: ''
+    },
+    greater_radioactive_blue_cheese_potion: {
+      quantity: '127',
+      status: ''
+    },
+    radioactive_blue_cheese: {
+      quantity: '296',
+      status: 'active'
+    },
+    mousoleum_wall_stat_item: {
+      quantity: '40',
+      status: ''
+    },
+    crimson_cheese: {
+      quantity: '22',
+      status: ''
+    },
+    crimson_curd_crafting_item: {
+      quantity: '24',
+      status: ''
+    },
+    magic_essence_craft_item: {
+      quantity: '292',
+      status: ''
+    }
+  },
+  max_wall_health: 30,
+  power_type_warning: null,
+  has_shadow_traps: true,
+  bait_warning: null,
+  bait_wall_warning: null,
+  crimson_wall_warning: null,
+  crimson_curd_recipe: {
+    result: {
+      type: 'crimson_cheese',
+      name: 'Crimson Cheese',
+      description:
+        'A dark and delicious delicacy. A musty, oozing piece of cheese made from delicately aged and <i>evil</i> curds. Very rich in "iron" and topped with what looks to be a sweet... ketchup sauce?',
+      thumb:
+        'https://www.mousehuntgame.com/images/items/bait/c4767a49b5bfc2183c6261e89d661a05.gif?cv=5',
+      thumb_transparent:
+        'https://www.mousehuntgame.com/images/items/bait/transparent_thumb/a957b8c3bf30df4a0a90a77db1dfbce2.png?cv=5',
+      large:
+        'https://www.mousehuntgame.com/images/items/bait/large/c2300f93eaaff7c48a78c1520b53ac12.png?cv=5',
+      owned: 22
+    },
+    vanilla: {
+      items: [
+        {
+          type: 'crimson_curd_crafting_item',
+          name: 'Crimson Curd',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/crafting_items/thumbnails/a69031c1dea4a55e667b47e9904dc2a8.gif?cv=5',
+          required_quantity: 6,
+          is_duplicate_item: null
+        }
+      ],
+      action: {
+        label: false,
+        css_class: 'vanilla',
+        result_quantity: 3,
+        name: 'Crimson Cheese',
+        subject_type: 'crimson_cheese_recipe',
+        shop_environment: false,
+        action_type: 'craft'
+      }
+    },
+    upsell: {
+      items: [
+        {
+          type: 'crimson_curd_crafting_item',
+          name: 'Crimson Curd',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/crafting_items/thumbnails/a69031c1dea4a55e667b47e9904dc2a8.gif?cv=5',
+          required_quantity: 6,
+          is_duplicate_item: null
+        },
+        {
+          type: 'magic_essence_craft_item',
+          name: 'Magic Essence',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/crafting_items/thumbnails/f8f0bb0476b1a7d481407fa797525622.gif?cv=5',
+          required_quantity: 1,
+          is_duplicate_item: null
+        }
+      ],
+      action: {
+        label: false,
+        css_class: 'upsell',
+        result_quantity: 6,
+        name: 'Crimson Cheese',
+        subject_type: 'crimson_cheese_magic_essence_recipe',
+        shop_environment: false,
+        action_type: 'craft'
+      }
+    },
+    has_upsell: true,
+    show_full_recipes: true
+  }
+};
+// const MOUSEHUNT_BASE_URL = 'https://www.mousehuntgame.com/';
+// const eventRegistry = {};
+// const jsDialog = {};
+const hg = {};
+const user = {};
+user.environment_type = 'mousoleum';
+user.quests = {};
+user.quests.QuestMousoleum = QuestMousoleum;
+// MH & my-mh-aid functions
+function getEnvironmentType() {
+  const rtn = trimToEmpty(user.environment_type);
+  // console.plog(`Current location environment_type: ${rtn}`);
+  return rtn;
+}
+function armAllTraps(bait, weapon, base, charm) {
+  console.log(bait, weapon, base, charm);
+}
+function logging(...any) {}
+function getStorageToObject(keyName, objDefault) {
+  let obj = getStorage(keyName);
+  let bCheckNewProp = true;
+  if (isNullOrUndefined(obj)) {
+    obj = JSON.stringify(objDefault);
+    setStorage(keyName, obj);
+    bCheckNewProp = false;
+  }
+  obj = JSON.parse(obj);
+  if (bCheckNewProp) {
+    if (assignMissingDefault(obj, objDefault)) {
+      setStorage(keyName, JSON.stringify(obj));
+    }
+  }
+  return obj;
+  function getStorage(name) {
+    // check if the web browser support HTML5 storage
+    if ('localStorage' in window && !isNullOrUndefined(window.localStorage)) {
+      return window.localStorage.getItem(name);
+    }
+  }
+  function setStorage(name, value) {
+    // check if the web browser support HTML5 storage
+    if ('localStorage' in window && !isNullOrUndefined(window.localStorage)) {
+      window.localStorage.setItem(name, value);
+    }
+  }
+  function isNullOrUndefined(obj) {
+    return (
+      obj === null || obj === undefined || obj === 'null' || obj === 'undefined'
+    );
+  }
+  function assignMissingDefault(target, source) {
+    let isResave = false;
+    for (const key in source) {
+      if (
+        Object.prototype.hasOwnProperty.call(source, key) &&
+        !Object.prototype.hasOwnProperty.call(target, key)
+      ) {
+        const element = source[key];
+        target[key] = element;
+        isResave = true;
+      }
+    }
+    return isResave;
+  }
+}
+// function travel(environmentType, milliseconds, callback) {}
+function trimToEmpty(str) {}
+function getRandomInteger(min, max) {}
+function parseQuantity(any) {}
+
+// #mouseleum
+if (trimToEmpty(user.environment_type) === 'mousoleum') mousoleum();
+function mousoleum() {
+  logging('mousoleum_0.0.0.0.1');
+  const isProd = false;
+  const targetEnvironmentType = 'mousoleum';
+  const enviromentType = getEnvironmentType();
+  if (enviromentType !== targetEnvironmentType) return;
+  // trap: [<bait>, <weapon>, <base>, <trinket>, <championFireEnabled>, litCandle]
+  // prettier-ignore
+  const defaultSetting = {
+    isAutoBuild: false,
+    isAutoRepair: true,
+    trap: {
+      radioactive_blue_cheese: ['Radioactive Blue Cheese', 'Boiling Cauldron', "event,Alchemist's Cookbook Base", 'None', false, 'none'],
+      radioactive_blue_cheese_wall: ['Radioactive Blue Cheese', 'Boiling Cauldron', "event,Alchemist's Cookbook Base", 'Luck Charm', false, 'none'],
+      crimson_cheese: ['Crimson Cheese', 'best.weapon.shadow', 'event,best.base.combo', 'Luck Charm', true, 'none']
+    }
+  };
+  const settings = isProd
+    ? getStorageToObject(targetEnvironmentType, defaultSetting)
+    : defaultSetting;
+  const quest = isProd ? user.quests.QuestMousoleum : QuestMousoleum;
+  if (quest.can_build && settings.isAutoBuild)
+    isProd
+      ? hg.views.HeadsUpDisplayMousoleumView.buildWall()
+      : console.log('buildWall');
+  if (quest.can_repair && quest.wall_health < getRandomInteger(15, 25))
+    isProd
+      ? hg.views.HeadsUpDisplayMousoleumView.repairWall()
+      : console.log('repairWall');
+  let trap = settings.trap.radioactive_blue_cheese;
+  if (quest.has_wall) {
+    trap = settings.trap.radioactive_blue_cheese_wall;
+    if (user.bait_item_id === 2700) {
+      trap = settings.trap.crimson_cheese;
+      const baitQuantity = parseQuantity(user.bait_quantity);
+      if (baitQuantity < 3) trap = settings.trap.radioactive_blue_cheese_wall;
+    }
+  }
+  if (trap[2].indexOf('event,') === 0)
+    if (
+      user.quests.QuestSpringHunt &&
+      !user.quests.QuestSpringHunt.is_shutdown_enabled
+    )
+      trap[2] = 'Chocolate Bar Base';
+    else trap[2] = trap[2].replace('event,');
+  armAllTraps(...trap);
+}
+// End #mouseleum
