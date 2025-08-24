@@ -187,7 +187,7 @@ function parseQuantity(any) {}
 // #mouseleum
 if (trimToEmpty(user.environment_type) === 'mousoleum') mousoleum();
 function mousoleum() {
-  logging('mousoleum_0.0.0.1.1');
+  logging('mousoleum_0.0.0.1.2');
   const isProd = false;
   const targetEnvironmentType = 'mousoleum';
   const enviromentType = getEnvironmentType();
@@ -230,7 +230,7 @@ function mousoleum() {
       !user.quests.QuestSpringHunt.is_shutdown_enabled
     )
       trap[2] = 'Chocolate Bar Base';
-    else trap[2] = trap[2].replace('event,');
+    else trap[2] = trap[2].replace('event,', '');
   armAllTraps(...trap);
 }
 // End #mouseleum
