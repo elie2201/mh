@@ -187,7 +187,7 @@ function parseQuantity(any) {}
 // #mouseleum
 if (trimToEmpty(user.environment_type) === 'mousoleum') mousoleum();
 function mousoleum() {
-  logging('mousoleum_0.0.0.0.1');
+  logging('mousoleum_0.0.0.1.1');
   const isProd = false;
   const targetEnvironmentType = 'mousoleum';
   const enviromentType = getEnvironmentType();
@@ -195,7 +195,7 @@ function mousoleum() {
   // trap: [<bait>, <weapon>, <base>, <trinket>, <championFireEnabled>, litCandle]
   // prettier-ignore
   const defaultSetting = {
-    isAutoBuild: false,
+    isAutoBuild: true,
     isAutoRepair: true,
     trap: {
       radioactive_blue_cheese: ['Radioactive Blue Cheese', 'Boiling Cauldron', "event,Alchemist's Cookbook Base", 'None', false, 'none'],
