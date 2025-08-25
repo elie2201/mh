@@ -1133,8 +1133,18 @@ function prologuePond() {
   const targetEnvironmentType = 'prologue_pond';
   const enviromentType = getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('prologuePond_0.1.1.0.7');
-  // localStorage settings
+  logging('prologuePond_0.1.3.0.7');
+  // my own hard-coded constants
+  const gouda = 'gouda_cheese';
+  const grubbeen = 'grubbeen_cheese';
+  const clamembert = 'clamembert_cheese';
+  const stormy = 'stormy_clamembert_cheese';
+  const grub = 'ingenuity_grub_stat_item';
+  const clam = 'cleverness_clam_stat_item';
+  const penny = 'pond_penny_stat_item';
+  const chum = 'brainstorm_chum_stat_item';
+  const CC = 'condensed_creativity_stat_item';
+  /** localStorage settings */
   // prettier-ignore
   const defaultSettings = {
     useBaitQuantity: 32,
@@ -1152,16 +1162,6 @@ function prologuePond() {
   const settings = isProd
     ? getStorageToObject(targetEnvironmentType, defaultSettings)
     : defaultSettings;
-  // my own hard-coded constants
-  const gouda = 'gouda_cheese';
-  const grubbeen = 'grubbeen_cheese';
-  const clamembert = 'clamembert_cheese';
-  const stormy = 'stormy_clamembert_cheese';
-  const grub = 'ingenuity_grub_stat_item';
-  const clam = 'cleverness_clam_stat_item';
-  const penny = 'pond_penny_stat_item';
-  const chum = 'brainstorm_chum_stat_item';
-  const CC = 'condensed_creativity_stat_item';
   // MH constants
   const quest = isProd ? user.quests.QuestProloguePond : QuestProloguePond;
   const items = {
@@ -1233,17 +1233,16 @@ function prologuePond() {
           // 能買多少 clamembert?
           let itemQuantity = Math.min(
             items.clam.qty,
-            // settings.useBaitQuantity - items.clamembert,
             Math.floor(items.gold / 5000)
           );
           if (
             // 該買 clamembert了沒?
             items.clamembert.qty < settings.changeBaitQuantity &&
-            // 需要買嗎?如果該買了, itemQuantity一定大於 0
-            // itemQuantity > 0 &&
             // clam/gold夠買嗎?
-            itemQuantity > settings.useBaitQuantity - items.clamembert.qty
+            itemQuantity >= settings.useBaitQuantity - items.clamembert.qty
           ) {
+            // 該買且夠買了, itemQuantity一定大於 0.因為除非設定錯,不然 useBaitQuantity > changeBaitQuantity
+            itemQuantity = settings.useBaitQuantity - items.clamembert.qty;
             console.log(`auto buy ${itemQuantity} ${items.clamembert.type}`);
             completeTransaction(
               true,
@@ -1264,13 +1263,18 @@ function prologuePond() {
             Math.floor(items.gold / 1000)
           );
           if (
-            // 要買跟 clamembert等量的 chum嗎?
-            items.chum.qty < items.clamembert.qty &&
-            // 需要買嗎?如果該買了, itemQuantity一定大於 0
-            // itemQuantity > 0 &&
+            // 要買到跟 clamembert等量的 chum嗎?
+            items.clamembert.qty > settings.changeBaitQuantity && // clamembert使用中
+            items.chum.qty < items.clamembert.qty && // chum少於 clamembert
             // penny/gold夠買嗎?
-            itemQuantity > items.clamembert.qty - items.chum.qty
+            itemQuantity > 0
           ) {
+            // 負擔得起的範圍內,最多買到跟 clamembert等量就好
+            itemQuantity = Math.min(
+              itemQuantity,
+              items.clamembert.qty - items.chum.qty
+            );
+            // 該買且夠買了, itemQuantity一定大於 0.
             console.log(`auto buy ${itemQuantity} ${items.chum.type}`);
             completeTransaction(
               true,
@@ -1285,18 +1289,20 @@ function prologuePond() {
             );
             return;
           }
+          // grubbeen: with chum=>clam, without=>penny
           // 能買多少 grubbeen?
           itemQuantity = Math.min(
             items.grub.qty,
             Math.floor(items.gold / 1000)
           );
-          // grubbeen: with chum=>clam, without=>penny
           if (
             // 該買 grubbeen了沒?
             items.grubbeen.qty < settings.changeBaitQuantity &&
             // grub/gold夠買嗎?
-            itemQuantity > settings.useBaitQuantity - items.grubbeen.qty
+            itemQuantity >= settings.useBaitQuantity - items.grubbeen.qty
           ) {
+            // 該買且夠買了, itemQuantity一定大於 0.因為除非設定錯,不然 useBaitQuantity > changeBaitQuantity
+            itemQuantity = settings.useBaitQuantity - items.grubbeen.qty;
             console.log(`auto buy ${itemQuantity} ${items.grubbeen.type}`);
             completeTransaction(
               true,
@@ -1313,17 +1319,24 @@ function prologuePond() {
           }
           // 能買多少 chum?
           itemQuantity = Math.min(
-            items.penny.qty - settings.extraPenny,
+            // 試試看 grubbeen只用來收集 clam, penny跟 ink都交給 clamembert
+            items.penny.qty,
+            // items.penny.qty - settings.extraPenny,
             Math.floor(items.gold / 1000)
           );
           if (
-            // 要買跟 grubbeen等量的 chum嗎?
-            items.chum.qty < items.grubbeen.qty &&
-            // 需要買嗎?如果該買了, itemQuantity一定大於 0
-            // itemQuantity > 0 &&
+            // 要買到跟 grubbeen等量的 chum嗎?
+            items.grubbeen.qty > settings.changeBaitQuantity && // grubbeen使用中
+            items.chum.qty < items.grubbeen.qty && // chum少於 grubbeen
             // penny/gold夠買嗎?
-            itemQuantity > items.grubbeen.qty - items.chum.qty
+            itemQuantity > 0
           ) {
+            // 負擔得起的範圍內,最多買到跟 grubbeen等量就好
+            itemQuantity = Math.min(
+              itemQuantity,
+              items.grubbeen.qty - items.chum.qty
+            );
+            // 該買且夠買了, itemQuantity一定大於 0.
             console.log(`auto buy ${itemQuantity} ${items.chum.type}`);
             completeTransaction(
               true,
