@@ -1133,7 +1133,7 @@ function prologuePond() {
   const targetEnvironmentType = 'prologue_pond';
   const enviromentType = getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('prologuePond_0.1.3.0.7');
+  logging('prologuePond_0.1.3.0.8');
   // my own hard-coded constants
   const gouda = 'gouda_cheese';
   const grubbeen = 'grubbeen_cheese';
@@ -1326,7 +1326,8 @@ function prologuePond() {
           );
           if (
             // 要買到跟 grubbeen等量的 chum嗎?
-            items.grubbeen.qty > settings.changeBaitQuantity && // grubbeen使用中
+            items.clamembert.qty < settings.changeBaitQuantity &&
+            items.grubbeen.qty > settings.changeBaitQuantity && // 兩個加起來才是 grubbeen使用中
             items.chum.qty < items.grubbeen.qty && // chum少於 grubbeen
             // penny/gold夠買嗎?
             itemQuantity > 0
