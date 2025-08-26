@@ -1147,7 +1147,7 @@ function prologuePond() {
   const targetEnvironmentType = 'prologue_pond';
   const enviromentType = getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('prologuePond_0.1.4.0.9');
+  logging('prologuePond_0.1.4.0.11');
   // my own hard-coded constants
   const gouda = 'gouda_cheese';
   const grubbeen = 'grubbeen_cheese';
@@ -1402,14 +1402,16 @@ function prologuePond() {
             ) {
               if (items.grubbeen.qty >= settings.useBaitQuantity) {
                 this.trapState = grubbeen;
-                if (items.chum.qty >= settings.useBaitQuantity)
-                  settings.isOkChum = true;
+                // 試試看 grubbeen只用來收集 clam
+                if (items.chum.qty > 0) settings.isOkChum = true;
+                // if (items.chum.qty >= settings.useBaitQuantity)
               } else if (
                 items.grubbeen.qty < settings.changeBaitQuantity ||
                 (getBaitItemId() === 3460 &&
                   getBaitQuantity() < settings.changeBaitQuantity)
               ) {
                 this.trapState = gouda;
+                settings.isOkChum = false;
               }
             }
           }
