@@ -1147,7 +1147,7 @@ function prologuePond() {
   const targetEnvironmentType = 'prologue_pond';
   const enviromentType = getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('prologuePond_0.1.4.0.11');
+  logging('prologuePond_0.1.5.0.11');
   // my own hard-coded constants
   const gouda = 'gouda_cheese';
   const grubbeen = 'grubbeen_cheese';
@@ -1165,6 +1165,7 @@ function prologuePond() {
     changeBaitQuantity: 3,
     extraPenny: 25,
     isOkStormy: false,
+    isGrubbeenAlwaysScatter: true,
     isOkChum: false,
     traps: {
       gouda_cheese: ['Gouda Cheese', 'best.weapon.hydro', 'best.base.combo', 'Luck Charm', false, 'none', false],
@@ -1338,9 +1339,9 @@ function prologuePond() {
           }
           // 能買多少 chum?
           itemQuantity = Math.min(
-            // 試試看 grubbeen只用來收集 clam, penny跟 ink都交給 clamembert
-            items.penny.qty,
-            // items.penny.qty - settings.extraPenny,
+            settings.isGrubbeenAlwaysScatter
+              ? items.penny.qty
+              : items.penny.qty - settings.extraPenny,
             Math.floor(items.gold / 1000)
           );
           if (
@@ -1402,9 +1403,10 @@ function prologuePond() {
             ) {
               if (items.grubbeen.qty >= settings.useBaitQuantity) {
                 this.trapState = grubbeen;
-                // 試試看 grubbeen只用來收集 clam
-                if (items.chum.qty > 0) settings.isOkChum = true;
-                // if (items.chum.qty >= settings.useBaitQuantity)
+                if (settings.isGrubbeenAlwaysScatter && items.chum.qty > 0)
+                  settings.isOkChum = true;
+                else if (items.chum.qty >= settings.useBaitQuantity)
+                  settings.isOkChum = true;
               } else if (
                 items.grubbeen.qty < settings.changeBaitQuantity ||
                 (getBaitItemId() === 3460 &&
@@ -1415,6 +1417,12 @@ function prologuePond() {
               }
             }
           }
+          if (
+            getBaitItemId() === 3460 &&
+            settings.isGrubbeenAlwaysScatter &&
+            items.chum.qty > 0
+          )
+            settings.isOkChum = true;
           this.handleTrapPromise();
         });
       },
