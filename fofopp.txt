@@ -1147,7 +1147,7 @@ function prologuePond() {
   const targetEnvironmentType = 'prologue_pond';
   const enviromentType = getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('prologuePond_0.1.5.0.12');
+  logging('prologuePond_0.1.5.0.13');
   // my own hard-coded constants
   const gouda = 'gouda_cheese';
   const grubbeen = 'grubbeen_cheese';
@@ -1386,6 +1386,9 @@ function prologuePond() {
             items.stormy.qty > settings.useBaitQuantity
           ) {
             this.trapState = stormy;
+            // trap變動時 isOkChum跟著變
+            if (items.chum.qty >= settings.useBaitQuantity)
+              settings.isOkChum = true;
           } else if (
             !settings.isOkStormy ||
             items.stormy.qty < settings.changeBaitQuantity ||
@@ -1394,6 +1397,7 @@ function prologuePond() {
           ) {
             if (items.clamembert.qty >= settings.useBaitQuantity) {
               this.trapState = clamembert;
+              // trap變動時 isOkChum跟著變
               if (items.chum.qty >= settings.useBaitQuantity)
                 settings.isOkChum = true;
             } else if (
@@ -1403,6 +1407,7 @@ function prologuePond() {
             ) {
               if (items.grubbeen.qty >= settings.useBaitQuantity) {
                 this.trapState = grubbeen;
+                // trap變動時 isOkChum跟著變
                 if (settings.isGrubbeenAlwaysScatter && items.chum.qty > 0)
                   settings.isOkChum = true;
                 else if (items.chum.qty >= settings.useBaitQuantity)
@@ -1413,16 +1418,23 @@ function prologuePond() {
                   getBaitQuantity() < settings.changeBaitQuantity)
               ) {
                 this.trapState = gouda;
+                // trap變動時 isOkChum跟著變
                 settings.isOkChum = false;
               }
             }
           }
-          if (
-            getBaitItemId() === 3460 &&
-            settings.isGrubbeenAlwaysScatter &&
-            items.chum.qty > 0
-          )
-            settings.isOkChum = true;
+          // trap沒變動時 set isOkChum by cheese & cheese quantity
+          if (getBaitItemId() === 3462) {
+            // stormy
+            if (items.chum.qty >= getBaitQuantity()) settings.isOkChum = true;
+          } else if (getBaitItemId() === 3457) {
+            // clamembert
+            if (items.chum.qty >= getBaitQuantity()) settings.isOkChum = true;
+          } else if (getBaitItemId() === 3460) {
+            // grubbeen
+            if (items.chum.qty >= getBaitQuantity()) settings.isOkChum = true;
+            else if (settings.isGrubbeenAlwaysScatter) settings.isOkChum = true;
+          }
           this.handleTrapPromise();
         });
       },
