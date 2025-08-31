@@ -1305,7 +1305,7 @@ function tableOfContents() {
   const targetEnvironmentType = 'table_of_contents';
   const enviromentType = getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('tableOfContents_0.0.0.1.1');
+  logging('tableOfContents_0.0.0.1.2');
   // my own hard-coded constants
   const novel = 1000;
   const epic = 2000;
@@ -1378,6 +1378,7 @@ function tableOfContents() {
       qty: parseQuantity(quest.items[me].quantity)
     }
   };
+  console.log('items: ', items);
   // const isWriting = quest.is_writing;
   const tableOfContentsUtility = (() => {
     const utils = {
@@ -1431,7 +1432,7 @@ function tableOfContents() {
       autoWritingPromise() {
         logging('start running autoWritingPromise');
         return new Promise((resolve, reject) => {
-          if (settings.isAutoWriting && !quest.is_writing) {
+          if (settings.isAutoWriting && !quest.is_writing && !quest.can_claim) {
             console.log('start writing');
             this.startWriting('<a/>', () => {
               quest.is_writing = true;
