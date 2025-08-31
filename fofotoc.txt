@@ -1305,7 +1305,7 @@ function tableOfContents() {
   const targetEnvironmentType = 'table_of_contents';
   const enviromentType = getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('tableOfContents_0.0.2.1.6');
+  logging('tableOfContents_0.0.2.1.7');
   // my own hard-coded constants
   const novel = 1000;
   const epic = 2000;
@@ -1438,7 +1438,7 @@ function tableOfContents() {
             this.startWriting('<a/>', () => {
               quest.is_writing = true;
               console.log('writing new book, set target words first');
-              this.setTargetWords();
+              utils.setTargetWords();
               tableOfContents();
             });
             return;
@@ -1468,6 +1468,7 @@ function tableOfContents() {
         if (this.effectiveFdd.qty > settings.fddToStart)
           settings.targetWords = encyclopedia;
         else if (this.effectiveSdd.qty < 25) settings.targetWords = 999;
+        else settings.targetWords = novel;
         if (isProd)
           localStorage[targetEnvironmentType] = JSON.stringify(settings);
       },
