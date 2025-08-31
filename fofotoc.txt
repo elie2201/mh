@@ -1305,7 +1305,7 @@ function tableOfContents() {
   const targetEnvironmentType = 'table_of_contents';
   const enviromentType = getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('tableOfContents_0.0.1.1.4');
+  logging('tableOfContents_0.0.1.1.5');
   // my own hard-coded constants
   const novel = 1000;
   const epic = 2000;
@@ -1583,7 +1583,7 @@ function tableOfContents() {
           let trap = settings.traps[this.trapState];
           if (trap) {
             if (settings.targetWords === encyclopedia)
-              if (quest.current_book.word_count < 4000)
+              if (quest.current_book.word_count < 4000 && items[tdd].qty > 0)
                 trap = settings.traps['M1000'];
             this.toggleCC(settings.isWritingWithCC);
             // this.toggleCC(trap[4]);
