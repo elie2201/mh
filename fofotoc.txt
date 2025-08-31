@@ -1305,7 +1305,7 @@ function tableOfContents() {
   const targetEnvironmentType = 'table_of_contents';
   const enviromentType = getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('tableOfContents_0.0.1.1.6');
+  logging('tableOfContents_0.0.2.1.6');
   // my own hard-coded constants
   const novel = 1000;
   const epic = 2000;
@@ -1566,6 +1566,27 @@ function tableOfContents() {
             // 如果夠買就買
             if (itemQuantity > 0) {
               itemType = this.effectiveSdd.typeWithMe;
+              completeTransaction(true, itemType, itemQuantity, false, () => {
+                this.handleTrapPromise();
+              });
+              return;
+            }
+            // 如果不夠買,缺 loot就 travel過去,缺 me就 hammer
+          } else if (
+            // FDD
+            getBaitItemId() === 3458 &&
+            getBaitQuantity() < settings.changeBaitQuantity
+          ) {
+            itemQuantity = Math.min(
+              Math.ceil(quest.current_book.hunts_remaining / 2),
+              Math.floor(items.ddc.qty / 100),
+              Math.floor(items.papyrus.qty / 100),
+              Math.floor(items.ink.qty / 100),
+              items.me.qty
+            );
+            // 如果夠買就買
+            if (itemQuantity > 0) {
+              itemType = this.effectiveFdd.typeWithMe;
               completeTransaction(true, itemType, itemQuantity, false, () => {
                 this.handleTrapPromise();
               });
