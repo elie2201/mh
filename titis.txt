@@ -209,7 +209,7 @@ function tribalIsles() {
   const targetEnvironmentType = 'tribalIsles';
   const environmentType = getEnvironmentType();
   if (tribalIslesTyps.indexOf(environmentType) < 0) return;
-  logging('tribalIsles_0.0.0.1.1');
+  logging('tribalIsles_0.0.0.2.1');
   // my own hard-coded constants
   const derr = 'derr_dunes';
   const nerg = 'nerg_plains';
@@ -241,8 +241,8 @@ function tribalIsles() {
         boss: ['Gumbo Cheese', 'best.weapon.tactical', 'Tribal Base,Aqua Base', 'Power Charm', false, 'none', false]
       },
       elub_shore: {
-        gouda: ['Gouda Cheese', 'best.weapon.hydro', 'Tribal Base,Aqua Base', 'Power Charm', false, 'none', false],
-        boss: ['Shell Cheese', 'best.weapon.hydro', 'Tribal Base,Aqua Base', 'Power Charm', false, 'none', false]
+        gouda: ['Gouda Cheese', 'Ancient Spear Gun,best.weapon.hydro', 'Tribal Base,Aqua Base', 'Power Charm', false, 'none', false],
+        boss: ['Shell Cheese', 'Ancient Spear Gun,best.weapon.hydro', 'Tribal Base,Aqua Base', 'Power Charm', false, 'none', false]
       }
     }
   };
