@@ -1305,7 +1305,7 @@ function tableOfContents() {
   const targetEnvironmentType = 'table_of_contents';
   const enviromentType = getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('tableOfContents_0.0.0.1.2');
+  logging('tableOfContents_0.0.1.1.2');
   // my own hard-coded constants
   const novel = 1000;
   const epic = 2000;
@@ -1329,6 +1329,7 @@ function tableOfContents() {
     fddToStart: 60,
     changeBaitQuantity: 3,
     traps: {
+      999: ['Gouda Cheese', 'best.weapon.forgotten', 'best.base.combo', 'Luck Charm', false, 'none', false],
       1000: ['Second Draft Derby', 'best.weapon.forgotten', 'best.base.combo', 'Luck Charm', false, 'none', false],
       2000: ['Second Draft Derby', 'best.weapon.forgotten', 'best.base.combo', 'Luck Charm', false, 'none', false],
       4000: ['Second Draft Derby', 'best.weapon.forgotten', 'best.base.combo', 'Luck Charm', false, 'none', false],
@@ -1436,6 +1437,8 @@ function tableOfContents() {
             console.log('start writing');
             this.startWriting('<a/>', () => {
               quest.is_writing = true;
+              console.log('writing new book, set target words first');
+              this.setTargetWords();
               tableOfContents();
             });
             return;
@@ -1457,6 +1460,16 @@ function tableOfContents() {
           activejsDialog.hide();
           if (successCallback) successCallback();
         });
+      },
+      setTargetWords() {
+        const settings = isProd
+          ? getStorageToObject(targetEnvironmentType, defaultSettings)
+          : defaultSettings;
+        if (this.effectiveFdd.qty > settings.fddToStart)
+          settings.targetWords = encyclopedia;
+        else if (this.effectiveSdd.qty < 25) settings.targetWords = 999;
+        if (isProd)
+          localStorage[targetEnvironmentType] = JSON.stringify(settings);
       },
       /** check if auto publish */
       autoPublishPromise() {
@@ -1568,8 +1581,11 @@ function tableOfContents() {
       handleTrapPromise() {
         logging('start running handleTrapPromise');
         return new Promise((resolve, reject) => {
-          const trap = settings.traps[this.trapState];
+          let trap = settings.traps[this.trapState];
           if (trap) {
+            if ((settings.targetWords = encyclopedia))
+              if (quest.current_book.word_count < 4000)
+                trap = settings.traps['M1000'];
             this.toggleCC(settings.isWritingWithCC);
             // this.toggleCC(trap[4]);
             setTimeout(() => {
