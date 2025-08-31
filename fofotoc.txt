@@ -1305,7 +1305,7 @@ function tableOfContents() {
   const targetEnvironmentType = 'table_of_contents';
   const enviromentType = getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('tableOfContents_0.0.0.0.1');
+  logging('tableOfContents_0.0.0.1.1');
   // my own hard-coded constants
   const novel = 1000;
   const epic = 2000;
@@ -1329,7 +1329,7 @@ function tableOfContents() {
     fddToStart: 60,
     changeBaitQuantity: 3,
     traps: {
-      1000: ['Gouda Cheese', 'best.weapon.forgotten', 'best.base.combo', 'Luck Charm', false, 'none', false],
+      1000: ['Second Draft Derby', 'best.weapon.forgotten', 'best.base.combo', 'Luck Charm', false, 'none', false],
       2000: ['Second Draft Derby', 'best.weapon.forgotten', 'best.base.combo', 'Luck Charm', false, 'none', false],
       4000: ['Second Draft Derby', 'best.weapon.forgotten', 'best.base.combo', 'Luck Charm', false, 'none', false],
       2000000: ['Final Draft Derby', 'best.weapon.forgotten', 'best.base.combo', 'Ultimate Luck Charm,Festive Ultimate Luck Charm', true, 'white', true],
