@@ -1305,7 +1305,7 @@ function tableOfContents() {
   const targetEnvironmentType = 'table_of_contents';
   const enviromentType = getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('tableOfContents_0.0.2.1.7');
+  logging('tableOfContents_0.0.3.2.7');
   // my own hard-coded constants
   const novel = 1000;
   const epic = 2000;
@@ -1324,6 +1324,7 @@ function tableOfContents() {
   const defaultSettings = {
     isAutoWriting: true,
     isAutoPublish: true,
+    isAutoTargetWords: true,
     targetWords: novel,
     isWritingWithCC: false,
     fddToStart: 60,
@@ -1333,8 +1334,8 @@ function tableOfContents() {
       1000: ['Second Draft Derby', 'best.weapon.forgotten', 'best.base.combo', 'Luck Charm', false, 'none', false],
       2000: ['Second Draft Derby', 'best.weapon.forgotten', 'best.base.combo', 'Luck Charm', false, 'none', false],
       4000: ['Second Draft Derby', 'best.weapon.forgotten', 'best.base.combo', 'Luck Charm', false, 'none', false],
-      2000000: ['Final Draft Derby', 'best.weapon.forgotten', 'best.base.combo', 'Ultimate Luck Charm,Festive Ultimate Luck Charm', true, 'white', true],
-      M1000: ['Thousandth Draft Derby', 'best.weapon.forgotten', 'Naughty List Printing Press', 'Ultimate Luck Charm,Festive Ultimate Luck Charm', true, 'white', true]
+      2000000: ['Final Draft Derby', 'best.weapon.forgotten', 'best.base.combo', 'Ultimate Lucky Power Charm,Festive Ultimate Lucky Power Charm', true, 'white', true],
+      M1000: ['Thousandth Draft Derby', 'best.weapon.forgotten', 'Naughty List Printing Press', 'Ultimate Lucky Power Charm,Festive Ultimate Lucky Power Charm', true, 'white', true]
     }
   };
   const settings = isProd
@@ -1438,7 +1439,7 @@ function tableOfContents() {
             this.startWriting('<a/>', () => {
               quest.is_writing = true;
               console.log('writing new book, set target words first');
-              utils.setTargetWords();
+              if (settings.isAutoTargetWords) utils.setTargetWords();
               tableOfContents();
             });
             return;
