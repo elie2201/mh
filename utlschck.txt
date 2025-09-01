@@ -8,35 +8,35 @@ function parseTrapName(trapName) {}
 function getBaitItemId() {}
 
 // #checkAndAct
-let checks = [];
-// travel to derr_dunes when run out of Shell Cheese at elub_shore
-checks = [
-  {
-    atEnvironmentType: 'elub_shore',
-    check() {
-      console.log(getBaitItemId());
-      if (getBaitItemId() === 80) {
-        travel('derr_dunes', 3000, () => {
-          checkThenArm(null, 'bait', 'Gouda Cheese');
-          checkThenArm(null, 'weapon', parseTrapName('best.weapon.physical'));
-          // checkThenArm(null, 'base', parseTrapName('best.base.combo'));
-          checkThenArm(null, 'trinket', 'Power Charm');
-        });
-        return true;
-      }
-      return false;
-    },
-    act() {}
-  }
-];
 // run checkAndAct
 setTimeout(() => {
+  let checks = [];
+  // travel to derr_dunes when run out of Shell Cheese at elub_shore
+  checks = [
+    {
+      atEnvironmentType: 'elub_shore',
+      check() {
+        console.log(getBaitItemId());
+        if (getBaitItemId() === 98) {
+          travel('derr_dunes', 3000, () => {
+            checkThenArm(null, 'bait', 'Gouda Cheese');
+            checkThenArm(null, 'weapon', parseTrapName('best.weapon.physical'));
+            // checkThenArm(null, 'base', parseTrapName('best.base.combo'));
+            checkThenArm(null, 'trinket', 'Power Charm');
+          });
+          return true;
+        }
+        return false;
+      },
+      act() {}
+    }
+  ];
   checkAndAct(checks);
 }, 60000);
 /** simply run check() and then run act() if check() return true */
 function checkAndAct(checks) {
   // const isProd = false;
-  logging('checkAndAct_0.0.0.0.1', checks);
+  logging('checkAndAct_0.0.0.0.2', checks);
   for (let i = 0; i < checks.length; i++) {
     const check = checks[i];
     if (getEnvironmentType() !== check.atEnvironmentType) continue;
