@@ -1,0 +1,52 @@
+function logging(...any) {}
+// function hasCaughtTargetByDataMouseType(dataMouseType) {}
+// function hasCaughtTargetByMouseName(keyword) {}
+function getEnvironmentType() {}
+function travel(environmentType, milliseconds, callback) {}
+function checkThenArm(sort, category, name, isForce) {}
+function parseTrapName(trapName) {}
+function getBaitItemId() {}
+
+// #checkAndAct
+let checks = [];
+// travel to derr_dunes when run out of Shell Cheese at elub_shore
+checks = [
+  {
+    atEnvironmentType: 'elub_shore',
+    check() {
+      console.log(getBaitItemId());
+      if (getBaitItemId() === 80) {
+        travel('derr_dunes', 3000, () => {
+          checkThenArm(null, 'bait', 'Gouda Cheese');
+          checkThenArm(null, 'weapon', parseTrapName('best.weapon.physical'));
+          // checkThenArm(null, 'base', parseTrapName('best.base.combo'));
+          checkThenArm(null, 'trinket', 'Power Charm');
+        });
+        return true;
+      }
+      return false;
+    },
+    act() {}
+  }
+];
+// run checkAndAct
+setTimeout(() => {
+  checkAndAct(checks);
+}, 60000);
+/** simply run check() and then run act() if check() return true */
+function checkAndAct(checks) {
+  // const isProd = false;
+  logging('checkAndAct_0.0.0.0.1', checks);
+  for (let i = 0; i < checks.length; i++) {
+    const check = checks[i];
+    if (getEnvironmentType() !== check.atEnvironmentType) continue;
+    console.log('run check');
+    if (check.check()) {
+      if (check.act) {
+        check.act();
+        return;
+      }
+    }
+  }
+}
+// End #checkAndAct
