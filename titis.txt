@@ -222,7 +222,7 @@ function tribalIsles() {
   const targetEnvironmentType = 'tribalIsles';
   const environmentType = getEnvironmentType();
   if (tribalIslesTyps.indexOf(environmentType) < 0) return;
-  logging('tribalIsles_0.0.1.3.1');
+  logging('tribalIsles_0.0.1.3.2');
   // my own hard-coded constants
   const derr = 'derr_dunes';
   const nerg = 'nerg_plains';
@@ -334,7 +334,7 @@ function tribalIsles() {
               : seashell;
           if (journalText.indexOf(lootKey) > -1) {
             const item = items[lootKey];
-            getQuantityByUrlThen(item, (qty) => {
+            getQuantityByUrlThen(item.craft_item, (qty) => {
               console.log(`Have ${qty} ${lootKey}`);
               if (qty > settings.craftCheeseQuantity) {
                 // auto craft
