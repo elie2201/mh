@@ -2,7 +2,7 @@
 const MOUSEHUNT_BASE_URL = 'https://www.mousehuntgame.com/';
 const eventRegistry = {};
 const jsDialog = {};
-// const hg = {};
+const hg = {};
 const user = {};
 user.environment_type = 'environment_type';
 user.quests = {};
@@ -124,6 +124,19 @@ function getQuantityByUrlThen(itemType, callback, isAlwaysCallback) {
     if (callback) callback(qty);
   });
 }
+function completeTransaction(
+  isPurchase,
+  itemType,
+  itemQuantity,
+  isKingsCartItem,
+  successCallback
+) {
+  console.log(`bought ${itemQuantity} ${itemType}!!`);
+  if (successCallback)
+    setTimeout(() => {
+      successCallback();
+    }, 2000);
+}
 
 (() => {
   const MOUSEHUNT_BASE_URL = 'https://www.mousehuntgame.com/';
@@ -209,7 +222,7 @@ function tribalIsles() {
   const targetEnvironmentType = 'tribalIsles';
   const environmentType = getEnvironmentType();
   if (tribalIslesTyps.indexOf(environmentType) < 0) return;
-  logging('tribalIsles_0.0.0.2.1');
+  logging('tribalIsles_0.0.1.3.1');
   // my own hard-coded constants
   const derr = 'derr_dunes';
   const nerg = 'nerg_plains';
@@ -219,10 +232,38 @@ function tribalIsles() {
   const delicious = 'Delicious';
   const savoury = 'Savoury';
   const seashell = 'Seashell';
+  const coconuts = 'coconut_milk_craft_item';
   const items = {
-    Delicious: 'delicious_stone_craft_item',
-    Savoury: 'savoury_vegetables_craft_item',
-    Seashell: 'seashell_craft_item'
+    Delicious: {
+      craft_item: 'delicious_stone_craft_item',
+      recipe: {
+        curds_and_whey_craft_item: 10,
+        salt_craft_item: 30,
+        delicious_stone_craft_item: 30,
+        coconut_milk_craft_item: 20
+      },
+      cheese: 'crunchy_cheese'
+    },
+    Savoury: {
+      craft_item: 'savoury_vegetables_craft_item',
+      recipe: {
+        curds_and_whey_craft_item: 90,
+        salt_craft_item: 1,
+        savoury_vegetables_craft_item: 30,
+        coconut_milk_craft_item: 15
+      },
+      cheese: 'gumbo_cheese'
+    },
+    Seashell: {
+      craft_item: 'seashell_craft_item',
+      recipe: {
+        curds_and_whey_craft_item: 60,
+        salt_craft_item: 40,
+        seashell_craft_item: 30,
+        coconut_milk_craft_item: 10
+      },
+      cheese: 'shell_cheese'
+    }
   };
   /* const tribalBases = objBestTrap.base.combo.concat([
     'Tiki Base',
@@ -231,6 +272,7 @@ function tribalIsles() {
   /** localStorage settings */
   // prettier-ignore
   const defaultSettings = {
+    craftCheeseQuantity: 120,
     traps: {
       derr_dunes: {
         gouda: ['Gouda Cheese', 'best.weapon.physical', 'Tribal Base,Aqua Base', 'Power Charm', false, 'none', false],
@@ -241,8 +283,8 @@ function tribalIsles() {
         boss: ['Gumbo Cheese', 'best.weapon.tactical', 'Tribal Base,Aqua Base', 'Power Charm', false, 'none', false]
       },
       elub_shore: {
-        gouda: ['Gouda Cheese', 'Ancient Spear Gun,best.weapon.hydro', 'Tribal Base,Aqua Base', 'Power Charm', false, 'none', false],
-        boss: ['Shell Cheese', 'Ancient Spear Gun,best.weapon.hydro', 'Tribal Base,Aqua Base', 'Power Charm', false, 'none', false]
+        gouda: ['Gouda Cheese', 'best.weapon.hydro', 'Tribal Base,Aqua Base', 'Power Charm', false, 'none', false],
+        boss: ['Shell Cheese', 'best.weapon.hydro', 'Tribal Base,Aqua Base', 'Power Charm', false, 'none', false]
       }
     }
   };
@@ -274,8 +316,54 @@ function tribalIsles() {
       /** start running */
       run() {
         logging('start running tribalIsles');
-        this.displayItemPromise();
+        this.checkLootPromise();
       },
+      /** if has loot, query quantity and try crafting */
+      checkLootPromise() {
+        logging('start running checkLootPromise');
+        return new Promise((resolve, reject) => {
+          const latestEntryId = $('#journallatestentry').data('entry-id');
+          const entry = $(`div[data-entry-id=${latestEntryId}]`);
+          const journalText = entry.find('.journaltext').text();
+          console.log(entry, journalText);
+          const lootKey =
+            environmentType === derr
+              ? delicious
+              : environmentType === nerg
+              ? savoury
+              : seashell;
+          if (journalText.indexOf(lootKey) > -1) {
+            const item = items[lootKey];
+            getQuantityByUrlThen(item, (qty) => {
+              console.log(`Have ${qty} ${lootKey}`);
+              if (qty > settings.craftCheeseQuantity) {
+                // auto craft
+                const recipe = item.recipe;
+                const itemQuantity = Math.floor(
+                  settings.craftCheeseQuantity / 30
+                );
+                completeTransaction(
+                  true,
+                  coconuts,
+                  itemQuantity * item.recipe.coconut_milk_craft_item,
+                  false,
+                  () => {
+                    hg.utils.UserInventory.craftItem(
+                      recipe,
+                      itemQuantity,
+                      () => {
+                        hg.utils.TrapControl.armItem(item.cheese, 'bait').go();
+                      }
+                    );
+                  }
+                );
+              }
+            });
+          }
+          this.autoSettingsPromise();
+        });
+      },
+      /** if has loot, query quantity and display */
       displayItemPromise() {
         logging('start running displayItemPromise');
         return new Promise((resolve, reject) => {
@@ -290,7 +378,8 @@ function tribalIsles() {
               ? savoury
               : seashell;
           if (journalText.indexOf(lootKey) > -1) {
-            getQuantityByUrlThen(items[lootKey], (qty) => {
+            const item = items[lootKey];
+            getQuantityByUrlThen(item.craft_item, (qty) => {
               console.log(`Have ${qty} ${lootKey}`);
               localStorage.displayedMessage = `${lootKey}: ${qty}`;
             });
