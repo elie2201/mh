@@ -2059,7 +2059,7 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = getEnvironmentType();
   if (environmentType !== targetEnvironmentType) return;
-  logging('valourRift_0.5.32.20.17');
+  logging('valourRift_0.5.33.20.17');
   // my own hard-coded constants
   const vriftStates = { farming: 'farming', tower: 'tower' };
   const upgradeTypes = [
@@ -2094,6 +2094,8 @@ function valourRift() {
     isAutoEnter: true,
     minGscToEnter: 0,
     isPrestigePush: false,
+    ppRunCfQty: 800,
+    ppRunBaitQty: 900,
     isAutoAugment: true,
     uuRunExtraSecret: 500,
     isSigilHunter: false,
@@ -2292,8 +2294,9 @@ function valourRift() {
         // 基本條件
         // cheese and CF quantity
         rtn &&=
-          this.items.cf.quantity > 900 &&
-          this.items.gsc.quantity + this.items.elixir.quantity > 900;
+          this.items.cf.quantity > settings.ppRunCfQty &&
+          this.items.gsc.quantity + this.items.elixir.quantity >
+            settings.ppRunBaitQty;
         // augmentation
         rtn &&= this.isOkSsteUU;
         this.isOkPP = rtn;
