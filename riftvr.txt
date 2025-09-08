@@ -2059,7 +2059,7 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = getEnvironmentType();
   if (environmentType !== targetEnvironmentType) return;
-  logging('valourRift_0.5.34.20.17');
+  logging('valourRift_0.5.35.20.17');
   // my own hard-coded constants
   const vriftStates = { farming: 'farming', tower: 'tower' };
   const upgradeTypes = [
@@ -2114,6 +2114,7 @@ function valourRift() {
     buyCheeseQty: 55,
     dangerousHunts: 11,
     rescueCharm: 'Rift 2025 Charm',
+    rescueCharmUU: 'Rift Ultimate Power Charm',
     trap: {
       farming: {
         0: ['Gauntlet String,Brie String', 'best.weapon.rift', 'best.base.rift', 'Rift Luck Charm,Rift Vacuum Charm', false, 'none', false]
@@ -2491,9 +2492,15 @@ function valourRift() {
   if (
     floor % 8 === 7 &&
     huntsLeft < settings.dangerousHunts &&
-    settings.rescueCharm !== ''
+    ((trapKey === 'uu' && settings.rescueCharmUU !== '') ||
+      (trapKey === vriftStates.tower && settings.rescueCharm !== ''))
   )
-    trap[3] = settings.rescueCharm;
+    trap[3] =
+      trapKey === vriftStates.tower
+        ? settings.rescueCharm
+        : trapKey === 'uu'
+        ? settings.rescueCharmUU
+        : trap[3];
   valourRiftUtility.toggleChampionFire(autoOffChampionFire(trap[4]));
   setTimeout(() => {
     litCandle(trap[5]);
