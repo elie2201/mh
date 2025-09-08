@@ -1,0 +1,62 @@
+const hg = {};
+const user = {};
+user.quests = {};
+function logging(...any) {}
+
+// Open Bounty Poster
+hg.utils.UserInventory.useConvertible('wanted_poster_convertible', 1);
+
+/* leaveClawShotBoss();
+function leaveClawShotBoss() {
+  const maps = user.quests.QuestRelicHunter.maps;
+  if (!maps || maps.length == 0) return;
+  for (let i = 0; i < maps.length; i++) {
+    const map = maps[i];
+    console.log('Check 1 mouse!!', map.map_id, map.num_total, map.num_found);
+    if (map.num_total - map.num_found == 1) {
+      if (user.environment_type != 'train_station') {
+        console.log('Only 1 mouse left:', map.map_id);
+        user.environment_id = 44;
+        app.pages.TravelPage.travel('train_station');
+      }
+      break;
+    }
+  }
+} */
+
+// #autoClaimMapReward
+const MapClasses = { treasuer: 'treasure', poster: 'poster', event: 'event' };
+autoClaimMapReward();
+function autoClaimMapReward() {
+  // const isProd = false;
+  logging('hasLootAction_1.0.0.0.0');
+  const maps = user.quests.QuestRelicHunter.maps;
+  const lnyQuest = user.quests.QuestLunarNewYearLantern;
+  if (!maps || maps.length == 0) return;
+  for (let i = 0; i < maps.length; i++) {
+    const map = maps[i];
+    console.log('Check auto claim map reward!!', map.map_id, map.is_complete);
+    if (map.is_complete) {
+      console.log('Claim reward:', map.map_id);
+      setTimeout(() => {
+        hg.utils.TreasureMapUtil.claim(map.map_id, () => {
+          if (
+            lnyQuest &&
+            !lnyQuest.is_shutdown &&
+            map.map_class == MapClasses.event
+          )
+            setTimeout(() => {
+              hg.utils.UserInventory.useConvertible(
+                'lny_treasure_chest_2024_convertible',
+                1,
+                (data) => {
+                  console.log(data.success == 1 ? 'success' : 'failed', data);
+                }
+              );
+            }, parseInt(i * 1500 + Math.random() * 500));
+        });
+      }, i * 1000);
+    }
+  }
+}
+// End #autoClaimMapReward
