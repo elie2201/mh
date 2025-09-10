@@ -2059,7 +2059,7 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = getEnvironmentType();
   if (environmentType !== targetEnvironmentType) return;
-  logging('valourRift_0.5.35.20.17');
+  logging('valourRift_0.5.35.20.18');
   // my own hard-coded constants
   const vriftStates = { farming: 'farming', tower: 'tower' };
   const upgradeTypes = [
@@ -2475,7 +2475,15 @@ function valourRift() {
       return;
     }
   }
-  const trapKey = isUU ? (settings.isPrestigePush ? 'pp' : 'uu') : state;
+  // UU run結束後,塔外的 is_eclipse_mode還是 true
+  const trapKey =
+    state === vriftStates.tower
+      ? isUU
+        ? settings.isPrestigePush
+          ? 'pp'
+          : 'uu'
+        : state
+      : state;
   // const trapKey = isUU ? 'uu' : state;
   const floorSegments = [24, 16, 8];
   let floorKey = 0;
