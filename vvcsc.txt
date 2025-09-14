@@ -1,0 +1,435 @@
+// MH constants
+const QuestClawShotCity = {
+  map_active: true,
+  has_wanted_poster: true,
+  posters_complete: 111,
+  posters_complete_formatted: 111,
+  is_law: false,
+  fools_gold: 3190,
+  fools_gold_formatted: '3,190',
+  phase: 'lawless',
+  canvas_page_url: 'https://www.mousehuntgame.com/'
+};
+const MOUSEHUNT_BASE_URL = 'https://www.mousehuntgame.com/';
+const MapClasses = { treasuer: 'treasure', poster: 'poster', event: 'event' };
+const eventRegistry = {};
+const jsDialog = {};
+const hg = {};
+const user = {};
+user.environment_type = 'claw_shot_city';
+user.quests = {};
+user.quests.QuestClawShotCity = QuestClawShotCity;
+// MH functions
+function $() {}
+// MH & my-mh-aid functions
+function getEnvironmentType() {
+  const rtn = trimToEmpty(user.claw_shot_city);
+  // console.plog(`Current location environment_type: ${rtn}`);
+  return rtn;
+}
+function trimToEmpty(str) {
+  return trimToDefault(str);
+}
+function trimToDefault(str, deflt) {
+  return str === 0 ? '0' : ((str || (deflt ? deflt : '')) + '').trim();
+}
+function logging(...any) {
+  const debug = true;
+  if (debug) {
+    console.groupCollapsed(new Date(), ...any);
+    console.log(Error().stack);
+    console.groupEnd();
+  }
+}
+function getStorageToObject(keyName, objDefault) {
+  let obj = getStorage(keyName);
+  let bCheckNewProp = true;
+  if (isNullOrUndefined(obj)) {
+    obj = JSON.stringify(objDefault);
+    setStorage(keyName, obj);
+    bCheckNewProp = false;
+  }
+  obj = JSON.parse(obj);
+  if (bCheckNewProp) {
+    if (assignMissingDefault(obj, objDefault)) {
+      setStorage(keyName, JSON.stringify(obj));
+    }
+  }
+  return obj;
+  function getStorage(name) {
+    // check if the web browser support HTML5 storage
+    if ('localStorage' in window && !isNullOrUndefined(window.localStorage)) {
+      return window.localStorage.getItem(name);
+    }
+  }
+  function setStorage(name, value) {
+    // check if the web browser support HTML5 storage
+    if ('localStorage' in window && !isNullOrUndefined(window.localStorage)) {
+      window.localStorage.setItem(name, value);
+    }
+  }
+  function isNullOrUndefined(obj) {
+    return (
+      obj === null || obj === undefined || obj === 'null' || obj === 'undefined'
+    );
+  }
+  function assignMissingDefault(target, source) {
+    let isResave = false;
+    for (const key in source) {
+      if (
+        Object.prototype.hasOwnProperty.call(source, key) &&
+        !Object.prototype.hasOwnProperty.call(target, key)
+      ) {
+        const element = source[key];
+        target[key] = element;
+        isResave = true;
+      }
+    }
+    return isResave;
+  }
+}
+function armAllTraps(bait, weapon, base, charm) {
+  console.log(bait, weapon, base, charm);
+}
+function getRandomInteger(min, max) {
+  return parseInt(min + Math.random() * (max - min));
+}
+/* function reloadWithMessage(msg, soundHorn) {
+  console.plog('reloadWithMessage: ', msg, ',', soundHorn);
+  // display the message
+  // displayTimer(msg, msg, msg);
+
+  // reload the page
+  setTimeout(function () {
+    // reloadPage(soundHorn);
+  }, 1000);
+} */
+/**
+ * Find a working map by map_class
+ * @param {String} mapClass
+ * @returns
+ */
+function getMapByClass(mapClass) {
+  const maps = user.quests.QuestRelicHunter.maps;
+  for (let i = 0; i < maps.length; i++) {
+    const element = maps[i];
+    if (element.map_class == mapClass) {
+      return element;
+    }
+  }
+  return null;
+}
+function parseQuantity(qty) {
+  const strQty = (qty || 0) + '';
+  const rtn = parseInt(strQty.replaceAll(',', ''));
+  return Number.isNaN(rtn) ? 0 : rtn;
+}
+function getQuantityByUrlThen(itemType, callback) {
+  const url = MOUSEHUNT_BASE_URL + 'item.php?item_type=' + itemType;
+  $.get(url, (data) => {
+    const key = 'You Own: ';
+    const text = data.split(key)[1];
+    const key2 = '</div>';
+    const endIndex = text.indexOf(key2);
+    const qtyText = text.substring(0, endIndex).trim();
+    logging(qtyText);
+    const qty = parseQuantity(qtyText.split('/')[0]);
+    if (callback) callback(qty);
+  });
+}
+/** get sn_user_id */
+function getSnUserId(params) {
+  return (user.sn_user_id + '').trim();
+}
+/** close any js dialog */
+function closeAnyJsDialog() {
+  $(
+    'input.jsDialogClose,a.jsDialogClose,a#jsDialogClose,a.closeButton,a.messengerUINotificationClose,a.giftSelectorView-inboxHeader-closeButton'
+  ).click();
+}
+
+// #clawShotCity
+if (getEnvironmentType() === 'claw_shot_city') clawShotCity();
+function clawShotCity() {
+  const isProd = false;
+  const targetEnvironmentType = 'claw_shot_city';
+  const enviromentType = getEnvironmentType();
+  if (enviromentType !== targetEnvironmentType) return;
+  logging('clawShotCity_1.0.0.0.0');
+  // my own hard-coded constants
+  const unknown = 'unknown';
+  const posterType = 'wanted_poster_convertible';
+  const lnyScrollType = 'lny_treasure_chest_2024_convertible';
+  /** localStorage settings */
+  // prettier-ignore
+  const defaultSettings = {
+    isAutoMap: true,
+    mapWith: {
+      hg_d783ff747d3b60073ef541d335ff901d: ['hg_1602095c6c0a2376b3bbb12e417df9a4'],
+      hg_1602095c6c0a2376b3bbb12e417df9a4: ['hg_d783ff747d3b60073ef541d335ff901d'],
+      hg_62a01c775dd2fe8670b6cb46b31c1318: ['hg_2d25dd402e32439c658e10b62d1d64bf'],
+      hg_2d25dd402e32439c658e10b62d1d64bf: ['hg_62a01c775dd2fe8670b6cb46b31c1318'],
+      hg_5eeb1174c05069baa7fa40bd82897130: ['hg_52952f2bb5ff36565d7936529f156349'],
+      hg_52952f2bb5ff36565d7936529f156349: ['hg_5eeb1174c05069baa7fa40bd82897130'],
+      hg_3207d1fd7e0a8bca4bdef74c378a6a32: ['hg_81538b33309a53ae077d5f01f53f6c06'],
+      hg_81538b33309a53ae077d5f01f53f6c06: ['hg_3207d1fd7e0a8bca4bdef74c378a6a32'],
+      hg_3aee6d83ca43348e580141870193b531: ['hg_91cbc542b246f2f8b4f0f3b446915199'],
+      hg_91cbc542b246f2f8b4f0f3b446915199: ['hg_3aee6d83ca43348e580141870193b531'],
+      hg_219f8417793705b8bfe8c4a01ecce1fc: ['hg_9ab9014e7b20bd60ce4a31485651e008'],
+      hg_9ab9014e7b20bd60ce4a31485651e008: ['hg_219f8417793705b8bfe8c4a01ecce1fc']
+    },
+    traps: {
+      unknown: ['Gouda Cheese', 'best.weapon.law', 'Seasonal Gift', 'None'],
+      lawless: ['Gouda Cheese', 'best.weapon.law', 'Seasonal Gift', "Sheriff's Badge"],
+      need_poster: ['Gouda Cheese', 'best.weapon.law', 'Seasonal Gift', "Sheriff's Badge"],
+      has_poster: ['Gouda Cheese', 'best.weapon.law', 'Seasonal Gift', 'None'],
+      active_poster: ['Gouda Cheese', 'best.weapon.law', 'Seasonal Gift', 'None'],
+      has_reward: ['Gouda Cheese', 'best.weapon.law', 'Seasonal Gift', 'None']
+    }
+  };
+  const settings = isProd
+    ? getStorageToObject(targetEnvironmentType, defaultSettings)
+    : defaultSettings;
+  // MH constants
+  const quest = isProd ? user.quests.QuestClawShotCity : QuestClawShotCity;
+  const trapState = trimToEmpty(quest.phase);
+  const clawShotCityUtility = (() => {
+    const utils = {
+      // values
+      URI: 'managers/ajax/environment/foreword_farm.php',
+      /** Set immutable fields */
+      setImmutable() {
+        const immutableFields = ['URI'];
+        for (let i = 0; i < immutableFields.length; i++) {
+          const immutableField = immutableFields[i];
+          Object.defineProperty(utils, immutableField, {
+            // value: 'This cannot be changed',
+            writable: false, // Makes the field immutable
+            configurable: false, // Prevents deletion or re-configuration of the field
+            enumerable: true // Makes the field visible during enumeration (e.g., in a for...in loop)
+          });
+        }
+      },
+      /** trapState, default: xxx */
+      trapState: settings.traps[trapState] ? trapState : unknown,
+      /** start running */
+      run() {
+        logging('start running clawShotCity');
+        this.autoSettingsPromise();
+      },
+      /** auto settings */
+      autoSettingsPromise() {
+        logging('start running autoSettingsPromise');
+        return new Promise((resolve, reject) => {
+          // auto settings for running if necessary and then invoke next promise
+          this.claimMapRewardPromise();
+        });
+      },
+      /** claim map rewards promise */
+      claimMapRewardPromise() {
+        logging('running claimMapRewardPromise');
+        return new Promise((resolve, reject) => {
+          const maps = user.quests.QuestRelicHunter.maps;
+          if (!maps || maps.length == 0) {
+            console.log('not in any map, try accept invite');
+            this.acceptMapInvitePromise(MapClasses.poster, posterType);
+            return;
+          }
+          const lnyQuest = user.quests.QuestLunarNewYearLantern;
+          for (let i = 0; i < maps.length; i++) {
+            const map = maps[i];
+            console.log(
+              `Check auto claim map ${map.map_id} reward!! ${map.is_complete}`
+            );
+            if (map.is_complete) {
+              console.log('Claim reward:', map.map_id);
+              setTimeout(() => {
+                hg.utils.TreasureMapUtil.claim(map.map_id, () => {
+                  if (
+                    lnyQuest &&
+                    !lnyQuest.is_shutdown &&
+                    map.map_class == MapClasses.event
+                  )
+                    this.openMapScrollPromise(MapClasses.event, lnyScrollType);
+                  else if (map.map_class == MapClasses.poster)
+                    this.openMapScrollPromise(MapClasses.poster, posterType);
+                });
+              }, i * 1000);
+              return;
+            }
+          }
+          this.acceptMapInvitePromise(MapClasses.poster, posterType);
+        });
+      },
+      acceptMapInvitePromise(mapClass, scrollType) {
+        logging(`running acceptMapInvitePromise(${mapClass}, ${scrollType})`);
+        // 防呆
+        if (!mapClass || !MapClasses[mapClass]) {
+          this.handleTrapPromise();
+          return;
+        }
+        const quest = user.quests.QuestRelicHunter;
+        // 沒有邀請但有 scroll時,自己開
+        if ((quest.num_invites || 0) < 1) {
+          this.openMapScrollPromise(mapClass, scrollType);
+          return;
+        }
+        console.log('invited, try accept');
+        const map = getMapByClass(mapClass);
+        if (map) {
+          console.log('already in map, ignore invite');
+          this.handleTrapPromise();
+          return;
+        }
+        console.log(`try accept map invite of map class: ${mapClass}`);
+        hg.controllers.TreasureMapController.showCommunity();
+        setTimeout(() => {
+          $('a[data-map-id]').each((i, e) => {
+            console.log(e.className);
+            if (e.className.indexOf('mousehuntActionButton') > -1) {
+              // e.click();
+              const mapId = parseInt(e.getAttribute('data-map-id'));
+              console.log(`map request id: ${mapId}`);
+              if (!Number.isNaN(mapId)) {
+                console.log('auto accept map invite of map id', mapId);
+                hg.utils.TreasureMapUtil.acceptInvite(mapId, () => {
+                  this.handleTrapPromise();
+                });
+                closeAnyJsDialog();
+                return;
+              }
+            }
+          });
+          this.handleTrapPromise();
+        }, parseInt(3500 + Math.random() * 1500));
+      },
+      openMapScrollPromise(mapClass, scrollType) {
+        logging(`running openMapScrollPromise(${scrollType})`);
+        return new Promise((resolve, reject) => {
+          if (!scrollType || scrollType == '') {
+            this.handleTrapPromise();
+            return;
+          }
+          // 看看有沒有 scroll存貨,有才開
+          getQuantityByUrlThen(scrollType, (qty) => {
+            if (qty < 1) {
+              this.handleTrapPromise();
+              return;
+            }
+            // setTimeout(() => {
+            hg.utils.UserInventory.useConvertible(scrollType, 1, (data) => {
+              console.log(data.success == 1 ? 'success' : 'failed', data);
+              this.inviteMapFriendsPromise(mapClass);
+            });
+            // }, parseInt(1000 + Math.random() * 1000));
+          });
+        });
+      },
+      inviteMapFriendsPromise(mapClass) {
+        const map = getMapByClass(mapClass);
+        if (!map) {
+          this.handleTrapPromise();
+          return;
+        }
+        hg.utils.TreasureMapUtil.sendInvites(
+          map.map_id,
+          settings.mapWith[getSnUserId()],
+          () => {
+            setTimeout(() => {
+              closeAnyJsDialog();
+            }, 2000);
+            this.handleTrapPromise();
+          }
+        );
+      },
+      /** handle trap promise */
+      handleTrapPromise() {
+        logging('start running handleTrapPromise');
+        return new Promise((resolve, reject) => {
+          const trap = settings.traps[this.trapState];
+          if (this.trapState == 'has_poster') {
+            getQuantityByUrlThen('wanted_poster_convertible', (qty) => {
+              if (!Number.isNaN(qty)) {
+                if (qty < 5) {
+                  trap[3] = "Sheriff's Badge";
+                  console.log(trap);
+                  armAllTraps(...trap);
+                  return;
+                }
+                console.log(
+                  `has more than 4 poster, open one? ${settings.isAutoMap}`
+                );
+                if (settings.isAutoMap)
+                  setTimeout(() => {
+                    // open wanted poster(scroll)
+                    hg.utils.UserInventory.useConvertible(
+                      'wanted_poster_convertible',
+                      1,
+                      (data) => {
+                        console.log(
+                          data.success == 1 ? 'success' : 'failed',
+                          data
+                        );
+                        setTimeout(() => {
+                          closeAnyJsDialog();
+                          // phase changed, reload data
+                          const quest = user.quests.QuestClawShotCity;
+                          const phase = quest.phase;
+                          const trap = settings.traps[phase];
+                          armAllTraps(...trap);
+                        }, 2000);
+                      }
+                    );
+                  }, getRandomInteger(3000, 6000));
+              }
+            });
+            return;
+          }
+          console.log('routine hunting with trap: ', trap);
+          if (trap) armAllTraps(...trap);
+        });
+      },
+      /** location ajax */
+      ajax(element, params, successCallback, errorCallback) {
+        params['last_read_journal_entry_id'] = $('#journallatestentry').data(
+          'entry-id'
+        );
+        params['uh'] = user.unique_hash;
+        $.ajax({
+          data: params,
+          dataType: 'json',
+          type: isProd ? 'post' : 'get',
+          url: isProd
+            ? MOUSEHUNT_BASE_URL + this.URI
+            : 'https://elie2201.github.io/mh/jobs.txt',
+          success: function (data) {
+            eventRegistry.doEvent('ajax_response', data);
+            if (successCallback) {
+              successCallback(data);
+            }
+          },
+          // prettier-ignore
+          error: function (data) {
+            // eslint-disable-next-line new-cap
+            const popup = new jsDialog();
+            popup.setTemplate('error');
+            popup.addToken('{*title*}', 'An error has occurred.');
+            popup.addToken('{*content*}', 'An error occurred. Please try again!');
+            popup.show();
+            if (errorCallback) errorCallback(data);
+          }
+        });
+      }
+    };
+    // initial utils
+    function init() {
+      // make fields immutable
+      utils.setImmutable();
+      // initialize values in utils if necessary
+    }
+    init();
+    return utils;
+  })();
+  clawShotCityUtility.run();
+}
+// End #clawShotCity
