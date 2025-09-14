@@ -155,7 +155,7 @@ function clawShotCity() {
   const targetEnvironmentType = 'claw_shot_city';
   const enviromentType = getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('clawShotCity_1.0.0.1.4');
+  logging('clawShotCity_1.0.0.1.5');
   // my own hard-coded constants
   const unknown = 'unknown';
   const posterType = 'wanted_poster_convertible';
@@ -309,6 +309,11 @@ function clawShotCity() {
       openMapScrollPromise(mapClass, scrollType) {
         logging(`running openMapScrollPromise(${scrollType})`);
         return new Promise((resolve, reject) => {
+          if (getMapByClass(mapClass)) {
+            console.log('already in map, not open again');
+            this.handleTrapPromise();
+            return;
+          }
           if (!scrollType || scrollType == '') {
             this.handleTrapPromise();
             return;
