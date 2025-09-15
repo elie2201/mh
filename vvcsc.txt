@@ -155,7 +155,7 @@ function clawShotCity() {
   const targetEnvironmentType = 'claw_shot_city';
   const enviromentType = getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('clawShotCity_1.0.0.2.6');
+  logging('clawShotCity_1.0.0.3.7');
   // my own hard-coded constants
   const unknown = 'unknown';
   const posterType = 'wanted_poster_convertible';
@@ -316,15 +316,18 @@ function clawShotCity() {
             return;
           }
           if (!scrollType || scrollType == '') {
+            console.log('empty scrollType');
             this.handleTrapPromise();
             return;
           }
           // 看看有沒有 scroll存貨,有才開
           getQuantityByUrlThen(scrollType, (qty) => {
             if (qty < 1) {
+              console.log(`have no ${scrollType}, go handleTrapPromise`);
               utils.handleTrapPromise();
               return;
             }
+            console.log('open scroll and then inviteMapFriendsPromise');
             // setTimeout(() => {
             hg.utils.UserInventory.useConvertible(scrollType, 1, (data) => {
               console.log(data.success == 1 ? 'success' : 'failed', data);
