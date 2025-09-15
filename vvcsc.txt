@@ -155,7 +155,7 @@ function clawShotCity() {
   const targetEnvironmentType = 'claw_shot_city';
   const enviromentType = getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('clawShotCity_1.0.0.1.5');
+  logging('clawShotCity_1.0.0.2.6');
   // my own hard-coded constants
   const unknown = 'unknown';
   const posterType = 'wanted_poster_convertible';
@@ -196,7 +196,8 @@ function clawShotCity() {
   const clawShotCityUtility = (() => {
     const utils = {
       // values
-      URI: 'managers/ajax/environment/foreword_farm.php',
+      /** ajax URI */
+      URI: '',
       /** Set immutable fields */
       setImmutable() {
         const immutableFields = ['URI'];
@@ -214,12 +215,12 @@ function clawShotCity() {
       trapState: settings.traps[trapState] ? trapState : unknown,
       /** start running */
       run() {
-        logging('start running clawShotCity');
+        logging('start clawShotCity');
         this.autoSettingsPromise();
       },
       /** auto settings */
       autoSettingsPromise() {
-        logging('start running autoSettingsPromise');
+        logging('start autoSettingsPromise');
         return new Promise((resolve, reject) => {
           // auto settings for running if necessary and then invoke next promise
           this.claimMapRewardPromise();
@@ -227,7 +228,7 @@ function clawShotCity() {
       },
       /** claim map rewards promise */
       claimMapRewardPromise() {
-        logging('running claimMapRewardPromise');
+        logging('start claimMapRewardPromise');
         return new Promise((resolve, reject) => {
           const maps = user.quests.QuestRelicHunter.maps;
           if (!maps || maps.length == 0) {
@@ -265,7 +266,7 @@ function clawShotCity() {
         });
       },
       acceptMapInvitePromise(mapClass, scrollType) {
-        logging(`running acceptMapInvitePromise(${mapClass}, ${scrollType})`);
+        logging(`start acceptMapInvitePromise(${mapClass}, ${scrollType})`);
         // 防呆
         if (!mapClass || !MapClasses[mapClass]) {
           this.handleTrapPromise();
@@ -296,7 +297,7 @@ function clawShotCity() {
               if (!Number.isNaN(mapId)) {
                 console.log('auto accept map invite of map id', mapId);
                 hg.utils.TreasureMapUtil.acceptInvite(mapId, () => {
-                  this.handleTrapPromise();
+                  utils.handleTrapPromise();
                 });
                 closeAnyJsDialog();
                 return;
@@ -307,7 +308,7 @@ function clawShotCity() {
         }, parseInt(3500 + Math.random() * 1500));
       },
       openMapScrollPromise(mapClass, scrollType) {
-        logging(`running openMapScrollPromise(${scrollType})`);
+        logging(`start openMapScrollPromise(${scrollType})`);
         return new Promise((resolve, reject) => {
           if (getMapByClass(mapClass)) {
             console.log('already in map, not open again');
@@ -321,19 +322,20 @@ function clawShotCity() {
           // 看看有沒有 scroll存貨,有才開
           getQuantityByUrlThen(scrollType, (qty) => {
             if (qty < 1) {
-              this.handleTrapPromise();
+              utils.handleTrapPromise();
               return;
             }
             // setTimeout(() => {
             hg.utils.UserInventory.useConvertible(scrollType, 1, (data) => {
               console.log(data.success == 1 ? 'success' : 'failed', data);
-              this.inviteMapFriendsPromise(mapClass);
+              utils.inviteMapFriendsPromise(mapClass);
             });
             // }, parseInt(1000 + Math.random() * 1000));
           });
         });
       },
       inviteMapFriendsPromise(mapClass) {
+        logging('start inviteMapFriendsPromise');
         const map = getMapByClass(mapClass);
         if (!map) {
           this.handleTrapPromise();
@@ -346,13 +348,13 @@ function clawShotCity() {
             setTimeout(() => {
               closeAnyJsDialog();
             }, 2000);
-            this.handleTrapPromise();
+            utils.handleTrapPromise();
           },
           () => {
             setTimeout(() => {
               closeAnyJsDialog();
             }, 2000);
-            this.handleTrapPromise();
+            utils.handleTrapPromise();
           }
         );
       },
