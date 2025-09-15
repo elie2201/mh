@@ -124,7 +124,13 @@ function parseQuantity(qty) {
   const rtn = parseInt(strQty.replaceAll(',', ''));
   return Number.isNaN(rtn) ? 0 : rtn;
 }
-function getQuantityByUrlThen(itemType, callback) {
+/**
+ * Query item quantity by http get and then execute callback
+ * @param {string} itemType
+ * @param {Function} callback
+ * @param {Boolean} isAlwaysCallback true if run callback even when qty is NaN or 0
+ */
+function getQuantityByUrlThen(itemType, callback, isAlwaysCallback) {
   const url = MOUSEHUNT_BASE_URL + 'item.php?item_type=' + itemType;
   $.get(url, (data) => {
     const key = 'You Own: ';
@@ -134,6 +140,7 @@ function getQuantityByUrlThen(itemType, callback) {
     const qtyText = text.substring(0, endIndex).trim();
     logging(qtyText);
     const qty = parseQuantity(qtyText.split('/')[0]);
+    if (!isAlwaysCallback && (Number.isNaN(qty) || qty < 1)) return;
     if (callback) callback(qty);
   });
 }
@@ -155,7 +162,7 @@ function clawShotCity() {
   const targetEnvironmentType = 'claw_shot_city';
   const enviromentType = getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('clawShotCity_1.0.0.3.7');
+  logging('clawShotCity_1.0.0.3.8');
   // my own hard-coded constants
   const unknown = 'unknown';
   const posterType = 'wanted_poster_convertible';
@@ -297,7 +304,7 @@ function clawShotCity() {
               if (!Number.isNaN(mapId)) {
                 console.log('auto accept map invite of map id', mapId);
                 hg.utils.TreasureMapUtil.acceptInvite(mapId, () => {
-                  utils.handleTrapPromise();
+                  this.handleTrapPromise();
                 });
                 closeAnyJsDialog();
                 return;
@@ -321,20 +328,24 @@ function clawShotCity() {
             return;
           }
           // 看看有沒有 scroll存貨,有才開
-          getQuantityByUrlThen(scrollType, (qty) => {
-            if (qty < 1) {
-              console.log(`have no ${scrollType}, go handleTrapPromise`);
-              utils.handleTrapPromise();
-              return;
-            }
-            console.log('open scroll and then inviteMapFriendsPromise');
-            // setTimeout(() => {
-            hg.utils.UserInventory.useConvertible(scrollType, 1, (data) => {
-              console.log(data.success == 1 ? 'success' : 'failed', data);
-              utils.inviteMapFriendsPromise(mapClass);
-            });
-            // }, parseInt(1000 + Math.random() * 1000));
-          });
+          getQuantityByUrlThen(
+            scrollType,
+            (qty) => {
+              if (qty < 1) {
+                console.log(`have no ${scrollType}, go handleTrapPromise`);
+                this.handleTrapPromise();
+                return;
+              }
+              console.log('open scroll and then inviteMapFriendsPromise');
+              // setTimeout(() => {
+              hg.utils.UserInventory.useConvertible(scrollType, 1, (data) => {
+                console.log(data.success == 1 ? 'success' : 'failed', data);
+                this.inviteMapFriendsPromise(mapClass);
+              });
+              // }, parseInt(1000 + Math.random() * 1000));
+            },
+            true
+          );
         });
       },
       inviteMapFriendsPromise(mapClass) {
@@ -351,13 +362,13 @@ function clawShotCity() {
             setTimeout(() => {
               closeAnyJsDialog();
             }, 2000);
-            utils.handleTrapPromise();
+            this.handleTrapPromise();
           },
           () => {
             setTimeout(() => {
               closeAnyJsDialog();
             }, 2000);
-            utils.handleTrapPromise();
+            this.handleTrapPromise();
           }
         );
       },
@@ -371,19 +382,23 @@ function clawShotCity() {
             !getMapByClass(MapClasses.poster) &&
             this.trapState == 'has_poster'
           ) {
-            getQuantityByUrlThen('wanted_poster_convertible', (qty) => {
-              if (!Number.isNaN(qty)) {
-                if (qty < 5) {
-                  trap[3] = "Sheriff's Badge";
-                  console.log(trap);
-                  armAllTraps(...trap);
-                  return;
+            getQuantityByUrlThen(
+              'wanted_poster_convertible',
+              (qty) => {
+                if (!Number.isNaN(qty)) {
+                  if (qty < 5) {
+                    trap[3] = "Sheriff's Badge";
+                    console.log(trap);
+                    armAllTraps(...trap);
+                    return;
+                  }
+                  console.log(
+                    `has more than 4 poster, open one? ${settings.isAutoMap}`
+                  );
                 }
-                console.log(
-                  `has more than 4 poster, open one? ${settings.isAutoMap}`
-                );
-              }
-            });
+              },
+              true
+            );
             return;
           }
           console.log('routine hunting with trap: ', trap);
