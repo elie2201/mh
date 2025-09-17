@@ -2059,7 +2059,7 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = getEnvironmentType();
   if (environmentType !== targetEnvironmentType) return;
-  logging('valourRift_0.5.35.20.18');
+  logging('valourRift_0.5.36.21.18');
   // my own hard-coded constants
   const vriftStates = { farming: 'farming', tower: 'tower' };
   const upgradeTypes = [
@@ -2072,7 +2072,7 @@ function valourRift() {
     [1, 40, 5], [2, 40, 5], [2, 50, 5], [3, 50, 5], [3, 60, 5],
     [3, 60, 10], [4, 60, 10], [5, 60, 10], [5, 70, 10], [5, 70, 15],
     [5, 80, 15], [6, 80, 15], [6, 80, 20], [6, 90, 20], [7, 90, 20],
-    [8, 90, 20], [8, 90, 25], [9, 90, 25], [10, 90, 25], [10, 100, 25]
+    [8, 90, 20], [8, 90, 25], [8, 100, 25], [9, 100, 25], [10, 100, 25]
   ];
   // prettier-ignore
   const upgradeLevelsJSON = [];
@@ -2172,6 +2172,15 @@ function valourRift() {
     upgradeLevelsJSON,
     `current upgrade level index: ${currentLevelIndex}`
   );
+  // auto set uuRunExtraSecret by upgrade
+  if (!settings.uuRunExtraSecret)
+    if (currentLevelIndex === 13) settings.uuRunExtraSecret = 1000;
+    else if (currentLevelIndex === 14) settings.uuRunExtraSecret = 1500;
+    else if (currentLevelIndex === 15) settings.uuRunExtraSecret = 1000;
+    else if (currentLevelIndex === 16) settings.uuRunExtraSecret = 500;
+    else if (currentLevelIndex === 17) settings.uuRunExtraSecret = 500;
+    else if (currentLevelIndex === 18) settings.uuRunExtraSecret = 500;
+    else if (currentLevelIndex === 19) settings.uuRunExtraSecret = 0;
   /** function prototype valourRiftUtility */
   const valourRiftUtility = (function () {
     const utils = {
