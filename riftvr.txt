@@ -2059,7 +2059,7 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = getEnvironmentType();
   if (environmentType !== targetEnvironmentType) return;
-  logging('valourRift_0.5.36.21.18');
+  logging('valourRift_0.5.37.23.18');
   // my own hard-coded constants
   const vriftStates = { farming: 'farming', tower: 'tower' };
   const upgradeTypes = [
@@ -2098,11 +2098,11 @@ function valourRift() {
     ppRunNeedBait: 900,
     isAutoAugment: true,
     uuRunExtraSecret: 1000,
-    isSigilHunter: false,
-    isSecretResearch: false,
-    isSuperSiphon: false,
-    isUltimateUmbra: false,
-    isStringStepping: false,
+    isSigilHunter: null,
+    isSecretResearch: null,
+    isSuperSiphon: null,
+    isUltimateUmbra: null,
+    isStringStepping: null,
     isAutoRetreat: true,
     minRetreatFloor: 3,
     forceRetreatFloor: 0,
@@ -2138,7 +2138,7 @@ function valourRift() {
         8: ['Gauntlet String', 'best.weapon.rift', 'Signature Series Denture', 'Rift Ultimate Lucky Power Charm', true, 'white', false],
         16: ['Gauntlet String', 'best.weapon.rift', 'Signature Series Denture', 'Rift Ultimate Lucky Power Charm', true, 'white', false],
         24: ['Gauntlet String', 'best.weapon.rift', 'Signature Series Denture', 'Rift Ultimate Lucky Power Charm', true, 'white', false],
-        eclipse: ['Gauntlet String', 'best.weapon.rift', 'Signature Series Denture', 'Ultimate Charm', true, 'white', false]
+        eclipse: ['Gauntlet String', 'best.weapon.rift', 'Seasonal Gift', 'Ultimate Charm', true, 'white', false]
       }
     }
   };
@@ -2151,6 +2151,9 @@ function valourRift() {
   const huntsLeft = quest.hunts_remaining;
   const stepsToEclipse =
     quest.prestige_total_step - 1 - quest.prestige_current_step;
+  console.log(
+    `Steps to Eclipse: ${quest.prestige_total_step} - 1 - ${quest.prestige_current_step} = ${stepsToEclipse}`
+  );
   const isUU = quest.is_eclipse_mode;
   const isAtEclipse = quest.is_at_eclipse;
   const powerUpData = quest.power_up_data;
@@ -2166,11 +2169,10 @@ function valourRift() {
   const currentLevelsJSON = JSON.stringify(currentLevels);
   const currentLevelIndex = upgradeLevelsJSON.indexOf(currentLevelsJSON);
   console.log(
-    'can upgrade? ',
-    canUpgrade,
     currentLevels,
+    `can upgrade? ${canUpgrade}`,
     upgradeLevelsJSON,
-    `current upgrade level index: ${currentLevelIndex}`
+    `current upgrade level ${currentLevelsJSON} index: ${currentLevelIndex}`
   );
   // auto set uuRunExtraSecret by upgrade
   if (!settings.uuRunExtraSecret)
@@ -2226,25 +2228,30 @@ function valourRift() {
       autoAugmentation() {
         let msg = null;
         // Since 5-3-3, enable Sigil Hunter
-        if (
-          currentLevelIndex > 7 &&
-          this.items.gold.quantity > this.augmentations.sigilHunter.howMuchNeed
-        ) {
-          msg = `enable sigilHunter: ${currentLevelsJSON}, ${this.items.gold.quantity}>${this.augmentations.sigilHunter.howMuchNeed}`;
-          isProd ? console.plog(msg) : console.log(msg);
-          settings.isSigilHunter = true;
-        }
+        if (settings.isSigilHunter == null)
+          if (
+            currentLevelIndex > 7 &&
+            this.items.gold.quantity >
+              this.augmentations.sigilHunter.howMuchNeed
+          ) {
+            msg = `enable sigilHunter: ${currentLevelsJSON}, ${this.items.gold.quantity}>${this.augmentations.sigilHunter.howMuchNeed}`;
+            isProd ? console.plog(msg) : console.log(msg);
+            settings.isSigilHunter = true;
+          }
         // Since 6-6-4, enable Secret Research when enough sigil.
         // If unlocked UU and have enough gold/sigil, UU
         if (currentLevelIndex > 12) {
-          if (
-            this.items.sigil.quantity >
-            this.augmentations.secretResearch.howMuchNeed
-          ) {
-            msg = `enable secretResearch: ${currentLevelsJSON}, ${this.items.sigil.quantity}>${this.augmentations.secretResearch.howMuchNeed}`;
-            isProd ? console.plog(msg) : console.log(msg);
-            settings.isSecretResearch = true;
-          }
+          // 非 UU時, settings.isSecretResearch == null才自動設定 isSecretResearch
+          if (settings.isSecretResearch == null)
+            if (
+              this.items.sigil.quantity >
+              this.augmentations.secretResearch.howMuchNeed
+            ) {
+              msg = `enable secretResearch: ${currentLevelsJSON}, ${this.items.sigil.quantity}>${this.augmentations.secretResearch.howMuchNeed}`;
+              isProd ? console.plog(msg) : console.log(msg);
+              settings.isSecretResearch = true;
+            }
+          // UU時, isSigilHunter/isSecretResearch一律自動設定(啟用),無視 null不null
           // sste not unlocked, check gold/sigil/frag
           this.isOkUU =
             this.augmentations.ultimateUmbra.isUnlock &&
@@ -2284,6 +2291,8 @@ function valourRift() {
             msg = `stringStepping unlocked. Is UU ok? ${this.isOkUU}, Is UU with stringStepping ok? ${this.isOkSsteUU}`;
             isProd ? console.plog(msg) : console.log(msg);
             if (this.isOkSsteUU) {
+              settings.isSigilHunter = true;
+              settings.isSecretResearch = true;
               settings.isUltimateUmbra = true;
               settings.isSuperSiphon = true;
               settings.isStringStepping = true;
@@ -2292,6 +2301,8 @@ function valourRift() {
             msg = `stringStepping not unlocked. Is UU ok? ${this.isOkUU}, Is UU with stringStepping ok? ${this.isOkSsteUU}`;
             isProd ? console.plog(msg) : console.log(msg);
             if (this.isOkUU) {
+              settings.isSigilHunter = true;
+              settings.isSecretResearch = true;
               settings.isUltimateUmbra = true;
               settings.isSuperSiphon = true;
             }
