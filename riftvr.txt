@@ -2059,34 +2059,13 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = getEnvironmentType();
   if (environmentType !== targetEnvironmentType) return;
-  logging('valourRift_0.5.38.23.18');
+  logging('valourRift_0.5.39.23.18');
   // my own hard-coded constants
   const vriftStates = { farming: 'farming', tower: 'tower' };
   const upgradeTypes = [
     'upgrade_long_stride',
     'upgrade_hunt_limit',
     'upgrade_boss_extension'
-  ];
-  // prettier-ignore
-  const upgradePlans = [
-    [1, 40, 5], [2, 40, 5], [2, 50, 5], [3, 50, 5], [3, 60, 5],
-    [3, 60, 10], [4, 60, 10], [5, 60, 10], [5, 70, 10], [5, 70, 15],
-    [5, 80, 15], [6, 80, 15], [6, 80, 20], [6, 90, 20], [7, 90, 20],
-    [8, 90, 20], [8, 90, 25], [9, 90, 25], [10, 90, 25], [10, 100, 25]
-  ];
-  // prettier-ignore
-  const upgradeLevelsJSON = [];
-  for (let i = 0; i < upgradePlans.length; i++) {
-    const upgradePlan = upgradePlans[i];
-    upgradeLevelsJSON.push(JSON.stringify(upgradePlan));
-  }
-  /** total hunts = sync + eclipse * siphon */
-  // prettier-ignore
-  const cheeseQuantityByUpgrade = [
-    50, 50, 60, 60, 70,
-    70, 70, 100, 110, 120,
-    130, 160, 160, 300, 300,
-    300, 550, 550, 550, 900
   ];
   // trap: [<bait>, <weapon>, <base>, <trinket>, <championFireEnabled>, litCandle, doubleEgg]
   // prettier-ignore
@@ -2115,6 +2094,12 @@ function valourRift() {
     dangerousHunts: 11,
     rescueCharm: 'Rift 2025 Charm',
     rescueCharmUU: 'Rift Ultimate Power Charm',
+    upgradePlans: [
+      [1, 40, 5], [2, 40, 5], [2, 50, 5], [3, 50, 5], [3, 60, 5],
+      [3, 60, 10], [4, 60, 10], [5, 60, 10], [5, 70, 10], [5, 70, 15],
+      [5, 80, 15], [6, 80, 15], [6, 80, 20], [6, 90, 20], [7, 90, 20],
+      [8, 90, 20], [8, 90, 25], [9, 90, 25], [10, 90, 25], [10, 100, 25]
+    ],
     trap: {
       farming: {
         0: ['Gauntlet String,Brie String', 'best.weapon.rift', 'best.base.rift', 'Rift Luck Charm,Rift Vacuum Charm', false, 'none', false]
@@ -2148,6 +2133,22 @@ function valourRift() {
   const settings = isProd
     ? getStorageToObject(targetEnvironmentType, defaultSetting)
     : defaultSetting;
+  // prettier-ignore
+  const upgradePlans = settings.upgradePlans;
+  // prettier-ignore
+  const upgradeLevelsJSON = [];
+  for (let i = 0; i < upgradePlans.length; i++) {
+    const upgradePlan = upgradePlans[i];
+    upgradeLevelsJSON.push(JSON.stringify(upgradePlan));
+  }
+  /** total hunts = sync + eclipse * siphon */
+  // prettier-ignore
+  const cheeseQuantityByUpgrade = [
+    50, 50, 60, 60, 70,
+    70, 70, 100, 110, 120,
+    130, 160, 160, 300, 300,
+    300, 550, 550, 550, 900
+  ];
   const quest = isProd ? user.quests.QuestRiftValour : QuestRiftValour;
   const state = trimToEmpty(quest.state);
   const floor = quest.floor;
