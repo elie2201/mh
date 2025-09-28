@@ -2059,7 +2059,7 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = getEnvironmentType();
   if (environmentType !== targetEnvironmentType) return;
-  logging('valourRift_0.5.39.24.18');
+  logging('valourRift_0.5.39.25.18');
   // my own hard-coded constants
   const vriftStates = { farming: 'farming', tower: 'tower' };
   const upgradeTypes = [
@@ -2147,7 +2147,7 @@ function valourRift() {
     50, 50, 60, 60, 70,
     70, 70, 100, 110, 120,
     130, 160, 160, 300, 300,
-    350, 550, 550, 550, 900
+    400, 750, 750, 750, 900
   ];
   const quest = isProd ? user.quests.QuestRiftValour : QuestRiftValour;
   const state = trimToEmpty(quest.state);
