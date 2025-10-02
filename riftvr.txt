@@ -2059,7 +2059,7 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = getEnvironmentType();
   if (environmentType !== targetEnvironmentType) return;
-  logging('valourRift_0.6.39.26.18');
+  logging('valourRift_0.6.39.27.19');
   // my own hard-coded constants
   const vriftStates = { farming: 'farming', tower: 'tower' };
   const upgradeTypes = [
@@ -2112,14 +2112,14 @@ function valourRift() {
     ],
     trap: {
       farming: {
-        0: ['Gauntlet String,Brie String', 'best.weapon.rift', 'best.base.rift', 'Rift Luck Charm,Rift Vacuum Charm', false, 'none', false]
+        0: ['Brie String,Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Tarnished Charm,Rift Vacuum Charm,Rift Luck Charm', false, 'none', false]
       },
       tower: {
-        0: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Vacuum Charm', false, 'none', false],
-        8: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Vacuum Charm', false, 'none', false],
-        16: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Vacuum Charm', false, 'none', false],
-        24: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Vacuum Charm', false, 'none', false],
-        32: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Vacuum Charm', false, 'none', false],
+        0: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Tarnished Charm,Rift Vacuum Charm', false, 'none', false],
+        8: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Tarnished Charm,Rift Vacuum Charm', false, 'none', false],
+        16: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Tarnished Charm,Rift Vacuum Charm', false, 'none', false],
+        24: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Tarnished Charm,Rift Vacuum Charm', false, 'none', false],
+        32: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Tarnished Charm,Rift Vacuum Charm', false, 'none', false],
         eclipse: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift 2025 Charm,Rift 2024 Charm', true, 'none', false]
       },
       uu: {
@@ -2400,8 +2400,10 @@ function valourRift() {
         // 下個樓層不是 eclipse false
         if (floor % 8 !== 7) return false;
         // 不要一般性的定義這個數值,因為塔外這個數值沒意義
-        const stepsToNextFloor = startingSteps[floor + 1] - nowStep;
-        console.log(`Steps to next floor(TE): ${stepsToNextFloor}`);
+        const stepsToNextFloor = startingSteps[floor] - nowStep; // floor -1(index) + 1(next)
+        console.log(
+          `Steps to next floor(TE): ${startingSteps[floor]} - ${nowStep} = ${stepsToNextFloor}`
+        );
         // 距離下個樓層的步數大於 speed: false
         if (stepsToNextFloor > currentLevels[0]) return false;
         console.log('距離下個樓層(TE)的步數小於等於 speed');
@@ -2415,8 +2417,10 @@ function valourRift() {
         // 下個樓層是 eclipse: false
         if (floor % 8 === 7) return false;
         // 不要一般性的定義這個數值,因為塔外這個數值沒意義
-        const stepsToNextFloor = startingSteps[floor + 1] - nowStep;
-        console.log(`Steps to next floor: ${stepsToNextFloor}`);
+        const stepsToNextFloor = startingSteps[floor] - nowStep; // floor -1(index) + 1(next)
+        console.log(
+          `Steps to next floor(TE): ${startingSteps[floor]} - ${nowStep} = ${stepsToNextFloor}`
+        );
         // 距離下個樓層的步數大於 speed: false
         if (stepsToNextFloor > currentLevels[0]) return false;
         console.log('距離下個樓層的步數小於等於 speed');
