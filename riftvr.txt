@@ -2059,13 +2059,25 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = getEnvironmentType();
   if (environmentType !== targetEnvironmentType) return;
-  logging('valourRift_0.5.39.26.18');
+  logging('valourRift_0.6.39.26.18');
   // my own hard-coded constants
   const vriftStates = { farming: 'farming', tower: 'tower' };
   const upgradeTypes = [
     'upgrade_long_stride',
     'upgrade_hunt_limit',
     'upgrade_boss_extension'
+  ];
+  // prettier-ignore
+  /** Starting steps of each floor */
+  const startingSteps = [
+    0, 20, 40, 60, 80, 100, 120, 140,
+    141, 171, 201, 231, 261, 291, 321, 351,
+    352, 392, 432, 472, 512, 552, 592, 632,
+    633, 683, 733, 783, 833, 883, 933, 983,
+    984, 1044, 1104, 1164, 1224, 1284, 1344, 1404,
+    1405, 1475, 1545, 1615, 1685, 1755, 1825, 1895,
+    1896, 1976, 2056, 2136, 2216, 2296, 2376, 2456,
+    2457, 2547, 2637, 2727, 2817, 2907, 2997, 3087
   ];
   // trap: [<bait>, <weapon>, <base>, <trinket>, <championFireEnabled>, litCandle, doubleEgg]
   // prettier-ignore
@@ -2092,8 +2104,6 @@ function valourRift() {
     minCheeseQty: 20,
     buyCheeseQty: 55,
     dangerousHunts: 11,
-    rescueCharm: 'Rift 2025 Charm',
-    rescueCharmUU: 'Rift Ultimate Power Charm',
     upgradePlans: [
       [1, 40, 5], [2, 40, 5], [2, 50, 5], [3, 50, 5], [3, 60, 5],
       [3, 60, 10], [4, 60, 10], [5, 60, 10], [5, 70, 10], [5, 70, 15],
@@ -2127,6 +2137,54 @@ function valourRift() {
         24: ['Gauntlet String', 'best.weapon.rift', 'Signature Series Denture', 'Rift Ultimate Lucky Power Charm', true, 'white', false],
         32: ['Gauntlet String', 'best.weapon.rift', 'Signature Series Denture', 'Rift Ultimate Lucky Power Charm', true, 'white', false],
         eclipse: ['Gauntlet String', 'best.weapon.rift', 'Seasonal Gift', 'Ultimate Charm', true, 'white', false]
+      },
+      rescueTrap: {
+        0: ['', '', '', ''],
+        8: ['', '', '', ''],
+        16: ['', '', '', ''],
+        24: ['', '', '', ''],
+        32: ['', '', '', ''],
+        eclipse: ['', '', '', '']
+      },
+      rescueTrapUU: {
+        0: ['', '', '', ''],
+        8: ['', '', '', ''],
+        16: ['', '', '', ''],
+        24: ['', '', '', ''],
+        32: ['', '', '', ''],
+        eclipse: ['', '', '', '']
+      },
+      catchToNextFloorTrap: {
+        0: ['', '', '', ''],
+        8: ['', '', '', ''],
+        16: ['', '', '', ''],
+        24: ['', '', '', ''],
+        32: ['', '', '', ''],
+        eclipse: ['', '', '', '']
+      },
+      catchToNextFloorTrapUU: {
+        0: ['', '', '', ''],
+        8: ['', '', '', ''],
+        16: ['', '', '', ''],
+        24: ['', '', '', ''],
+        32: ['', '', '', ''],
+        eclipse: ['', '', '', '']
+      },
+      catchToEclipseTrap: {
+        0: ['', '', '', ''],
+        8: ['', '', '', ''],
+        16: ['', '', '', ''],
+        24: ['', '', '', ''],
+        32: ['', '', '', ''],
+        eclipse: ['', '', '', '']
+      },
+      catchToEclipseTrapUU: {
+        0: ['', '', '', ''],
+        8: ['', '', '', ''],
+        16: ['', '', '', ''],
+        24: ['', '', '', ''],
+        32: ['', '', '', ''],
+        eclipse: ['', '', '', '']
       }
     }
   };
@@ -2150,13 +2208,16 @@ function valourRift() {
     400, 750, 750, 750, 900
   ];
   const quest = isProd ? user.quests.QuestRiftValour : QuestRiftValour;
-  const state = trimToEmpty(quest.state);
-  const floor = quest.floor;
-  const huntsLeft = quest.hunts_remaining;
+  const state = trimToEmpty(quest.state.toLowerCase());
+  const floor = parseQuantity(quest.floor);
+  const nowStep = parseQuantity(quest.current_step);
+  const huntsLeft = parseQuantity(quest.hunts_remaining);
   const stepsToEclipse =
-    quest.prestige_total_step - 1 - quest.prestige_current_step;
+    parseQuantity(quest.prestige_total_step) -
+    parseQuantity(quest.prestige_current_step) -
+    1;
   console.log(
-    `Steps to Eclipse: ${quest.prestige_total_step} - 1 - ${quest.prestige_current_step} = ${stepsToEclipse}`
+    `Steps to Eclipse: ${quest.prestige_total_step} - ${quest.prestige_current_step} - 1 = ${stepsToEclipse}`
   );
   const isUU = quest.is_eclipse_mode;
   const isAtEclipse = quest.is_at_eclipse;
@@ -2330,6 +2391,36 @@ function valourRift() {
           settings.isPrestigePush = false;
         } */
         return this.isOkPP;
+      },
+      is1CatchToTE() {
+        // 不在塔內 false
+        if (state !== 'tower') return false;
+        // 正在 eclipse樓層 false
+        if (isAtEclipse) return false;
+        // 下個樓層不是 eclipse false
+        if (floor % 8 !== 7) return false;
+        // 不要一般性的定義這個數值,因為塔外這個數值沒意義
+        const stepsToNextFloor = startingSteps[floor + 1] - nowStep;
+        console.log(`Steps to next floor(TE): ${stepsToNextFloor}`);
+        // 距離下個樓層的步數大於 speed: false
+        if (stepsToNextFloor > currentLevels[0]) return false;
+        console.log('距離下個樓層(TE)的步數小於等於 speed');
+        return true;
+      },
+      is1CatchToNextFloor() {
+        // 不在塔內: false
+        if (state !== 'tower') return false;
+        // 正在 eclipse樓層: false
+        if (isAtEclipse) return false;
+        // 下個樓層是 eclipse: false
+        if (floor % 8 === 7) return false;
+        // 不要一般性的定義這個數值,因為塔外這個數值沒意義
+        const stepsToNextFloor = startingSteps[floor + 1] - nowStep;
+        console.log(`Steps to next floor: ${stepsToNextFloor}`);
+        // 距離下個樓層的步數大於 speed: false
+        if (stepsToNextFloor > currentLevels[0]) return false;
+        console.log('距離下個樓層的步數小於等於 speed');
+        return true;
       }
     };
     function init(quest) {
@@ -2521,7 +2612,7 @@ function valourRift() {
     }
   let trap = settings.trap[trapKey][floorKey];
   if (isAtEclipse) trap = settings.trap[trapKey].eclipse;
-  if (
+  /* if (
     floor % 8 === 7 &&
     huntsLeft < settings.dangerousHunts &&
     ((trapKey === 'uu' && settings.rescueCharmUU !== '') ||
@@ -2532,7 +2623,48 @@ function valourRift() {
         ? settings.rescueCharm
         : trapKey === 'uu'
         ? settings.rescueCharmUU
-        : trap[3];
+        : trap[3]; */
+  if (floor % 8 === 7 && huntsLeft < settings.dangerousHunts) {
+    const rescueTraps =
+      trapKey === vriftStates.tower
+        ? settings.trap['rescueTrap'][floorKey]
+        : trapKey === 'uu'
+        ? settings.trap['rescueTrapUU'][floorKey]
+        : null;
+    if (rescueTraps) {
+      for (let i = 0; i < rescueTraps.length; i++) {
+        const rescueTrap = rescueTraps[i];
+        if (rescueTrap !== '') trap[i] = rescueTrap[i];
+      }
+    }
+  }
+  if (valourRiftUtility.is1CatchToNextFloor()) {
+    const rescueTraps =
+      trapKey === vriftStates.tower
+        ? settings.trap['catchToNextFloorTrap'][floorKey]
+        : trapKey === 'uu'
+        ? settings.trap['catchToNextFloorTrapUU'][floorKey]
+        : null;
+    if (rescueTraps) {
+      for (let i = 0; i < rescueTraps.length; i++) {
+        const rescueTrap = rescueTraps[i];
+        if (rescueTrap !== '') trap[i] = rescueTrap[i];
+      }
+    }
+  } else if (valourRiftUtility.is1CatchToTE()) {
+    const rescueTraps =
+      trapKey === vriftStates.tower
+        ? settings.trap['catchToEclipseTrap'][floorKey]
+        : trapKey === 'uu'
+        ? settings.trap['catchToEclipseTrapUU'][floorKey]
+        : null;
+    if (rescueTraps) {
+      for (let i = 0; i < rescueTraps.length; i++) {
+        const rescueTrap = rescueTraps[i];
+        if (rescueTrap !== '') trap[i] = rescueTrap[i];
+      }
+    }
+  }
   valourRiftUtility.toggleChampionFire(autoOffChampionFire(trap[4]));
   setTimeout(() => {
     litCandle(trap[5]);
