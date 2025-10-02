@@ -2059,7 +2059,7 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = getEnvironmentType();
   if (environmentType !== targetEnvironmentType) return;
-  logging('valourRift_0.6.39.28.22');
+  logging('valourRift_0.6.40.28.23');
   // my own hard-coded constants
   const vriftStates = { farming: 'farming', tower: 'tower' };
   const upgradeTypes = [
@@ -2120,6 +2120,7 @@ function valourRift() {
         16: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Tarnished Charm,Rift Vacuum Charm', false, 'none', false],
         24: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Tarnished Charm,Rift Vacuum Charm', false, 'none', false],
         32: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Tarnished Charm,Rift Vacuum Charm', false, 'none', false],
+        40: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Tarnished Charm,Rift Vacuum Charm', false, 'none', false],
         eclipse: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift 2025 Charm,Rift 2024 Charm', true, 'none', false]
       },
       uu: {
@@ -2128,6 +2129,7 @@ function valourRift() {
         16: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Ultimate Power Charm,Rift 2025 Charm,Rift 2024 Charm', false, 'none', false],
         24: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Ultimate Power Charm,Rift 2025 Charm,Rift 2024 Charm', false, 'none', false],
         32: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Ultimate Power Charm,Rift 2025 Charm,Rift 2024 Charm', false, 'none', false],
+        40: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Ultimate Power Charm,Rift 2025 Charm,Rift 2024 Charm', false, 'none', false],
         eclipse: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Ultimate Power Charm,Rift 2025 Charm,Rift 2024 Charm', true, 'none', false]
       },
       pp: {
@@ -2136,6 +2138,7 @@ function valourRift() {
         16: ['Gauntlet String', 'best.weapon.rift', 'Signature Series Denture', 'Rift Ultimate Lucky Power Charm', true, 'white', false],
         24: ['Gauntlet String', 'best.weapon.rift', 'Signature Series Denture', 'Rift Ultimate Lucky Power Charm', true, 'white', false],
         32: ['Gauntlet String', 'best.weapon.rift', 'Signature Series Denture', 'Rift Ultimate Lucky Power Charm', true, 'white', false],
+        40: ['Gauntlet String', 'best.weapon.rift', 'Signature Series Denture', 'Rift Ultimate Lucky Power Charm', true, 'white', false],
         eclipse: ['Gauntlet String', 'best.weapon.rift', 'Seasonal Gift', 'Ultimate Charm', true, 'white', false]
       },
       rescueTrap: {
@@ -2144,6 +2147,7 @@ function valourRift() {
         16: ['', '', '', ''],
         24: ['', '', '', ''],
         32: ['', '', '', ''],
+        40: ['', '', '', ''],
         eclipse: ['', '', '', '']
       },
       rescueTrapUU: {
@@ -2152,6 +2156,7 @@ function valourRift() {
         16: ['', '', '', ''],
         24: ['', '', '', ''],
         32: ['', '', '', ''],
+        40: ['', '', '', ''],
         eclipse: ['', '', '', '']
       },
       catchToNextFloorTrap: {
@@ -2160,6 +2165,7 @@ function valourRift() {
         16: ['', '', '', ''],
         24: ['', '', '', ''],
         32: ['', '', '', ''],
+        40: ['', '', '', ''],
         eclipse: ['', '', '', '']
       },
       catchToNextFloorTrapUU: {
@@ -2168,6 +2174,7 @@ function valourRift() {
         16: ['', '', '', ''],
         24: ['', '', '', ''],
         32: ['', '', '', ''],
+        40: ['', '', '', ''],
         eclipse: ['', '', '', '']
       },
       catchToEclipseTrap: {
@@ -2176,6 +2183,7 @@ function valourRift() {
         16: ['', '', '', ''],
         24: ['', '', '', ''],
         32: ['', '', '', ''],
+        40: ['', '', '', ''],
         eclipse: ['', '', '', '']
       },
       catchToEclipseTrapUU: {
@@ -2184,6 +2192,7 @@ function valourRift() {
         16: ['', '', '', ''],
         24: ['', '', '', ''],
         32: ['', '', '', ''],
+        40: ['', '', '', ''],
         eclipse: ['', '', '', '']
       }
     }
@@ -2606,7 +2615,7 @@ function valourRift() {
         : state
       : state;
   // const trapKey = isUU ? 'uu' : state;
-  const floorSegments = [32, 24, 16, 8];
+  const floorSegments = [40, 32, 24, 16, 8];
   let floorKey = 0;
   if (state !== vriftStates.farming)
     for (let i = 0; i < floorSegments.length; i++) {
@@ -2640,7 +2649,7 @@ function valourRift() {
     if (rescueTraps) {
       for (let i = 0; i < rescueTraps.length; i++) {
         const rescueTrap = rescueTraps[i];
-        if (rescueTrap !== '') trap[i] = rescueTrap[i];
+        if (rescueTrap !== '') trap[i] = rescueTrap;
       }
     }
   }
