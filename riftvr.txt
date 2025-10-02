@@ -2059,7 +2059,7 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = getEnvironmentType();
   if (environmentType !== targetEnvironmentType) return;
-  logging('valourRift_0.6.39.28.20');
+  logging('valourRift_0.6.39.28.21');
   // my own hard-coded constants
   const vriftStates = { farming: 'farming', tower: 'tower' };
   const upgradeTypes = [
@@ -2393,12 +2393,13 @@ function valourRift() {
         return this.isOkPP;
       },
       is1CatchToTE() {
+        logging('Start running is1CatchToTE');
         // 不在塔內 false
         if (state !== 'tower') return false;
         // 正在 eclipse樓層 false
         if (isAtEclipse) return false;
         // 下個樓層不是 eclipse false
-        if (floor % 8 === 7) return false;
+        if (floor % 8 !== 7) return false;
         // 不要一般性的定義這個數值,因為塔外這個數值沒意義
         const stepsToNextFloor = startingSteps[floor] - nowStep; // floor -1(index) + 1(next)
         console.log(
@@ -2410,12 +2411,13 @@ function valourRift() {
         return true;
       },
       is1CatchToNextFloor() {
+        logging('Start running is1CatchToNextFloor');
         // 不在塔內: false
         if (state !== 'tower') return false;
         // 正在 eclipse樓層: false
         if (isAtEclipse) return false;
         // 下個樓層是 eclipse: false
-        if (floor % 8 !== 7) return false;
+        if (floor % 8 === 7) return false;
         // 不要一般性的定義這個數值,因為塔外這個數值沒意義
         const stepsToNextFloor = startingSteps[floor] - nowStep; // floor -1(index) + 1(next)
         console.log(
