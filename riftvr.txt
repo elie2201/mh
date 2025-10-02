@@ -2059,7 +2059,7 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = getEnvironmentType();
   if (environmentType !== targetEnvironmentType) return;
-  logging('valourRift_0.6.39.28.21');
+  logging('valourRift_0.6.39.28.22');
   // my own hard-coded constants
   const vriftStates = { farming: 'farming', tower: 'tower' };
   const upgradeTypes = [
@@ -2654,7 +2654,7 @@ function valourRift() {
     if (rescueTraps) {
       for (let i = 0; i < rescueTraps.length; i++) {
         const rescueTrap = rescueTraps[i];
-        if (rescueTrap !== '') trap[i] = rescueTrap[i];
+        if (rescueTrap !== '') trap[i] = rescueTrap;
       }
     }
   } else if (valourRiftUtility.is1CatchToTE()) {
@@ -2667,7 +2667,7 @@ function valourRift() {
     if (rescueTraps) {
       for (let i = 0; i < rescueTraps.length; i++) {
         const rescueTrap = rescueTraps[i];
-        if (rescueTrap !== '') trap[i] = rescueTrap[i];
+        if (rescueTrap !== '') trap[i] = rescueTrap;
       }
     }
   }
