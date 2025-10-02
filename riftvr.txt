@@ -2059,7 +2059,7 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = getEnvironmentType();
   if (environmentType !== targetEnvironmentType) return;
-  logging('valourRift_0.6.39.27.19');
+  logging('valourRift_0.6.39.28.19');
   // my own hard-coded constants
   const vriftStates = { farming: 'farming', tower: 'tower' };
   const upgradeTypes = [
@@ -2419,7 +2419,7 @@ function valourRift() {
         // 不要一般性的定義這個數值,因為塔外這個數值沒意義
         const stepsToNextFloor = startingSteps[floor] - nowStep; // floor -1(index) + 1(next)
         console.log(
-          `Steps to next floor(TE): ${startingSteps[floor]} - ${nowStep} = ${stepsToNextFloor}`
+          `Steps to next floor: ${startingSteps[floor]} - ${nowStep} = ${stepsToNextFloor}`
         );
         // 距離下個樓層的步數大於 speed: false
         if (stepsToNextFloor > currentLevels[0]) return false;
