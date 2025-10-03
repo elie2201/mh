@@ -2059,7 +2059,7 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = getEnvironmentType();
   if (environmentType !== targetEnvironmentType) return;
-  logging('valourRift_0.6.41.28.23');
+  logging('valourRift_0.6.42.29.23');
   // my own hard-coded constants
   const vriftStates = { farming: 'farming', tower: 'tower' };
   const upgradeTypes = [
@@ -2077,7 +2077,19 @@ function valourRift() {
     984, 1044, 1104, 1164, 1224, 1284, 1344, 1404,
     1405, 1475, 1545, 1615, 1685, 1755, 1825, 1895,
     1896, 1976, 2056, 2136, 2216, 2296, 2376, 2456,
-    2457, 2547, 2637, 2727, 2817, 2907, 2997, 3087
+    2457, 2547, 2637, 2727, 2817, 2907, 2997, 3087,
+    3088, 3188, 3288, 3388, 3488, 3588, 3688, 3788,
+    3789, 3899, 4009, 4119, 4229, 4339, 4449, 4559,
+    4560, 4680, 4800, 4920, 5040, 5160, 5280, 5400,
+    5401, 5531, 5661, 5791, 5921, 6051, 6181, 6311,
+    6312, 6452, 6592, 6732, 6872, 7012, 7152, 7292,
+    7293, 7443, 7593, 7743, 7893, 8043, 8193, 8343,
+    8344, 8504, 8664, 8824, 8984, 9144, 9304, 9464,
+    9465, 9635, 9805, 9975, 10145, 10315, 10485, 10655,
+    10656, 10836, 11016, 11196, 11376, 11556, 11736, 11916,
+    11917, 12107, 12297, 12487, 12677, 12867, 13057, 13247,
+    13248, 3448, 13648, 13848, 14048, 14248, 14448, 14648,
+    14649, 14859, 15069, 15279, 15489, 15699, 15909, 16119
   ];
   // trap: [<bait>, <weapon>, <base>, <trinket>, <championFireEnabled>, litCandle, doubleEgg]
   // prettier-ignore
@@ -2830,6 +2842,7 @@ function valourRift() {
   const checkUpgrade = () => {
     console.log('check upgrade');
     if (canUpgrade.indexOf(true) < 0) return;
+    if (currentLevelIndex === 18) return; // sync 100手動升級
     for (let i = 0; i < upgradePlans.length; i++) {
       const plan = upgradePlans[i];
       for (let j = 0; j < plan.length; j++) {
