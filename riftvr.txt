@@ -2059,13 +2059,18 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = getEnvironmentType();
   if (environmentType !== targetEnvironmentType) return;
-  logging('valourRift_0.6.42.29.23');
+  logging('valourRift_0.6.43.29.23');
   // my own hard-coded constants
   const vriftStates = { farming: 'farming', tower: 'tower' };
   const upgradeTypes = [
     'upgrade_long_stride',
     'upgrade_hunt_limit',
     'upgrade_boss_extension'
+  ];
+  const offChampionFireSteps = [
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 15, 16, 17, 18, 19, 20, 23, 24,
+    25, 26, 27, 28, 29, 30, 34, 35, 36, 37, 38, 39, 40, 45, 46, 47, 48, 49, 50,
+    56, 57, 58, 59, 60, 67, 68, 69, 70, 78, 79, 80, 89, 90, 100
   ];
   // prettier-ignore
   /** Starting steps of each floor */
@@ -2900,11 +2905,6 @@ function valourRift() {
     setTimeout(() => {
       autoBuy();
     }, 10000);
-  const offChampionFireSteps = [
-    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 15, 16, 17, 18, 19, 20, 23, 24,
-    25, 26, 27, 28, 29, 30, 34, 35, 36, 37, 38, 39, 40, 45, 46, 47, 48, 49, 50,
-    56, 57, 58, 59, 60, 67, 68, 69, 70, 78, 79, 80, 89, 90, 100
-  ];
   function autoOffChampionFire(isToEnable) {
     logging(`Before auto off: ${isToEnable}`);
     if (!isToEnable) return isToEnable;
