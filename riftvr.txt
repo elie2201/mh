@@ -2909,7 +2909,7 @@ function valourRift() {
     logging(`Before auto off: ${isToEnable}`);
     if (!isToEnable) return isToEnable;
     if (isAtEclipse) return isToEnable;
-    if (offChampionFireSteps.indexOf(stepsToEclipse)) {
+    if (offChampionFireSteps.indexOf(stepsToEclipse) > -1) {
       logging('Turn off CF');
       return false;
     }
