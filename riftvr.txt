@@ -2059,8 +2059,20 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = getEnvironmentType();
   if (environmentType !== targetEnvironmentType) return;
-  logging('valourRift_0.6.43.29.24');
+  logging('valourRift_0.6.44.29.24');
   // my own hard-coded constants
+  const gString = 'Gauntlet String';
+  const bgString = 'Brie String,Gauntlet String';
+  const bestWeapon = 'best.weapon.rift';
+  const bestBase = 'best.base.rift';
+  const signatureSeries = 'Signature Series Denture';
+  const rtrv = 'Rift Tarnished Charm,Rift Vacuum Charm';
+  const rupr254 = 'Rift Ultimate Power Charm,Rift 2025 Charm,Rift 2024 Charm';
+  const r254 = 'Rift 2025 Charm,Rift 2024 Charm';
+  const rulp = 'Rift Ultimate Lucky Power Charm';
+  const uc = 'Ultimate Charm';
+  const none = 'none';
+  const white = 'white';
   const vriftStates = { farming: 'farming', tower: 'tower' };
   const upgradeTypes = [
     'upgrade_long_stride',
@@ -2129,79 +2141,79 @@ function valourRift() {
     ],
     trap: {
       farming: {
-        0: ['Brie String,Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Tarnished Charm,Rift Vacuum Charm,Rift Luck Charm', false, 'none', false]
+        0: [bgString, bestWeapon, bestBase, rtrv, false, none, false]
       },
       tower: {
-        0: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Tarnished Charm,Rift Vacuum Charm', false, 'none', false],
-        8: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Tarnished Charm,Rift Vacuum Charm', false, 'none', false],
-        16: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Tarnished Charm,Rift Vacuum Charm', false, 'none', false],
-        24: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Tarnished Charm,Rift Vacuum Charm', false, 'none', false],
-        32: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Tarnished Charm,Rift Vacuum Charm', false, 'none', false],
-        40: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Tarnished Charm,Rift Vacuum Charm', false, 'none', false],
-        48: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Tarnished Charm,Rift Vacuum Charm', false, 'none', false],
-        56: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Tarnished Charm,Rift Vacuum Charm', false, 'none', false],
-        64: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Tarnished Charm,Rift Vacuum Charm', false, 'none', false],
-        72: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Tarnished Charm,Rift Vacuum Charm', false, 'none', false],
-        80: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Tarnished Charm,Rift Vacuum Charm', false, 'none', false],
-        88: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Tarnished Charm,Rift Vacuum Charm', false, 'none', false],
-        96: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Tarnished Charm,Rift Vacuum Charm', false, 'none', false],
-        104: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Tarnished Charm,Rift Vacuum Charm', false, 'none', false],
-        112: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Tarnished Charm,Rift Vacuum Charm', false, 'none', false],
-        120: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Tarnished Charm,Rift Vacuum Charm', false, 'none', false],
-        128: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Tarnished Charm,Rift Vacuum Charm', false, 'none', false],
-        136: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Tarnished Charm,Rift Vacuum Charm', false, 'none', false],
-        144: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Tarnished Charm,Rift Vacuum Charm', false, 'none', false],
-        152: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Tarnished Charm,Rift Vacuum Charm', false, 'none', false],
-        160: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Tarnished Charm,Rift Vacuum Charm', false, 'none', false],
-        eclipse: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift 2025 Charm,Rift 2024 Charm', true, 'none', false]
+        0: [gString, bestWeapon, bestBase, rtrv, false, none, false],
+        8: [gString, bestWeapon, bestBase, rtrv, false, none, false],
+        16: [gString, bestWeapon, bestBase, rtrv, false, none, false],
+        24: [gString, bestWeapon, bestBase, rtrv, false, none, false],
+        32: [gString, bestWeapon, bestBase, rtrv, false, none, false],
+        40: [gString, bestWeapon, bestBase, rtrv, false, none, false],
+        48: [gString, bestWeapon, bestBase, rtrv, false, none, false],
+        56: [gString, bestWeapon, bestBase, rtrv, false, none, false],
+        64: [gString, bestWeapon, bestBase, rtrv, false, none, false],
+        72: [gString, bestWeapon, bestBase, rtrv, false, none, false],
+        80: [gString, bestWeapon, bestBase, rtrv, false, none, false],
+        88: [gString, bestWeapon, bestBase, rtrv, false, none, false],
+        96: [gString, bestWeapon, bestBase, rtrv, false, none, false],
+        104: [gString, bestWeapon, bestBase, rtrv, false, none, false],
+        112: [gString, bestWeapon, bestBase, rtrv, false, none, false],
+        120: [gString, bestWeapon, bestBase, rtrv, false, none, false],
+        128: [gString, bestWeapon, bestBase, rtrv, false, none, false],
+        136: [gString, bestWeapon, bestBase, rtrv, false, none, false],
+        144: [gString, bestWeapon, bestBase, rtrv, false, none, false],
+        152: [gString, bestWeapon, bestBase, rtrv, false, none, false],
+        160: [gString, bestWeapon, bestBase, rtrv, false, none, false],
+        eclipse: [gString, bestWeapon, bestBase, r254, true, none, false]
       },
       uu: {
-        0: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Ultimate Power Charm,Rift 2025 Charm,Rift 2024 Charm', false, 'none', false],
-        8: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Ultimate Power Charm,Rift 2025 Charm,Rift 2024 Charm', false, 'none', false],
-        16: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Ultimate Power Charm,Rift 2025 Charm,Rift 2024 Charm', false, 'none', false],
-        24: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Ultimate Power Charm,Rift 2025 Charm,Rift 2024 Charm', false, 'none', false],
-        32: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Ultimate Power Charm,Rift 2025 Charm,Rift 2024 Charm', false, 'none', false],
-        40: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Ultimate Power Charm,Rift 2025 Charm,Rift 2024 Charm', false, 'none', false],
-        48: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Ultimate Power Charm,Rift 2025 Charm,Rift 2024 Charm', false, 'none', false],
-        56: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Ultimate Power Charm,Rift 2025 Charm,Rift 2024 Charm', false, 'none', false],
-        64: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Ultimate Power Charm,Rift 2025 Charm,Rift 2024 Charm', false, 'none', false],
-        72: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Ultimate Power Charm,Rift 2025 Charm,Rift 2024 Charm', false, 'none', false],
-        80: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Ultimate Power Charm,Rift 2025 Charm,Rift 2024 Charm', false, 'none', false],
-        88: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Ultimate Power Charm,Rift 2025 Charm,Rift 2024 Charm', false, 'none', false],
-        96: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Ultimate Power Charm,Rift 2025 Charm,Rift 2024 Charm', false, 'none', false],
-        104: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Ultimate Power Charm,Rift 2025 Charm,Rift 2024 Charm', false, 'none', false],
-        112: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Ultimate Power Charm,Rift 2025 Charm,Rift 2024 Charm', false, 'none', false],
-        120: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Ultimate Power Charm,Rift 2025 Charm,Rift 2024 Charm', false, 'none', false],
-        128: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Ultimate Power Charm,Rift 2025 Charm,Rift 2024 Charm', false, 'none', false],
-        136: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Ultimate Power Charm,Rift 2025 Charm,Rift 2024 Charm', false, 'none', false],
-        144: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Ultimate Power Charm,Rift 2025 Charm,Rift 2024 Charm', false, 'none', false],
-        152: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Ultimate Power Charm,Rift 2025 Charm,Rift 2024 Charm', false, 'none', false],
-        160: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Ultimate Power Charm,Rift 2025 Charm,Rift 2024 Charm', false, 'none', false],
-        eclipse: ['Gauntlet String', 'best.weapon.rift', 'best.base.rift', 'Rift Ultimate Power Charm,Rift 2025 Charm,Rift 2024 Charm', true, 'none', false]
+        0: [gString, bestWeapon, bestBase, rupr254, false, none, false],
+        8: [gString, bestWeapon, bestBase, rupr254, false, none, false],
+        16: [gString, bestWeapon, bestBase, rupr254, false, none, false],
+        24: [gString, bestWeapon, bestBase, rupr254, false, none, false],
+        32: [gString, bestWeapon, bestBase, rupr254, false, none, false],
+        40: [gString, bestWeapon, bestBase, rupr254, false, none, false],
+        48: [gString, bestWeapon, bestBase, rupr254, false, none, false],
+        56: [gString, bestWeapon, bestBase, rupr254, false, none, false],
+        64: [gString, bestWeapon, bestBase, rupr254, false, none, false],
+        72: [gString, bestWeapon, bestBase, rupr254, false, none, false],
+        80: [gString, bestWeapon, bestBase, rupr254, false, none, false],
+        88: [gString, bestWeapon, bestBase, rupr254, false, none, false],
+        96: [gString, bestWeapon, bestBase, rupr254, false, none, false],
+        104: [gString, bestWeapon, bestBase, rupr254, false, none, false],
+        112: [gString, bestWeapon, bestBase, rupr254, false, none, false],
+        120: [gString, bestWeapon, bestBase, rupr254, false, none, false],
+        128: [gString, bestWeapon, bestBase, rupr254, false, none, false],
+        136: [gString, bestWeapon, bestBase, rupr254, false, none, false],
+        144: [gString, bestWeapon, bestBase, rupr254, false, none, false],
+        152: [gString, bestWeapon, bestBase, rupr254, false, none, false],
+        160: [gString, bestWeapon, bestBase, rupr254, false, none, false],
+        eclipse: [gString, bestWeapon, bestBase, rupr254, true, none, false]
       },
       pp: {
-        0: ['Gauntlet String', 'best.weapon.rift', 'Signature Series Denture', 'Rift Ultimate Lucky Power Charm', true, 'white', false],
-        8: ['Gauntlet String', 'best.weapon.rift', 'Signature Series Denture', 'Rift Ultimate Lucky Power Charm', true, 'white', false],
-        16: ['Gauntlet String', 'best.weapon.rift', 'Signature Series Denture', 'Rift Ultimate Lucky Power Charm', true, 'white', false],
-        24: ['Gauntlet String', 'best.weapon.rift', 'Signature Series Denture', 'Rift Ultimate Lucky Power Charm', true, 'white', false],
-        32: ['Gauntlet String', 'best.weapon.rift', 'Signature Series Denture', 'Rift Ultimate Lucky Power Charm', true, 'white', false],
-        40: ['Gauntlet String', 'best.weapon.rift', 'Signature Series Denture', 'Rift Ultimate Lucky Power Charm', true, 'white', false],
-        48: ['Gauntlet String', 'best.weapon.rift', 'Signature Series Denture', 'Rift Ultimate Lucky Power Charm', true, 'white', false],
-        56: ['Gauntlet String', 'best.weapon.rift', 'Signature Series Denture', 'Rift Ultimate Lucky Power Charm', true, 'white', false],
-        64: ['Gauntlet String', 'best.weapon.rift', 'Signature Series Denture', 'Rift Ultimate Lucky Power Charm', true, 'white', false],
-        72: ['Gauntlet String', 'best.weapon.rift', 'Signature Series Denture', 'Rift Ultimate Lucky Power Charm', true, 'white', false],
-        80: ['Gauntlet String', 'best.weapon.rift', 'Signature Series Denture', 'Rift Ultimate Lucky Power Charm', true, 'white', false],
-        88: ['Gauntlet String', 'best.weapon.rift', 'Signature Series Denture', 'Rift Ultimate Lucky Power Charm', true, 'white', false],
-        96: ['Gauntlet String', 'best.weapon.rift', 'Signature Series Denture', 'Rift Ultimate Lucky Power Charm', true, 'white', false],
-        104: ['Gauntlet String', 'best.weapon.rift', 'Signature Series Denture', 'Rift Ultimate Lucky Power Charm', true, 'white', false],
-        112: ['Gauntlet String', 'best.weapon.rift', 'Signature Series Denture', 'Rift Ultimate Lucky Power Charm', true, 'white', false],
-        120: ['Gauntlet String', 'best.weapon.rift', 'Signature Series Denture', 'Rift Ultimate Lucky Power Charm', true, 'white', false],
-        128: ['Gauntlet String', 'best.weapon.rift', 'Signature Series Denture', 'Rift Ultimate Lucky Power Charm', true, 'white', false],
-        136: ['Gauntlet String', 'best.weapon.rift', 'Signature Series Denture', 'Rift Ultimate Lucky Power Charm', true, 'white', false],
-        144: ['Gauntlet String', 'best.weapon.rift', 'Signature Series Denture', 'Rift Ultimate Lucky Power Charm', true, 'white', false],
-        152: ['Gauntlet String', 'best.weapon.rift', 'Signature Series Denture', 'Rift Ultimate Lucky Power Charm', true, 'white', false],
-        160: ['Gauntlet String', 'best.weapon.rift', 'Signature Series Denture', 'Rift Ultimate Lucky Power Charm', true, 'white', false],
-        eclipse: ['Gauntlet String', 'best.weapon.rift', 'Seasonal Gift', 'Ultimate Charm', true, 'white', false]
+        0: [gString, bestWeapon, signatureSeries, rulp, true, white, false],
+        8: [gString, bestWeapon, signatureSeries, rulp, true, white, false],
+        16: [gString, bestWeapon, signatureSeries, rulp, true, white, false],
+        24: [gString, bestWeapon, signatureSeries, rulp, true, white, false],
+        32: [gString, bestWeapon, signatureSeries, rulp, true, white, false],
+        40: [gString, bestWeapon, signatureSeries, rulp, true, white, false],
+        48: [gString, bestWeapon, signatureSeries, rulp, true, white, false],
+        56: [gString, bestWeapon, signatureSeries, rulp, true, white, false],
+        64: [gString, bestWeapon, signatureSeries, rulp, true, white, false],
+        72: [gString, bestWeapon, signatureSeries, rulp, true, white, false],
+        80: [gString, bestWeapon, signatureSeries, rulp, true, white, false],
+        88: [gString, bestWeapon, signatureSeries, rulp, true, white, false],
+        96: [gString, bestWeapon, signatureSeries, rulp, true, white, false],
+        104: [gString, bestWeapon, signatureSeries, rulp, true, white, false],
+        112: [gString, bestWeapon, signatureSeries, rulp, true, white, false],
+        120: [gString, bestWeapon, signatureSeries, rulp, true, white, false],
+        128: [gString, bestWeapon, signatureSeries, rulp, true, white, false],
+        136: [gString, bestWeapon, signatureSeries, rulp, true, white, false],
+        144: [gString, bestWeapon, signatureSeries, rulp, true, white, false],
+        152: [gString, bestWeapon, signatureSeries, rulp, true, white, false],
+        160: [gString, bestWeapon, signatureSeries, rulp, true, white, false],
+        eclipse: [gString, bestWeapon, 'Seasonal Gift', uc, true, white, false]
       },
       rescueTrap: {
         0: ['', '', '', ''],
@@ -2566,7 +2578,7 @@ function valourRift() {
         console.log(
           `Steps to next floor(TE): ${startingSteps[floor]} - ${nowStep} = ${stepsToNextFloor}`
         );
-        // 距離下個樓層的步數大於 speed: false
+        // TODO 距離下個樓層的步數大於 speed + 1(CF): false
         if (stepsToNextFloor > currentLevels[0]) return false;
         console.log('距離下個樓層(TE)的步數小於等於 speed');
         return true;
@@ -2584,7 +2596,7 @@ function valourRift() {
         console.log(
           `Steps to next floor: ${startingSteps[floor]} - ${nowStep} = ${stepsToNextFloor}`
         );
-        // 距離下個樓層的步數大於 speed: false
+        // TODO 距離下個樓層的步數大於 speed + 1(CF): false
         if (stepsToNextFloor > currentLevels[0]) return false;
         console.log('距離下個樓層的步數小於等於 speed');
         return true;
