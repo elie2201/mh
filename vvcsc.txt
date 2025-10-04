@@ -162,7 +162,7 @@ function clawShotCity() {
   const targetEnvironmentType = 'claw_shot_city';
   const enviromentType = getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('clawShotCity_1.0.0.3.8');
+  logging('clawShotCity_1.0.1.3.8');
   // my own hard-coded constants
   const unknown = 'unknown';
   const posterType = 'wanted_poster_convertible';
@@ -336,13 +336,15 @@ function clawShotCity() {
                 this.handleTrapPromise();
                 return;
               }
+              console.log(`have poster, open one? ${settings.isAutoMap}`);
+              if (!settings.isAutoMap) return;
               console.log('open scroll and then inviteMapFriendsPromise');
-              // setTimeout(() => {
               hg.utils.UserInventory.useConvertible(scrollType, 1, (data) => {
                 console.log(data.success == 1 ? 'success' : 'failed', data);
-                this.inviteMapFriendsPromise(mapClass);
+                setTimeout(() => {
+                  this.inviteMapFriendsPromise(mapClass);
+                }, parseInt(1000 + Math.random() * 2000));
               });
-              // }, parseInt(1000 + Math.random() * 1000));
             },
             true
           );
