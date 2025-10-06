@@ -2059,7 +2059,7 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = getEnvironmentType();
   if (environmentType !== targetEnvironmentType) return;
-  logging('valourRift_0.6.44.29.24');
+  logging('valourRift_0.6.45.30.24');
   // my own hard-coded constants
   const gString = 'Gauntlet String';
   const bgString = 'Brie String,Gauntlet String';
@@ -2079,11 +2079,11 @@ function valourRift() {
     'upgrade_hunt_limit',
     'upgrade_boss_extension'
   ];
-  const offChampionFireSteps = [
+  /* const offChampionFireSteps = [
     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 15, 16, 17, 18, 19, 20, 23, 24,
     25, 26, 27, 28, 29, 30, 34, 35, 36, 37, 38, 39, 40, 45, 46, 47, 48, 49, 50,
     56, 57, 58, 59, 60, 67, 68, 69, 70, 78, 79, 80, 89, 90, 100
-  ];
+  ]; */
   // prettier-ignore
   /** Starting steps of each floor */
   const startingSteps = [
@@ -2378,7 +2378,7 @@ function valourRift() {
     50, 50, 60, 60, 70,
     70, 70, 100, 110, 120,
     130, 160, 160, 300, 400,
-    400, 750, 750, 750, 900
+    400, 400, 650, 900, 900
   ];
   const quest = isProd ? user.quests.QuestRiftValour : QuestRiftValour;
   const state = trimToEmpty(quest.state.toLowerCase());
@@ -2919,14 +2919,16 @@ function valourRift() {
     }, 10000);
   function autoOffChampionFire(isToEnable) {
     logging(`Before auto off: ${isToEnable}`);
-    if (!isToEnable) return isToEnable;
+    // 停用. CF我只在 PP時用,但 step變化並不是規律的,少的 1 step可能因為 TA造成多 1 hunt
+    return isToEnable;
+    /* if (!isToEnable) return isToEnable;
     if (isAtEclipse) return isToEnable;
     if (offChampionFireSteps.indexOf(stepsToEclipse) > -1) {
       logging('Turn off CF');
       return false;
     }
     logging('Saving CF');
-    return isToEnable;
+    return isToEnable; */
   }
 }
 // End #valourRift
