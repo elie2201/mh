@@ -78,6 +78,10 @@ const MOUSEHUNT_BASE_URL = 'https://www.mousehuntgame.com/';
 const user = {};
 const app = {};
 
+/** get sn_user_id */
+function getSnUserId(params) {
+  return (user.sn_user_id + '').trim();
+}
 function logging(...any) {
   console.log(...any);
 }
@@ -107,8 +111,38 @@ function travel(environmentType, milliseconds, callback) {
 // #scheduledTravel
 // scheduledTravel('2024-09-27T04:50:00','2024-09-27T05:10:00','ancient_city');
 // 每天往返 CSC跟 GES
-scheduledTravel('16:35:00', '16:59:00', 'train_station');
-scheduledTravel('08:50:00', '09:14:00', 'claw_shot_city');
+const snuid = getSnUserId();
+if (
+  [
+    'hg_d783ff747d3b60073ef541d335ff901d',
+    'hg_1602095c6c0a2376b3bbb12e417df9a4',
+    'hg_3207d1fd7e0a8bca4bdef74c378a6a32',
+    'hg_81538b33309a53ae077d5f01f53f6c06'
+  ].indexOf(snuid) > -1
+) {
+  scheduledTravel('08:35:00', '08:59:00', 'train_station');
+  scheduledTravel('00:50:00', '01:14:00', 'claw_shot_city');
+} else if (
+  [
+    'hg_62a01c775dd2fe8670b6cb46b31c1318',
+    'hg_2d25dd402e32439c658e10b62d1d64bf',
+    'hg_3aee6d83ca43348e580141870193b531',
+    'hg_91cbc542b246f2f8b4f0f3b446915199'
+  ].indexOf(snuid) > -1
+) {
+  scheduledTravel('12:35:00', '12:59:00', 'train_station');
+  scheduledTravel('04:50:00', '05:14:00', 'claw_shot_city');
+} else if (
+  [
+    'hg_5eeb1174c05069baa7fa40bd82897130',
+    'hg_52952f2bb5ff36565d7936529f156349',
+    'hg_219f8417793705b8bfe8c4a01ecce1fc',
+    'hg_9ab9014e7b20bd60ce4a31485651e008'
+  ].indexOf(snuid) > -1
+) {
+  scheduledTravel('16:35:00', '16:59:00', 'train_station');
+  scheduledTravel('08:50:00', '09:14:00', 'claw_shot_city');
+}
 // scheduledTravel('2024-10-14T06:35:00','2024-10-14T06:59:00','train_station');
 // scheduledTravel('2024-10-17T06:35:00','2024-10-17T06:59:00','claw_shot_city');
 // scheduledTravel('2025-08-26T08:01:00', '2025-08-26T08:30:00', 'rift_furoma');
