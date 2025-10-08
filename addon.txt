@@ -1,73 +1,281 @@
-// forewordFarm
-if (getEnvironmentType() === 'foreword_farm') forewordFarm();
-function forewordFarm() {
-  const enviromentType = getEnvironmentType();
-  if (enviromentType !== 'foreword_farm') return;
-  logging('forewordFarm_0.1.0.0.0');
-  const quest = user.quests.QuestForewordFarm;
-  const plantRowTypes = [
-    ['ordinary_farm_plant', 'ordinary_magic_farm_plant'],
-    ['legendary_farm_plant', 'legendary_magic_farm_plant'],
-    ['twisted_legendary_farm_plant', 'twisted_legendary_magic_farm_plant']
-  ];
-  // prettier-ignore
-  const defaultSettings = {
-    isAutoClaim: true,
-    isAutoPlant: true,
-    isPlant3AtOnce: false,
-    plantTypeRow: 0,
-    isPlantWithMe: false,
-    isAutoPlantType: false,
-    traps: {
-      no_plants: ['Gouda Cheese', 'best.weapon.tactical', 'best.base.combo', 'Luck Charm', false],
-      one_plants: ['Gouda Cheese', 'best.weapon.tactical', 'best.base.combo', 'Luck Charm', false],
-      two_plants: ['Gouda Cheese', 'best.weapon.tactical', 'best.base.combo', 'Luck Charm', false],
-      three_plants: ['Gouda Cheese', 'best.weapon.tactical', 'best.base.combo', 'Luck Charm', false],
-      three_papyrus: ['Gouda Cheese', 'best.weapon.tactical', 'best.base.combo', 'Super Snowball Charm', false]
+// MH constants
+const QuestAncientCity = {
+  status: '',
+  bait_warning: '',
+  bait_status: 'active',
+  power_type_warning: '',
+  boss: 'UNAVAILABLE',
+  countdown: 17,
+  total: 24,
+  remaining: 20,
+  width: 83.33333333333334,
+  district_tier: 1,
+  district_type: 't',
+  clue_name: 'Treasury',
+  district_name: 'The Treasure Room',
+  items: {
+    cave_nightshade_crafting_item: {
+      quantity: 48,
+      status: ''
+    },
+    cavern_fungus_crafting_item: {
+      quantity: 280,
+      status: ''
+    },
+    plate_of_fealty_crafting_item: {
+      quantity: 57,
+      status: 'active'
+    },
+    tech_power_core_crafting_item: {
+      quantity: 36,
+      status: 'active'
+    },
+    ancient_scholar_scroll_crafting_item: {
+      quantity: 12,
+      status: 'active'
+    },
+    glowing_gruyere_cheese: {
+      quantity: 364
     }
-  };
-  const ajax = (element, params, successCallback) => {
-    params['last_read_journal_entry_id'] = $('#journallatestentry').data(
-      'entry-id'
-    );
-    params['uh'] = user.unique_hash;
-    $.ajax({
-      data: params,
-      dataType: 'json',
-      type: 'post',
-      url: MOUSEHUNT_BASE_URL + 'managers/ajax/environment/foreword_farm.php',
-      success: function (data) {
-        if (successCallback) {
-          successCallback(data);
-        }
-      },
-      error: function () {
-        // eslint-disable-next-line new-cap
-        const popup = new jsDialog();
-        popup.setTemplate('error');
-        popup.addToken('{*title*}', 'An error has occurred.');
-        popup.addToken('{*content*}', 'An error occurred. Please try again!');
-        popup.show();
-      }
-    });
-  };
-  const settings = getStorageToObject(enviromentType, defaultSettings);
-  const miceState = quest.mice_state;
-  const trap = settings.traps[miceState];
-  armAllTraps(...trap);
-  const claimHarvest = () => {
-    const params = {
-      action: 'claim_harvest'
-    };
-    ajax(null, params, function (data) {
-      if (data.success) {
-        console.log(`claimed harvest: ${data.foreword_farm_harvest_bin}`);
-      }
-    });
-  };
-  if (settings.isAutoClaim && quest.harvest_bin.can_claim)
-    setTimeout(() => {
-      claimHarvest();
-    }, getRandomInteger(10000, 17000));
+  },
+  show_thief_base: null,
+  is_thief_base_armed: null,
+  thief_base_mode: 'stealth',
+  is_stealth_mode: null,
+  is_heist_mode: null,
+  stealth_mode_stealth_effect_chance: 50,
+  heist_mode_stealth_multiplier: 2,
+  stealth_loss_catch: 1,
+  stealth_loss_fta: 1,
+  stealth_loss_ftc: 1,
+  canvas_page_url: 'https://www.mousehuntgame.com/'
+};
+const MOUSEHUNT_BASE_URL = 'https://www.mousehuntgame.com/';
+const eventRegistry = {};
+// const jsDialog = {};
+const hg = {};
+const user = {};
+user.environment_type = 'ancient_city';
+user.quests = {};
+user.quests.QuestAncientCity = QuestAncientCity;
+// MH functions
+function $() {}
+// MH & my-mh-aid functions
+function getEnvironmentType() {
+  const rtn = trimToEmpty(user.environment_type);
+  // console.plog(`Current location environment_type: ${rtn}`);
+  return rtn;
 }
-// End forewordFarm
+function trimToEmpty(str) {
+  return trimToDefault(str);
+}
+function trimToDefault(str, deflt) {
+  return str === 0 ? '0' : ((str || (deflt ? deflt : '')) + '').trim();
+}
+function logging(...any) {
+  const debug = true;
+  if (debug) {
+    console.groupCollapsed(new Date(), ...any);
+    console.log(Error().stack);
+    console.groupEnd();
+  }
+}
+function parseQuantity(qty) {
+  const strQty = (qty || 0) + '';
+  const rtn = parseInt(strQty.replaceAll(',', ''));
+  return Number.isNaN(rtn) ? 0 : rtn;
+}
+function completeTransaction(
+  isPurchase,
+  itemType,
+  itemQuantity,
+  isKingsCartItem,
+  success
+) {
+  if (itemQuantity < 1) {
+    console.plog('Cannot buy 0 item');
+    return;
+  }
+  const uniqueHash = user.unique_hash;
+  $.ajax({
+    data: {
+      type: itemType,
+      quantity: itemQuantity,
+      buy: isPurchase ? 1 : 0,
+      is_kings_cart_item: isKingsCartItem ? 1 : 0,
+      uh: uniqueHash
+    },
+    dataType: 'json',
+    type: 'post',
+    url: MOUSEHUNT_BASE_URL + 'managers/ajax/purchases/itempurchase.php',
+    success: function (data) {
+      console.log(data.success, data);
+      eventRegistry.doEvent('ajax_response', data);
+      if (success) success();
+    },
+    error: function (data) {
+      // const message = `completeTransaction for ${itemType} error`;
+      // popupMessage(message);
+      // localStorage.setItem(storingMessageKey, message);
+      console.log(data);
+    }
+  });
+}
+/* 
+function armAllTraps(bait, weapon, base, charm) {
+  console.log(bait, weapon, base, charm);
+}
+function getStorageToObject(keyName, objDefault) {
+  let obj = getStorage(keyName);
+  let bCheckNewProp = true;
+  if (isNullOrUndefined(obj)) {
+    obj = JSON.stringify(objDefault);
+    setStorage(keyName, obj);
+    bCheckNewProp = false;
+  }
+  obj = JSON.parse(obj);
+  if (bCheckNewProp) {
+    if (assignMissingDefault(obj, objDefault)) {
+      setStorage(keyName, JSON.stringify(obj));
+    }
+  }
+  return obj;
+  function getStorage(name) {
+    // check if the web browser support HTML5 storage
+    if ('localStorage' in window && !isNullOrUndefined(window.localStorage)) {
+      return window.localStorage.getItem(name);
+    }
+  }
+  function setStorage(name, value) {
+    // check if the web browser support HTML5 storage
+    if ('localStorage' in window && !isNullOrUndefined(window.localStorage)) {
+      window.localStorage.setItem(name, value);
+    }
+  }
+  function isNullOrUndefined(obj) {
+    return (
+      obj === null || obj === undefined || obj === 'null' || obj === 'undefined'
+    );
+  }
+  function assignMissingDefault(target, source) {
+    let isResave = false;
+    for (const key in source) {
+      if (
+        Object.prototype.hasOwnProperty.call(source, key) &&
+        !Object.prototype.hasOwnProperty.call(target, key)
+      ) {
+        const element = source[key];
+        target[key] = element;
+        isResave = true;
+      }
+    }
+    return isResave;
+  }
+}
+function getRandomInteger(min, max) {
+  return parseInt(min + Math.random() * (max - min));
+}
+function reloadWithMessage(msg, soundHorn) {
+  console.plog('reloadWithMessage: ', msg, ',', soundHorn);
+  // display the message
+  // displayTimer(msg, msg, msg);
+
+  // reload the page
+  setTimeout(function () {
+    // reloadPage(soundHorn);
+  }, 1000);
+}
+ */
+
+// #autoBuyCCDT
+if (
+  getEnvironmentType() === 'rift_valour' &&
+  parseInt(user.weapon_item_id) === 2342
+)
+  autoBuyCCDT();
+function autoBuyCCDT() {
+  // const isProd = false;
+  const targetEnvironmentType = 'ancient_city';
+  const enviromentType = getEnvironmentType();
+  if (enviromentType !== targetEnvironmentType) return;
+  if (parseInt(user.weapon_item_id) === 1916) return;
+  logging('autoBuyCCDT_0.0.0.0.1');
+  // MH constants
+  // const quest = isProd ? user.quests.QuestAncientCity : QuestAncientCity;
+  const autoBuyCCDTUtility = (() => {
+    const utils = {
+      // values
+      /** Set immutable fields */
+      setImmutable() {},
+      /** trapState, default: xxx */
+      trapState: 'xxx',
+      /** start running */
+      run() {
+        logging('start autoBuyCCDT');
+        this.autoSettingsPromise();
+      },
+      /** auto settings */
+      autoSettingsPromise() {
+        logging('start autoSettingsPromise');
+        return new Promise((resolve, reject) => {
+          // auto settings for running if necessary and then invoke next promise
+          const finalItemQty = parseQuantity(
+            document.querySelector(
+              'div[data-item-type="total_eclipse_resource_stat_item"]'
+            ).innerText
+          );
+          if (finalItemQty < 20) {
+            console.log('Not have enough final crafting item');
+            return;
+          }
+          console.log('Have 20 up final crafting item');
+          completeTransaction(
+            true,
+            'celestial_dissonance_weapon',
+            1,
+            false,
+            () => {
+              hg.utils.TrapControl.armItem(
+                'celestial_dissonance_weapon',
+                'weapon'
+              ).go();
+            }
+          );
+        });
+      }
+    };
+    // initial utils
+    function init() {
+      // make fields immutable
+      utils.setImmutable();
+      // initialize values in utils if necessary
+    }
+    init();
+    return utils;
+  })();
+  autoBuyCCDTUtility.run();
+}
+// End #autoBuyCCDT
+
+/* 
+(() => {
+  autoSettingsPromise();
+  function autoSettingsPromise() {
+    console.log('start autoSettingsPromise');
+    return new Promise((resolve, reject) => {
+      // auto settings for running if necessary and then invoke next promise
+      const items = user.quests.QuestLabyrinth.items;
+      const finalItemQty = parseInt(items.tech_power_core_crafting_item);
+      console.log(finalItemQty, items);
+      if (finalItemQty < 150) {
+        console.log('Not have enough final crafting item');
+        return;
+      }
+      console.log('Have enough final crafting item');
+      completeTransaction(true, 'endless_labyrinth_weapon', 1, false, () => {
+        hg.utils.TrapControl.armItem('endless_labyrinth_weapon', 'weapon').go();
+      });
+    });
+  }
+})();
+ */
