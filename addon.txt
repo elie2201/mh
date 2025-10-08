@@ -55,7 +55,7 @@ const eventRegistry = {};
 // const jsDialog = {};
 const hg = {};
 const user = {};
-user.environment_type = 'ancient_city';
+user.environment_type = 'rift_valour';
 user.quests = {};
 user.quests.QuestAncientCity = QuestAncientCity;
 // MH functions
@@ -195,10 +195,10 @@ if (
   autoBuyCCDT();
 function autoBuyCCDT() {
   // const isProd = false;
-  const targetEnvironmentType = 'ancient_city';
+  const targetEnvironmentType = 'rift_valour';
   const enviromentType = getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  if (parseInt(user.weapon_item_id) === 1916) return;
+  if (parseInt(user.weapon_item_id) !== 2342) return;
   logging('autoBuyCCDT_0.0.0.0.1');
   // MH constants
   // const quest = isProd ? user.quests.QuestAncientCity : QuestAncientCity;
