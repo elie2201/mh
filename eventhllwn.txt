@@ -1,0 +1,3299 @@
+const QuestHalloweenBoilingCauldron = {
+  is_basic_bait_armed: null,
+  bait_type: 'cauldron_tier_1_cheese',
+  items: {
+    gouda_cheese: {
+      name: 'Gouda Cheese',
+      thumb:
+        'https://www.mousehuntgame.com/images/items/bait/7e0daa548364166c46c0804e6cb122c6.gif?cv=3',
+      quantity: '2,040',
+      quantity_unformatted: 2040,
+      status: '',
+      is_next: null
+    },
+    super_brie_cheese: {
+      name: 'SUPER|brie+',
+      thumb:
+        'https://www.mousehuntgame.com/images/items/bait/d3bb758c09c44c926736bbdaf22ee219.gif?cv=3',
+      quantity: '4,315',
+      quantity_unformatted: 4315,
+      status: '',
+      is_next: null
+    },
+    trick_cheese: {
+      name: 'Ghoulgonzola Cheese',
+      thumb:
+        'https://www.mousehuntgame.com/images/items/bait/9855eef798f58ba8437bc9e6c8bf74bf.gif?cv=3',
+      quantity: 242,
+      quantity_unformatted: 242,
+      status: '',
+      is_next: null
+    },
+    treat_cheese: {
+      name: 'Candy Corn Cheese',
+      thumb:
+        'https://www.mousehuntgame.com/images/items/bait/99c2a28643063758adc3b5a417869af7.gif?cv=3',
+      quantity: 128,
+      quantity_unformatted: 128,
+      status: '',
+      is_next: null
+    },
+    lockbox_limburger_cheese: {
+      name: 'Lockbox Limburger Cheese',
+      thumb:
+        'https://www.mousehuntgame.com/images/items/bait/a4feeddd328c42dd783dd899a1c8f9c4.gif?cv=3',
+      quantity: 0,
+      quantity_unformatted: 0,
+      status: 'disabled',
+      is_next: null
+    },
+    ghastly_galleon_cheese: {
+      name: 'Ghastly Galleon Gouda',
+      thumb:
+        'https://www.mousehuntgame.com/images/items/bait/ebf29f2a8ea3a3f386fa3e28d0806c31.gif?cv=3',
+      quantity: 17,
+      quantity_unformatted: 17,
+      status: '',
+      is_next: null
+    },
+    cauldron_instant_finish_stat_item: {
+      name: 'Reactive Reagent',
+      thumb:
+        'https://www.mousehuntgame.com/images/items/stats/48dfb0552bfe3efa7ec647e3ddaa5511.gif?cv=3',
+      quantity: 0,
+      quantity_unformatted: 0,
+      status: 'disabled',
+      is_next: null,
+      can_finish_0: null,
+      can_finish_1: null
+    },
+    halloween_extract_stat_item: {
+      name: 'Evil Extract',
+      thumb:
+        'https://www.mousehuntgame.com/images/items/stats/fe34d4e8dd3500184042b3d474d9977b.gif?cv=3',
+      quantity: 0,
+      quantity_unformatted: 0,
+      status: 'disabled',
+      is_next: null,
+      can_brew_0: null,
+      can_brew_1: null,
+      can_brew: null
+    },
+    insidious_incense_stat_item: {
+      name: 'Insidious Incense',
+      thumb:
+        'https://www.mousehuntgame.com/images/items/stats/5e6e9335ad0aec488f293e7463913f4e.gif?cv=3',
+      quantity: 0,
+      quantity_unformatted: 0,
+      status: 'disabled',
+      is_next: null
+    },
+    '2014_spooky_shuffle_admission_ticket_stat_item': {
+      name: 'Spooky Shuffle Ticket',
+      thumb:
+        'https://www.mousehuntgame.com/images/items/stats/ba4355e3ae81055fa6441c4c8867bc72.gif?cv=3',
+      quantity: 42,
+      quantity_unformatted: 42,
+      status: '',
+      is_next: null
+    },
+    spooky_shuffle_upgrade_stat_item: {
+      name: 'Spooky Shuffle Dust',
+      thumb:
+        'https://www.mousehuntgame.com/images/items/stats/5976e5f1405ea7433062bd666421fc19.gif?cv=3',
+      quantity: 0,
+      quantity_unformatted: 0,
+      status: 'disabled',
+      is_next: null
+    },
+    cauldron_tier_1_ingredient_stat_item: {
+      name: 'Pungent Pumpkin',
+      thumb:
+        'https://www.mousehuntgame.com/images/items/stats/68557a73c8163e4ab037ecd835a356b3.gif?cv=3',
+      quantity: 2,
+      quantity_unformatted: 2,
+      status: '',
+      is_next: null
+    },
+    cauldron_tier_1_cheese: {
+      name: 'Monterey Jack-O-Lantern',
+      thumb:
+        'https://www.mousehuntgame.com/images/items/bait/e842dba3ad23823a0f92805ae9281d7c.gif?cv=3',
+      quantity: 75,
+      quantity_unformatted: 75,
+      status: 'active',
+      is_next: null,
+      can_brew_0: null,
+      can_brew_1: null,
+      can_brew: null
+    },
+    cauldron_tier_2_ingredient_stat_item: {
+      name: 'Marshmarrow',
+      thumb:
+        'https://www.mousehuntgame.com/images/items/stats/9c73a6f5dd05b3750659811cc64ca2ac.gif?cv=3',
+      quantity: 13,
+      quantity_unformatted: 13,
+      status: '',
+      is_next: null
+    },
+    cauldron_tier_2_cheese: {
+      name: 'Bonefort Cheese',
+      thumb:
+        'https://www.mousehuntgame.com/images/items/bait/f3f138fc851cf4edd68a910f5734dd66.gif?cv=3',
+      quantity: 0,
+      quantity_unformatted: 0,
+      status: 'disabled',
+      is_next: true,
+      can_brew_0: null,
+      can_brew_1: null,
+      can_brew: null
+    },
+    cauldron_tier_3_ingredient_stat_item: {
+      name: 'Ghost Pepper',
+      thumb:
+        'https://www.mousehuntgame.com/images/items/stats/24333632f8d469aee4b0e0458317ea29.gif?cv=3',
+      quantity: 0,
+      quantity_unformatted: 0,
+      status: 'disabled',
+      is_next: null
+    },
+    cauldron_tier_3_cheese: {
+      name: 'Polter-Geitost',
+      thumb:
+        'https://www.mousehuntgame.com/images/items/bait/2b2dc54437bf30c66ccdb4a3bd61cdaf.gif?cv=3',
+      quantity: 0,
+      quantity_unformatted: 0,
+      status: 'disabled',
+      is_next: null,
+      can_brew_0: null,
+      can_brew_1: null,
+      can_brew: null
+    },
+    cauldron_tier_4_ingredient_stat_item: {
+      name: 'AvocAAAAHdo',
+      thumb:
+        'https://www.mousehuntgame.com/images/items/stats/6cc6bd1b02d2e4d812407e440b0b33fe.gif?cv=3',
+      quantity: 0,
+      quantity_unformatted: 0,
+      status: 'disabled',
+      is_next: null
+    },
+    cauldron_tier_4_cheese: {
+      name: 'Scream Cheese',
+      thumb:
+        'https://www.mousehuntgame.com/images/items/bait/129d14b992a8208af3d4ec6d57ba1abe.gif?cv=3',
+      quantity: 0,
+      quantity_unformatted: 0,
+      status: 'disabled',
+      is_next: null,
+      can_brew_0: null,
+      can_brew_1: null,
+      can_brew: null
+    },
+    cauldron_potion_ingredient_stat_item: {
+      name: 'Mousedrake Root',
+      thumb:
+        'https://www.mousehuntgame.com/images/items/stats/d5240cd8a92be125b9bebacb8e8d4879.gif?cv=3',
+      quantity: 4,
+      quantity_unformatted: 4,
+      status: '',
+      is_next: null
+    }
+  },
+  recipes: {
+    cheese: [
+      {
+        name: 'Monterey Jack-O-Lantern',
+        type: 'cauldron_tier_1_recipe',
+        cost: [
+          {
+            type: 'cauldron_tier_1_ingredient_stat_item',
+            name: 'Pungent Pumpkin',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/68557a73c8163e4ab037ecd835a356b3.gif?cv=3',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/f29178e0a95d01f9cda7b89808ebe6de.png?cv=3',
+            quantity: 15,
+            num_owned: 2
+          }
+        ],
+        brew_time: 15,
+        yield: [
+          {
+            type: 'cauldron_tier_1_cheese',
+            name: 'Monterey Jack-O-Lantern',
+            description:
+              'This cheese has a mild, slightly sweet flavour that is grossly overpowered by the pungent odour of the rotting pumpkins that were used to brew it. Its unsettling smile attracts some fairly spooky mice in the Gloomy Greenwood.',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/bait/e842dba3ad23823a0f92805ae9281d7c.gif?cv=3',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/bait/transparent_thumb/075cd86a5a2b69a437f854b700ffd390.png?cv=3',
+            quantity: 10
+          }
+        ]
+      },
+      {
+        name: 'Bonefort Cheese',
+        type: 'cauldron_tier_2_recipe',
+        cost: [
+          {
+            type: 'cauldron_tier_2_ingredient_stat_item',
+            name: 'Marshmarrow',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/9c73a6f5dd05b3750659811cc64ca2ac.gif?cv=3',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/ac04e0457daaef8e675f7d198871a0e1.png?cv=3',
+            quantity: 15,
+            num_owned: 13
+          }
+        ],
+        brew_time: 15,
+        yield: [
+          {
+            type: 'cauldron_tier_2_cheese',
+            name: 'Bonefort Cheese',
+            description:
+              'This soft but grainy cheese is one of the only cheeses in the Kingdom that is considered a serious choking hazard. The Marshmarrow used in the brewing process provides a uniquely skeletal flavour that attracts some very spooky mice in the Gloomy Greenwood.',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/bait/f3f138fc851cf4edd68a910f5734dd66.gif?cv=3',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/bait/transparent_thumb/1902af5fd288b2e05ef2c9c88805cc84.png?cv=3',
+            quantity: 10
+          }
+        ]
+      },
+      {
+        name: 'Polter-Geitost',
+        type: 'cauldron_tier_3_recipe',
+        cost: [
+          {
+            type: 'cauldron_tier_3_ingredient_stat_item',
+            name: 'Ghost Pepper',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/24333632f8d469aee4b0e0458317ea29.gif?cv=3',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/28cf6842b6637ea13199f3535fbfaa97.png?cv=3',
+            quantity: 15,
+            num_owned: 0
+          }
+        ],
+        brew_time: 15,
+        yield: [
+          {
+            type: 'cauldron_tier_3_cheese',
+            name: 'Polter-Geitost',
+            description:
+              'This spectral specialty is deathly cold to the touch due to the chilly Ghost Peppers used to brew it. It has a distinctive after-life-taste that is favoured by some extremely spooky mice in the Gloomy Greenwood including the Ghost Pirates!',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/bait/2b2dc54437bf30c66ccdb4a3bd61cdaf.gif?cv=3',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/bait/transparent_thumb/410c1dec1b67ccd4ded57f435c1cd3ea.png?cv=3',
+            quantity: 10
+          }
+        ]
+      },
+      {
+        name: 'Scream Cheese',
+        type: 'cauldron_tier_4_recipe',
+        cost: [
+          {
+            type: 'cauldron_tier_4_ingredient_stat_item',
+            name: 'AvocAAAAHdo',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/6cc6bd1b02d2e4d812407e440b0b33fe.gif?cv=3',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/b90068683ee589137c6a549bdc521983.png?cv=3',
+            quantity: 15,
+            num_owned: 0
+          }
+        ],
+        brew_time: 15,
+        yield: [
+          {
+            type: 'cauldron_tier_4_cheese',
+            name: 'Scream Cheese',
+            description:
+              'This dreadful delight can only be brewed by harnessing the perpetual anxiety of an AvocAAAAHdo and whipping it into a carefully balanced state of panic and frenzy. This terrifying treat is sought after by the absolute spookiest mice in the Gloomy Greenwood including Baba Gaga herself!',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/bait/129d14b992a8208af3d4ec6d57ba1abe.gif?cv=3',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/bait/transparent_thumb/c680b4ace61c20ec4408dbdfdb33daf9.png?cv=3',
+            quantity: 10
+          }
+        ]
+      },
+      {
+        name: 'Evil Extract',
+        type: 'halloween_extract_cauldron_recipe',
+        cost: [
+          {
+            type: 'cauldron_potion_ingredient_stat_item',
+            name: 'Mousedrake Root',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/d5240cd8a92be125b9bebacb8e8d4879.gif?cv=3',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/dc52f52634fdb2d720d59ad59ecbab12.png?cv=3',
+            quantity: 15,
+            num_owned: 4
+          }
+        ],
+        brew_time: 15,
+        yield: [
+          {
+            type: 'halloween_extract_stat_item',
+            name: 'Evil Extract',
+            description:
+              'This sinister solution is the pure essence of evil distilled from Mousedrake Root into a highly concentrated and extremely frightening fluid. This lucrative liquid is so powerful that it can be used by the Apothecary at the Gloomy Greenwoods to create almost any potion ever devised!',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/fe34d4e8dd3500184042b3d474d9977b.gif?cv=3',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/720c74a43ad07cbc3afa674a76bf0fc4.png?cv=3',
+            quantity: 10
+          }
+        ]
+      }
+    ],
+    potion: [
+      {
+        name: 'Wealth Potion',
+        type: 'wealth_potion',
+        cost: [
+          {
+            type: 'halloween_extract_stat_item',
+            name: 'Evil Extract',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/fe34d4e8dd3500184042b3d474d9977b.gif?cv=3',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/720c74a43ad07cbc3afa674a76bf0fc4.png?cv=3',
+            quantity: 1,
+            num_owned: 0
+          }
+        ],
+        yield: [
+          {
+            type: 'wealth_potion',
+            name: 'Wealth Potion',
+            description:
+              'This powerful alchemical agent has the remarkable and lucrative ability to melt down Wealth charms directly into gold!',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/potions/3c37ea4d7d4978868dfc0e211f8e7be6.jpg?cv=3',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/potions/transparent_thumb/52ae016c718aa8e314fb67b673b82786.png?cv=3',
+            is_new: null,
+            quantity: 1,
+            num_owned: 0
+          }
+        ],
+        recipes: [
+          {
+            consumed_item_type: 'gold_bonus_trinket',
+            consumed_item_cost: 10,
+            produced_item_type: 'gold_stat_item',
+            produced_item_yield: 18000,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Wealth Charms',
+            consumed_item_cost_formatted: 10,
+            produced_item_name: 'Gold',
+            produced_item_yield_formatted: '18K',
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          },
+          {
+            consumed_item_type: 'super_gold_bonus_trinket',
+            consumed_item_cost: 10,
+            produced_item_type: 'gold_stat_item',
+            produced_item_yield: 45000,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Super Wealth Charms',
+            consumed_item_cost_formatted: 10,
+            produced_item_name: 'Gold',
+            produced_item_yield_formatted: '45K',
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          },
+          {
+            consumed_item_type: 'extreme_gold_bonus_trinket',
+            consumed_item_cost: 10,
+            produced_item_type: 'gold_stat_item',
+            produced_item_yield: 150000,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Extreme Wealth Charms',
+            consumed_item_cost_formatted: 10,
+            produced_item_name: 'Gold',
+            produced_item_yield_formatted: '150K',
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          },
+          {
+            consumed_item_type: 'ultimate_gold_bonus_trinket',
+            consumed_item_cost: 10,
+            produced_item_type: 'gold_stat_item',
+            produced_item_yield: 500000,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Ultimate Wealth Charms',
+            consumed_item_cost_formatted: 10,
+            produced_item_name: 'Gold',
+            produced_item_yield_formatted: '500K',
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          }
+        ],
+        is_potion: true,
+        is_shop_item: true,
+        can_brew: null
+      },
+      {
+        name: 'Liquid Oxygen Potion',
+        type: 'liquid_oxygen_potion',
+        cost: [
+          {
+            type: 'halloween_extract_stat_item',
+            name: 'Evil Extract',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/fe34d4e8dd3500184042b3d474d9977b.gif?cv=3',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/720c74a43ad07cbc3afa674a76bf0fc4.png?cv=3',
+            quantity: 5,
+            num_owned: 0
+          }
+        ],
+        yield: [
+          {
+            type: 'liquid_oxygen_potion',
+            name: 'Liquid Oxygen Potion',
+            description:
+              'This liquid concoction causes a metabolic process to occur with the various ingredients found within Fishy Fromage. By applying it directly to the cheese, the active enzymes contained in the mixture eat away at it and produce pure oxygen as a byproduct!',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/potions/3bdf03c97377e77aea42e6972580da77.jpg?cv=3',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/potions/transparent_thumb/efe1097d16b01de03b58068e90320318.png?cv=3',
+            is_new: null,
+            quantity: 1,
+            num_owned: 0
+          }
+        ],
+        recipes: [
+          {
+            consumed_item_type: 'fishy_fromage_cheese',
+            consumed_item_cost: 10,
+            produced_item_type: 'oxygen_stat_item',
+            produced_item_yield: 50,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Fishy Fromage',
+            consumed_item_cost_formatted: 10,
+            produced_item_name: 'Oxygen Canisters',
+            produced_item_yield_formatted: 50,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          }
+        ],
+        is_potion: true,
+        is_shop_item: true,
+        can_brew: null
+      },
+      {
+        name: 'Riftifier Potion',
+        type: 'riftifier_potion',
+        cost: [
+          {
+            type: 'halloween_extract_stat_item',
+            name: 'Evil Extract',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/fe34d4e8dd3500184042b3d474d9977b.gif?cv=3',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/720c74a43ad07cbc3afa674a76bf0fc4.png?cv=3',
+            quantity: 5,
+            num_owned: 0
+          }
+        ],
+        yield: [
+          {
+            type: 'riftifier_potion',
+            name: 'Riftifier Potion',
+            description:
+              'This powerful and volatile potion is made almost entirely of liquefied Rift mist. Pour it onto a wide selection of charms to transform them instantly into their Rift counterparts!',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/potions/ed59c108af4529f759355356cd17b523.jpg?cv=3',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/potions/transparent_thumb/d83f9de23764532d4208b8e1229e6005.png?cv=3',
+            is_new: null,
+            quantity: 1,
+            num_owned: 0
+          }
+        ],
+        recipes: [
+          {
+            consumed_item_type: 'chrome_trinket',
+            consumed_item_cost: 50,
+            produced_item_type: 'rift_chrome_trinket',
+            produced_item_yield: 50,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Chrome Charms',
+            consumed_item_cost_formatted: 50,
+            produced_item_name: 'Rift Chrome Charms',
+            produced_item_yield_formatted: 50,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          },
+          {
+            consumed_item_type: 'power_trinket',
+            consumed_item_cost: 50,
+            produced_item_type: 'rift_power_trinket',
+            produced_item_yield: 50,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Power Charms',
+            consumed_item_cost_formatted: 50,
+            produced_item_name: 'Rift Power Charms',
+            produced_item_yield_formatted: 50,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          },
+          {
+            consumed_item_type: 'luck_trinket',
+            consumed_item_cost: 50,
+            produced_item_type: 'rift_luck_trinket',
+            produced_item_yield: 50,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Luck Charms',
+            consumed_item_cost_formatted: 50,
+            produced_item_name: 'Rift Luck Charms',
+            produced_item_yield_formatted: 50,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          },
+          {
+            consumed_item_type: 'super_chrome_trinket',
+            consumed_item_cost: 40,
+            produced_item_type: 'rift_super_chrome_trinket',
+            produced_item_yield: 40,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Super Chrome Charms',
+            consumed_item_cost_formatted: 40,
+            produced_item_name: 'Rift Super Chrome Charms',
+            produced_item_yield_formatted: 40,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          },
+          {
+            consumed_item_type: 'super_power_trinket',
+            consumed_item_cost: 40,
+            produced_item_type: 'rift_super_power_trinket',
+            produced_item_yield: 40,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Super Power Charms',
+            consumed_item_cost_formatted: 40,
+            produced_item_name: 'Rift Super Power Charms',
+            produced_item_yield_formatted: 40,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          },
+          {
+            consumed_item_type: 'super_luck_trinket',
+            consumed_item_cost: 40,
+            produced_item_type: 'rift_super_luck_trinket',
+            produced_item_yield: 40,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Super Luck Charms',
+            consumed_item_cost_formatted: 40,
+            produced_item_name: 'Rift Super Luck Charms',
+            produced_item_yield_formatted: 40,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          },
+          {
+            consumed_item_type: 'extreme_chrome_trinket',
+            consumed_item_cost: 30,
+            produced_item_type: 'rift_extreme_chrome_trinket',
+            produced_item_yield: 30,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Extreme Chrome Charms',
+            consumed_item_cost_formatted: 30,
+            produced_item_name: 'Rift Extreme Chrome Charms',
+            produced_item_yield_formatted: 30,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          },
+          {
+            consumed_item_type: 'extreme_power_trinket',
+            consumed_item_cost: 30,
+            produced_item_type: 'rift_extreme_power_trinket',
+            produced_item_yield: 30,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Extreme Power Charms',
+            consumed_item_cost_formatted: 30,
+            produced_item_name: 'Rift Extreme Power Charms',
+            produced_item_yield_formatted: 30,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          },
+          {
+            consumed_item_type: 'extreme_luck_trinket',
+            consumed_item_cost: 30,
+            produced_item_type: 'rift_extreme_luck_trinket',
+            produced_item_yield: 30,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Extreme Luck Charms',
+            consumed_item_cost_formatted: 30,
+            produced_item_name: 'Rift Extreme Luck Charms',
+            produced_item_yield_formatted: 30,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          },
+          {
+            consumed_item_type: 'ultimate_chrome_trinket',
+            consumed_item_cost: 20,
+            produced_item_type: 'rift_ultimate_chrome_trinket',
+            produced_item_yield: 20,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Ultimate Chrome Charms',
+            consumed_item_cost_formatted: 20,
+            produced_item_name: 'Rift Ultimate Chrome Charms',
+            produced_item_yield_formatted: 20,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          },
+          {
+            consumed_item_type: 'ultimate_power_trinket',
+            consumed_item_cost: 20,
+            produced_item_type: 'rift_ultimate_power_trinket',
+            produced_item_yield: 20,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Ultimate Power Charms',
+            consumed_item_cost_formatted: 20,
+            produced_item_name: 'Rift Ultimate Power Charms',
+            produced_item_yield_formatted: 20,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          },
+          {
+            consumed_item_type: 'festive_ultimate_power_trinket',
+            consumed_item_cost: 20,
+            produced_item_type: 'rift_ultimate_power_trinket',
+            produced_item_yield: 20,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Festive Ultimate Power Charms',
+            consumed_item_cost_formatted: 20,
+            produced_item_name: 'Rift Ultimate Power Charms',
+            produced_item_yield_formatted: 20,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          },
+          {
+            consumed_item_type: 'ultimate_luck_trinket',
+            consumed_item_cost: 20,
+            produced_item_type: 'rift_ultimate_luck_trinket',
+            produced_item_yield: 20,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Ultimate Luck Charms',
+            consumed_item_cost_formatted: 20,
+            produced_item_name: 'Rift Ultimate Luck Charms',
+            produced_item_yield_formatted: 20,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          },
+          {
+            consumed_item_type: 'festive_ultimate_luck_trinket',
+            consumed_item_cost: 20,
+            produced_item_type: 'rift_ultimate_luck_trinket',
+            produced_item_yield: 20,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Festive Ultimate Luck Charms',
+            consumed_item_cost_formatted: 20,
+            produced_item_name: 'Rift Ultimate Luck Charms',
+            produced_item_yield_formatted: 20,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          },
+          {
+            consumed_item_type: 'ultimate_luck_power_trinket',
+            consumed_item_cost: 10,
+            produced_item_type: 'rift_ultimate_luck_power_trinket',
+            produced_item_yield: 10,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Ultimate Lucky Power Charms',
+            consumed_item_cost_formatted: 10,
+            produced_item_name: 'Rift Ultimate Lucky Power Charms',
+            produced_item_yield_formatted: 10,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          },
+          {
+            consumed_item_type: 'festive_ultimate_luck_power_trinket',
+            consumed_item_cost: 10,
+            produced_item_type: 'rift_ultimate_luck_power_trinket',
+            produced_item_yield: 10,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Festive Ultimate Lucky Power Charms',
+            consumed_item_cost_formatted: 10,
+            produced_item_name: 'Rift Ultimate Lucky Power Charms',
+            produced_item_yield_formatted: 10,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          },
+          {
+            consumed_item_type: 'rainbow_spore_trinket',
+            consumed_item_cost: 5,
+            produced_item_type: 'rift_rainbow_spore_trinket',
+            produced_item_yield: 5,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Rainbow Spore Charms',
+            consumed_item_cost_formatted: 5,
+            produced_item_name: 'Rift Rainbow Spore Charms',
+            produced_item_yield_formatted: 5,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          }
+        ],
+        is_potion: true,
+        is_shop_item: true,
+        can_brew: null
+      },
+      {
+        name: 'Dragonbane Potion',
+        type: 'dragonbane_potion',
+        cost: [
+          {
+            type: 'halloween_extract_stat_item',
+            name: 'Evil Extract',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/fe34d4e8dd3500184042b3d474d9977b.gif?cv=3',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/720c74a43ad07cbc3afa674a76bf0fc4.png?cv=3',
+            quantity: 10,
+            num_owned: 0
+          }
+        ],
+        yield: [
+          {
+            type: 'dragonbane_potion',
+            name: 'Dragonbane Potion',
+            description:
+              'The scorching liquid contained within this vial is so unimaginably hot that it can instantly melt down large quantities of Solidified Amber Queso directly into Dragonbane Charms!',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/potions/a6814ad0eab61117e210d0170534ffc9.jpg?cv=3',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/potions/transparent_thumb/b75c76c1bddc8e19ccb50f78c0305a77.png?cv=3',
+            is_new: null,
+            quantity: 1,
+            num_owned: 0
+          }
+        ],
+        recipes: [
+          {
+            consumed_item_type: 'amber_queso_stat_item',
+            consumed_item_cost: 50,
+            produced_item_type: 'dragonbane_trinket',
+            produced_item_yield: 27,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Solidified Amber Queso',
+            consumed_item_cost_formatted: 50,
+            produced_item_name: 'Dragonbane Charms',
+            produced_item_yield_formatted: 27,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          },
+          {
+            consumed_item_type: 'amber_queso_stat_item',
+            consumed_item_cost: 50,
+            produced_item_type: 'super_dragonbane_trinket',
+            produced_item_yield: 9,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Solidified Amber Queso',
+            consumed_item_cost_formatted: 50,
+            produced_item_name: 'Super Dragonbane Charms',
+            produced_item_yield_formatted: 9,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          },
+          {
+            consumed_item_type: 'amber_queso_stat_item',
+            consumed_item_cost: 50,
+            produced_item_type: 'extrme_dragonbane_trinket',
+            produced_item_yield: 3,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Solidified Amber Queso',
+            consumed_item_cost_formatted: 50,
+            produced_item_name: 'Extreme Dragonbane Charms',
+            produced_item_yield_formatted: 3,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          },
+          {
+            consumed_item_type: 'amber_queso_stat_item',
+            consumed_item_cost: 50,
+            produced_item_type: 'ultimate_dragonbane_trinket',
+            produced_item_yield: 1,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Solidified Amber Queso',
+            consumed_item_cost_formatted: 50,
+            produced_item_name: 'Ultimate Dragonbane Charm',
+            produced_item_yield_formatted: 1,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          }
+        ],
+        is_potion: true,
+        is_shop_item: true,
+        can_brew: null
+      },
+      {
+        name: 'Promotion Potion',
+        type: 'promotion_potion',
+        cost: [
+          {
+            type: 'halloween_extract_stat_item',
+            name: 'Evil Extract',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/fe34d4e8dd3500184042b3d474d9977b.gif?cv=3',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/720c74a43ad07cbc3afa674a76bf0fc4.png?cv=3',
+            quantity: 10,
+            num_owned: 0
+          }
+        ],
+        yield: [
+          {
+            type: 'promotion_potion',
+            name: 'Promotion Potion',
+            description:
+              'A vial of pure, distilled frustration carefully extracted from the blood, sweat, and tears of devoted MouseHunters. Leverage their extracted efforts and skip the grind by turning those event and Ultimate-tier charms into their next-level versions with one dose of this powerful potion!',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/potions/7cabe92458ea12262c5ccb3675c0d687.jpg?cv=3',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/potions/transparent_thumb/e554d75f1d09eb1f77c8b232836bbf80.png?cv=3',
+            is_new: null,
+            quantity: 1,
+            num_owned: 0
+          }
+        ],
+        recipes: [
+          {
+            consumed_item_type: 'spooky_trinket',
+            consumed_item_cost: 100,
+            produced_item_type: 'extra_spooky_trinket',
+            produced_item_yield: 100,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Spooky Charms',
+            consumed_item_cost_formatted: 100,
+            produced_item_name: 'Super Spooky Charms',
+            produced_item_yield_formatted: 100,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          },
+          {
+            consumed_item_type: 'extra_spooky_trinket',
+            consumed_item_cost: 50,
+            produced_item_type: 'extreme_spooky_trinket',
+            produced_item_yield: 50,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Super Spooky Charms',
+            consumed_item_cost_formatted: 50,
+            produced_item_name: 'Extreme Spooky Charms',
+            produced_item_yield_formatted: 50,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          },
+          {
+            consumed_item_type: 'extreme_spooky_trinket',
+            consumed_item_cost: 25,
+            produced_item_type: 'ultimate_spooky_trinket',
+            produced_item_yield: 25,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Extreme Spooky Charms',
+            consumed_item_cost_formatted: 25,
+            produced_item_name: 'Ultimate Spooky Charms',
+            produced_item_yield_formatted: 25,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          },
+          {
+            consumed_item_type: 'snowball_trinket',
+            consumed_item_cost: 100,
+            produced_item_type: 'super_snowball_trinket',
+            produced_item_yield: 100,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Snowball Charms',
+            consumed_item_cost_formatted: 100,
+            produced_item_name: 'Super Snowball Charms',
+            produced_item_yield_formatted: 100,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          },
+          {
+            consumed_item_type: 'super_snowball_trinket',
+            consumed_item_cost: 50,
+            produced_item_type: 'extreme_snowball_trinket',
+            produced_item_yield: 50,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Super Snowball Charms',
+            consumed_item_cost_formatted: 50,
+            produced_item_name: 'Extreme Snowball Charms',
+            produced_item_yield_formatted: 50,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          },
+          {
+            consumed_item_type: 'extreme_snowball_trinket',
+            consumed_item_cost: 25,
+            produced_item_type: 'ultimate_snowball_trinket',
+            produced_item_yield: 25,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Extreme Snowball Charms',
+            consumed_item_cost_formatted: 25,
+            produced_item_name: 'Ultimate Snowball Charms',
+            produced_item_yield_formatted: 25,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          },
+          {
+            consumed_item_type: 'party_trinket',
+            consumed_item_cost: 100,
+            produced_item_type: 'super_party_trinket',
+            produced_item_yield: 100,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Party Charms',
+            consumed_item_cost_formatted: 100,
+            produced_item_name: 'Super Party Charms',
+            produced_item_yield_formatted: 100,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          },
+          {
+            consumed_item_type: 'super_party_trinket',
+            consumed_item_cost: 50,
+            produced_item_type: 'extreme_party_trinket',
+            produced_item_yield: 50,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Super Party Charms',
+            consumed_item_cost_formatted: 50,
+            produced_item_name: 'Extreme Party Charms',
+            produced_item_yield_formatted: 50,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          },
+          {
+            consumed_item_type: 'extreme_party_trinket',
+            consumed_item_cost: 25,
+            produced_item_type: 'ultimate_party_trinket',
+            produced_item_yield: 25,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Extreme Party Charms',
+            consumed_item_cost_formatted: 25,
+            produced_item_name: 'Ultimate Party Charms',
+            produced_item_yield_formatted: 25,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          },
+          {
+            consumed_item_type: 'ultimate_power_trinket',
+            consumed_item_cost: 10,
+            produced_item_type: 'ultimate_luck_power_trinket',
+            produced_item_yield: 10,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Ultimate Power Charms',
+            consumed_item_cost_formatted: 10,
+            produced_item_name: 'Ultimate Lucky Power Charms',
+            produced_item_yield_formatted: 10,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          },
+          {
+            consumed_item_type: 'festive_ultimate_power_trinket',
+            consumed_item_cost: 10,
+            produced_item_type: 'festive_ultimate_luck_power_trinket',
+            produced_item_yield: 10,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Festive Ultimate Power Charms',
+            consumed_item_cost_formatted: 10,
+            produced_item_name: 'Festive Ultimate Lucky Power Charms',
+            produced_item_yield_formatted: 10,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          },
+          {
+            consumed_item_type: 'ultimate_luck_trinket',
+            consumed_item_cost: 10,
+            produced_item_type: 'ultimate_luck_power_trinket',
+            produced_item_yield: 10,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Ultimate Luck Charms',
+            consumed_item_cost_formatted: 10,
+            produced_item_name: 'Ultimate Lucky Power Charms',
+            produced_item_yield_formatted: 10,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          },
+          {
+            consumed_item_type: 'festive_ultimate_luck_trinket',
+            consumed_item_cost: 10,
+            produced_item_type: 'festive_ultimate_luck_power_trinket',
+            produced_item_yield: 10,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Festive Ultimate Luck Charms',
+            consumed_item_cost_formatted: 10,
+            produced_item_name: 'Festive Ultimate Lucky Power Charms',
+            produced_item_yield_formatted: 10,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          }
+        ],
+        is_potion: true,
+        is_shop_item: true,
+        can_brew: null
+      },
+      {
+        name: 'Ultimate Potion',
+        type: 'ultimate_potion',
+        cost: [
+          {
+            type: 'halloween_extract_stat_item',
+            name: 'Evil Extract',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/fe34d4e8dd3500184042b3d474d9977b.gif?cv=3',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/720c74a43ad07cbc3afa674a76bf0fc4.png?cv=3',
+            quantity: 20,
+            num_owned: 0
+          }
+        ],
+        yield: [
+          {
+            type: 'ultimate_potion',
+            name: 'Ultimate Potion',
+            description:
+              'This exceptional elixir extracts and enhances the extraordinary energy of essences and harnesses it into a mighty Ultimate Charm!',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/potions/5da5017d098b11d9ab8ebd379f4ee66d.jpg?cv=3',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/potions/transparent_thumb/26d2599cacd4e557181fcaf2e673cb68.png?cv=3',
+            is_new: null,
+            quantity: 1,
+            num_owned: 0
+          }
+        ],
+        recipes: [
+          {
+            consumed_item_type: 'essence_c_crafting_item',
+            consumed_item_cost: 1600,
+            produced_item_type: 'ultimate_trinket',
+            produced_item_yield: 1,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Cynd Essence',
+            consumed_item_cost_formatted: '1.6K',
+            produced_item_name: 'Ultimate Charm',
+            produced_item_yield_formatted: 1,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          },
+          {
+            consumed_item_type: 'essence_d_crafting_item',
+            consumed_item_cost: 467,
+            produced_item_type: 'ultimate_trinket',
+            produced_item_yield: 1,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Dol Essence',
+            consumed_item_cost_formatted: 467,
+            produced_item_name: 'Ultimate Charm',
+            produced_item_yield_formatted: 1,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          },
+          {
+            consumed_item_type: 'essence_e_crafting_item',
+            consumed_item_cost: 136,
+            produced_item_type: 'ultimate_trinket',
+            produced_item_yield: 1,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Est Essence',
+            consumed_item_cost_formatted: 136,
+            produced_item_name: 'Ultimate Charm',
+            produced_item_yield_formatted: 1,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          },
+          {
+            consumed_item_type: 'essence_f_crafting_item',
+            consumed_item_cost: 40,
+            produced_item_type: 'ultimate_trinket',
+            produced_item_yield: 1,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Fel Essence',
+            consumed_item_cost_formatted: 40,
+            produced_item_name: 'Ultimate Charm',
+            produced_item_yield_formatted: 1,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          },
+          {
+            consumed_item_type: 'essence_g_crafting_item',
+            consumed_item_cost: 12,
+            produced_item_type: 'ultimate_trinket',
+            produced_item_yield: 1,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Gur Essence',
+            consumed_item_cost_formatted: 12,
+            produced_item_name: 'Ultimate Charm',
+            produced_item_yield_formatted: 1,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          },
+          {
+            consumed_item_type: 'essence_h_crafting_item',
+            consumed_item_cost: 4,
+            produced_item_type: 'ultimate_trinket',
+            produced_item_yield: 1,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Hix Essence',
+            consumed_item_cost_formatted: 4,
+            produced_item_name: 'Ultimate Charm',
+            produced_item_yield_formatted: 1,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          },
+          {
+            consumed_item_type: 'essence_i_crafting_item',
+            consumed_item_cost: 1,
+            produced_item_type: 'ultimate_trinket',
+            produced_item_yield: 1,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Icuri Essence',
+            consumed_item_cost_formatted: 1,
+            produced_item_name: 'Ultimate Charm',
+            produced_item_yield_formatted: 1,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          }
+        ],
+        is_potion: true,
+        is_shop_item: true,
+        can_brew: null
+      },
+      {
+        name: 'Epic Cheese Potion',
+        type: 'epic_cheese_potion',
+        cost: [
+          {
+            type: 'halloween_extract_stat_item',
+            name: 'Evil Extract',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/fe34d4e8dd3500184042b3d474d9977b.gif?cv=3',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/720c74a43ad07cbc3afa674a76bf0fc4.png?cv=3',
+            quantity: 30,
+            num_owned: 0
+          }
+        ],
+        yield: [
+          {
+            type: 'epic_cheese_potion',
+            name: 'Epic Cheese Potion',
+            description:
+              'This extremely valuable potion contains a powerful ultra-aging serum that can instantly transform many simple cheeses into their far more powerful counterparts!',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/potions/eebf7dd101e2a412d0a29521730663b7.jpg?cv=3',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/potions/transparent_thumb/326f7dbbb02168655242ddc52b91bfce.png?cv=3',
+            is_new: null,
+            quantity: 1,
+            num_owned: 0
+          }
+        ],
+        recipes: [
+          {
+            consumed_item_type: 'cheddar_cheese',
+            consumed_item_cost: 15,
+            produced_item_type: 'super_brie_cheese',
+            produced_item_yield: 15,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Cheddar Cheese',
+            consumed_item_cost_formatted: 15,
+            produced_item_name: 'SUPER|brie+',
+            produced_item_yield_formatted: 15,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          },
+          {
+            consumed_item_type: 'glowing_gruyere_cheese',
+            consumed_item_cost: 15,
+            produced_item_type: 'dragonvine_cheese',
+            produced_item_yield: 15,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Glowing Gruyere Cheese',
+            consumed_item_cost_formatted: 15,
+            produced_item_name: 'Dragonvine Cheese',
+            produced_item_yield_formatted: 15,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          },
+          {
+            consumed_item_type: 'sky_cheese',
+            consumed_item_cost: 15,
+            produced_item_type: 'sky_pirate_cheese',
+            produced_item_yield: 15,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Cloud Cheesecake',
+            consumed_item_cost_formatted: 15,
+            produced_item_name: 'Sky Pirate Swiss Cheese',
+            produced_item_yield_formatted: 15,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          },
+          {
+            consumed_item_type: 'medium_queso_cheese',
+            consumed_item_cost: 5,
+            produced_item_type: 'queso_river_boss_cheese',
+            produced_item_yield: 5,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Medium Queso',
+            consumed_item_cost_formatted: 5,
+            produced_item_name: 'Wildfire Queso',
+            produced_item_yield_formatted: 5,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          },
+          {
+            consumed_item_type: 'mineral_cheese',
+            consumed_item_cost: 5,
+            produced_item_type: 'diamond_cheese',
+            produced_item_yield: 5,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Mineral Cheese',
+            consumed_item_cost_formatted: 5,
+            produced_item_name: 'Diamond Cheese',
+            produced_item_yield_formatted: 5,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          },
+          {
+            consumed_item_type: 'magical_string_cheese',
+            consumed_item_cost: 5,
+            produced_item_type: 'lactrodectus_lancashire_cheese',
+            produced_item_yield: 5,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Magical String Cheese',
+            consumed_item_cost_formatted: 5,
+            produced_item_name: 'Lactrodectus Lancashire Cheese',
+            produced_item_yield_formatted: 5,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          },
+          {
+            consumed_item_type: 'rift_master_cheese',
+            consumed_item_cost: 5,
+            produced_item_type: 'rift_onyx_cheese',
+            produced_item_yield: 5,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Master Fusion Cheese',
+            consumed_item_cost_formatted: 5,
+            produced_item_name: 'Null Onyx Gorgonzola',
+            produced_item_yield_formatted: 5,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          },
+          {
+            consumed_item_type: 'second_draft_derby_cheese',
+            consumed_item_cost: 5,
+            produced_item_type: 'final_draft_derby_cheese',
+            produced_item_yield: 5,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Second Draft Derby Cheese',
+            consumed_item_cost_formatted: 5,
+            produced_item_name: 'Final Draft Derby Cheese',
+            produced_item_yield_formatted: 5,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          },
+          {
+            consumed_item_type: 'lavish_beanster_cheese',
+            consumed_item_cost: 10,
+            produced_item_type: 'royal_beanster_cheese',
+            produced_item_yield: 10,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Lavish Beanster Cheese',
+            consumed_item_cost_formatted: 10,
+            produced_item_name: 'Royal Beanster Cheese',
+            produced_item_yield_formatted: 10,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          },
+          {
+            consumed_item_type: 'apprentice_ambert_cheese',
+            consumed_item_cost: 15,
+            produced_item_type: 'master_mimolette_cheese',
+            produced_item_yield: 15,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Apprentice Ambert Cheese',
+            consumed_item_cost_formatted: 15,
+            produced_item_name: 'Master Mimolette Cheese',
+            produced_item_yield_formatted: 15,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          }
+        ],
+        is_potion: true,
+        is_shop_item: true,
+        can_brew: null
+      },
+      {
+        name: 'Stormy Clamembert Potion',
+        type: 'stormy_clamembert_potion',
+        cost: [
+          {
+            type: 'halloween_extract_stat_item',
+            name: 'Evil Extract',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/fe34d4e8dd3500184042b3d474d9977b.gif?cv=3',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/720c74a43ad07cbc3afa674a76bf0fc4.png?cv=3',
+            quantity: 30,
+            num_owned: 0
+          }
+        ],
+        yield: [
+          {
+            type: 'stormy_clamembert_potion',
+            name: 'Stormy Clamembert Potion',
+            description:
+              'This potent aquatic concoction has the remarkable ability to compress large quantities of Grubbeen Cheese directly into extremely valuable and volatile Stormy Clamembert Cheese!',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/potions/196c5390c05e1b4069fed1d7108cf422.jpg?cv=3',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/potions/transparent_thumb/5cb02e024838b54eaf361d246d54309d.png?cv=3',
+            is_new: null,
+            quantity: 1,
+            num_owned: 0
+          }
+        ],
+        recipes: [
+          {
+            consumed_item_type: 'grubbeen_cheese',
+            consumed_item_cost: 100,
+            produced_item_type: 'stormy_clamembert_cheese',
+            produced_item_yield: 10,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Grubbeen Cheese',
+            consumed_item_cost_formatted: 100,
+            produced_item_name: 'Stormy Clamembert Cheese',
+            produced_item_yield_formatted: 10,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          }
+        ],
+        is_potion: true,
+        is_shop_item: true,
+        can_brew: null
+      },
+      {
+        name: 'Greater Radioactive Blue Potion',
+        type: 'greater_radioactive_blue_cheese_potion',
+        cost: [
+          {
+            type: 'halloween_extract_stat_item',
+            name: 'Evil Extract',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/fe34d4e8dd3500184042b3d474d9977b.gif?cv=3',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/720c74a43ad07cbc3afa674a76bf0fc4.png?cv=3',
+            quantity: 1,
+            num_owned: 0
+          }
+        ],
+        yield: [
+          {
+            type: 'greater_radioactive_blue_cheese_potion',
+            name: 'Greater Radioactive Blue Potion',
+            description:
+              "This giant bottle of Radioactive Blue Potion can convert more Brie or SUPER|brie+ into Radioactive Blue cheese, per batch, than any other potion hunters can find. It's quite useful for Hunters looking to stock up in bulk.",
+            thumb:
+              'https://www.mousehuntgame.com/images/items/potions/030e9633a3a148ea85dd0728ce275542.jpg?cv=3',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/potions/transparent_thumb/78f15b8caec1289776ba703b6e9450a7.png?cv=3',
+            is_new: null,
+            quantity: 1,
+            num_owned: 45
+          }
+        ],
+        recipes: [
+          {
+            consumed_item_type: 'super_brie_cheese',
+            consumed_item_cost: 96,
+            produced_item_type: 'radioactive_blue_cheese',
+            produced_item_yield: 96,
+            gold_cost: 0,
+            title_required: 'count_countess',
+            consumed_item_name: 'SUPER|brie+',
+            consumed_item_cost_formatted: 96,
+            produced_item_name: 'Radioactive Blue Cheese',
+            produced_item_yield_formatted: 96,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          },
+          {
+            consumed_item_type: 'brie_cheese',
+            consumed_item_cost: 72,
+            produced_item_type: 'radioactive_blue_cheese',
+            produced_item_yield: 72,
+            gold_cost: 300,
+            title_required: 'count_countess',
+            consumed_item_name: 'Brie Cheese',
+            consumed_item_cost_formatted: 72,
+            produced_item_name: 'Radioactive Blue Cheese',
+            produced_item_yield_formatted: 72,
+            gold_cost_formatted: 300,
+            has_gold_cost: true
+          }
+        ],
+        is_potion: true,
+        is_shop_item: true,
+        can_brew: null
+      },
+      {
+        name: 'Gnarled Potion',
+        type: 'gnarled_cheese_potion',
+        cost: [
+          {
+            type: 'halloween_extract_stat_item',
+            name: 'Evil Extract',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/fe34d4e8dd3500184042b3d474d9977b.gif?cv=3',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/720c74a43ad07cbc3afa674a76bf0fc4.png?cv=3',
+            quantity: 1,
+            num_owned: 0
+          }
+        ],
+        yield: [
+          {
+            type: 'gnarled_cheese_potion',
+            name: 'Gnarled Potion',
+            description:
+              "Water your Brie or SUPER|brie+ with some of this potion, and it will sprout up into a batch of Gnarled Cheese. The more powerful mice in Whisker Woods love Gnarled Cheese's crunchy texture, so be sure to stock up if you're out for big game.",
+            thumb:
+              'https://www.mousehuntgame.com/images/items/potions/6347f0fa1164f6bedbd617f59130c4c5.jpg?cv=3',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/potions/transparent_thumb/ab168d57a5d77dd9daae83ea2e29dd06.png?cv=3',
+            is_new: null,
+            quantity: 1,
+            num_owned: 527
+          }
+        ],
+        recipes: [
+          {
+            consumed_item_type: 'super_brie_cheese',
+            consumed_item_cost: 44,
+            produced_item_type: 'gnarled_cheese',
+            produced_item_yield: 44,
+            gold_cost: 0,
+            title_required: 'baron_baroness',
+            consumed_item_name: 'SUPER|brie+',
+            consumed_item_cost_formatted: 44,
+            produced_item_name: 'Gnarled Cheese',
+            produced_item_yield_formatted: 44,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          },
+          {
+            consumed_item_type: 'brie_cheese',
+            consumed_item_cost: 11,
+            produced_item_type: 'gnarled_cheese',
+            produced_item_yield: 11,
+            gold_cost: 400,
+            title_required: 'baron_baroness',
+            consumed_item_name: 'Brie Cheese',
+            consumed_item_cost_formatted: 11,
+            produced_item_name: 'Gnarled Cheese',
+            produced_item_yield_formatted: 11,
+            gold_cost_formatted: 400,
+            has_gold_cost: true
+          }
+        ],
+        is_potion: true,
+        is_shop_item: true,
+        can_brew: null
+      },
+      {
+        name: 'Ancient Potion',
+        type: 'ancient_cheese_potion',
+        cost: [
+          {
+            type: 'halloween_extract_stat_item',
+            name: 'Evil Extract',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/fe34d4e8dd3500184042b3d474d9977b.gif?cv=3',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/720c74a43ad07cbc3afa674a76bf0fc4.png?cv=3',
+            quantity: 1,
+            num_owned: 0
+          }
+        ],
+        yield: [
+          {
+            type: 'ancient_cheese_potion',
+            name: 'Ancient Potion',
+            description:
+              'Ancient potion causes instant aging when applied to Brie or SUPER|brie+, transforming it into Ancient Cheese, the preferred bait for hunters in the Forbidden Grove. The conversion rate for Ancient Potion is slightly more expensive than other potions, but it also saves time by eliminating the need to collect stale cheese.',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/potions/2b1dadfe3cacc057e5dc8bc8aa2cb153.jpg?cv=3',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/potions/transparent_thumb/c38e9021cae963e1450e6af6ac1a6c4c.png?cv=3',
+            is_new: null,
+            quantity: 1,
+            num_owned: 44
+          }
+        ],
+        recipes: [
+          {
+            consumed_item_type: 'super_brie_cheese',
+            consumed_item_cost: 16,
+            produced_item_type: 'ancient_cheese',
+            produced_item_yield: 16,
+            gold_cost: 800,
+            title_required: 'count_countess',
+            consumed_item_name: 'SUPER|brie+',
+            consumed_item_cost_formatted: 16,
+            produced_item_name: 'Ancient Cheese',
+            produced_item_yield_formatted: 16,
+            gold_cost_formatted: 800,
+            has_gold_cost: true
+          },
+          {
+            consumed_item_type: 'brie_cheese',
+            consumed_item_cost: 8,
+            produced_item_type: 'ancient_cheese',
+            produced_item_yield: 8,
+            gold_cost: 1900,
+            title_required: 'count_countess',
+            consumed_item_name: 'Brie Cheese',
+            consumed_item_cost_formatted: 8,
+            produced_item_name: 'Ancient Cheese',
+            produced_item_yield_formatted: 8,
+            gold_cost_formatted: '1.9K',
+            has_gold_cost: true
+          }
+        ],
+        is_potion: true,
+        is_shop_item: true,
+        can_brew: null
+      },
+      {
+        name: 'Undead Emmental Potion',
+        type: 'undead_emmental_potion',
+        cost: [
+          {
+            type: 'halloween_extract_stat_item',
+            name: 'Evil Extract',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/fe34d4e8dd3500184042b3d474d9977b.gif?cv=3',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/720c74a43ad07cbc3afa674a76bf0fc4.png?cv=3',
+            quantity: 1,
+            num_owned: 0
+          }
+        ],
+        yield: [
+          {
+            type: 'undead_emmental_potion',
+            name: 'Undead Emmental Potion',
+            description:
+              'This cursed potion produces a horrifying bait that attracts undead mice including the bone-chilling Zombot Unipire Mice!',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/potions/b07ed178fa352c85876f646c683eef7d.jpg?cv=3',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/potions/transparent_thumb/577c9205364526660a9638c95ae14711.png?cv=3',
+            is_new: null,
+            quantity: 1,
+            num_owned: 0
+          }
+        ],
+        recipes: [
+          {
+            consumed_item_type: 'super_brie_cheese',
+            consumed_item_cost: 12,
+            produced_item_type: 'undead_emmental_cheese',
+            produced_item_yield: 12,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'SUPER|brie+',
+            consumed_item_cost_formatted: 12,
+            produced_item_name: 'Undead Emmentals',
+            produced_item_yield_formatted: 12,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          },
+          {
+            consumed_item_type: 'brie_cheese',
+            consumed_item_cost: 6,
+            produced_item_type: 'undead_emmental_cheese',
+            produced_item_yield: 6,
+            gold_cost: 900,
+            title_required: 'novice',
+            consumed_item_name: 'Brie Cheese',
+            consumed_item_cost_formatted: 6,
+            produced_item_name: 'Undead Emmentals',
+            produced_item_yield_formatted: 6,
+            gold_cost_formatted: 900,
+            has_gold_cost: true
+          }
+        ],
+        is_potion: true,
+        is_shop_item: true,
+        can_brew: null
+      },
+      {
+        name: 'Terre Ricotta Potion',
+        type: 'terre_ricotta_potion',
+        cost: [
+          {
+            type: 'halloween_extract_stat_item',
+            name: 'Evil Extract',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/fe34d4e8dd3500184042b3d474d9977b.gif?cv=3',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/720c74a43ad07cbc3afa674a76bf0fc4.png?cv=3',
+            quantity: 1,
+            num_owned: 0
+          }
+        ],
+        yield: [
+          {
+            type: 'terre_ricotta_potion',
+            name: 'Terre Ricotta Potion',
+            description:
+              'Pouring this viscous concoction over your String cheese will erupt in a violent quake revealing some dirty and delicious Terre Ricotta Cheese.',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/potions/a72891aa11c36a6f8f1c7bb24b9d96ee.jpg?cv=3',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/potions/transparent_thumb/f81d27ced5931ce83164e69f587b343d.png?cv=3',
+            is_new: null,
+            quantity: 1,
+            num_owned: 21
+          }
+        ],
+        recipes: [
+          {
+            consumed_item_type: 'marble_string_cheese',
+            consumed_item_cost: 1,
+            produced_item_type: 'terre_ricotta_cheese',
+            produced_item_yield: 1,
+            gold_cost: 1500,
+            title_required: 'novice',
+            consumed_item_name: 'Marble String Cheese',
+            consumed_item_cost_formatted: 1,
+            produced_item_name: 'Terre Ricotta Cheese',
+            produced_item_yield_formatted: 1,
+            gold_cost_formatted: '1.5K',
+            has_gold_cost: true
+          },
+          {
+            consumed_item_type: 'swiss_string_cheese',
+            consumed_item_cost: 1,
+            produced_item_type: 'terre_ricotta_cheese',
+            produced_item_yield: 1,
+            gold_cost: 1000,
+            title_required: 'novice',
+            consumed_item_name: 'Swiss String Cheese',
+            consumed_item_cost_formatted: 1,
+            produced_item_name: 'Terre Ricotta Cheese',
+            produced_item_yield_formatted: 1,
+            gold_cost_formatted: '1K',
+            has_gold_cost: true
+          },
+          {
+            consumed_item_type: 'brie_string_cheese',
+            consumed_item_cost: 1,
+            produced_item_type: 'terre_ricotta_cheese',
+            produced_item_yield: 1,
+            gold_cost: 200,
+            title_required: 'novice',
+            consumed_item_name: 'Brie String Cheese',
+            consumed_item_cost_formatted: 1,
+            produced_item_name: 'Terre Ricotta Cheese',
+            produced_item_yield_formatted: 1,
+            gold_cost_formatted: 200,
+            has_gold_cost: true
+          },
+          {
+            consumed_item_type: 'magical_string_cheese',
+            consumed_item_cost: 2,
+            produced_item_type: 'terre_ricotta_cheese',
+            produced_item_yield: 2,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Magical String Cheese',
+            consumed_item_cost_formatted: 2,
+            produced_item_name: 'Terre Ricotta Cheese',
+            produced_item_yield_formatted: 2,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          }
+        ],
+        is_potion: true,
+        is_shop_item: true,
+        can_brew: null
+      },
+      {
+        name: 'Cherry Potion',
+        type: 'cherry_potion',
+        cost: [
+          {
+            type: 'halloween_extract_stat_item',
+            name: 'Evil Extract',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/fe34d4e8dd3500184042b3d474d9977b.gif?cv=3',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/720c74a43ad07cbc3afa674a76bf0fc4.png?cv=3',
+            quantity: 2,
+            num_owned: 0
+          }
+        ],
+        yield: [
+          {
+            type: 'cherry_potion',
+            name: 'Cherry Potion',
+            description:
+              "This glowing red potion turns ordinary Brie or SUPER|brie+ into Cherry cheese, a sweet, tasty treat that appeals to the 'berry' discerning sensibilities of the Cherry Mice living in the Calm Clearing.",
+            thumb:
+              'https://www.mousehuntgame.com/images/items/potions/a776178e249cfaa0e990a82389919225.jpg?cv=3',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/potions/transparent_thumb/c09eeb3cacf1b5fa7ff74f39ff99204e.png?cv=3',
+            is_new: null,
+            quantity: 1,
+            num_owned: 43
+          }
+        ],
+        recipes: [
+          {
+            consumed_item_type: 'super_brie_cheese',
+            consumed_item_cost: 14,
+            produced_item_type: 'cherry_cheese',
+            produced_item_yield: 14,
+            gold_cost: 0,
+            title_required: 'legendary',
+            consumed_item_name: 'SUPER|brie+',
+            consumed_item_cost_formatted: 14,
+            produced_item_name: 'Cherry Cheese',
+            produced_item_yield_formatted: 14,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          },
+          {
+            consumed_item_type: 'brie_cheese',
+            consumed_item_cost: 5,
+            produced_item_type: 'cherry_cheese',
+            produced_item_yield: 5,
+            gold_cost: 300,
+            title_required: 'legendary',
+            consumed_item_name: 'Brie Cheese',
+            consumed_item_cost_formatted: 5,
+            produced_item_name: 'Cherry Cheese',
+            produced_item_yield_formatted: 5,
+            gold_cost_formatted: 300,
+            has_gold_cost: true
+          }
+        ],
+        is_potion: true,
+        is_shop_item: true,
+        can_brew: null
+      },
+      {
+        name: 'Greater Wicked Gnarly Potion',
+        type: 'greater_wicked_gnarly_potion',
+        cost: [
+          {
+            type: 'halloween_extract_stat_item',
+            name: 'Evil Extract',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/fe34d4e8dd3500184042b3d474d9977b.gif?cv=3',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/720c74a43ad07cbc3afa674a76bf0fc4.png?cv=3',
+            quantity: 2,
+            num_owned: 0
+          }
+        ],
+        yield: [
+          {
+            type: 'greater_wicked_gnarly_potion',
+            name: 'Greater Wicked Gnarly Potion',
+            description:
+              'This over-sized vial of potion converts Brie or SUPER|brie+ into Wicked Gnarly Cheese. Unlike regular Wicked Gnarly Potion, highly experienced hunters are able to apply each dose to larger quantities of cheese.',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/potions/8c4e4f45f5dee3f967db7910a2d96db6.jpg?cv=3',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/potions/transparent_thumb/042114e82104b0df359466b2eb95d01a.png?cv=3',
+            is_new: null,
+            quantity: 1,
+            num_owned: 0
+          }
+        ],
+        recipes: [
+          {
+            consumed_item_type: 'super_brie_cheese',
+            consumed_item_cost: 12,
+            produced_item_type: 'wicked_gnarly_cheese',
+            produced_item_yield: 12,
+            gold_cost: 200,
+            title_required: 'hero',
+            consumed_item_name: 'SUPER|brie+',
+            consumed_item_cost_formatted: 12,
+            produced_item_name: 'Wicked Gnarly Cheese',
+            produced_item_yield_formatted: 12,
+            gold_cost_formatted: 200,
+            has_gold_cost: true
+          },
+          {
+            consumed_item_type: 'brie_cheese',
+            consumed_item_cost: 6,
+            produced_item_type: 'wicked_gnarly_cheese',
+            produced_item_yield: 6,
+            gold_cost: 800,
+            title_required: 'hero',
+            consumed_item_name: 'Brie Cheese',
+            consumed_item_cost_formatted: 6,
+            produced_item_name: 'Wicked Gnarly Cheese',
+            produced_item_yield_formatted: 6,
+            gold_cost_formatted: 800,
+            has_gold_cost: true
+          }
+        ],
+        is_potion: true,
+        is_shop_item: true,
+        can_brew: null
+      },
+      {
+        name: 'Runic Potion',
+        type: 'runic_cheese_potion',
+        cost: [
+          {
+            type: 'halloween_extract_stat_item',
+            name: 'Evil Extract',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/fe34d4e8dd3500184042b3d474d9977b.gif?cv=3',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/720c74a43ad07cbc3afa674a76bf0fc4.png?cv=3',
+            quantity: 2,
+            num_owned: 0
+          }
+        ],
+        yield: [
+          {
+            type: 'runic_cheese_potion',
+            name: 'Runic Potion',
+            description:
+              'Douse your Gouda or SUPER|brie+ in a batch of Runic Potion, and it will transform, before your very eyes, into pieces of Runic Cheese, the mystical munchies favored by the mice of the Acolyte Realm.',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/potions/1ac35237ccc74a499ae841bec4f37320.jpg?cv=3',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/potions/transparent_thumb/a442b43960a6177603d52c9f5844cce7.png?cv=3',
+            is_new: null,
+            quantity: 1,
+            num_owned: 23
+          }
+        ],
+        recipes: [
+          {
+            consumed_item_type: 'super_brie_cheese',
+            consumed_item_cost: 12,
+            produced_item_type: 'runic_cheese',
+            produced_item_yield: 12,
+            gold_cost: 1000,
+            title_required: 'baron_baroness',
+            consumed_item_name: 'SUPER|brie+',
+            consumed_item_cost_formatted: 12,
+            produced_item_name: 'Runic Cheese',
+            produced_item_yield_formatted: 12,
+            gold_cost_formatted: '1K',
+            has_gold_cost: true
+          },
+          {
+            consumed_item_type: 'gouda_cheese',
+            consumed_item_cost: 6,
+            produced_item_type: 'runic_cheese',
+            produced_item_yield: 6,
+            gold_cost: 2400,
+            title_required: 'baron_baroness',
+            consumed_item_name: 'Gouda Cheese',
+            consumed_item_cost_formatted: 6,
+            produced_item_name: 'Runic Cheese',
+            produced_item_yield_formatted: 6,
+            gold_cost_formatted: '2.4K',
+            has_gold_cost: true
+          }
+        ],
+        is_potion: true,
+        is_shop_item: true,
+        can_brew: null
+      },
+      {
+        name: 'Rancid Radioactive Blue Potion',
+        type: 'super_radioactive_blue_potion',
+        cost: [
+          {
+            type: 'halloween_extract_stat_item',
+            name: 'Evil Extract',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/fe34d4e8dd3500184042b3d474d9977b.gif?cv=3',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/720c74a43ad07cbc3afa674a76bf0fc4.png?cv=3',
+            quantity: 2,
+            num_owned: 0
+          }
+        ],
+        yield: [
+          {
+            type: 'super_radioactive_blue_potion',
+            name: 'Rancid Radioactive Blue Potion',
+            description:
+              'A most foul concoction that has been double distilled and triple exposed to a raw, unfiltered, and lethal amount of radiation. Pour it over your Radioactive Blue Cheese to instantly rot it into Rancid Radioactive Blue cheese.',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/potions/11152bfde786f4261ed45baf556b7ea7.jpg?cv=3',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/potions/transparent_thumb/a45ef2f103492084922ebce7624d1bcc.png?cv=3',
+            is_new: null,
+            quantity: 1,
+            num_owned: 4
+          }
+        ],
+        recipes: [
+          {
+            consumed_item_type: 'radioactive_blue_cheese',
+            consumed_item_cost: 9,
+            produced_item_type: 'super_radioactive_blue_cheese',
+            produced_item_yield: 9,
+            gold_cost: 450,
+            title_required: 'grand_duke',
+            consumed_item_name: 'Radioactive Blue Cheese',
+            consumed_item_cost_formatted: 9,
+            produced_item_name: 'Rancid Radioactive Blue Cheese',
+            produced_item_yield_formatted: 9,
+            gold_cost_formatted: 450,
+            has_gold_cost: true
+          }
+        ],
+        is_potion: true,
+        is_shop_item: true,
+        can_brew: null
+      },
+      {
+        name: 'Riftiago Potion',
+        type: 'riftiago_potion',
+        cost: [
+          {
+            type: 'halloween_extract_stat_item',
+            name: 'Evil Extract',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/fe34d4e8dd3500184042b3d474d9977b.gif?cv=3',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/720c74a43ad07cbc3afa674a76bf0fc4.png?cv=3',
+            quantity: 2,
+            num_owned: 0
+          }
+        ],
+        yield: [
+          {
+            type: 'riftiago_potion',
+            name: 'Riftiago Potion',
+            description:
+              'Composed of concentrated mists from the Rift located closest to the tear. Once introduced to cheese, it immediately absorbs the mixture, becomes fertilized and rapidly sprouts resident flora turning it into Riftiago Cheese.',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/potions/ea04c03683d2ed71d133ed97119d5cd6.jpg?cv=3',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/potions/transparent_thumb/683757e1d15c62cea3db90a8755736fa.png?cv=3',
+            is_new: null,
+            quantity: 1,
+            num_owned: 8
+          }
+        ],
+        recipes: [
+          {
+            consumed_item_type: 'brie_string_cheese',
+            consumed_item_cost: 3,
+            produced_item_type: 'riftiago_cheese',
+            produced_item_yield: 3,
+            gold_cost: 1000,
+            title_required: 'novice',
+            consumed_item_name: 'Brie String Cheese',
+            consumed_item_cost_formatted: 3,
+            produced_item_name: 'Riftiago Cheese',
+            produced_item_yield_formatted: 3,
+            gold_cost_formatted: '1K',
+            has_gold_cost: true
+          },
+          {
+            consumed_item_type: 'magical_string_cheese',
+            consumed_item_cost: 5,
+            produced_item_type: 'riftiago_cheese',
+            produced_item_yield: 5,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Magical String Cheese',
+            consumed_item_cost_formatted: 5,
+            produced_item_name: 'Riftiago Cheese',
+            produced_item_yield_formatted: 5,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          }
+        ],
+        is_potion: true,
+        is_shop_item: true,
+        can_brew: null
+      },
+      {
+        name: 'Polluted Parmesan Potion',
+        type: 'polluted_parmesan_potion',
+        cost: [
+          {
+            type: 'halloween_extract_stat_item',
+            name: 'Evil Extract',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/fe34d4e8dd3500184042b3d474d9977b.gif?cv=3',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/720c74a43ad07cbc3afa674a76bf0fc4.png?cv=3',
+            quantity: 2,
+            num_owned: 0
+          }
+        ],
+        yield: [
+          {
+            type: 'polluted_parmesan_potion',
+            name: 'Polluted Parmesan Potion',
+            description:
+              'A soft, warm, radioactive glow emanates from this stagnant solution.  Pour this over your String cheese and be repulsed with the foul results of some Polluted Parmesan cheese!',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/potions/97b90ce6ad04ab6630875346808ab95f.jpg?cv=3',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/potions/transparent_thumb/dd80d0579f69fc1bf018dd83036a78d4.png?cv=3',
+            is_new: null,
+            quantity: 1,
+            num_owned: 51
+          }
+        ],
+        recipes: [
+          {
+            consumed_item_type: 'marble_string_cheese',
+            consumed_item_cost: 1,
+            produced_item_type: 'polluted_parmesan_cheese',
+            produced_item_yield: 1,
+            gold_cost: 1700,
+            title_required: 'novice',
+            consumed_item_name: 'Marble String Cheese',
+            consumed_item_cost_formatted: 1,
+            produced_item_name: 'Polluted Parmesan Cheese',
+            produced_item_yield_formatted: 1,
+            gold_cost_formatted: '1.7K',
+            has_gold_cost: true
+          },
+          {
+            consumed_item_type: 'swiss_string_cheese',
+            consumed_item_cost: 1,
+            produced_item_type: 'polluted_parmesan_cheese',
+            produced_item_yield: 1,
+            gold_cost: 1200,
+            title_required: 'novice',
+            consumed_item_name: 'Swiss String Cheese',
+            consumed_item_cost_formatted: 1,
+            produced_item_name: 'Polluted Parmesan Cheese',
+            produced_item_yield_formatted: 1,
+            gold_cost_formatted: '1.2K',
+            has_gold_cost: true
+          },
+          {
+            consumed_item_type: 'brie_string_cheese',
+            consumed_item_cost: 1,
+            produced_item_type: 'polluted_parmesan_cheese',
+            produced_item_yield: 1,
+            gold_cost: 400,
+            title_required: 'novice',
+            consumed_item_name: 'Brie String Cheese',
+            consumed_item_cost_formatted: 1,
+            produced_item_name: 'Polluted Parmesan Cheese',
+            produced_item_yield_formatted: 1,
+            gold_cost_formatted: 400,
+            has_gold_cost: true
+          },
+          {
+            consumed_item_type: 'magical_string_cheese',
+            consumed_item_cost: 2,
+            produced_item_type: 'polluted_parmesan_cheese',
+            produced_item_yield: 2,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Magical String Cheese',
+            consumed_item_cost_formatted: 2,
+            produced_item_name: 'Polluted Parmesan Cheese',
+            produced_item_yield_formatted: 2,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          }
+        ],
+        is_potion: true,
+        is_shop_item: true,
+        can_brew: null
+      },
+      {
+        name: 'Rainy Potion',
+        type: 'rain_cheese_potion',
+        cost: [
+          {
+            type: 'halloween_extract_stat_item',
+            name: 'Evil Extract',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/fe34d4e8dd3500184042b3d474d9977b.gif?cv=3',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/720c74a43ad07cbc3afa674a76bf0fc4.png?cv=3',
+            quantity: 2,
+            num_owned: 0
+          }
+        ],
+        yield: [
+          {
+            type: 'rain_cheese_potion',
+            name: 'Rainy Potion',
+            description:
+              'A thick and viscous liquid weighs down this heavy flask. This potion contains dark arcane essence extracted from torrential rains. Add a few drops to Gouda, SUPER|brie+ or Glowing Gruyere to create Rainy Cheese.',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/potions/0fc42b5f5e9e91675f199fd61c7dddf8.jpg?cv=3',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/potions/transparent_thumb/1ad8c457fb2f470156080f3a6af00e4d.png?cv=3',
+            is_new: null,
+            quantity: 1,
+            num_owned: 103
+          }
+        ],
+        recipes: [
+          {
+            consumed_item_type: 'gouda_cheese',
+            consumed_item_cost: 2,
+            produced_item_type: 'rain_cheese',
+            produced_item_yield: 2,
+            gold_cost: 1000,
+            title_required: 'novice',
+            consumed_item_name: 'Gouda Cheese',
+            consumed_item_cost_formatted: 2,
+            produced_item_name: 'Rainy Cheese',
+            produced_item_yield_formatted: 2,
+            gold_cost_formatted: '1K',
+            has_gold_cost: true
+          },
+          {
+            consumed_item_type: 'super_brie_cheese',
+            consumed_item_cost: 3,
+            produced_item_type: 'rain_cheese',
+            produced_item_yield: 3,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'SUPER|brie+',
+            consumed_item_cost_formatted: 3,
+            produced_item_name: 'Rainy Cheese',
+            produced_item_yield_formatted: 3,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          },
+          {
+            consumed_item_type: 'glowing_gruyere_cheese',
+            consumed_item_cost: 3,
+            produced_item_type: 'rain_cheese',
+            produced_item_yield: 3,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Glowing Gruyere Cheese',
+            consumed_item_cost_formatted: 3,
+            produced_item_name: 'Rainy Cheese',
+            produced_item_yield_formatted: 3,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          }
+        ],
+        is_potion: true,
+        is_shop_item: true,
+        can_brew: null
+      },
+      {
+        name: 'Windy Potion',
+        type: 'wind_cheese_potion',
+        cost: [
+          {
+            type: 'halloween_extract_stat_item',
+            name: 'Evil Extract',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/fe34d4e8dd3500184042b3d474d9977b.gif?cv=3',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/720c74a43ad07cbc3afa674a76bf0fc4.png?cv=3',
+            quantity: 2,
+            num_owned: 0
+          }
+        ],
+        yield: [
+          {
+            type: 'wind_cheese_potion',
+            name: 'Windy Potion',
+            description:
+              'Airy and light, this liquid floats on air. This potion contains extracted raw essence of wind. A quaff of this potion could yield quite a weightless experience! Pairs nicely with Gouda, SUPER|brie+ or Glowing Gruyere to create Windy Cheese.',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/potions/0092c123a1d8841dab10efecac90ffbf.jpg?cv=3',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/potions/transparent_thumb/fba296a9b6b02f943ac9c0efb89a7db9.png?cv=3',
+            is_new: null,
+            quantity: 1,
+            num_owned: 111
+          }
+        ],
+        recipes: [
+          {
+            consumed_item_type: 'gouda_cheese',
+            consumed_item_cost: 2,
+            produced_item_type: 'wind_cheese',
+            produced_item_yield: 2,
+            gold_cost: 1000,
+            title_required: 'novice',
+            consumed_item_name: 'Gouda Cheese',
+            consumed_item_cost_formatted: 2,
+            produced_item_name: 'Windy Cheese',
+            produced_item_yield_formatted: 2,
+            gold_cost_formatted: '1K',
+            has_gold_cost: true
+          },
+          {
+            consumed_item_type: 'super_brie_cheese',
+            consumed_item_cost: 3,
+            produced_item_type: 'wind_cheese',
+            produced_item_yield: 3,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'SUPER|brie+',
+            consumed_item_cost_formatted: 3,
+            produced_item_name: 'Windy Cheese',
+            produced_item_yield_formatted: 3,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          },
+          {
+            consumed_item_type: 'glowing_gruyere_cheese',
+            consumed_item_cost: 3,
+            produced_item_type: 'wind_cheese',
+            produced_item_yield: 3,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Glowing Gruyere Cheese',
+            consumed_item_cost_formatted: 3,
+            produced_item_name: 'Windy Cheese',
+            produced_item_yield_formatted: 3,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          }
+        ],
+        is_potion: true,
+        is_shop_item: true,
+        can_brew: null
+      },
+      {
+        name: 'Undead String Emmental Potion',
+        type: 'string_undead_emmental_potion',
+        cost: [
+          {
+            type: 'halloween_extract_stat_item',
+            name: 'Evil Extract',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/fe34d4e8dd3500184042b3d474d9977b.gif?cv=3',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/720c74a43ad07cbc3afa674a76bf0fc4.png?cv=3',
+            quantity: 3,
+            num_owned: 0
+          }
+        ],
+        yield: [
+          {
+            type: 'string_undead_emmental_potion',
+            name: 'Undead String Emmental Potion',
+            description:
+              'This cursed potion produces a sloppy, disgusting, stringy version of Undead Emmental which is sure to please only the sickest and most twisted of undead mice in the Burroughs Rift. Its awful bouquet brings forth the Tomb Exhumer Mouse, who seeks out the rotting stench as it often reveals ancient tombs filled with treasure.',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/potions/22227a3ddc9834db182a0db4195d9a97.jpg?cv=3',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/potions/transparent_thumb/07b0bc87e8b9eb7418d5e22dbf47eb87.png?cv=3',
+            is_new: null,
+            quantity: 1,
+            num_owned: 0
+          }
+        ],
+        recipes: [
+          {
+            consumed_item_type: 'brie_string_cheese',
+            consumed_item_cost: 1,
+            produced_item_type: 'string_undead_emmental_cheese',
+            produced_item_yield: 1,
+            gold_cost: 1800,
+            title_required: 'novice',
+            consumed_item_name: 'Brie String Cheese',
+            consumed_item_cost_formatted: 1,
+            produced_item_name: 'Undead String Emmental',
+            produced_item_yield_formatted: 1,
+            gold_cost_formatted: '1.8K',
+            has_gold_cost: true
+          },
+          {
+            consumed_item_type: 'magical_string_cheese',
+            consumed_item_cost: 2,
+            produced_item_type: 'string_undead_emmental_cheese',
+            produced_item_yield: 2,
+            gold_cost: 900,
+            title_required: 'novice',
+            consumed_item_name: 'Magical String Cheese',
+            consumed_item_cost_formatted: 2,
+            produced_item_name: 'Undead String Emmentals',
+            produced_item_yield_formatted: 2,
+            gold_cost_formatted: 900,
+            has_gold_cost: true
+          },
+          {
+            consumed_item_type: 'undead_emmental_cheese',
+            consumed_item_cost: 4,
+            produced_item_type: 'string_undead_emmental_cheese',
+            produced_item_yield: 4,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Undead Emmentals',
+            consumed_item_cost_formatted: 4,
+            produced_item_name: 'Undead String Emmentals',
+            produced_item_yield_formatted: 4,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          }
+        ],
+        is_potion: true,
+        is_shop_item: true,
+        can_brew: null
+      },
+      {
+        name: 'Ancient String Cheese Potion',
+        type: 'ancient_string_cheese_potion',
+        cost: [
+          {
+            type: 'halloween_extract_stat_item',
+            name: 'Evil Extract',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/fe34d4e8dd3500184042b3d474d9977b.gif?cv=3',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/720c74a43ad07cbc3afa674a76bf0fc4.png?cv=3',
+            quantity: 3,
+            num_owned: 0
+          }
+        ],
+        yield: [
+          {
+            type: 'ancient_string_cheese_potion',
+            name: 'Ancient String Cheese Potion',
+            description:
+              'This bubbling concoction flash petrifies pieces of Brie String and Magical String cheeses by instantly aging them by one full century. Once the initial petrification process has finished, the magical energies locked within its center melt down the outer layer into a nice soft string. Applying this potion to some Brie String or Magical String cheese will transform it into some Ancient String Cheese.',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/potions/27067eb2fbcf9e3f124c572563c0ac21.jpg?cv=3',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/potions/transparent_thumb/1ecce60e78191cadbc28a2a86684026d.png?cv=3',
+            is_new: null,
+            quantity: 1,
+            num_owned: 3
+          }
+        ],
+        recipes: [
+          {
+            consumed_item_type: 'brie_string_cheese',
+            consumed_item_cost: 1,
+            produced_item_type: 'ancient_string_cheese',
+            produced_item_yield: 1,
+            gold_cost: 1000,
+            title_required: 'novice',
+            consumed_item_name: 'Brie String Cheese',
+            consumed_item_cost_formatted: 1,
+            produced_item_name: 'Ancient String Cheese',
+            produced_item_yield_formatted: 1,
+            gold_cost_formatted: '1K',
+            has_gold_cost: true
+          },
+          {
+            consumed_item_type: 'magical_string_cheese',
+            consumed_item_cost: 2,
+            produced_item_type: 'ancient_string_cheese',
+            produced_item_yield: 2,
+            gold_cost: 0,
+            title_required: 'novice',
+            consumed_item_name: 'Magical String Cheese',
+            consumed_item_cost_formatted: 2,
+            produced_item_name: 'Ancient String Cheese',
+            produced_item_yield_formatted: 2,
+            gold_cost_formatted: null,
+            has_gold_cost: false
+          }
+        ],
+        is_potion: true,
+        is_shop_item: true,
+        can_brew: null
+      },
+      {
+        name: 'Runic String Cheese Potion',
+        type: 'runic_string_cheese_potion',
+        cost: [
+          {
+            type: 'halloween_extract_stat_item',
+            name: 'Evil Extract',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/fe34d4e8dd3500184042b3d474d9977b.gif?cv=3',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/720c74a43ad07cbc3afa674a76bf0fc4.png?cv=3',
+            quantity: 3,
+            num_owned: 0
+          }
+        ],
+        yield: [
+          {
+            type: 'runic_string_cheese_potion',
+            name: 'Runic String Cheese Potion',
+            description:
+              'A bubbling potion consisting of a raw, timeless essence extracted from the Bristle Woods Rift.  Applying this potion to some Ancient String Cheese will transform it into some Runic String Cheese.',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/potions/d22e1e50ae80c4f1318106659ee6440a.jpg?cv=3',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/potions/transparent_thumb/4f23c3d23b80d026dbcd416560c2d60e.png?cv=3',
+            is_new: null,
+            quantity: 1,
+            num_owned: 14
+          }
+        ],
+        recipes: [
+          {
+            consumed_item_type: 'ancient_string_cheese',
+            consumed_item_cost: 2,
+            produced_item_type: 'runic_string_cheese',
+            produced_item_yield: 2,
+            gold_cost: 500,
+            title_required: 'novice',
+            consumed_item_name: 'Ancient String Cheese',
+            consumed_item_cost_formatted: 2,
+            produced_item_name: 'Runic String Cheese',
+            produced_item_yield_formatted: 2,
+            gold_cost_formatted: 500,
+            has_gold_cost: true
+          }
+        ],
+        is_potion: true,
+        is_shop_item: true,
+        can_brew: null
+      }
+    ]
+  },
+  reward_track: {
+    total_progress: 0,
+    max_progress: 40,
+    progress: 0,
+    goal: 1,
+    percent: 0,
+    can_claim: false,
+    item: {
+      type: '2014_spooky_shuffle_admission_ticket_stat_item',
+      name: 'Spooky Shuffle Ticket',
+      thumb:
+        'https://www.mousehuntgame.com/images/items/stats/ba4355e3ae81055fa6441c4c8867bc72.gif?cv=3',
+      quantity: 25
+    },
+    is_complete: null
+  },
+  cauldrons: [
+    {
+      slot_num: 0,
+      is_brewing: true,
+      brew_time: 3,
+      brew_percent: 80,
+      hunts: 'Hunts',
+      recipe_type: 'cauldron_tier_1_recipe',
+      recipe_name: 'Monterey Jack-O-Lantern',
+      recipe_cost: [
+        {
+          type: 'cauldron_tier_1_ingredient_stat_item',
+          name: 'Pungent Pumpkin',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/68557a73c8163e4ab037ecd835a356b3.gif?cv=3',
+          quantity: 15
+        }
+      ],
+      recipe_yield: [
+        {
+          type: 'cauldron_tier_1_cheese',
+          name: 'Monterey Jack-O-Lantern',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/bait/e842dba3ad23823a0f92805ae9281d7c.gif?cv=3',
+          thumb_transparent:
+            'https://www.mousehuntgame.com/images/items/bait/transparent_thumb/075cd86a5a2b69a437f854b700ffd390.png?cv=3',
+          quantity: 10
+        }
+      ],
+      recipe_category: 'cheese',
+      slot: 0,
+      queue: [
+        {
+          index: 0,
+          type: 'cauldron_tier_1_recipe',
+          name: 'Monterey Jack-O-Lantern',
+          cost: [
+            {
+              type: 'cauldron_tier_1_ingredient_stat_item',
+              name: 'Pungent Pumpkin',
+              thumb:
+                'https://www.mousehuntgame.com/images/items/stats/68557a73c8163e4ab037ecd835a356b3.gif?cv=3',
+              quantity: 15
+            }
+          ],
+          brew_time: 15,
+          brew_percent: 0,
+          yield: [
+            {
+              type: 'cauldron_tier_1_cheese',
+              name: 'Monterey Jack-O-Lantern',
+              thumb:
+                'https://www.mousehuntgame.com/images/items/bait/e842dba3ad23823a0f92805ae9281d7c.gif?cv=3',
+              thumb_transparent:
+                'https://www.mousehuntgame.com/images/items/bait/transparent_thumb/075cd86a5a2b69a437f854b700ffd390.png?cv=3',
+              quantity: 10
+            }
+          ],
+          slot_num: 0
+        },
+        {
+          index: 1,
+          type: 'cauldron_tier_1_recipe',
+          name: 'Monterey Jack-O-Lantern',
+          cost: [
+            {
+              type: 'cauldron_tier_1_ingredient_stat_item',
+              name: 'Pungent Pumpkin',
+              thumb:
+                'https://www.mousehuntgame.com/images/items/stats/68557a73c8163e4ab037ecd835a356b3.gif?cv=3',
+              quantity: 15
+            }
+          ],
+          brew_time: 15,
+          brew_percent: 0,
+          yield: [
+            {
+              type: 'cauldron_tier_1_cheese',
+              name: 'Monterey Jack-O-Lantern',
+              thumb:
+                'https://www.mousehuntgame.com/images/items/bait/e842dba3ad23823a0f92805ae9281d7c.gif?cv=3',
+              thumb_transparent:
+                'https://www.mousehuntgame.com/images/items/bait/transparent_thumb/075cd86a5a2b69a437f854b700ffd390.png?cv=3',
+              quantity: 10
+            }
+          ],
+          slot_num: 0
+        }
+      ],
+      is_queue_full: true,
+      can_brew_anything: null,
+      just_finished_brewing: null
+    },
+    {
+      slot_num: 1,
+      is_brewing: true,
+      brew_time: 8,
+      brew_percent: 46,
+      hunts: 'Hunts',
+      recipe_type: 'cauldron_tier_1_recipe',
+      recipe_name: 'Monterey Jack-O-Lantern',
+      recipe_cost: [
+        {
+          type: 'cauldron_tier_1_ingredient_stat_item',
+          name: 'Pungent Pumpkin',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/stats/68557a73c8163e4ab037ecd835a356b3.gif?cv=3',
+          quantity: 15
+        }
+      ],
+      recipe_yield: [
+        {
+          type: 'cauldron_tier_1_cheese',
+          name: 'Monterey Jack-O-Lantern',
+          thumb:
+            'https://www.mousehuntgame.com/images/items/bait/e842dba3ad23823a0f92805ae9281d7c.gif?cv=3',
+          thumb_transparent:
+            'https://www.mousehuntgame.com/images/items/bait/transparent_thumb/075cd86a5a2b69a437f854b700ffd390.png?cv=3',
+          quantity: 10
+        }
+      ],
+      recipe_category: 'cheese',
+      slot: 1,
+      queue: [
+        {
+          index: 0,
+          type: 'cauldron_tier_1_recipe',
+          name: 'Monterey Jack-O-Lantern',
+          cost: [
+            {
+              type: 'cauldron_tier_1_ingredient_stat_item',
+              name: 'Pungent Pumpkin',
+              thumb:
+                'https://www.mousehuntgame.com/images/items/stats/68557a73c8163e4ab037ecd835a356b3.gif?cv=3',
+              quantity: 15
+            }
+          ],
+          brew_time: 15,
+          brew_percent: 0,
+          yield: [
+            {
+              type: 'cauldron_tier_1_cheese',
+              name: 'Monterey Jack-O-Lantern',
+              thumb:
+                'https://www.mousehuntgame.com/images/items/bait/e842dba3ad23823a0f92805ae9281d7c.gif?cv=3',
+              thumb_transparent:
+                'https://www.mousehuntgame.com/images/items/bait/transparent_thumb/075cd86a5a2b69a437f854b700ffd390.png?cv=3',
+              quantity: 10
+            }
+          ],
+          slot_num: 1
+        },
+        {
+          index: 1,
+          type: null,
+          name: 'None',
+          cost: [],
+          brew_time: null,
+          brew_percent: 0,
+          yield: [],
+          slot_num: 1
+        }
+      ],
+      is_queue_full: false,
+      can_brew_anything: null,
+      just_finished_brewing: null
+    }
+  ],
+  mice: {
+    cauldron_tier_1_cheese: [
+      {
+        type: 'pumpkin_hoarder',
+        name: 'Pumpkin Hoarder Mouse',
+        abbreviated_name: 'Pumpkin Hoarder',
+        thumb:
+          'https://www.mousehuntgame.com/images/mice/thumb/4cc003a20a868359a240a2b2c3123111.gif?cv=3',
+        medium:
+          'https://www.mousehuntgame.com/images/mice/medium/50578fb75e3dcec4a10232a2af02360c.jpg?cv=3',
+        silhouette_medium:
+          'https://www.mousehuntgame.com/images/mice/silhouette_medium/7f8b6fc2cf0a7d99d5b2978cb4f31494.jpg?cv=3',
+        image:
+          'https://www.mousehuntgame.com/images/mice/silhouette_medium/7f8b6fc2cf0a7d99d5b2978cb4f31494.jpg?cv=3',
+        num_catches: 0,
+        crown: 'none',
+        has_caught: null
+      },
+      {
+        type: 'chainsaw',
+        name: 'Wild Chainsaw Mouse',
+        abbreviated_name: 'Wild Chainsaw',
+        thumb:
+          'https://www.mousehuntgame.com/images/mice/thumb/e30f01b0dacc6ec674f3f3b1037366a3.gif?cv=3',
+        medium:
+          'https://www.mousehuntgame.com/images/mice/medium/6160751f66005b87765e72e755649c08.jpg?cv=3',
+        silhouette_medium:
+          'https://www.mousehuntgame.com/images/mice/silhouette_medium/4b3679a32e00495028b39a46182b0931.jpg?cv=3',
+        image:
+          'https://www.mousehuntgame.com/images/mice/silhouette_medium/4b3679a32e00495028b39a46182b0931.jpg?cv=3',
+        num_catches: 0,
+        crown: 'none',
+        has_caught: null
+      },
+      {
+        type: 'maize_harvester',
+        name: 'Maize Harvester Mouse',
+        abbreviated_name: 'Maize Harvester',
+        thumb:
+          'https://www.mousehuntgame.com/images/mice/thumb/55fa06bb45b73e88c8c99baa44dab042.gif?cv=3',
+        medium:
+          'https://www.mousehuntgame.com/images/mice/medium/ac22a691f89a613a00e51c7a93d2975e.jpg?cv=3',
+        silhouette_medium:
+          'https://www.mousehuntgame.com/images/mice/silhouette_medium/d71084c8a030c252737b227b18646cb2.jpg?cv=3',
+        image:
+          'https://www.mousehuntgame.com/images/mice/medium/ac22a691f89a613a00e51c7a93d2975e.jpg?cv=3',
+        num_catches: 2,
+        crown: 'none',
+        has_caught: true
+      },
+      {
+        type: 'treat',
+        name: 'Treat Mouse',
+        abbreviated_name: 'Treat',
+        thumb:
+          'https://www.mousehuntgame.com/images/mice/thumb/ea3c0d91cfe251309f8c3936e3165e3a.gif?cv=3',
+        medium:
+          'https://www.mousehuntgame.com/images/mice/medium/d9aaf7fee960bbaa8dfdd658b32912b1.jpg?cv=3',
+        silhouette_medium:
+          'https://www.mousehuntgame.com/images/mice/silhouette_medium/df8e34636e69d9cd40b93d3d7b847381.jpg?cv=3',
+        image:
+          'https://www.mousehuntgame.com/images/mice/medium/d9aaf7fee960bbaa8dfdd658b32912b1.jpg?cv=3',
+        num_catches: 4,
+        crown: 'none',
+        has_caught: true
+      },
+      {
+        type: 'trick',
+        name: 'Trick Mouse',
+        abbreviated_name: 'Trick',
+        thumb:
+          'https://www.mousehuntgame.com/images/mice/thumb/d909476fa534b15476d08f8dd2b16498.gif?cv=3',
+        medium:
+          'https://www.mousehuntgame.com/images/mice/medium/a59fb5a77ff3a7cfc6aa98ca73ea5157.jpg?cv=3',
+        silhouette_medium:
+          'https://www.mousehuntgame.com/images/mice/silhouette_medium/81fa7ebce29bf533074b9608d4e342e4.jpg?cv=3',
+        image:
+          'https://www.mousehuntgame.com/images/mice/medium/a59fb5a77ff3a7cfc6aa98ca73ea5157.jpg?cv=3',
+        num_catches: 4,
+        crown: 'none',
+        has_caught: true
+      },
+      {
+        type: 'sprit_light',
+        name: 'Spirit Light Mouse',
+        abbreviated_name: 'Spirit Light',
+        thumb:
+          'https://www.mousehuntgame.com/images/mice/thumb/be8c1e36a6cfb4957255c0302d572c3c.gif?cv=3',
+        medium:
+          'https://www.mousehuntgame.com/images/mice/medium/4f20a1c982f5726cc66eca7dcc203ab2.jpg?cv=3',
+        silhouette_medium:
+          'https://www.mousehuntgame.com/images/mice/silhouette_medium/a2a04ece989700340465dc372a5be9d5.jpg?cv=3',
+        image:
+          'https://www.mousehuntgame.com/images/mice/medium/4f20a1c982f5726cc66eca7dcc203ab2.jpg?cv=3',
+        num_catches: 1,
+        crown: 'none',
+        has_caught: true
+      },
+      {
+        type: 'gordborg',
+        name: 'Gourdborg',
+        abbreviated_name: 'Gourdborg',
+        thumb:
+          'https://www.mousehuntgame.com/images/mice/thumb/26f82b1c7a172caa70b5b51c15dbcb45.gif?cv=3',
+        medium:
+          'https://www.mousehuntgame.com/images/mice/medium/766878f1fdbca294d8d3bbbc39640c00.jpg?cv=3',
+        silhouette_medium:
+          'https://www.mousehuntgame.com/images/mice/silhouette_medium/881aba5eb7d9c82315ee2c813f0cb356.jpg?cv=3',
+        image:
+          'https://www.mousehuntgame.com/images/mice/medium/766878f1fdbca294d8d3bbbc39640c00.jpg?cv=3',
+        num_catches: 5,
+        crown: 'none',
+        has_caught: true
+      }
+    ],
+    cauldron_tier_2_cheese: [
+      {
+        type: 'hween_2016_boss',
+        name: 'Sandmouse',
+        abbreviated_name: 'Sandmouse',
+        thumb:
+          'https://www.mousehuntgame.com/images/mice/thumb/1b3da8bfd0eb90254f51b56868a02fc9.gif?cv=3',
+        medium:
+          'https://www.mousehuntgame.com/images/mice/medium/b22887195179d582165f925c415679e9.jpg?cv=3',
+        silhouette_medium:
+          'https://www.mousehuntgame.com/images/mice/silhouette_medium/fac7c80dabe3a23520b89c4a6268edd6.jpg?cv=3',
+        image:
+          'https://www.mousehuntgame.com/images/mice/silhouette_medium/fac7c80dabe3a23520b89c4a6268edd6.jpg?cv=3',
+        num_catches: 0,
+        crown: 'none',
+        has_caught: null
+      },
+      {
+        type: 'hollowhead',
+        name: 'Hollowhead Mouse',
+        abbreviated_name: 'Hollowhead',
+        thumb:
+          'https://www.mousehuntgame.com/images/mice/thumb/18192bb970e8320211063bcf24d3f446.gif?cv=3',
+        medium:
+          'https://www.mousehuntgame.com/images/mice/medium/e22dc81ffbc6544676ed40b9769383f6.jpg?cv=3',
+        silhouette_medium:
+          'https://www.mousehuntgame.com/images/mice/silhouette_medium/0de34f58a5ba2f6c17745fd4a4f74219.jpg?cv=3',
+        image:
+          'https://www.mousehuntgame.com/images/mice/medium/e22dc81ffbc6544676ed40b9769383f6.jpg?cv=3',
+        num_catches: 31,
+        crown: 'bronze',
+        has_caught: true
+      },
+      {
+        type: 'dire_lycan',
+        name: 'Dire Lycan Mouse',
+        abbreviated_name: 'Dire Lycan',
+        thumb:
+          'https://www.mousehuntgame.com/images/mice/thumb/c9b08b98e14fcecf7fd27b3fe9cb5286.gif?cv=3',
+        medium:
+          'https://www.mousehuntgame.com/images/mice/medium/ba7019164d51a3f7ca101b18593a0a8a.jpg?cv=3',
+        silhouette_medium:
+          'https://www.mousehuntgame.com/images/mice/silhouette_medium/8597796652e2a32dea29ce13c7acb9b8.jpg?cv=3',
+        image:
+          'https://www.mousehuntgame.com/images/mice/silhouette_medium/8597796652e2a32dea29ce13c7acb9b8.jpg?cv=3',
+        num_catches: 0,
+        crown: 'none',
+        has_caught: null
+      },
+      {
+        type: 'creepy_marionette',
+        name: 'Creepy Marionette',
+        abbreviated_name: 'Creepy Marionette',
+        thumb:
+          'https://www.mousehuntgame.com/images/mice/thumb/d45c8e04e2ac87df5fd5c8e96d5a4114.gif?cv=3',
+        medium:
+          'https://www.mousehuntgame.com/images/mice/medium/d2e189b7ba818d2a4c7598b995da465b.jpg?cv=3',
+        silhouette_medium:
+          'https://www.mousehuntgame.com/images/mice/silhouette_medium/a2603534ad67a3ddb1fef6a9b970615c.jpg?cv=3',
+        image:
+          'https://www.mousehuntgame.com/images/mice/silhouette_medium/a2603534ad67a3ddb1fef6a9b970615c.jpg?cv=3',
+        num_catches: 0,
+        crown: 'none',
+        has_caught: null
+      },
+      {
+        type: 'rift_grave_digger',
+        name: 'Tomb Exhumer Mouse',
+        abbreviated_name: 'Tomb Exhumer',
+        thumb:
+          'https://www.mousehuntgame.com/images/mice/thumb/e1bc0c76920842c0c16c3cfd3e799fac.gif?cv=3',
+        medium:
+          'https://www.mousehuntgame.com/images/mice/medium/09f95e9d681da309694629b58b1714ac.jpg?cv=3',
+        silhouette_medium:
+          'https://www.mousehuntgame.com/images/mice/silhouette_medium/b9e65a60f76d93a8cba1b56b591b2f8b.jpg?cv=3',
+        image:
+          'https://www.mousehuntgame.com/images/mice/silhouette_medium/b9e65a60f76d93a8cba1b56b591b2f8b.jpg?cv=3',
+        num_catches: 0,
+        crown: 'none',
+        has_caught: null
+      },
+      {
+        type: 'grave_digger',
+        name: 'Grave Robber Mouse',
+        abbreviated_name: 'Grave Robber',
+        thumb:
+          'https://www.mousehuntgame.com/images/mice/thumb/636dc055355d0a4dc4124791ba9ad273.gif?cv=3',
+        medium:
+          'https://www.mousehuntgame.com/images/mice/medium/b74f6333981e5642e370f8e49c0d0726.jpg?cv=3',
+        silhouette_medium:
+          'https://www.mousehuntgame.com/images/mice/silhouette_medium/1aeedda6a0bb06f428b157b93cf9c4b1.jpg?cv=3',
+        image:
+          'https://www.mousehuntgame.com/images/mice/silhouette_medium/1aeedda6a0bb06f428b157b93cf9c4b1.jpg?cv=3',
+        num_catches: 0,
+        crown: 'none',
+        has_caught: null
+      },
+      {
+        type: 'hween_2013_boss',
+        name: 'Titanic Brain-Taker Mouse',
+        abbreviated_name: 'Titanic Brain-Taker',
+        thumb:
+          'https://www.mousehuntgame.com/images/mice/thumb/80300f3f717c452b1ef3feed7e404c26.gif?cv=3',
+        medium:
+          'https://www.mousehuntgame.com/images/mice/medium/3d908f39a91d0059fc63554634efac38.jpg?cv=3',
+        silhouette_medium:
+          'https://www.mousehuntgame.com/images/mice/silhouette_medium/0ff7fc3da6c59d26750214b72fdf8b7a.jpg?cv=3',
+        image:
+          'https://www.mousehuntgame.com/images/mice/silhouette_medium/0ff7fc3da6c59d26750214b72fdf8b7a.jpg?cv=3',
+        num_catches: 0,
+        crown: 'none',
+        has_caught: null
+      },
+      {
+        type: 'hween_2014_boss',
+        name: 'Mousataur Priestess Mouse',
+        abbreviated_name: 'Mousataur Priestess',
+        thumb:
+          'https://www.mousehuntgame.com/images/mice/thumb/05752cccc7bc73f8fe1e284885d0812b.gif?cv=3',
+        medium:
+          'https://www.mousehuntgame.com/images/mice/medium/3e25afcbff3aad4cfd31e5696e8e53d5.jpg?cv=3',
+        silhouette_medium:
+          'https://www.mousehuntgame.com/images/mice/silhouette_medium/0f81ede839f5a0af1807c78d0a526248.jpg?cv=3',
+        image:
+          'https://www.mousehuntgame.com/images/mice/silhouette_medium/0f81ede839f5a0af1807c78d0a526248.jpg?cv=3',
+        num_catches: 0,
+        crown: 'none',
+        has_caught: null
+      }
+    ],
+    cauldron_tier_3_cheese: [
+      {
+        type: 'hween_2017_boss',
+        name: 'Captain Cannonball',
+        abbreviated_name: 'Captain Cannonball',
+        thumb:
+          'https://www.mousehuntgame.com/images/mice/thumb/9e77f4a905b67f685be018976e76e14a.gif?cv=3',
+        medium:
+          'https://www.mousehuntgame.com/images/mice/medium/6fe5d2adf84bc5513857c5e2f811d757.jpg?cv=3',
+        silhouette_medium:
+          'https://www.mousehuntgame.com/images/mice/silhouette_medium/32205cfb3cc3dde6e817bcedca01cc88.jpg?cv=3',
+        image:
+          'https://www.mousehuntgame.com/images/mice/silhouette_medium/32205cfb3cc3dde6e817bcedca01cc88.jpg?cv=3',
+        num_catches: 0,
+        crown: 'none',
+        has_caught: null
+      },
+      {
+        type: 'spectral_swashbuckler',
+        name: 'Spectral Swashbuckler Mouse',
+        abbreviated_name: 'Spectral Swashbuckler',
+        thumb:
+          'https://www.mousehuntgame.com/images/mice/thumb/6cc7132b3e4c5eb1257bfe835ff12052.gif?cv=3',
+        medium:
+          'https://www.mousehuntgame.com/images/mice/medium/8c049cd2e8e2814689c33de14d646ced.jpg?cv=3',
+        silhouette_medium:
+          'https://www.mousehuntgame.com/images/mice/silhouette_medium/c3a6f0c2f373ee304d590f20b4c2edc4.jpg?cv=3',
+        image:
+          'https://www.mousehuntgame.com/images/mice/silhouette_medium/c3a6f0c2f373ee304d590f20b4c2edc4.jpg?cv=3',
+        num_catches: 0,
+        crown: 'none',
+        has_caught: null
+      },
+      {
+        type: 'rift_ghost_pirate',
+        name: 'Ghost Pirate Queen Mouse',
+        abbreviated_name: 'Ghost Pirate Queen',
+        thumb:
+          'https://www.mousehuntgame.com/images/mice/thumb/9cd32be836de4819f0e7763e052d9445.gif?cv=3',
+        medium:
+          'https://www.mousehuntgame.com/images/mice/medium/723f26c3e47144d587216ff8bd567f14.jpg?cv=3',
+        silhouette_medium:
+          'https://www.mousehuntgame.com/images/mice/silhouette_medium/1ba711588bb9a80f0d19f60563f57260.jpg?cv=3',
+        image:
+          'https://www.mousehuntgame.com/images/mice/silhouette_medium/1ba711588bb9a80f0d19f60563f57260.jpg?cv=3',
+        num_catches: 0,
+        crown: 'none',
+        has_caught: null
+      },
+      {
+        type: 'scorned_pirate',
+        name: 'Scorned Pirate Mouse',
+        abbreviated_name: 'Scorned Pirate',
+        thumb:
+          'https://www.mousehuntgame.com/images/mice/thumb/d0e4a44b9cbf68d07f2af222c8ffb134.gif?cv=3',
+        medium:
+          'https://www.mousehuntgame.com/images/mice/medium/6bdd6bbd4370477b39baa1dd96b4b519.jpg?cv=3',
+        silhouette_medium:
+          'https://www.mousehuntgame.com/images/mice/silhouette_medium/4431efe6a10fb86284bd9a5f609234a2.jpg?cv=3',
+        image:
+          'https://www.mousehuntgame.com/images/mice/silhouette_medium/4431efe6a10fb86284bd9a5f609234a2.jpg?cv=3',
+        num_catches: 0,
+        crown: 'none',
+        has_caught: null
+      },
+      {
+        type: 'spectral_butler',
+        name: 'Spectral Butler Mouse',
+        abbreviated_name: 'Spectral Butler',
+        thumb:
+          'https://www.mousehuntgame.com/images/mice/thumb/18f951cc8f2516d5a97d344e2fbeec40.gif?cv=3',
+        medium:
+          'https://www.mousehuntgame.com/images/mice/medium/727c5fa2313268311321067f5d2ebab5.jpg?cv=3',
+        silhouette_medium:
+          'https://www.mousehuntgame.com/images/mice/silhouette_medium/098b6c9f52b7a7a5b156ae5ce2c71f1f.jpg?cv=3',
+        image:
+          'https://www.mousehuntgame.com/images/mice/silhouette_medium/098b6c9f52b7a7a5b156ae5ce2c71f1f.jpg?cv=3',
+        num_catches: 0,
+        crown: 'none',
+        has_caught: null
+      },
+      {
+        type: 'gourd_ghoul',
+        name: 'Gourd Ghoul Mouse',
+        abbreviated_name: 'Gourd Ghoul',
+        thumb:
+          'https://www.mousehuntgame.com/images/mice/thumb/68b702a13e750a63a67cb53c94c8f053.gif?cv=3',
+        medium:
+          'https://www.mousehuntgame.com/images/mice/medium/5ca2b1f7e47b1b99b80294fb77e012b7.jpg?cv=3',
+        silhouette_medium:
+          'https://www.mousehuntgame.com/images/mice/silhouette_medium/a467f52cb6e6767334798c2a1ecbd1f0.jpg?cv=3',
+        image:
+          'https://www.mousehuntgame.com/images/mice/silhouette_medium/a467f52cb6e6767334798c2a1ecbd1f0.jpg?cv=3',
+        num_catches: 0,
+        crown: 'none',
+        has_caught: null
+      },
+      {
+        type: 'hween_2018_boss',
+        name: 'Admiral Arrrgh',
+        abbreviated_name: 'Admiral Arrrgh',
+        thumb:
+          'https://www.mousehuntgame.com/images/mice/thumb/cc8e4b303f0c4e3d78efeeed51318c0e.gif?cv=3',
+        medium:
+          'https://www.mousehuntgame.com/images/mice/medium/ab24d76e3fe0f87c9b68797eed3640df.jpg?cv=3',
+        silhouette_medium:
+          'https://www.mousehuntgame.com/images/mice/silhouette_medium/0ee439dffaca708d2738c516ef162301.jpg?cv=3',
+        image:
+          'https://www.mousehuntgame.com/images/mice/silhouette_medium/0ee439dffaca708d2738c516ef162301.jpg?cv=3',
+        num_catches: 0,
+        crown: 'none',
+        has_caught: null
+      }
+    ],
+    cauldron_tier_4_cheese: [
+      {
+        type: 'hween_2015_boss',
+        name: 'Bonbon Gummy Globlin Mouse',
+        abbreviated_name: 'Bonbon Gummy Globlin',
+        thumb:
+          'https://www.mousehuntgame.com/images/mice/thumb/852c7cc04bd433a46b4ef7823b8490cb.gif?cv=3',
+        medium:
+          'https://www.mousehuntgame.com/images/mice/medium/14256e1a60a2540d7e6e31ddb57d8ead.jpg?cv=3',
+        silhouette_medium:
+          'https://www.mousehuntgame.com/images/mice/silhouette_medium/425634c8ebdcb75609a0dfc359647a68.jpg?cv=3',
+        image:
+          'https://www.mousehuntgame.com/images/mice/silhouette_medium/425634c8ebdcb75609a0dfc359647a68.jpg?cv=3',
+        num_catches: 0,
+        crown: 'none',
+        has_caught: null
+      },
+      {
+        type: 'hollowed_minion',
+        name: 'Hollowed Minion Mouse',
+        abbreviated_name: 'Hollowed Minion',
+        thumb:
+          'https://www.mousehuntgame.com/images/mice/thumb/63cca0245229752d3e78c64da9d15806.gif?cv=3',
+        medium:
+          'https://www.mousehuntgame.com/images/mice/medium/10c26410f75f8338a6ebc6b6e75da76b.jpg?cv=3',
+        silhouette_medium:
+          'https://www.mousehuntgame.com/images/mice/silhouette_medium/16526386f0e5cf2a07e95a1f0f90c818.jpg?cv=3',
+        image:
+          'https://www.mousehuntgame.com/images/mice/silhouette_medium/16526386f0e5cf2a07e95a1f0f90c818.jpg?cv=3',
+        num_catches: 0,
+        crown: 'none',
+        has_caught: null
+      },
+      {
+        type: 'hollowed_demon',
+        name: 'Hollowed Mouse',
+        abbreviated_name: 'Hollowed',
+        thumb:
+          'https://www.mousehuntgame.com/images/mice/thumb/559fbff11675acd01775ab217104b8df.gif?cv=3',
+        medium:
+          'https://www.mousehuntgame.com/images/mice/medium/f8f297fd69d860fc2a3ce3187d0de523.jpg?cv=3',
+        silhouette_medium:
+          'https://www.mousehuntgame.com/images/mice/silhouette_medium/415970a14b80ee6a5484edeb8b9f2afe.jpg?cv=3',
+        image:
+          'https://www.mousehuntgame.com/images/mice/silhouette_medium/415970a14b80ee6a5484edeb8b9f2afe.jpg?cv=3',
+        num_catches: 0,
+        crown: 'none',
+        has_caught: null
+      },
+      {
+        type: 'hween_2012_boss',
+        name: 'Swamp Thang Mouse',
+        abbreviated_name: 'Swamp Thang',
+        thumb:
+          'https://www.mousehuntgame.com/images/mice/thumb/21c437ad5c659c708ae54a4ab7803fc6.gif?cv=3',
+        medium:
+          'https://www.mousehuntgame.com/images/mice/medium/98f5880724e73deef8f124d8821c1698.jpg?cv=3',
+        silhouette_medium:
+          'https://www.mousehuntgame.com/images/mice/silhouette_medium/d43deffde6d24ad5802c4c035329d599.jpg?cv=3',
+        image:
+          'https://www.mousehuntgame.com/images/mice/silhouette_medium/d43deffde6d24ad5802c4c035329d599.jpg?cv=3',
+        num_catches: 0,
+        crown: 'none',
+        has_caught: null
+      },
+      {
+        type: 'hween_2021_boss',
+        name: 'Baba Gaga',
+        abbreviated_name: 'Baba Gaga',
+        thumb:
+          'https://www.mousehuntgame.com/images/mice/thumb/663da853e19b8996b45baf96e23b2e33.gif?cv=3',
+        medium:
+          'https://www.mousehuntgame.com/images/mice/medium/23a6e49c7dc5b550ffe3026f29743c6c.jpg?cv=3',
+        silhouette_medium:
+          'https://www.mousehuntgame.com/images/mice/silhouette_medium/9011c081b4198455f9d235d998f1e784.jpg?cv=3',
+        image:
+          'https://www.mousehuntgame.com/images/mice/silhouette_medium/9011c081b4198455f9d235d998f1e784.jpg?cv=3',
+        num_catches: 0,
+        crown: 'none',
+        has_caught: null
+      }
+    ]
+  },
+  is_shutdown: null,
+  is_final_shutdown: null,
+  is_fuel_enabled: false,
+  timer_bar_start_date: '2024-10-17T14:30:00.000Z',
+  timer_bar_end_date: '2024-11-04T15:00:00.000Z',
+  standard_bait_choice: 'super_brie_cheese'
+};
+const user = {};
+user.quests = {};
+user.quests.QuestHalloweenBoilingCauldron = QuestHalloweenBoilingCauldron;
+/* const quest = QuestHalloweenBoilingCauldron;
+const cheeseStats = [
+  quest.items.cauldron_tier_4_cheese.quantity_unformatted,
+  quest.items.cauldron_tier_3_cheese.quantity_unformatted,
+  quest.items.cauldron_tier_2_cheese.quantity_unformatted,
+  quest.items.cauldron_tier_1_cheese.quantity_unformatted,
+  1000
+]; */
+const hg = {};
+const $ = {};
+function parseQuantity(qty) {
+  const strQty = (qty || 0) + '';
+  const rtn = parseInt(strQty.replaceAll(',', ''));
+  return Number.isNaN(rtn) ? 0 : rtn;
+}
+function logging(...any) {
+  const debug = true;
+  if (debug) {
+    console.groupCollapsed(new Date(), ...any);
+    console.log(Error().stack);
+    console.groupEnd();
+  }
+}
+// const cauldronUsage = [[0, 0],[0, 0],[0, 0]];
+// dimension1 is slot, dimension2 is cauldron, i.e. slot x cauldron.
+// 這樣排列方便把 brew平均到兩個 cauldron中
+// 實務邏輯是 brew時我們會找兩個 cauldron中最空的先丟
+// $('.halloweenBoilingCauldronHUD-baitContainer').css({top:'100px',zIndex:'3'});
+// #Halloween
+// prettier-ignore
+if (user.environment_type == 'halloween_event_location') {
+  if (user.quests.QuestHalloweenBoilingCauldron.is_shutdown) {
+    $('.halloweenBoilingCauldronHUD-extract').css({ top: '100px' });
+    $('.halloweenBoilingCauldronHUD-instantFinish').css({ top: '100px' });
+  } else $('.halloweenBoilingCauldronHUD-baitContainer').css({ top: '100px' });
+  halloween();
+}
+function halloween() {
+  boilingCauldron(10);
+}
+function boilingCauldron(minBrewingQty) {
+  logging('boilingCauldron_1.0.0.0.0');
+  const quest = user.quests.QuestHalloweenBoilingCauldron;
+  const rewardTrack = quest.reward_track;
+  // prettier-ignore
+  const totalEE =
+    parseQuantity(rewardTrack.total_progress) * 15 +
+    parseQuantity(quest.items.cauldron_potion_ingredient_stat_item.quantity_unformatted);
+  const cauldronUsage = [
+    [0, 0, 0],
+    [0, 0, 0]
+  ];
+  const cauldrons = quest.cauldrons;
+  for (let i = 0; i < cauldrons.length; i++) {
+    const cauldron = cauldrons[i];
+    cauldronUsage[i][0] = cauldron.is_brewing ? cauldron.brew_time : 0;
+    for (let j = 0; j < cauldron.queue.length; j++) {
+      const queue = cauldron.queue[j];
+      if (queue.type) cauldronUsage[i][j + 1] = 15;
+    }
+  }
+  console.log(cauldronUsage);
+  // prettier-ignore
+  const ingredients = [
+    parseQuantity(quest.items.cauldron_tier_4_ingredient_stat_item.quantity_unformatted),
+    parseQuantity(quest.items.cauldron_tier_3_ingredient_stat_item.quantity_unformatted),
+    parseQuantity(quest.items.cauldron_tier_2_ingredient_stat_item.quantity_unformatted),
+    parseQuantity(quest.items.cauldron_tier_1_ingredient_stat_item.quantity_unformatted),
+    parseQuantity(quest.items.cauldron_potion_ingredient_stat_item.quantity_unformatted)
+  ];
+  const recipeTypes = [
+    'cauldron_tier_4_recipe',
+    'cauldron_tier_3_recipe',
+    'cauldron_tier_2_recipe',
+    'cauldron_tier_1_recipe',
+    'halloween_extract_cauldron_recipe'
+  ];
+  const itemTypes = [
+    'cauldron_tier_4_cheese',
+    'cauldron_tier_3_cheese',
+    'cauldron_tier_2_cheese',
+    'cauldron_tier_1_cheese',
+    'halloween_extract_stat_item'
+  ];
+  // EE夠完成 reward track後,如果沒有在做 map,先全力 brew EE到完成 reward track.
+  let inEventMap = false;
+  const maps = user.quests.QuestRelicHunter.maps;
+  for (let i = 0; i < maps.length; i++) {
+    const map = maps[i];
+    if (map.map_class == 'event') inEventMap = true;
+  }
+  if (totalEE > 600 && rewardTrack.total_progress < 40 && !inEventMap) {
+    ingredients.reverse();
+    recipeTypes.reverse();
+    itemTypes.reverse();
+  }
+  console.log(ingredients);
+  if (
+    cauldronUsage[0][0] + cauldronUsage[0][1] > minBrewingQty &&
+    cauldronUsage[1][0] + cauldronUsage[1][1] > minBrewingQty
+  )
+    return;
+  console.log(
+    `Have cauldrons progress less than ${minBrewingQty} , fill it up!!`
+  );
+  for (let i = 0; i < ingredients.length; i++) {
+    const ingredient = ingredients[i];
+    if (ingredient < 15) continue;
+    for (let j = 0; j < cauldronUsage.length; j++) {
+      const sumFirst2Slot = cauldronUsage[j][0] + cauldronUsage[j][1];
+      if (sumFirst2Slot > minBrewingQty) continue;
+      // brew
+      const s = `<a data-cauldron-index="${j}" data-recipe-type="${recipeTypes[i]}" data-item-type="${itemTypes[i]}"></a>`;
+      // const s = '<a data-cauldron-index="' + k + '" data-recipe-type="' + recipeTypes[i] + '" data-item-type="' + itemTypes[i] + '"></a>';
+      console.log(
+        `brew ${itemTypes[i]} in cauldron ${j} with sum of first 2 slots ${sumFirst2Slot}`,
+        s
+      );
+      hg.views.HeadsUpDisplayHalloweenBoilingCauldronView.brewRecipe($(s));
+      // 問題還是有點多 setTimeout(() => { boilingCauldron(minBrewingQty); }, 10000);
+      return;
+    }
+  }
+}
+// End #Halloween
