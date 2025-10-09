@@ -192,14 +192,16 @@ if (
   getEnvironmentType() === 'rift_valour' &&
   parseInt(user.weapon_item_id) === 2342
 )
-  autoBuyCCDT();
+  setTimeout(() => {
+    autoBuyCCDT();
+  }, 10000);
 function autoBuyCCDT() {
   // const isProd = false;
   const targetEnvironmentType = 'rift_valour';
   const enviromentType = getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
   if (parseInt(user.weapon_item_id) !== 2342) return;
-  logging('autoBuyCCDT_0.0.0.0.1');
+  logging('autoBuyCCDT_1.0.0.0.0');
   // MH constants
   // const quest = isProd ? user.quests.QuestAncientCity : QuestAncientCity;
   const autoBuyCCDTUtility = (() => {
@@ -235,10 +237,43 @@ function autoBuyCCDT() {
             1,
             false,
             () => {
-              hg.utils.TrapControl.armItem(
-                'celestial_dissonance_weapon',
-                'weapon'
-              ).go();
+              const itemType = 'celestial_dissonance_weapon';
+              const confirmQuantity = 1;
+              hg.utils.UserInventory.smashItem(
+                itemType,
+                confirmQuantity,
+                () => {
+                  let items = {
+                    celestial_dissonance_trap_parts_crafting_item: 1
+                  };
+                  hg.utils.UserInventory.craftItem(
+                    items,
+                    confirmQuantity,
+                    () => {
+                      hg.utils.UserInventory.smashItem(
+                        itemType,
+                        confirmQuantity,
+                        () => {
+                          items = {
+                            celestial_dissonance_trap_parts_crafting_item: 1,
+                            chrome_celestial_dissonance_kit_crafting_item: 1
+                          };
+                          hg.utils.UserInventory.craftItem(
+                            items,
+                            confirmQuantity,
+                            () => {
+                              hg.utils.TrapControl.armItem(
+                                'chrome_celestial_dissonance_weapon',
+                                'weapon'
+                              ).go();
+                            }
+                          );
+                        }
+                      );
+                    }
+                  );
+                }
+              );
             }
           );
         });
@@ -277,5 +312,71 @@ function autoBuyCCDT() {
       });
     });
   }
+})();
+ */
+
+/* 
+(() => {
+  const confirmPopupSubmit = function (element) {
+    const target = $(element);
+    const confirmType = target.data('confirmType');
+    const itemType = $('.inventoryPage-confirmPopup').data('itemType');
+    const recipeIndex = $('.inventoryPage-confirmPopup').data('recipe');
+    if (target.hasClass('disabled') || target.hasClass('busy')) {
+      return false;
+    }
+    target.addClass('busy');
+    // const targetText = $('span', target);
+    let confirmQuantity = $(
+      '.inventoryPage-confirmPopup-suffix-quantityContainer-quantity'
+    ).val();
+    confirmQuantity = parseInt(confirmQuantity);
+    switch (confirmType) {
+      case 'recipe':
+        var items = {};
+        $(
+          '.inventoryPage-confirmPopup-itemContainer.consumed .inventoryPage-confirmPopup-itemRow-quantity'
+        ).each(function (index, element) {
+          var tmpData = $(element).data();
+          items[tmpData['itemType']] = tmpData['quantity'];
+        });
+        hg.utils.UserInventory.craftItem(items, confirmQuantity);
+        break;
+      case 'hammer':
+        hg.utils.UserInventory.smashItem(itemType, confirmQuantity);
+        break;
+      case 'potion':
+        hg.utils.UserInventory.usePotion(
+          itemType,
+          recipeIndex,
+          confirmQuantity
+        );
+        break;
+    }
+  };
+})();
+ */
+
+/* 
+(() => {
+  const itemType = 'celestial_dissonance_weapon';
+  const confirmQuantity = 1;
+  hg.utils.UserInventory.smashItem(itemType, confirmQuantity, () => {
+    let items = { celestial_dissonance_trap_parts_crafting_item: 1 };
+    hg.utils.UserInventory.craftItem(items, confirmQuantity, () => {
+      hg.utils.UserInventory.smashItem(itemType, confirmQuantity, () => {
+        items = {
+          celestial_dissonance_trap_parts_crafting_item: 1,
+          chrome_celestial_dissonance_kit_crafting_item: 1
+        };
+        hg.utils.UserInventory.craftItem(items, confirmQuantity, () => {
+          hg.utils.TrapControl.armItem(
+            'chrome_celestial_dissonance_weapon',
+            'weapon'
+          ).go();
+        });
+      });
+    });
+  });
 })();
  */
