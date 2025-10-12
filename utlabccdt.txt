@@ -644,7 +644,7 @@ function autoBuyCCDT() {
   const enviromentType = getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
   if (parseInt(user.weapon_item_id) !== 2342) return;
-  logging('autoBuyCCDT_2.0.0.0.1');
+  logging('autoBuyCCDT_2.0.1.0.1');
   // MH constants
   const quest = isProd ? user.quests.QuestRiftValour : QuestRiftValour;
   const autoBuyCCDTUtility = (() => {
@@ -670,8 +670,12 @@ function autoBuyCCDT() {
               'div[data-item-type="total_eclipse_resource_stat_item"]'
             ).innerText
           );
+          if (parseInt(quest.power_up_data.long_stride.current_value) < 9) {
+            console.log('Must upgrade speed to 9 first');
+            return;
+          }
           if (parseInt(user.base_item_id) === 3080) {
-            if (quest.power_up_data.long_stride.current_value < 9) return;
+            // if (quest.power_up_data.long_stride.current_value < 9) return;
             if (finalItemQty < 2) return;
             console.log('After speed 9 with 2 final crafting items up, buy PB');
             const itemType = 'valour_rift_prestige_base';
@@ -682,10 +686,6 @@ function autoBuyCCDT() {
           }
           if (parseInt(user.weapon_item_id) !== 2342) {
             console.log('Not arming TDT, ignore buying weapon');
-            return;
-          }
-          if (parseInt(quest.power_up_data.long_stride.current_value) < 9) {
-            console.log('Must upgrade speed to 9 first');
             return;
           }
           if (finalItemQty < 20) {
