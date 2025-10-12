@@ -127,36 +127,38 @@ function moussuPicchu() {
   const targetEnvironmentType = 'moussu_picchu';
   const enviromentType = getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('moussuPicchu_1.0.0.0.0');
+  logging('moussuPicchu_1.0.3.0.0');
   // localStorage settings
   // prettier-ignore
   const defaultSetup = {
     huntingPlan: 'auto',
+    reservedRainyQty: 420,
+    reservedWindyQty: 420,
     trap: {
       none: ['Gouda Cheese', 'Boiling Cauldron', "Alchemist's Cookbook", 'Airship Charm,Super Snowball Charm', false],
       wind: [
-        ['Windy Cheese', 'Boiling Cauldron', "Seasonal Gift", 'Airship Charm,Tarnished Charm,Unstable', false, 35],
+        ['Windy Cheese', 'Boiling Cauldron', "Alchemist's Cookbook", 'Airship Charm,Tarnished Charm,Unstable', false, 35],
         ['Windy Cheese', 'best.weapon.arcane', 'best.base.combo', 'Ancient Charm', false, 80],
         ['Windy Cheese', 'best.weapon.arcane', 'best.base.combo', 'Regal Charm,Super Regal Charm,Ancient Charm', false, 94],
-        ['Windy Cheese', 'best.weapon.arcane', 'best.base.combo', 'Festive Ultimate Luck Charm,Ultimate Luck Charm', false, 101]
+        ['Windy Cheese', 'best.weapon.arcane', 'best.base.combo', 'Ultimate Luck Charm,Festive Ultimate Luck Charm', false, 101]
       ],
       wind_minluck: [
-        ['Windy Cheese', 'Boiling Cauldron', "Seasonal Gift", 'Airship Charm,Tarnished Charm,Unstable', false, 35],
+        ['Windy Cheese', 'Boiling Cauldron', "Alchemist's Cookbook", 'Airship Charm,Tarnished Charm,Unstable', false, 35],
         ['Windy Cheese', 'best.weapon.arcane', 'Seasonal Gift', 'Extreme Chrome Charm', false, 80],
-        ['Windy Cheese', 'best.weapon.arcane', 'best.base.combo', 'Festive Ultimate Luck Charm,Ultimate Luck Charm', false, 94],
-        ['Windy Cheese', 'best.weapon.arcane', 'best.base.combo', 'Festive Ultimate Luck Charm,Ultimate Luck Charm', false, 101]
+        ['Windy Cheese', 'best.weapon.arcane', 'best.base.combo', 'Ultimate Luck Charm,Festive Ultimate Luck Charm', false, 94],
+        ['Windy Cheese', 'best.weapon.arcane', 'best.base.combo', 'Ultimate Luck Charm,Festive Ultimate Luck Charm', false, 101]
       ],
       rain: [
         ['Rainy Cheese', 'best.weapon.shadow', "Seasonal Gift", 'Airship Charm,Tarnished Charm,Unstable', false, 35],
         ['Rainy Cheese', 'best.weapon.shadow', 'best.base.combo', 'Ancient Charm', false, 80],
         ['Rainy Cheese', 'best.weapon.shadow', 'best.base.combo', 'Regal Charm,Super Regal Charm,Ancient Charm', false, 94],
-        ['Rainy Cheese', 'best.weapon.shadow', 'best.base.combo', 'Festive Ultimate Luck Charm,Ultimate Luck Charm', false, 101]
+        ['Rainy Cheese', 'best.weapon.shadow', 'best.base.combo', 'Ultimate Luck Charm,Festive Ultimate Luck Charm', false, 101]
       ],
       rain_minluck: [
         ['Rainy Cheese', 'best.weapon.shadow', "Seasonal Gift", 'Airship Charm,Tarnished Charm,Unstable', false, 35],
         ['Rainy Cheese', 'best.weapon.shadow', 'Seasonal Gift', 'Extreme Chrome Charm', false, 80],
-        ['Rainy Cheese', 'best.weapon.shadow', 'best.base.combo', 'Festive Ultimate Luck Charm,Ultimate Luck Charm', false, 94],
-        ['Rainy Cheese', 'best.weapon.shadow', 'best.base.combo', 'Festive Ultimate Luck Charm,Ultimate Luck Charm', false, 101]
+        ['Rainy Cheese', 'best.weapon.shadow', 'best.base.combo', 'Ultimate Luck Charm,Festive Ultimate Luck Charm', false, 94],
+        ['Rainy Cheese', 'best.weapon.shadow', 'best.base.combo', 'Ultimate Luck Charm,Festive Ultimate Luck Charm', false, 101]
       ],
       storm: [
         ['Dragonvine Cheese', 'best.weapon.draconic', "Seasonal Gift", 'Airship Charm,Luck Charm', false, 35],
@@ -199,8 +201,8 @@ function moussuPicchu() {
       return;
     }
   }
-  function autoFocus(setup) {
-    if (setup.huntingPlan != 'auto') return setup.huntingPlan;
+  function autoFocus(settings) {
+    if (settings.huntingPlan != 'auto') return settings.huntingPlan;
     const quest = user.quests.QuestMoussuPicchu;
     const items = quest.items;
     const fuelQty = items.tiki_fuel_stat_item.quantity;
@@ -220,17 +222,19 @@ function moussuPicchu() {
     }
     if (stage == -1) return 'none';
     if (stage == 0) {
-      console.log('rainy until 20 left => wind');
+      console.log(`rainy until ${settings.reservedRainyQty} left => wind`);
       // TODO cheeseQty/percent設法寫活
-      if (rainyCheeseQty > 20) return stages[stage];
+      if (rainyCheeseQty > settings.reservedRainyQty) return stages[stage];
       if (rainPercent == 100) return stages[stage];
       stage = 1;
       localStorage.moussuPicchuStage = stage;
       return stages[stage];
     }
     if (stage == 1) {
-      console.log('windy until 20 left => wind_minluck');
-      if (windyCheeseQty > 20) return stages[stage];
+      console.log(
+        `windy until ${settings.reservedWindyQty} left => wind_minluck`
+      );
+      if (windyCheeseQty > settings.reservedWindyQty) return stages[stage];
       if (windPercent == 100) {
         stage = 3;
         localStorage.moussuPicchuStage = stage;
