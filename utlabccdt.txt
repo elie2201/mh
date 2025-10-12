@@ -1,0 +1,844 @@
+// MH constants
+const QuestRiftValour = {
+  state: 'farming',
+  hunts_remaining: 0,
+  current_step: 0,
+  current_step_formatted: 0,
+  prestige: 1,
+  prestige_current_step: 0,
+  prestige_total_step: 141,
+  initial_hunt_remaining: 60,
+  floor: 1,
+  floor_name: 'Puppet',
+  floor_type: 1,
+  floor_prestige: 1,
+  floor_prestige_suffix: 'st',
+  floor_steps: 20,
+  floor_percent: 0,
+  floor_data: [
+    {
+      id: 1,
+      type: 1,
+      prestige: 1,
+      prestige_starting_step: 0,
+      name: 'Floor 1',
+      length: 20,
+      start: 0
+    },
+    {
+      id: 2,
+      type: 2,
+      prestige: 1,
+      prestige_starting_step: 0,
+      name: 'Floor 2',
+      length: 20,
+      start: 20
+    },
+    {
+      id: 3,
+      type: 3,
+      prestige: 1,
+      prestige_starting_step: 0,
+      name: 'Floor 3',
+      length: 20,
+      start: 40
+    },
+    {
+      id: 4,
+      type: 4,
+      prestige: 1,
+      prestige_starting_step: 0,
+      name: 'Floor 4',
+      length: 20,
+      start: 60
+    }
+  ],
+  is_at_eclipse: false,
+  power_up_data: {
+    long_stride: {
+      name: 'Speed',
+      type: 'long_stride',
+      description:
+        'Upgrade to increase the number of steps you take with each catch.',
+      current_level: 4,
+      current_value: 5,
+      can_upgrade: null,
+      is_complete: null,
+      levels: [
+        {
+          cost: [],
+          value: 1,
+          label: 1,
+          is_active: true
+        },
+        {
+          cost: [
+            {
+              type: 'rift_gaunt_upgrade_a_stat_item',
+              quantity: 30
+            }
+          ],
+          value: 2,
+          label: 2,
+          is_active: true
+        },
+        {
+          cost: [
+            {
+              type: 'rift_gaunt_upgrade_a_stat_item',
+              quantity: 100
+            }
+          ],
+          value: 3,
+          label: 3,
+          is_active: true
+        },
+        {
+          cost: [
+            {
+              type: 'rift_gaunt_upgrade_a_stat_item',
+              quantity: 100
+            },
+            {
+              type: 'rift_gaunt_upgrade_b_stat_item',
+              quantity: 75
+            }
+          ],
+          value: 4,
+          label: 4,
+          is_active: true
+        },
+        {
+          cost: [
+            {
+              type: 'rift_gaunt_upgrade_b_stat_item',
+              quantity: 100
+            },
+            {
+              type: 'shade_eclipse_resource_stat_item',
+              quantity: 10
+            }
+          ],
+          value: 5,
+          label: 5,
+          is_current: true,
+          is_active: true
+        },
+        {
+          cost: [
+            {
+              type: 'rift_gaunt_upgrade_b_stat_item',
+              quantity: 250,
+              name: 'Tower Secrets',
+              percent: 0.8,
+              formatted_quantity: 250,
+              owned: 2,
+              has_enough: null
+            },
+            {
+              type: 'shade_eclipse_resource_stat_item',
+              quantity: 15,
+              name: 'Fragment of the Eclipse',
+              percent: 13.333333333333334,
+              formatted_quantity: 15,
+              owned: 2,
+              has_enough: null
+            }
+          ],
+          value: 6,
+          label: 6,
+          is_visible: true
+        },
+        {
+          cost: [
+            {
+              type: 'rift_gaunt_upgrade_b_stat_item',
+              quantity: 500
+            },
+            {
+              type: 'total_eclipse_resource_stat_item',
+              quantity: 3
+            }
+          ],
+          value: 7,
+          label: 7
+        },
+        {
+          cost: [
+            {
+              type: 'rift_gaunt_upgrade_b_stat_item',
+              quantity: 500
+            },
+            {
+              type: 'total_eclipse_resource_stat_item',
+              quantity: 10
+            }
+          ],
+          value: 8,
+          label: 8
+        },
+        {
+          cost: [
+            {
+              type: 'rift_gaunt_upgrade_b_stat_item',
+              quantity: 500
+            },
+            {
+              type: 'total_eclipse_resource_stat_item',
+              quantity: 25
+            }
+          ],
+          value: 9,
+          label: 9
+        },
+        {
+          cost: [
+            {
+              type: 'rift_gaunt_upgrade_b_stat_item',
+              quantity: 500
+            },
+            {
+              type: 'total_eclipse_resource_stat_item',
+              quantity: 50
+            }
+          ],
+          value: 10,
+          label: 10
+        }
+      ],
+      increment: 1
+    },
+    hunt_limit: {
+      name: 'Sync',
+      type: 'hunt_limit',
+      description:
+        'Determines how well you stay in sync with the tower, increasing the number of hunts you can take before falling out of phase.',
+      current_level: 2,
+      current_value: 60,
+      can_upgrade: null,
+      is_complete: null,
+      levels: [
+        {
+          cost: [],
+          value: 40,
+          label: 1,
+          is_active: true
+        },
+        {
+          cost: [
+            {
+              type: 'rift_gaunt_upgrade_a_stat_item',
+              quantity: 30
+            }
+          ],
+          value: 50,
+          label: 2,
+          is_active: true
+        },
+        {
+          cost: [
+            {
+              type: 'rift_gaunt_upgrade_a_stat_item',
+              quantity: 100
+            }
+          ],
+          value: 60,
+          label: 3,
+          is_current: true,
+          is_active: true
+        },
+        {
+          cost: [
+            {
+              type: 'rift_gaunt_upgrade_a_stat_item',
+              quantity: 100,
+              name: 'Tower Sigil',
+              percent: 100,
+              formatted_quantity: 100,
+              owned: 100,
+              has_enough: true
+            },
+            {
+              type: 'rift_gaunt_upgrade_b_stat_item',
+              quantity: 75,
+              name: 'Tower Secrets',
+              percent: 2.666666666666667,
+              formatted_quantity: 75,
+              owned: 2,
+              has_enough: null
+            }
+          ],
+          value: 70,
+          label: 4,
+          is_visible: true
+        },
+        {
+          cost: [
+            {
+              type: 'rift_gaunt_upgrade_b_stat_item',
+              quantity: 100
+            },
+            {
+              type: 'shade_eclipse_resource_stat_item',
+              quantity: 10
+            }
+          ],
+          value: 80,
+          label: 5
+        },
+        {
+          cost: [
+            {
+              type: 'rift_gaunt_upgrade_b_stat_item',
+              quantity: 250
+            },
+            {
+              type: 'shade_eclipse_resource_stat_item',
+              quantity: 15
+            }
+          ],
+          value: 90,
+          label: 6
+        },
+        {
+          cost: [
+            {
+              type: 'rift_gaunt_upgrade_b_stat_item',
+              quantity: 500
+            },
+            {
+              type: 'total_eclipse_resource_stat_item',
+              quantity: 3
+            }
+          ],
+          value: 100,
+          label: 7
+        }
+      ],
+      increment: 10
+    },
+    boss_extension: {
+      name: 'Siphon',
+      type: 'boss_extension',
+      description:
+        'Extends the number of hunts remaining every time the Eclipse is caught.',
+      current_level: 2,
+      current_value: 15,
+      can_upgrade: null,
+      is_complete: null,
+      levels: [
+        {
+          cost: [],
+          value: 5,
+          label: 1,
+          is_active: true
+        },
+        {
+          cost: [
+            {
+              type: 'rift_gaunt_upgrade_a_stat_item',
+              quantity: 100
+            }
+          ],
+          value: 10,
+          label: 2,
+          is_active: true
+        },
+        {
+          cost: [
+            {
+              type: 'rift_gaunt_upgrade_a_stat_item',
+              quantity: 100
+            },
+            {
+              type: 'rift_gaunt_upgrade_b_stat_item',
+              quantity: 75
+            }
+          ],
+          value: 15,
+          label: 3,
+          is_current: true,
+          is_active: true
+        },
+        {
+          cost: [
+            {
+              type: 'rift_gaunt_upgrade_b_stat_item',
+              quantity: 100,
+              name: 'Tower Secrets',
+              percent: 2,
+              formatted_quantity: 100,
+              owned: 2,
+              has_enough: null
+            },
+            {
+              type: 'shade_eclipse_resource_stat_item',
+              quantity: 10,
+              name: 'Fragment of the Eclipse',
+              percent: 20,
+              formatted_quantity: 10,
+              owned: 2,
+              has_enough: null
+            }
+          ],
+          value: 20,
+          label: 4,
+          is_visible: true
+        },
+        {
+          cost: [
+            {
+              type: 'rift_gaunt_upgrade_b_stat_item',
+              quantity: 500
+            },
+            {
+              type: 'total_eclipse_resource_stat_item',
+              quantity: 10
+            }
+          ],
+          value: 25,
+          label: 5
+        }
+      ],
+      increment: 5
+    }
+  },
+  is_eclipse_mode: null,
+  is_fuel_enabled: false,
+  can_retreat: null,
+  can_claim: false,
+  has_hunt_warning: null,
+  tracked_loot: [],
+  highest_floor_reached: 13,
+  ultimatum_highest_floor_reached: null,
+  augmentation_data: {
+    hr: {
+      name: 'Sigil Hunter',
+      description: 'Adds 50% more Tower Sigils to cache.',
+      unlock_floor: 5,
+      unlock_message: '',
+      cost: [
+        {
+          type: 'gold_stat_item',
+          quantity: 250000
+        }
+      ],
+      is_locked: null
+    },
+    sr: {
+      name: 'Secret Research',
+      description: 'Adds 50% more Tower Secrets to cache',
+      unlock_floor: 15,
+      unlock_message: '',
+      cost: [
+        {
+          type: 'rift_gaunt_upgrade_a_stat_item',
+          quantity: 500
+        }
+      ],
+      is_locked: true
+    },
+    ss: {
+      name: 'Super Siphon',
+      description: 'Doubles the effect of Siphon',
+      unlock_floor: 20,
+      unlock_message: '',
+      cost: [
+        {
+          type: 'rift_gaunt_upgrade_a_stat_item',
+          quantity: 1000
+        }
+      ],
+      is_locked: true
+    },
+    tu: {
+      name: 'Ultimate Umbra',
+      description:
+        'Confront a tougher challenge and earn more rewards. Failing to catch pushes you back!',
+      unlock_floor: 25,
+      unlock_message: '',
+      cost: [
+        {
+          type: 'shade_eclipse_resource_stat_item',
+          quantity: 75
+        }
+      ],
+      is_locked: true
+    },
+    er: {
+      name: 'Elixir Rain',
+      description: 'Mice have a 50% chance of dropping an Elixir.',
+      unlock_floor: 40,
+      unlock_message: '',
+      cost: [
+        {
+          type: 'rift_gaunt_upgrade_b_stat_item',
+          quantity: 500
+        }
+      ],
+      is_locked: true
+    },
+    sste: {
+      name: 'String Stepping',
+      description: 'Capturing the Terrified Adventurer gives x2 progress.',
+      unlock_floor: 65,
+      unlock_message: '',
+      cost: [
+        {
+          type: 'rift_gaunt_upgrade_b_stat_item',
+          quantity: 1500
+        }
+      ],
+      is_locked: true
+    }
+  }
+};
+const MOUSEHUNT_BASE_URL = 'https://www.mousehuntgame.com/';
+const eventRegistry = {};
+// const jsDialog = {};
+const hg = {};
+const user = {};
+user.environment_type = 'rift_valour';
+user.quests = {};
+user.quests.QuestRiftValour = QuestRiftValour;
+// MH functions
+function $() {}
+// MH & my-mh-aid functions
+function getEnvironmentType() {
+  const rtn = trimToEmpty(user.environment_type);
+  // console.plog(`Current location environment_type: ${rtn}`);
+  return rtn;
+}
+function trimToEmpty(str) {
+  return trimToDefault(str);
+}
+function trimToDefault(str, deflt) {
+  return str === 0 ? '0' : ((str || (deflt ? deflt : '')) + '').trim();
+}
+function logging(...any) {
+  const debug = true;
+  if (debug) {
+    console.groupCollapsed(new Date(), ...any);
+    console.log(Error().stack);
+    console.groupEnd();
+  }
+}
+function parseQuantity(qty) {
+  const strQty = (qty || 0) + '';
+  const rtn = parseInt(strQty.replaceAll(',', ''));
+  return Number.isNaN(rtn) ? 0 : rtn;
+}
+function completeTransaction(
+  isPurchase,
+  itemType,
+  itemQuantity,
+  isKingsCartItem,
+  success
+) {
+  if (itemQuantity < 1) {
+    console.plog('Cannot buy 0 item');
+    return;
+  }
+  const uniqueHash = user.unique_hash;
+  $.ajax({
+    data: {
+      type: itemType,
+      quantity: itemQuantity,
+      buy: isPurchase ? 1 : 0,
+      is_kings_cart_item: isKingsCartItem ? 1 : 0,
+      uh: uniqueHash
+    },
+    dataType: 'json',
+    type: 'post',
+    url: MOUSEHUNT_BASE_URL + 'managers/ajax/purchases/itempurchase.php',
+    success: function (data) {
+      console.log(data.success, data);
+      eventRegistry.doEvent('ajax_response', data);
+      if (success) success();
+    },
+    error: function (data) {
+      // const message = `completeTransaction for ${itemType} error`;
+      // popupMessage(message);
+      // localStorage.setItem(storingMessageKey, message);
+      console.log(data);
+    }
+  });
+}
+/* 
+function armAllTraps(bait, weapon, base, charm) {
+  console.log(bait, weapon, base, charm);
+}
+function getStorageToObject(keyName, objDefault) {
+  let obj = getStorage(keyName);
+  let bCheckNewProp = true;
+  if (isNullOrUndefined(obj)) {
+    obj = JSON.stringify(objDefault);
+    setStorage(keyName, obj);
+    bCheckNewProp = false;
+  }
+  obj = JSON.parse(obj);
+  if (bCheckNewProp) {
+    if (assignMissingDefault(obj, objDefault)) {
+      setStorage(keyName, JSON.stringify(obj));
+    }
+  }
+  return obj;
+  function getStorage(name) {
+    // check if the web browser support HTML5 storage
+    if ('localStorage' in window && !isNullOrUndefined(window.localStorage)) {
+      return window.localStorage.getItem(name);
+    }
+  }
+  function setStorage(name, value) {
+    // check if the web browser support HTML5 storage
+    if ('localStorage' in window && !isNullOrUndefined(window.localStorage)) {
+      window.localStorage.setItem(name, value);
+    }
+  }
+  function isNullOrUndefined(obj) {
+    return (
+      obj === null || obj === undefined || obj === 'null' || obj === 'undefined'
+    );
+  }
+  function assignMissingDefault(target, source) {
+    let isResave = false;
+    for (const key in source) {
+      if (
+        Object.prototype.hasOwnProperty.call(source, key) &&
+        !Object.prototype.hasOwnProperty.call(target, key)
+      ) {
+        const element = source[key];
+        target[key] = element;
+        isResave = true;
+      }
+    }
+    return isResave;
+  }
+}
+function getRandomInteger(min, max) {
+  return parseInt(min + Math.random() * (max - min));
+}
+function reloadWithMessage(msg, soundHorn) {
+  console.plog('reloadWithMessage: ', msg, ',', soundHorn);
+  // display the message
+  // displayTimer(msg, msg, msg);
+
+  // reload the page
+  setTimeout(function () {
+    // reloadPage(soundHorn);
+  }, 1000);
+}
+ */
+
+// #autoBuyCCDT
+if (
+  getEnvironmentType() === 'rift_valour' &&
+  parseInt(user.weapon_item_id) === 2342
+)
+  setTimeout(() => {
+    autoBuyCCDT();
+  }, 10000);
+function autoBuyCCDT() {
+  const isProd = false;
+  const targetEnvironmentType = 'rift_valour';
+  const enviromentType = getEnvironmentType();
+  if (enviromentType !== targetEnvironmentType) return;
+  if (parseInt(user.weapon_item_id) !== 2342) return;
+  logging('autoBuyCCDT_2.0.0.0.1');
+  // MH constants
+  const quest = isProd ? user.quests.QuestRiftValour : QuestRiftValour;
+  const autoBuyCCDTUtility = (() => {
+    const utils = {
+      // values
+      /** Set immutable fields */
+      setImmutable() {},
+      /** trapState, default: xxx */
+      trapState: 'xxx',
+      /** start running */
+      run() {
+        logging('start autoBuyCCDT');
+        this.autoSettingsPromise();
+      },
+      /** auto settings */
+      autoSettingsPromise() {
+        logging('start autoSettingsPromise');
+        return new Promise((resolve, reject) => {
+          // auto settings for running if necessary and then invoke next promise
+          if (quest.is_at_eclipse) return;
+          const finalItemQty = parseQuantity(
+            document.querySelector(
+              'div[data-item-type="total_eclipse_resource_stat_item"]'
+            ).innerText
+          );
+          if (parseInt(user.base_item_id) === 3080) {
+            if (quest.power_up_data.long_stride.current_value < 9) return;
+            if (finalItemQty < 2) return;
+            console.log('After speed 9 with 2 final crafting items up, buy PB');
+            const itemType = 'valour_rift_prestige_base';
+            completeTransaction(true, itemType, 1, false, () => {
+              hg.utils.TrapControl.armItem(itemType, 'base').go();
+            });
+            return;
+          }
+          if (parseInt(user.weapon_item_id) !== 2342) {
+            console.log('Not arming TDT, ignore buying weapon');
+            return;
+          }
+          if (parseInt(quest.power_up_data.long_stride.current_value) < 9) {
+            console.log('Must upgrade speed to 9 first');
+            return;
+          }
+          if (finalItemQty < 20) {
+            console.log('Not have enough final crafting item');
+            return;
+          }
+          console.log('Have 20 final crafting items up');
+          completeTransaction(
+            true,
+            'celestial_dissonance_weapon',
+            1,
+            false,
+            () => {
+              const itemType = 'celestial_dissonance_weapon';
+              const confirmQuantity = 1;
+              hg.utils.UserInventory.smashItem(
+                itemType,
+                confirmQuantity,
+                () => {
+                  let items = {
+                    celestial_dissonance_trap_parts_crafting_item: 1
+                  };
+                  hg.utils.UserInventory.craftItem(
+                    items,
+                    confirmQuantity,
+                    () => {
+                      hg.utils.UserInventory.smashItem(
+                        itemType,
+                        confirmQuantity,
+                        () => {
+                          items = {
+                            celestial_dissonance_trap_parts_crafting_item: 1,
+                            chrome_celestial_dissonance_kit_crafting_item: 1
+                          };
+                          hg.utils.UserInventory.craftItem(
+                            items,
+                            confirmQuantity,
+                            () => {
+                              hg.utils.TrapControl.armItem(
+                                'chrome_celestial_dissonance_weapon',
+                                'weapon'
+                              ).go();
+                            }
+                          );
+                        }
+                      );
+                    }
+                  );
+                }
+              );
+            }
+          );
+        });
+      }
+    };
+    // initial utils
+    function init() {
+      // make fields immutable
+      utils.setImmutable();
+      // initialize values in utils if necessary
+    }
+    init();
+    return utils;
+  })();
+  autoBuyCCDTUtility.run();
+}
+// End #autoBuyCCDT
+
+/* 
+(() => {
+  autoSettingsPromise();
+  function autoSettingsPromise() {
+    console.log('start autoSettingsPromise');
+    return new Promise((resolve, reject) => {
+      // auto settings for running if necessary and then invoke next promise
+      const items = user.quests.QuestLabyrinth.items;
+      const finalItemQty = parseInt(items.tech_power_core_crafting_item);
+      console.log(finalItemQty, items);
+      if (finalItemQty < 150) {
+        console.log('Not have enough final crafting item');
+        return;
+      }
+      console.log('Have enough final crafting item');
+      completeTransaction(true, 'endless_labyrinth_weapon', 1, false, () => {
+        hg.utils.TrapControl.armItem('endless_labyrinth_weapon', 'weapon').go();
+      });
+    });
+  }
+})();
+ */
+
+/* 
+(() => {
+  const confirmPopupSubmit = function (element) {
+    const target = $(element);
+    const confirmType = target.data('confirmType');
+    const itemType = $('.inventoryPage-confirmPopup').data('itemType');
+    const recipeIndex = $('.inventoryPage-confirmPopup').data('recipe');
+    if (target.hasClass('disabled') || target.hasClass('busy')) {
+      return false;
+    }
+    target.addClass('busy');
+    // const targetText = $('span', target);
+    let confirmQuantity = $(
+      '.inventoryPage-confirmPopup-suffix-quantityContainer-quantity'
+    ).val();
+    confirmQuantity = parseInt(confirmQuantity);
+    switch (confirmType) {
+      case 'recipe':
+        var items = {};
+        $(
+          '.inventoryPage-confirmPopup-itemContainer.consumed .inventoryPage-confirmPopup-itemRow-quantity'
+        ).each(function (index, element) {
+          var tmpData = $(element).data();
+          items[tmpData['itemType']] = tmpData['quantity'];
+        });
+        hg.utils.UserInventory.craftItem(items, confirmQuantity);
+        break;
+      case 'hammer':
+        hg.utils.UserInventory.smashItem(itemType, confirmQuantity);
+        break;
+      case 'potion':
+        hg.utils.UserInventory.usePotion(
+          itemType,
+          recipeIndex,
+          confirmQuantity
+        );
+        break;
+    }
+  };
+})();
+ */
+
+/* 
+(() => {
+  const itemType = 'celestial_dissonance_weapon';
+  const confirmQuantity = 1;
+  hg.utils.UserInventory.smashItem(itemType, confirmQuantity, () => {
+    let items = { celestial_dissonance_trap_parts_crafting_item: 1 };
+    hg.utils.UserInventory.craftItem(items, confirmQuantity, () => {
+      hg.utils.UserInventory.smashItem(itemType, confirmQuantity, () => {
+        items = {
+          celestial_dissonance_trap_parts_crafting_item: 1,
+          chrome_celestial_dissonance_kit_crafting_item: 1
+        };
+        hg.utils.UserInventory.craftItem(items, confirmQuantity, () => {
+          hg.utils.TrapControl.armItem(
+            'chrome_celestial_dissonance_weapon',
+            'weapon'
+          ).go();
+        });
+      });
+    });
+  });
+})();
+ */
