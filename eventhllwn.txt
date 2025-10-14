@@ -3204,16 +3204,16 @@ function logging(...any) {
 // prettier-ignore
 if (user.environment_type == 'halloween_event_location') {
   if (user.quests.QuestHalloweenBoilingCauldron.is_shutdown) {
-    $('.halloweenBoilingCauldronHUD-extract').css({ top: '65px' });
-    $('.halloweenBoilingCauldronHUD-instantFinish').css({ top: '65px' });
-  } else $('.halloweenBoilingCauldronHUD-baitContainer').css({ top: '65px' });
+    $('.halloweenBoilingCauldronHUD-extract').css({ top: '80px' });
+    $('.halloweenBoilingCauldronHUD-instantFinish').css({ top: '80px' });
+  } else $('.halloweenBoilingCauldronHUD-baitContainer').css({ top: '80px', zIndex: 1000 });
   halloween();
 }
 function halloween() {
   boilingCauldron(10);
 }
 function boilingCauldron(minBrewingQty) {
-  logging('boilingCauldron_1.0.2.0.0');
+  logging('boilingCauldron_1.0.3.0.0');
   const quest = user.quests.QuestHalloweenBoilingCauldron;
   const rewardTrack = quest.reward_track;
   // prettier-ignore
