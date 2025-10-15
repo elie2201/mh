@@ -1,3 +1,4 @@
+const MOUSEHUNT_BASE_URL = 'https://www.mousehuntgame.com/';
 const QuestHalloweenBoilingCauldron = {
   is_basic_bait_armed: null,
   bait_type: 'cauldron_tier_1_cheese',
@@ -3181,6 +3182,8 @@ const cheeseStats = [
   1000
 ]; */
 const hg = {};
+const eventRegistry = {};
+const jsDialog = {};
 const $ = {};
 function parseQuantity(qty) {
   const strQty = (qty || 0) + '';
@@ -3199,23 +3202,79 @@ function logging(...any) {
 // dimension1 is slot, dimension2 is cauldron, i.e. slot x cauldron.
 // 這樣排列方便把 brew平均到兩個 cauldron中
 // 實務邏輯是 brew時我們會找兩個 cauldron中最空的先丟
-// $('.halloweenBoilingCauldronHUD-baitContainer').css({top:'100px',zIndex:'3'});
+// $('.halloweenBoilingCauldronHUD-baitContainer').css({ top:'80px', zIndex: '3' });
 // #Halloween
 // prettier-ignore
 if (user.environment_type == 'halloween_event_location') {
   if (user.quests.QuestHalloweenBoilingCauldron.is_shutdown) {
     $('.halloweenBoilingCauldronHUD-extract').css({ top: '80px' });
     $('.halloweenBoilingCauldronHUD-instantFinish').css({ top: '80px' });
-  } else $('.halloweenBoilingCauldronHUD-baitContainer').css({ top: '80px', zIndex: 1000 });
+  } else $('.halloweenBoilingCauldronHUD-baitContainer').css({ top: '80px', zIndex: '3' });
   halloween();
 }
 function halloween() {
   boilingCauldron(10);
 }
 function boilingCauldron(minBrewingQty) {
-  logging('boilingCauldron_1.0.3.0.0');
+  logging('boilingCauldron_1.0.4.0.0');
   const quest = user.quests.QuestHalloweenBoilingCauldron;
   const rewardTrack = quest.reward_track;
+  const claimReward = (element, successCallback) => {
+    // hg.views.HeadsUpDisplayHalloweenBoilingCauldronView.claimReward(element);
+    // var target = $(element);
+    const params = { action: 'claim_reward' };
+    ajax(element, params, function (data) {
+      if (data.success) {
+        // showRewardClaim(data.halloween_claimed_reward);
+        if (successCallback) successCallback();
+      }
+    });
+  };
+  function ajax(element, params, successCallback) {
+    // var target = $(element);
+    // if (target.hasClass('busy') || target.hasClass('disabled')) {
+    //   return false;
+    // }
+    // target.addClass('busy');
+    // params['last_read_journal_entry_id'] = lastReadJournalEntryId;
+    params['last_read_journal_entry_id'] = $('#journallatestentry').data(
+      'entry-id'
+    );
+    params['uh'] = user.unique_hash;
+    $.ajax({
+      data: params,
+      dataType: 'json',
+      type: 'post',
+      url:
+        MOUSEHUNT_BASE_URL +
+        'managers/ajax/events/halloween_boiling_cauldron.php',
+      success: function (data) {
+        // target.removeClass('busy');
+        eventRegistry.doEvent('ajax_response', data);
+        if (successCallback) {
+          successCallback(data);
+        }
+      },
+      error: function () {
+        // eslint-disable-next-line new-cap
+        const popup = new jsDialog();
+        popup.setTemplate('error');
+        popup.addToken('{*title*}', 'An error has occurred.');
+        popup.addToken('{*content*}', 'An error occurred. Please try again!');
+        popup.show();
+        // target.removeClass('busy');
+      }
+    });
+  }
+  // try claim reward
+  if (rewardTrack.can_claim) {
+    claimReward('<a/>', () => {
+      setTimeout(() => {
+        boilingCauldron(minBrewingQty);
+      }, 2000);
+    });
+    return;
+  }
   // prettier-ignore
   const totalEE =
     parseQuantity(rewardTrack.total_progress) * 15 +
