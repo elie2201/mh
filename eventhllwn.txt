@@ -1,4 +1,5 @@
 const MOUSEHUNT_BASE_URL = 'https://www.mousehuntgame.com/';
+// const MapClasses = { treasuer: 'treasure', poster: 'poster', event: 'event' };
 const QuestHalloweenBoilingCauldron = {
   is_basic_bait_armed: null,
   bait_type: 'cauldron_tier_1_cheese',
@@ -3216,7 +3217,7 @@ function halloween() {
   boilingCauldron(10);
 }
 function boilingCauldron(minBrewingQty) {
-  logging('boilingCauldron_1.0.4.0.1');
+  logging('boilingCauldron_1.0.6.1.1');
   const quest = user.quests.QuestHalloweenBoilingCauldron;
   const rewardTrack = quest.reward_track;
   const claimReward = (element, successCallback) => {
@@ -3267,7 +3268,7 @@ function boilingCauldron(minBrewingQty) {
     });
   }
   // try claim reward
-  if (rewardTrack.can_claim && !rewardTrack.is_complete) {
+  if (rewardTrack.can_claim && rewardTrack.total_progress < 40) {
     claimReward('<a/>', () => {
       setTimeout(() => {
         boilingCauldron(minBrewingQty);
@@ -3292,7 +3293,7 @@ function boilingCauldron(minBrewingQty) {
       if (queue.type) cauldronUsage[i][j + 1] = 15;
     }
   }
-  console.log(cauldronUsage);
+  console.log('cauldronUsage:', cauldronUsage);
   // prettier-ignore
   const ingredients = [
     parseQuantity(quest.items.cauldron_tier_4_ingredient_stat_item.quantity_unformatted),
@@ -3316,18 +3317,19 @@ function boilingCauldron(minBrewingQty) {
     'halloween_extract_stat_item'
   ];
   // EE夠完成 reward track後,如果沒有在做 map,先全力 brew EE到完成 reward track.
-  let inEventMap = false;
-  const maps = user.quests.QuestRelicHunter.maps;
-  for (let i = 0; i < maps.length; i++) {
-    const map = maps[i];
-    if (map.map_class == 'event') inEventMap = true;
-  }
-  if (totalEE > 600 && rewardTrack.total_progress < 40 && !inEventMap) {
+  // let inEventMap = false;
+  // const maps = user.quests.QuestRelicHunter.maps;
+  // for (let i = 0; i < maps.length; i++) {
+  //   const map = maps[i];
+  //   if (map.map_class == MapClasses.event) inEventMap = true;
+  // }
+  // if (totalEE > 600 && rewardTrack.total_progress < 40 && !inEventMap) {
+  if (totalEE > 600 && rewardTrack.total_progress < 40) {
     ingredients.reverse();
     recipeTypes.reverse();
     itemTypes.reverse();
   }
-  console.log(ingredients);
+  console.log('ingredients:', ingredients);
   if (
     cauldronUsage[0][0] + cauldronUsage[0][1] > minBrewingQty &&
     cauldronUsage[1][0] + cauldronUsage[1][1] > minBrewingQty
