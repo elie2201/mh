@@ -3216,7 +3216,7 @@ function halloween() {
   boilingCauldron(10);
 }
 function boilingCauldron(minBrewingQty) {
-  logging('boilingCauldron_1.0.4.0.0');
+  logging('boilingCauldron_1.0.4.0.1');
   const quest = user.quests.QuestHalloweenBoilingCauldron;
   const rewardTrack = quest.reward_track;
   const claimReward = (element, successCallback) => {
@@ -3267,7 +3267,7 @@ function boilingCauldron(minBrewingQty) {
     });
   }
   // try claim reward
-  if (rewardTrack.can_claim) {
+  if (rewardTrack.can_claim && !rewardTrack.is_complete) {
     claimReward('<a/>', () => {
       setTimeout(() => {
         boilingCauldron(minBrewingQty);
