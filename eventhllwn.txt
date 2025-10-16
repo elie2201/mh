@@ -3217,7 +3217,7 @@ function halloween() {
   boilingCauldron(10);
 }
 function boilingCauldron(minBrewingQty) {
-  logging('boilingCauldron_1.0.6.1.1');
+  logging('boilingCauldron_1.0.7.1.1');
   const quest = user.quests.QuestHalloweenBoilingCauldron;
   const rewardTrack = quest.reward_track;
   const claimReward = (element, successCallback) => {
@@ -3231,42 +3231,6 @@ function boilingCauldron(minBrewingQty) {
       }
     });
   };
-  function ajax(element, params, successCallback) {
-    // var target = $(element);
-    // if (target.hasClass('busy') || target.hasClass('disabled')) {
-    //   return false;
-    // }
-    // target.addClass('busy');
-    // params['last_read_journal_entry_id'] = lastReadJournalEntryId;
-    params['last_read_journal_entry_id'] = $('#journallatestentry').data(
-      'entry-id'
-    );
-    params['uh'] = user.unique_hash;
-    $.ajax({
-      data: params,
-      dataType: 'json',
-      type: 'post',
-      url:
-        MOUSEHUNT_BASE_URL +
-        'managers/ajax/events/halloween_boiling_cauldron.php',
-      success: function (data) {
-        // target.removeClass('busy');
-        eventRegistry.doEvent('ajax_response', data);
-        if (successCallback) {
-          successCallback(data);
-        }
-      },
-      error: function () {
-        // eslint-disable-next-line new-cap
-        const popup = new jsDialog();
-        popup.setTemplate('error');
-        popup.addToken('{*title*}', 'An error has occurred.');
-        popup.addToken('{*content*}', 'An error occurred. Please try again!');
-        popup.show();
-        // target.removeClass('busy');
-      }
-    });
-  }
   // try claim reward
   if (rewardTrack.can_claim && rewardTrack.total_progress < 40) {
     claimReward('<a/>', () => {
@@ -3277,9 +3241,9 @@ function boilingCauldron(minBrewingQty) {
     return;
   }
   // prettier-ignore
-  const totalEE =
-    parseQuantity(rewardTrack.total_progress) * 15 +
-    parseQuantity(quest.items.cauldron_potion_ingredient_stat_item.quantity_unformatted);
+  // const totalEE =
+  //   parseQuantity(rewardTrack.total_progress) * 15 +
+  //   parseQuantity(quest.items.cauldron_potion_ingredient_stat_item.quantity_unformatted);
   const cauldronUsage = [
     [0, 0, 0],
     [0, 0, 0]
@@ -3316,7 +3280,7 @@ function boilingCauldron(minBrewingQty) {
     'cauldron_tier_1_cheese',
     'halloween_extract_stat_item'
   ];
-  // EE夠完成 reward track後,如果沒有在做 map,先全力 brew EE到完成 reward track.
+  // 完成 reward track前,先全力 brew EE到完成 reward track.
   // let inEventMap = false;
   // const maps = user.quests.QuestRelicHunter.maps;
   // for (let i = 0; i < maps.length; i++) {
@@ -3324,10 +3288,10 @@ function boilingCauldron(minBrewingQty) {
   //   if (map.map_class == MapClasses.event) inEventMap = true;
   // }
   // if (totalEE > 600 && rewardTrack.total_progress < 40 && !inEventMap) {
-  if (totalEE > 600 && rewardTrack.total_progress < 40) {
-    ingredients.reverse();
-    recipeTypes.reverse();
-    itemTypes.reverse();
+  if (rewardTrack.total_progress < 40) {
+    ingredients.unshift(ingredients.pop());
+    recipeTypes.unshift(recipeTypes.pop());
+    itemTypes.unshift(itemTypes.pop());
   }
   console.log('ingredients:', ingredients);
   if (
@@ -3361,5 +3325,41 @@ function boilingCauldron(minBrewingQty) {
       return;
     }
   }
+}
+function ajax(element, params, successCallback) {
+  // var target = $(element);
+  // if (target.hasClass('busy') || target.hasClass('disabled')) {
+  //   return false;
+  // }
+  // target.addClass('busy');
+  // params['last_read_journal_entry_id'] = lastReadJournalEntryId;
+  params['last_read_journal_entry_id'] = $('#journallatestentry').data(
+    'entry-id'
+  );
+  params['uh'] = user.unique_hash;
+  $.ajax({
+    data: params,
+    dataType: 'json',
+    type: 'post',
+    url:
+      MOUSEHUNT_BASE_URL +
+      'managers/ajax/events/halloween_boiling_cauldron.php',
+    success: function (data) {
+      // target.removeClass('busy');
+      eventRegistry.doEvent('ajax_response', data);
+      if (successCallback) {
+        successCallback(data);
+      }
+    },
+    error: function () {
+      // eslint-disable-next-line new-cap
+      const popup = new jsDialog();
+      popup.setTemplate('error');
+      popup.addToken('{*title*}', 'An error has occurred.');
+      popup.addToken('{*content*}', 'An error occurred. Please try again!');
+      popup.show();
+      // target.removeClass('busy');
+    }
+  });
 }
 // End #Halloween
