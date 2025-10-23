@@ -3324,7 +3324,7 @@ function halloween() {
   const targetEnvironmentType = 'halloween_event_location';
   const enviromentType = getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('halloween_2.0.1.1.2');
+  logging('halloween_2.0.2.1.2');
   // my own hard-coded constants
   const mapScrollType = 'halloween_2021_trick_scroll_case_convertible';
   const scream = 'Scream Cheese';
@@ -3628,32 +3628,24 @@ function halloween() {
       inviteMapFriendsPromise(mapClass) {
         logging('start inviteMapFriendsPromise');
         const next = () => {
-          console.log(
-            `not auto invite, go boiling cauldron. snuserid: ${getSnUserId()}`
-          );
+          console.log('go boiling cauldron.');
+          setTimeout(() => {
+            closeAnyJsDialog();
+          }, 2000);
           this.boilingCauldronPromise(settings.minBrewingQty);
         };
+        console.log(`not auto invite. snuserid: ${getSnUserId()}`);
         next();
         /* const map = getMapByClass(mapClass);
         if (!map) {
-          this.handleTrapPromise();
+          next();
           return;
         }
         hg.utils.TreasureMapUtil.sendInvites(
           map.map_id,
           settings.mapWith[getSnUserId()],
-          () => {
-            setTimeout(() => {
-              closeAnyJsDialog();
-            }, 2000);
-            this.handleTrapPromise();
-          },
-          () => {
-            setTimeout(() => {
-              closeAnyJsDialog();
-            }, 2000);
-            this.handleTrapPromise();
-          }
+          next,
+          next
         ); */
       },
       /** boiling cauldron promise */
