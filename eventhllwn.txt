@@ -3324,7 +3324,7 @@ function halloween() {
   const targetEnvironmentType = 'halloween_event_location';
   const enviromentType = getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('halloween_2.0.2.1.4');
+  logging('halloween_2.0.2.1.5');
   // my own hard-coded constants
   const mapScrollType = 'halloween_2021_trick_scroll_case_convertible';
   const scream = 'Scream Cheese';
@@ -3718,6 +3718,7 @@ function halloween() {
                 $(s),
                 () => {
                   cauldronUsage[j][1] = 15;
+                  ingredients[i] -= 15;
                   setTimeout(() => {
                     this.boilingCauldronPromise(minBrewingQty);
                     // reloadWithMessage('After add brewing, reloading...');
