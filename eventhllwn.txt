@@ -3305,7 +3305,7 @@ function getSnUserId() {
 }
 /* function getRandomInteger(min, max) {
   return parseInt(min + Math.random() * (max - min));
-} */
+}
 function reloadWithMessage(msg, soundHorn) {
   console.plog('reloadWithMessage: ', msg, ',', soundHorn);
   // display the message
@@ -3315,7 +3315,7 @@ function reloadWithMessage(msg, soundHorn) {
   setTimeout(function () {
     // reloadPage(soundHorn);
   }, 1000);
-}
+} */
 
 // #Halloween
 if (getEnvironmentType() === 'halloween_event_location') halloween();
@@ -3324,7 +3324,7 @@ function halloween() {
   const targetEnvironmentType = 'halloween_event_location';
   const enviromentType = getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('halloween_2.0.2.1.2');
+  logging('halloween_2.0.2.1.3');
   // my own hard-coded constants
   const mapScrollType = 'halloween_2021_trick_scroll_case_convertible';
   const scream = 'Scream Cheese';
@@ -3717,8 +3717,10 @@ function halloween() {
               hg.views.HeadsUpDisplayHalloweenBoilingCauldronView.brewRecipe(
                 $(s),
                 () => {
+                  cauldronUsage[j][1] = 15;
                   setTimeout(() => {
-                    reloadWithMessage('After add brewing, reloading...');
+                    this.boilingCauldronPromise(minBrewingQty);
+                    // reloadWithMessage('After add brewing, reloading...');
                   }, 1000);
                 }
               );
