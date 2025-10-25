@@ -3324,7 +3324,7 @@ function halloween() {
   const targetEnvironmentType = 'halloween_event_location';
   const enviromentType = getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('halloween_2.0.2.1.5');
+  logging('halloween_2.0.2.1.6');
   // my own hard-coded constants
   const mapScrollType = 'halloween_2021_trick_scroll_case_convertible';
   const scream = 'Scream Cheese';
@@ -3539,8 +3539,14 @@ function halloween() {
             return;
           }
           const quest = user.quests.QuestRelicHunter;
-          if (parseQuantity(quest.num_invites) < 1 && isAutoOpen) {
-            console.log('沒有邀請,試著自己開');
+          if (parseQuantity(quest.num_invites) < 1) {
+            console.log('沒有 map邀請');
+            if (!isAutoOpen) {
+              console.log('不自動開 map');
+              notOpenScrollAction();
+              return;
+            }
+            console.log('試著自己開 map');
             this.openMapScrollPromise(
               mapClass,
               mapScrollType,
