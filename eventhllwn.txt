@@ -3305,7 +3305,7 @@ function getSnUserId() {
 }
 /* function getRandomInteger(min, max) {
   return parseInt(min + Math.random() * (max - min));
-}
+} */
 function reloadWithMessage(msg, soundHorn) {
   console.plog('reloadWithMessage: ', msg, ',', soundHorn);
   // display the message
@@ -3315,7 +3315,7 @@ function reloadWithMessage(msg, soundHorn) {
   setTimeout(function () {
     // reloadPage(soundHorn);
   }, 1000);
-} */
+}
 
 // #Halloween
 if (getEnvironmentType() === 'halloween_event_location') halloween();
@@ -3324,7 +3324,7 @@ function halloween() {
   const targetEnvironmentType = 'halloween_event_location';
   const enviromentType = getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('halloween_2.0.2.1.6');
+  logging('halloween_2.0.3.1.6');
   // my own hard-coded constants
   const mapScrollType = 'halloween_2021_trick_scroll_case_convertible';
   const scream = 'Scream Cheese';
@@ -3530,20 +3530,20 @@ function halloween() {
       acceptMapInvitePromise(mapClass) {
         logging(`start acceptMapInvitePromise(${mapClass}).)`);
         return new Promise((resolve, reject) => {
-          const notOpenScrollAction = () => {
+          const notAcceptAction = () => {
             this.boilingCauldronPromise(settings.minBrewingQty);
           };
           // 防呆
           if (!mapClass || !MapClasses[mapClass]) {
-            notOpenScrollAction();
+            notAcceptAction();
             return;
           }
           const quest = user.quests.QuestRelicHunter;
           if (parseQuantity(quest.num_invites) < 1) {
             console.log('沒有 map邀請');
             if (!isAutoOpen) {
-              console.log('不自動開 map');
-              notOpenScrollAction();
+              console.log('且不自動開 map');
+              notAcceptAction();
               return;
             }
             console.log('試著自己開 map');
@@ -3558,7 +3558,7 @@ function halloween() {
           const map = getMapByClass(mapClass);
           if (map) {
             console.log('already in map, ignore invite');
-            notOpenScrollAction();
+            notAcceptAction();
             return;
           }
           console.log(`try accept map invite of map class: ${mapClass}`);
@@ -3573,7 +3573,12 @@ function halloween() {
                 if (!Number.isNaN(mapId)) {
                   console.log('auto accept map invite of map id', mapId);
                   hg.utils.TreasureMapUtil.acceptInvite(mapId, () => {
-                    notOpenScrollAction();
+                    // notAcceptAction();
+                    setTimeout(() => {
+                      reloadWithMessage(
+                        'After accepted map invite, reloading...'
+                      );
+                    }, 2000);
                   });
                   closeAnyJsDialog();
                   return;
@@ -3581,7 +3586,7 @@ function halloween() {
               }
             });
             closeAnyJsDialog();
-            notOpenScrollAction();
+            notAcceptAction();
           }, parseInt(3500 + Math.random() * 1500));
         });
       },
@@ -3643,15 +3648,18 @@ function halloween() {
           );
         });
       },
-      /** invite map friends promise */
+      /** invite map friends promise, 只在 open scroll當下執行 */
       inviteMapFriendsPromise(mapClass) {
         logging('start inviteMapFriendsPromise');
         const next = () => {
-          console.log('go boiling cauldron.');
+          console.log('After invited map friends.');
           setTimeout(() => {
-            closeAnyJsDialog();
+            reloadWithMessage('After invited map friends, reloading...');
           }, 2000);
-          this.boilingCauldronPromise(settings.minBrewingQty);
+          // setTimeout(() => {
+          //   closeAnyJsDialog();
+          // }, 2000);
+          // this.boilingCauldronPromise(settings.minBrewingQty);
         };
         console.log(`not auto invite. snuserid: ${getSnUserId()}`);
         next();
