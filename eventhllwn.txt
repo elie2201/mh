@@ -3324,7 +3324,7 @@ function halloween() {
   const targetEnvironmentType = 'halloween_event_location';
   const enviromentType = getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('halloween_2.0.3.1.6');
+  logging('halloween_2.0.4.1.6');
   // my own hard-coded constants
   const mapScrollType = 'halloween_2021_trick_scroll_case_convertible';
   const scream = 'Scream Cheese';
@@ -3350,6 +3350,7 @@ function halloween() {
     minBaitQuantityTracking: [1, 1, 1, 1, 0],
     mapEndingQuantity: 3,
     mapEndingPriorityBegin: 0,
+    saveBaitEndAt: null,
     isLootEnding: false,
     gotdDates: [],
     traps: {
@@ -3455,6 +3456,15 @@ function halloween() {
         logging('start autoSettingsPromise');
         return new Promise((resolve, reject) => {
           console.log('auto settings if necessary');
+          // 超過指定日期,強制不再為了 map調節 bait的使用,也不再 auto map
+          if (
+            settings.saveBaitEndAt &&
+            Date.now() > Date.parse(settings.saveBaitEndAt)
+          ) {
+            settings.mapEndingPriorityBegin = 0;
+            settings.isAutoMap = false;
+            settings.isAutoBuyMap = false;
+          }
           console.log('next: 檢查是否能 claim track reward');
           this.claimRewardTrackPromise();
         });
