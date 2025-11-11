@@ -1,3 +1,4 @@
+const hg = {};
 const user = {};
 function logging(...any) {}
 function getEnvironmentType() {}
@@ -17,12 +18,14 @@ function hasLootByItemName(itemName) {
 }
 function travel(environmentType, milliseconds, callback) {}
 function armAllTraps(bait, weapon, base, charm) {}
+function getQuantityByUrlThen(itemType, callback, isAlwaysCallback) {}
+function getBaitItemId() {}
 
 // #hasLootAction
 hasLootAction();
 function hasLootAction() {
   // const isProd = false;
-  logging('hasLootAction_1.0.0.1.1');
+  logging('hasLootAction_1.0.0.2.1');
   let checks = [
     {
       nowEnvironmentType: 'kings_gauntlet',
@@ -92,14 +95,55 @@ function hasLootAction() {
   checks = [
     {
       nowEnvironmentType: 'rift_burroughs',
+      target: 'firstCheckNotUseTarget',
+      callback() {
+        // travel('rift_furoma');
+      }
+    },
+    {
+      nowEnvironmentType: 'rift_burroughs',
       target: 'Rift Circuitry',
       callback() {
-        armAllTraps(
-          'Gauntlet Cheese Tier 8',
-          'best.weapon.forgotten',
-          'Chocolate Bar Base',
-          'Baitkeeper'
-        );
+        travel('rift_furoma');
+      }
+    }
+  ];
+  checks = [
+    {
+      nowEnvironmentType: 'cape_clawed',
+      target: 'firstCheckNotUseTarget',
+      callback() {
+        // travel('rift_furoma');
+      }
+    },
+    {
+      nowEnvironmentType: 'cape_clawed',
+      target: 'Stale SUPER',
+      callback() {
+        getQuantityByUrlThen('stale_super_brie_craft_item', (qty) => {
+          if (qty > 23)
+            hg.utils.TrapControl.armItem('gouda_cheese', 'bait').go(() => {
+              travel('derr_dunes');
+            });
+        });
+        if (getBaitItemId() === 98) travel('derr_dunes');
+      }
+    }
+  ];
+  checks = [
+    {
+      nowEnvironmentType: 'catacombs',
+      target: 'firstCheckNotUseTarget',
+      callback() {
+        // travel('rift_furoma');
+      }
+    },
+    {
+      nowEnvironmentType: 'catacombs',
+      target: "Keeper's Candle",
+      callback() {
+        if (getBaitItemId() !== 108)
+          hg.utils.TrapControl.armItem('radioactive_blue_cheese', 'bait').go();
       }
     }
   ];
