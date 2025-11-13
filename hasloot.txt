@@ -147,6 +147,24 @@ function hasLootAction() {
       }
     }
   ];
+  checks = [
+    {
+      nowEnvironmentType: 'catacombs',
+      target: 'firstCheckNotUseTarget',
+      callback() {
+        // travel('rift_furoma');
+      }
+    },
+    {
+      nowEnvironmentType: 'dracano',
+      target: 'Dragon Ember',
+      callback() {
+        getQuantityByUrlThen('dragon_ember', (qty) => {
+          if (qty > 5) travel('moussu_picchu');
+        });
+      }
+    }
+  ];
   for (let i = checks.length; --i > 0; ) {
     const check = checks[i];
     if (getEnvironmentType() === check.nowEnvironmentType)
