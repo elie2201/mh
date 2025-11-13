@@ -149,7 +149,7 @@ function hasLootAction() {
   ];
   checks = [
     {
-      nowEnvironmentType: 'catacombs',
+      nowEnvironmentType: 'dracano',
       target: 'firstCheckNotUseTarget',
       callback() {
         // travel('rift_furoma');
@@ -162,6 +162,23 @@ function hasLootAction() {
         getQuantityByUrlThen('dragon_ember', (qty) => {
           if (qty > 5) travel('moussu_picchu');
         });
+      }
+    }
+  ];
+  checks = [
+    {
+      nowEnvironmentType: 'moussu_picchu',
+      target: 'firstCheckNotUseTarget',
+      callback() {
+        // travel('rift_furoma');
+      }
+    },
+    {
+      nowEnvironmentType: 'moussu_picchu',
+      target: 'Rain Warden Stone',
+      callback() {
+        // rain_warden_stone_stat_item
+        travel('rift_furoma');
       }
     }
   ];
