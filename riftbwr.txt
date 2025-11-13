@@ -123,7 +123,7 @@ function getEnvironmentType() {}
 //   success
 // ) {}
 function parseQuantity(params) {}
-function getRandomInteger(min, max) {}
+// function getRandomInteger(min, max) {}
 
 // #bristleWoodsRiftAddon
 if (getEnvironmentType() === 'rift_bristle_woods') bristleWoodsRiftAddon();
@@ -132,7 +132,7 @@ function bristleWoodsRiftAddon() {
   const targetEnvironmentType = 'rift_bristle_woods';
   const environmentType = getEnvironmentType();
   if (environmentType !== targetEnvironmentType) return;
-  logging(`bristleWoodsRiftAddon_1.3.1.0.0`);
+  logging(`bristleWoodsRiftAddon_1.3.2.0.0`);
   const quest = isProd
     ? user.quests.QuestRiftBristleWoods
     : QuestRiftBristleWoods;
@@ -246,11 +246,13 @@ function bristleWoodsRiftAddon() {
     // let itemType = 'ancient_string_cheese_potion';
     // let recipeIndex = 0;// ex. brew ASCP is 0 with BSC and is 1 with MSC
     // let confirmQuantity = ascpQuantity;
-    const randomLower = getRandomInteger(5, 10);
-    if (ascpQuantity > randomLower) {
+    // 不要屯 ASC,屯 ASCP
+    // const randomLower = getRandomInteger(5, 10);
+    // if (ascpQuantity > randomLower) {
+    if (ascQuantity < 50) {
       const itemType = 'ancient_string_cheese_potion';
       const recipeIndex = 0;
-      const confirmQuantity = ascpQuantity;
+      const confirmQuantity = Math.min(ascpQuantity, 100);
       if (itemType && confirmQuantity > 0) {
         logging(`Use ${confirmQuantity} ancient potion!!`);
         // prettier-ignore
