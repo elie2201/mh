@@ -175,7 +175,7 @@ function hasLootAction() {
     },
     {
       nowEnvironmentType: 'moussu_picchu',
-      target: 'Rain Warden Stone',
+      target: 'Wind Warden Stone',
       callback() {
         // rain_warden_stone_stat_item
         travel('rift_furoma');
