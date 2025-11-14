@@ -2059,13 +2059,15 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = getEnvironmentType();
   if (environmentType !== targetEnvironmentType) return;
-  logging('valourRift_0.6.45.30.24');
+  logging('valourRift_0.6.45.30.25');
   // my own hard-coded constants
   const gString = 'Gauntlet String';
-  const bgString = 'Brie String,Gauntlet String';
+  const bgString = 'Brie String,' + gString;
   const bestWeapon = 'best.weapon.rift';
   const bestBase = 'best.base.rift';
   const signatureSeries = 'Signature Series Denture';
+  // const pb = 'Prestige Base';
+  // const pbaerb = pb + ',Adorned Empyrean';
   const rtrv = 'Rift Tarnished Charm,Rift Vacuum Charm';
   const rupr254 = 'Rift Ultimate Power Charm,Rift 2025 Charm,Rift 2024 Charm';
   const r254 = 'Rift 2025 Charm,Rift 2024 Charm';
@@ -2717,8 +2719,11 @@ function valourRift() {
       }
     );
   };
-  if (state === vriftStates.tower && settings.isAutoRetreat) {
-    if (settings.forceRetreatFloor && settings.forceRetreatFloor === floor) {
+  // if (state === vriftStates.tower && settings.isAutoRetreat) {
+  if (state === vriftStates.tower && settings.forceRetreatFloor) {
+    console.log('there is forceRetreatFloor:', settings.forceRetreatFloor);
+    if (settings.forceRetreatFloor === floor) {
+      console.log('reached force retreat floor');
       retreat();
       return;
     }
@@ -2919,7 +2924,8 @@ function valourRift() {
     }, 10000);
   function autoOffChampionFire(isToEnable) {
     logging(`Before auto off: ${isToEnable}`);
-    // 停用. CF我只在 PP時用,但 step變化並不是規律的,少的 1 step可能因為 TA造成多 1 hunt
+    // 停用. CF我只在 PP時用,但 step變化並不是規律的,停用時少的 1 step可能因為 TA造成多 1 hunt
+    // 可能在 UUU run適用,因為沒有被擊退的問題
     return isToEnable;
     /* if (!isToEnable) return isToEnable;
     if (isAtEclipse) return isToEnable;
