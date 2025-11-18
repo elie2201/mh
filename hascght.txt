@@ -74,6 +74,28 @@ checks = [
     }
   }
 ];
+// Bristle Woods Rift check Absolute Acolyte
+checks = [
+  {
+    isByMouseType: checkedProperty.isByMouseType,
+    atEnvironmentType: 'rift_bristle_woods',
+    target: 'rift_acolyte',
+    successCallback() {
+      travel('rift_furoma');
+    }
+  }
+];
+// Dracono check Dragon Mouse
+checks = [
+  {
+    isByMouseType: checkedProperty.isByMouseType,
+    atEnvironmentType: 'dracano',
+    target: 'dragon',
+    successCallback() {
+      travel('fort_rox');
+    }
+  }
+];
 // run hasCaughtAction
 hasCaughtAction(checks);
 /** check journal to find if caught target mouse(by data-mouse-type/mouse name) */
