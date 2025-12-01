@@ -1,0 +1,497 @@
+const MiniEventAdventCalendar = {
+  is_high_enough_rank: true,
+  min_title_name: 'Initiate',
+  today: '1',
+  month: '12',
+  has_started: true,
+  within_gift_days: true,
+  hours_remaining: '14 hours 29 minutes',
+  gifts: [
+    {
+      gift: 32,
+      day: 6,
+      has_claimed: false,
+      can_claim: false,
+      message: '',
+      revealed: null,
+      covered:
+        'https://www.mousehuntgame.com/images/ui/events/advent_calendar/rendered/ce43542d46f6fb006b7e13c5b5c63c9c.jpg'
+    },
+    {
+      gift: 32768,
+      day: 16,
+      has_claimed: false,
+      can_claim: false,
+      message: '',
+      revealed: null,
+      covered:
+        'https://www.mousehuntgame.com/images/ui/events/advent_calendar/rendered/237e7414454c77d2bdbf9014b1bc6446.jpg'
+    },
+    {
+      gift: 1,
+      day: 1,
+      has_claimed: false,
+      can_claim: true,
+      message: '',
+      revealed: null,
+      covered:
+        'https://www.mousehuntgame.com/images/ui/events/advent_calendar/rendered/18e44ff353e9120d10e9d135ffe470eb.jpg'
+    },
+    {
+      gift: 2097152,
+      day: 22,
+      has_claimed: false,
+      can_claim: false,
+      message: '',
+      revealed: null,
+      covered:
+        'https://www.mousehuntgame.com/images/ui/events/advent_calendar/rendered/52f2124f7e8fd9cac8a06c248a084911.jpg'
+    },
+    {
+      gift: 1024,
+      day: 11,
+      has_claimed: false,
+      can_claim: false,
+      message: '',
+      revealed: null,
+      covered:
+        'https://www.mousehuntgame.com/images/ui/events/advent_calendar/rendered/15fd5b9a62ca8d46ec063bffd8180aca.jpg'
+    },
+    {
+      gift: 2048,
+      day: 12,
+      has_claimed: false,
+      can_claim: false,
+      message: '',
+      revealed: null,
+      covered:
+        'https://www.mousehuntgame.com/images/ui/events/advent_calendar/rendered/32ac875413ea4bcbe445f6e24db5938d.jpg'
+    },
+    {
+      gift: 8,
+      day: 4,
+      has_claimed: false,
+      can_claim: false,
+      message: '',
+      revealed: null,
+      covered:
+        'https://www.mousehuntgame.com/images/ui/events/advent_calendar/rendered/b1c11c52fcdee16f983d1c2e800c6ab8.jpg'
+    },
+    {
+      gift: 8388608,
+      day: 24,
+      has_claimed: false,
+      can_claim: false,
+      message: '',
+      revealed: null,
+      covered:
+        'https://www.mousehuntgame.com/images/ui/events/advent_calendar/rendered/5f64a79179aabead0e31d8eb4c67d1a0.jpg'
+    },
+    {
+      gift: 524288,
+      day: 20,
+      has_claimed: false,
+      can_claim: false,
+      message: '',
+      revealed: null,
+      covered:
+        'https://www.mousehuntgame.com/images/ui/events/advent_calendar/rendered/ed24594e8015e3a721e30cefcb8f21c8.jpg'
+    },
+    {
+      gift: 256,
+      day: 9,
+      has_claimed: false,
+      can_claim: false,
+      message: '',
+      revealed: null,
+      covered:
+        'https://www.mousehuntgame.com/images/ui/events/advent_calendar/rendered/a99c0e53e7c0e25abae4afdbc359eb07.jpg'
+    },
+    {
+      gift: 64,
+      day: 7,
+      has_claimed: false,
+      can_claim: false,
+      message: '',
+      revealed: null,
+      covered:
+        'https://www.mousehuntgame.com/images/ui/events/advent_calendar/rendered/b76a25baa949a72df393ebebd2f85d77.jpg'
+    },
+    {
+      gift: 1048576,
+      day: 21,
+      has_claimed: false,
+      can_claim: false,
+      message: '',
+      revealed: null,
+      covered:
+        'https://www.mousehuntgame.com/images/ui/events/advent_calendar/rendered/786d1059d62bdb752cc4980f1d636184.jpg'
+    },
+    {
+      gift: 16384,
+      day: 15,
+      has_claimed: false,
+      can_claim: false,
+      message: '',
+      revealed: null,
+      covered:
+        'https://www.mousehuntgame.com/images/ui/events/advent_calendar/rendered/b5dae174fa3d398d371b7406a28b1eda.jpg'
+    },
+    {
+      gift: 2,
+      day: 2,
+      has_claimed: false,
+      can_claim: false,
+      message: '',
+      revealed: null,
+      covered:
+        'https://www.mousehuntgame.com/images/ui/events/advent_calendar/rendered/95826a368cc7e6cc295225f2555719b4.jpg'
+    },
+    {
+      gift: 128,
+      day: 8,
+      has_claimed: false,
+      can_claim: false,
+      message: '',
+      revealed: null,
+      covered:
+        'https://www.mousehuntgame.com/images/ui/events/advent_calendar/rendered/05ec9d26636a3de9898b2126b82c4b9c.jpg'
+    },
+    {
+      gift: 4096,
+      day: 13,
+      has_claimed: false,
+      can_claim: false,
+      message: '',
+      revealed: null,
+      covered:
+        'https://www.mousehuntgame.com/images/ui/events/advent_calendar/rendered/3216be07857e56d84580e91b61fda6ef.jpg'
+    },
+    {
+      gift: 8192,
+      day: 14,
+      has_claimed: false,
+      can_claim: false,
+      message: '',
+      revealed: null,
+      covered:
+        'https://www.mousehuntgame.com/images/ui/events/advent_calendar/rendered/e084e24b8235f0f81315abd28b1aec62.jpg'
+    },
+    {
+      gift: 262144,
+      day: 19,
+      has_claimed: false,
+      can_claim: false,
+      message: '',
+      revealed: null,
+      covered:
+        'https://www.mousehuntgame.com/images/ui/events/advent_calendar/rendered/1d4651e936f0c8c78b8a89ce84944b8b.jpg'
+    },
+    {
+      gift: 4194304,
+      day: 23,
+      has_claimed: false,
+      can_claim: false,
+      message: '',
+      revealed: null,
+      covered:
+        'https://www.mousehuntgame.com/images/ui/events/advent_calendar/rendered/8444a90b6d3b000027166f43e54eacdf.jpg'
+    },
+    {
+      gift: 131072,
+      day: 18,
+      has_claimed: false,
+      can_claim: false,
+      message: '',
+      revealed: null,
+      covered:
+        'https://www.mousehuntgame.com/images/ui/events/advent_calendar/rendered/35da311400540b4db5b3cb6b718511c3.jpg'
+    },
+    {
+      gift: 4,
+      day: 3,
+      has_claimed: false,
+      can_claim: false,
+      message: '',
+      revealed: null,
+      covered:
+        'https://www.mousehuntgame.com/images/ui/events/advent_calendar/rendered/e3a03a14566b5ab23b7e57711216e424.jpg'
+    },
+    {
+      gift: 512,
+      day: 10,
+      has_claimed: false,
+      can_claim: false,
+      message: '',
+      revealed: null,
+      covered:
+        'https://www.mousehuntgame.com/images/ui/events/advent_calendar/rendered/62b43f94d3d135c0d4305b54db869238.jpg'
+    },
+    {
+      gift: 16,
+      day: 5,
+      has_claimed: false,
+      can_claim: false,
+      message: '',
+      revealed: null,
+      covered:
+        'https://www.mousehuntgame.com/images/ui/events/advent_calendar/rendered/041c49bc4a53ad81bbfe328e37ae69e4.jpg'
+    },
+    {
+      gift: 65536,
+      day: 17,
+      has_claimed: false,
+      can_claim: false,
+      message: '',
+      revealed: null,
+      covered:
+        'https://www.mousehuntgame.com/images/ui/events/advent_calendar/rendered/b331e6d852880e6cf50aff1542393b9b.jpg'
+    }
+  ],
+  complete_image: null,
+  has_claimed_all_gifts: false,
+  has_advent_calendar: true,
+  has_unclaimed_gifts: true,
+  canvas_page_url: 'https://www.mousehuntgame.com/'
+};
+const MOUSEHUNT_BASE_URL = 'https://www.mousehuntgame.com/';
+const eventRegistry = {};
+// const jsDialog = {};
+// const hg = {};
+const user = {};
+user.environment_type = 'fort_rox';
+user.quests = {};
+user.quests.MiniEventAdventCalendar = MiniEventAdventCalendar;
+// MH functions
+function $() {}
+// MH & my-mh-aid functions
+function logging(...any) {
+  const debug = true;
+  if (debug) {
+    console.groupCollapsed(new Date(), ...any);
+    console.log(Error().stack);
+    console.groupEnd();
+  }
+}
+/* function getEnvironmentType() {
+  const rtn = trimToEmpty(user.environment_type);
+  // console.plog(`Current location environment_type: ${rtn}`);
+  return rtn;
+}
+function trimToEmpty(str) {
+  return trimToDefault(str);
+}
+function trimToDefault(str, deflt) {
+  return str === 0 ? '0' : ((str || (deflt ? deflt : '')) + '').trim();
+}
+function getStorageToObject(keyName, objDefault) {
+  let obj = getStorage(keyName);
+  let bCheckNewProp = true;
+  if (isNullOrUndefined(obj)) {
+    obj = JSON.stringify(objDefault);
+    setStorage(keyName, obj);
+    bCheckNewProp = false;
+  }
+  obj = JSON.parse(obj);
+  if (bCheckNewProp) {
+    if (assignMissingDefault(obj, objDefault)) {
+      setStorage(keyName, JSON.stringify(obj));
+    }
+  }
+  return obj;
+  function getStorage(name) {
+    // check if the web browser support HTML5 storage
+    if ('localStorage' in window && !isNullOrUndefined(window.localStorage)) {
+      return window.localStorage.getItem(name);
+    }
+  }
+  function setStorage(name, value) {
+    // check if the web browser support HTML5 storage
+    if ('localStorage' in window && !isNullOrUndefined(window.localStorage)) {
+      window.localStorage.setItem(name, value);
+    }
+  }
+  function isNullOrUndefined(obj) {
+    return (
+      obj === null || obj === undefined || obj === 'null' || obj === 'undefined'
+    );
+  }
+  function assignMissingDefault(target, source) {
+    let isResave = false;
+    for (const key in source) {
+      if (
+        Object.prototype.hasOwnProperty.call(source, key) &&
+        !Object.prototype.hasOwnProperty.call(target, key)
+      ) {
+        const element = source[key];
+        target[key] = element;
+        isResave = true;
+      }
+    }
+    return isResave;
+  }
+}
+function armAllTraps(bait, weapon, base, charm) {
+  console.log(bait, weapon, base, charm);
+} */
+/* function getRandomInteger(min, max) {
+  return parseInt(min + Math.random() * (max - min));
+}
+function reloadWithMessage(msg, soundHorn) {
+  console.plog('reloadWithMessage: ', msg, ',', soundHorn);
+  // display the message
+  // displayTimer(msg, msg, msg);
+
+  // reload the page
+  setTimeout(function () {
+    // reloadPage(soundHorn);
+  }, 1000);
+} */
+
+// #claimAdventCalendar
+if (user.quests.MiniEventAdventCalendar) claimAdventCalendar();
+function claimAdventCalendar() {
+  const isProd = false;
+  //   const targetEnvironmentType = 'fort_rox';
+  //   const enviromentType = getEnvironmentType();
+  if (!user.quests.MiniEventAdventCalendar) return;
+  logging('claimAdventCalendar_1.0.0.0.0');
+  // my own hard-coded constants
+  /** localStorage settings */
+  // prettier-ignore
+  //   const defaultSettings = {};
+  //   const settings = isProd
+  //     ? getStorageToObject(targetEnvironmentType, defaultSettings)
+  //     : defaultSettings;
+  // MH constants
+  const quest = isProd ? user.quests.MiniEventAdventCalendar : MiniEventAdventCalendar;
+  //   const trapState = quest.mice_state;
+  const claimAdventCalendarUtility = (() => {
+    const utils = {
+      // values
+      /** ajax URI */
+      URI: 'managers/ajax/events/advent_calendar.php',
+      /** Set immutable fields */
+      setImmutable() {
+        const immutableFields = ['URI'];
+        for (let i = 0; i < immutableFields.length; i++) {
+          const immutableField = immutableFields[i];
+          Object.defineProperty(utils, immutableField, {
+            // value: 'This cannot be changed',
+            writable: false, // Makes the field immutable
+            configurable: false, // Prevents deletion or re-configuration of the field
+            enumerable: true // Makes the field visible during enumeration (e.g., in a for...in loop)
+          });
+        }
+      },
+      /** start running */
+      run() {
+        logging('start claimAdventCalendar');
+        this.autoSettingsPromise();
+      },
+      /** auto settings */
+      autoSettingsPromise() {
+        logging('start autoSettingsPromise');
+        return new Promise((resolve, reject) => {
+          // auto settings for running if necessary and then invoke next promise
+          this.claimPromise();
+        });
+      },
+      /** claim advent calendar promise */
+      claimPromise() {
+        logging('start claimPromise');
+        return new Promise((resolve, reject) => {
+          const gifts = quest.gifts;
+          for (let i = 0; i < gifts.length; i++) {
+            const gift = gifts[i];
+            const giftBit = gift.gift;
+            if (gift.can_claim && !gift.has_claimed) {
+              console.log('can claim and not has claimed, try claiming');
+              this.ajax(
+                {
+                  action: 'claim',
+                  gift: giftBit
+                },
+                () => {
+                  gift.can_claim = false;
+                  gift.has_claimed = true;
+                }
+              );
+              return;
+            }
+          }
+          console.log('there is nothing to claim');
+          //   const trap = settings.traps[trapState];
+          //   if (trap) armAllTraps(...trap);
+        });
+      },
+      /** location ajax */
+      ajax(params, successCallback, errorCallback) {
+        return new Promise((resolve, reject) => {
+          const defaultParams = {
+            last_read_journal_entry_id: $('#journallatestentry').data(
+              'entry-id'
+            ),
+            uh: user.unique_hash
+          };
+          $.ajax({
+            data: { ...defaultParams, ...params },
+            dataType: 'json',
+            type: 'post',
+            url: isProd
+              ? MOUSEHUNT_BASE_URL + this.URI
+              : 'https://elie2201.github.io/mh/jobs.txt',
+            success: function (data) {
+              eventRegistry.doEvent('ajax_response', data);
+              if (successCallback) successCallback();
+              return resolve(data);
+            },
+            error: (error) => {
+              if (errorCallback) errorCallback();
+              return reject(error);
+            }
+          });
+        });
+      }
+    };
+    // initial utils
+    function init() {
+      // make fields immutable
+      utils.setImmutable();
+      // initialize values in utils if necessary
+    }
+    init();
+    return utils;
+  })();
+  claimAdventCalendarUtility.run();
+}
+// End #claimAdventCalendar
+
+/* async function claimGiftHandler(event) {
+  const target = $(event.currentTarget);
+  if (target.hasClass('canClaim') && !target.hasClass('busy')) {
+    target.addClass('busy');
+    const giftBit = target.data('gift');
+    const {
+      advent_calendar: calendar,
+      advent_calendar_claimed_day: day,
+      advent_calendar_claimed_rewards: rewards
+    } = await ajax({
+      action: 'claim',
+      gift: giftBit
+    });
+    const giftDOM = $('.adventCalendarView-gift[data-gift="' + giftBit + '"]');
+    const gift = composeGiftData(calendar.gifts, day, rewards);
+    const newGiftDom = $(
+      hg.utils.TemplateUtil.renderFromFile('AdventCalendarView', 'gift', gift)
+    );
+    giftDOM.replaceWith(newGiftDom);
+    $('.adventCalendarView-gift-reward-close', newGiftDom).on(
+      'click',
+      function (e) {
+        $('.adventCalendarView-gift-rewardContainer', newGiftDom).remove();
+        e.preventDefault();
+      }
+    );
+  }
+} */
