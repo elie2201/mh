@@ -1962,6 +1962,8 @@ user.quests = {};
 user.quests.QuestRiftValour = QuestRiftValour;
 // const activejsDialog = {};
 // function $() {}
+const MyUtils = {};
+const MhUtils = {};
 function getEnvironmentType() {
   const rtn = trimToEmpty(user.environment_type);
   // console.plog(`Current location environment_type: ${rtn}`);
@@ -2059,7 +2061,7 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = getEnvironmentType();
   if (environmentType !== targetEnvironmentType) return;
-  logging('valourRift_0.6.45.30.25');
+  logging('valourRift_0.6.48.30.25');
   // my own hard-coded constants
   const gString = 'Gauntlet String';
   const bgString = 'Brie String,' + gString;
@@ -2110,11 +2112,21 @@ function valourRift() {
     13248, 3448, 13648, 13848, 14048, 14248, 14448, 14648,
     14649, 14859, 15069, 15279, 15489, 15699, 15909, 16119
   ];
+  /** total hunts = sync + eclipse * siphon */
+  // prettier-ignore
+  const cheeseQuantityByUpgrade = [
+    50, 50, 60, 60, 70,
+    70, 70, 100, 110, 120,
+    130, 160, 160, 300, 400,
+    400, 400, 650, 900, 900
+  ];
   // trap: [<bait>, <weapon>, <base>, <trinket>, <championFireEnabled>, litCandle, doubleEgg]
   // prettier-ignore
   const defaultSetting = {
     isAutoEnter: true,
     minGscToEnter: 0,
+    enterAfterTime: '',
+    enterBeforeTime: '',
     isPrestigePush: false,
     ppRunNeedCf: 800,
     ppRunNeedBait: 900,
@@ -2366,7 +2378,6 @@ function valourRift() {
   const settings = isProd
     ? getStorageToObject(targetEnvironmentType, defaultSetting)
     : defaultSetting;
-  // prettier-ignore
   const upgradePlans = settings.upgradePlans;
   // prettier-ignore
   const upgradeLevelsJSON = [];
@@ -2374,14 +2385,8 @@ function valourRift() {
     const upgradePlan = upgradePlans[i];
     upgradeLevelsJSON.push(JSON.stringify(upgradePlan));
   }
-  /** total hunts = sync + eclipse * siphon */
-  // prettier-ignore
-  const cheeseQuantityByUpgrade = [
-    50, 50, 60, 60, 70,
-    70, 70, 100, 110, 120,
-    130, 160, 160, 300, 400,
-    400, 400, 650, 900, 900
-  ];
+  const enterAfter = MyUtils.parseDateTime(settings.enterAfterTime);
+  const enterBefore = MyUtils.parseDateTime(settings.enterBeforeTime);
   const quest = isProd ? user.quests.QuestRiftValour : QuestRiftValour;
   const state = trimToEmpty(quest.state.toLowerCase());
   const floor = parseQuantity(quest.floor);
@@ -2464,89 +2469,101 @@ function valourRift() {
         if ((isFuelEnabled === true) != isToEnable)
           hg.views.HeadsUpDisplayRiftValourView.toggleFuel();
       },
-      /** Auto augmentation */
+      /**
+       * Auto augmentation.
+       * upgrade 10/100/25後,應該可以 normal/normal/normal/SSteUU/normal/normal/UU循環
+       */
       autoAugmentation() {
         let msg = null;
-        // Since 5-3-3, enable Sigil Hunter
-        if (settings.isSigilHunter == null)
-          if (
-            currentLevelIndex > 7 &&
-            this.items.gold.quantity >
-              this.augmentations.sigilHunter.howMuchNeed
-          ) {
-            msg = `enable sigilHunter: ${currentLevelsJSON}, ${this.items.gold.quantity}>${this.augmentations.sigilHunter.howMuchNeed}`;
-            isProd ? console.plog(msg) : console.log(msg);
-            settings.isSigilHunter = true;
-          }
-        // Since 6-6-4, enable Secret Research when enough sigil.
-        // If unlocked UU and have enough gold/sigil, UU
-        if (currentLevelIndex > 12) {
-          // 非 UU時, settings.isSecretResearch == null才自動設定 isSecretResearch
-          if (settings.isSecretResearch == null)
-            if (
-              this.items.sigil.quantity >
-              this.augmentations.secretResearch.howMuchNeed
-            ) {
-              msg = `enable secretResearch: ${currentLevelsJSON}, ${this.items.sigil.quantity}>${this.augmentations.secretResearch.howMuchNeed}`;
-              isProd ? console.plog(msg) : console.log(msg);
-              settings.isSecretResearch = true;
-            }
-          // UU時, isSigilHunter/isSecretResearch一律自動設定(啟用),無視 null不null
-          // sste not unlocked, check gold/sigil/frag
-          this.isOkUU =
-            this.augmentations.ultimateUmbra.isUnlock &&
-            this.items.gold.quantity >
-              this.augmentations.sigilHunter.howMuchNeed &&
-            this.items.sigil.quantity >=
-              this.augmentations.secretResearch.howMuchNeed +
-                this.augmentations.superSiphon.howMuchNeed &&
-            this.items.secret.quantity >= settings.uuRunExtraSecret &&
-            this.items.frag.quantity >=
-              this.augmentations.ultimateUmbra.howMuchNeed;
-          // sste unlocked, check gold/sigil/frag/secret
-          this.isOkSsteUU =
-            this.isOkUU &&
-            this.augmentations.stringStepping.isUnlock &&
-            this.items.secret.quantity >=
-              this.augmentations.stringStepping.howMuchNeed +
-                settings.uuRunExtraSecret;
-          msg = `Is UU ok? ${this.isOkUU}, Is UU with stringStepping ok? ${this.isOkSsteUU}`;
+        if (currentLevelIndex < 8) return;
+        // Since 5-3-3,未達 6-6-4, enable Sigil Hunter
+        if (
+          settings.isSigilHunter === null &&
+          this.items.gold.quantity >= this.augmentations.sigilHunter.howMuchNeed
+        ) {
+          msg = `enable sigilHunter: ${currentLevelsJSON}, ${this.items.gold.quantity}>${this.augmentations.sigilHunter.howMuchNeed}`;
           isProd ? console.plog(msg) : console.log(msg);
-          if (this.augmentations.stringStepping.isUnlock) {
-            // Prestige Push
-            if (settings.isPrestigePush) {
-              // 滿足必要條件才啟動 PP auto.
-              if (this.isReadyPP()) {
-                settings.isSigilHunter = true;
-                settings.isSecretResearch = true;
-                settings.isUltimateUmbra = true;
-                settings.isSuperSiphon = true;
-                settings.isStringStepping = true;
-                return;
-              }
-              // 不滿足時後面的 UU auto不跑,在 normal tower農資源
-              console.log('Not PP ready, keep farming in normal tower');
-              return;
-            }
-            msg = `stringStepping unlocked. Is UU ok? ${this.isOkUU}, Is UU with stringStepping ok? ${this.isOkSsteUU}`;
-            isProd ? console.plog(msg) : console.log(msg);
-            if (this.isOkSsteUU) {
-              settings.isSigilHunter = true;
-              settings.isSecretResearch = true;
-              settings.isUltimateUmbra = true;
-              settings.isSuperSiphon = true;
-              settings.isStringStepping = true;
-            }
-          } else {
-            msg = `stringStepping not unlocked. Is UU ok? ${this.isOkUU}, Is UU with stringStepping ok? ${this.isOkSsteUU}`;
-            isProd ? console.plog(msg) : console.log(msg);
-            if (this.isOkUU) {
-              settings.isSigilHunter = true;
-              settings.isSecretResearch = true;
-              settings.isUltimateUmbra = true;
-              settings.isSuperSiphon = true;
-            }
+          settings.isSigilHunter = true;
+        }
+        if (currentLevelIndex < 13) return;
+        // Since 6-6-4, if unlocked UU/SSte and have enough gold/sigil/secret, run UU/SSteUU
+        // enable Secret Research when enough sigil in normal tower.
+        // UU必要條件: UU+SH+SSi+中途升級所需的 secret
+        this.isOkUU =
+          settings.isUltimateUmbra !== false &&
+          this.augmentations.ultimateUmbra.isUnlock &&
+          this.items.frag.quantity >=
+            this.augmentations.ultimateUmbra.howMuchNeed &&
+          this.items.gold.quantity >=
+            this.augmentations.sigilHunter.howMuchNeed &&
+          this.items.sigil.quantity >=
+            this.augmentations.superSiphon.howMuchNeed &&
+          this.items.secret.quantity >= settings.uuRunExtraSecret;
+        // ssteUU必要條件: UU+SH+(SSi+SR)+(SSte+中途升級所需的 secret)
+        this.isOkSsteUU =
+          settings.isStringStepping !== false &&
+          this.augmentations.stringStepping.isUnlock &&
+          this.isOkUU &&
+          this.items.sigil.quantity >=
+            this.augmentations.superSiphon.howMuchNeed +
+              this.augmentations.secretResearch.howMuchNeed &&
+          this.items.secret.quantity >=
+            this.augmentations.stringStepping.howMuchNeed +
+              settings.uuRunExtraSecret;
+        msg = `Is UU ok? ${this.isOkUU}, Is UU with stringStepping ok? ${this.isOkSsteUU}`;
+        isProd ? console.plog(msg) : console.log(msg);
+        // 先檢查 Prestige Push
+        if (settings.isPrestigePush) {
+          // 滿足必要條件才啟動 PP auto,且無視設定,除了 ER外所有 augmentation都必須啟用.
+          if (this.isReadyPP()) {
+            settings.isUltimateUmbra = true;
+            settings.isSigilHunter = true;
+            settings.isSuperSiphon = true;
+            settings.isSecretResearch = true;
+            settings.isStringStepping = true;
+            return;
           }
+          // 不滿足時後面的 UU auto不跑,在 normal tower農資源
+          console.log('Not PP ready, keep farming in normal tower');
+          return;
+        }
+        // 其次 SSteUU(augmentation只有 null時才自動設定)
+        if (this.isOkSsteUU) {
+          if (settings.isUltimateUmbra === null)
+            settings.isUltimateUmbra = true;
+          if (settings.isSigilHunter === null) settings.isSigilHunter = true;
+          if (settings.isSuperSiphon === null) settings.isSuperSiphon = true;
+          if (settings.isSecretResearch === null)
+            settings.isSecretResearch = true;
+          if (settings.isStringStepping === null)
+            settings.isStringStepping = true;
+          return;
+        }
+        // 再其次 UU(augmentation只有 null時才自動設定)
+        if (this.isOkUU) {
+          if (settings.isUltimateUmbra === null)
+            settings.isUltimateUmbra = true;
+          if (settings.isSigilHunter === null) settings.isSigilHunter = true;
+          if (settings.isSuperSiphon === null) settings.isSuperSiphon = true;
+          // 循環刷時, UU可以放棄 SR,省下 sigil給 SSteUU用
+          if (
+            settings.isSecretResearch === null &&
+            this.items.sigil.quantity >=
+              this.augmentations.superSiphon.howMuchNeed +
+                this.augmentations.secretResearch.howMuchNeed
+          )
+            settings.isSecretResearch = true;
+          return;
+        }
+        // 最後 normal tower時, settings.isSecretResearch == null才自動設定 isSecretResearch
+        if (
+          settings.isSecretResearch === null &&
+          this.items.sigil.quantity >=
+            this.augmentations.secretResearch.howMuchNeed
+        ) {
+          msg = `enable secretResearch: ${currentLevelsJSON}, ${this.items.sigil.quantity}>${this.augmentations.secretResearch.howMuchNeed}`;
+          isProd ? console.plog(msg) : console.log(msg);
+          settings.isSecretResearch = true;
         }
       },
       /** 檢查是否滿足 Prestige Push必須條件 */
@@ -2688,7 +2705,6 @@ function valourRift() {
     }
   };
   if (state === vriftStates.tower && settings.isAutoRetreat) autoRetreat();
-  // claimCache();
   const claimCache = (callback) => {
     const element = '<a/>';
     hg.views.HeadsUpDisplayRiftValourView.riftValourAjax(
@@ -2696,6 +2712,7 @@ function valourRift() {
       { action: 'claim_cache' },
       () => {
         // document.querySelector('a.jsDialogClose, a#jsDialogClose').click();
+        MhUtils.updateGPWStats();
         setTimeout(() => {
           // if (callback) callback();
           window.location.href = MOUSEHUNT_BASE_URL;
@@ -2728,16 +2745,18 @@ function valourRift() {
       return;
     }
   }
-  if (state === vriftStates.farming && settings.isAutoEnter) {
+  const now = Date.now();
+  console.log(
+    `now: ${now}, enterAfter: ${enterAfter}, enterBefore: ${enterBefore}`
+  );
+  if (
+    state === vriftStates.farming &&
+    settings.isAutoEnter &&
+    (!enterAfter || now > enterAfter) &&
+    (!enterBefore || now < enterBefore)
+  ) {
     const enterTower = (augs, completionCallback) => {
       const element = '<a/>';
-      /* const completionCallback = () => {
-        document.querySelector('a.jsDialogClose, a#jsDialogClose').click();
-        if (activejsDialog) {
-          activejsDialog.hide();
-        }
-        valourRift();
-      }; */
       if (!augs) augs = [];
       if (settings.isAutoAugment && augs.length === 0) {
         const allAugs = valourRiftUtility.augmentations;
@@ -2762,6 +2781,7 @@ function valourRift() {
       enterTower([], () => {
         const a = document.querySelector('a.jsDialogClose, a#jsDialogClose');
         if (a) a.click();
+        MhUtils.updateGPWStats();
         setTimeout(() => {
           user.quests.QuestRiftValour.state = 'tower';
           user.quests.QuestRiftValour.floor = 1;
@@ -2799,18 +2819,6 @@ function valourRift() {
     }
   let trap = settings.trap[trapKey][floorKey];
   if (isAtEclipse) trap = settings.trap[trapKey].eclipse;
-  /* if (
-    floor % 8 === 7 &&
-    huntsLeft < settings.dangerousHunts &&
-    ((trapKey === 'uu' && settings.rescueCharmUU !== '') ||
-      (trapKey === vriftStates.tower && settings.rescueCharm !== ''))
-  )
-    trap[3] =
-      trapKey === vriftStates.tower
-        ? settings.rescueCharm
-        : trapKey === 'uu'
-        ? settings.rescueCharmUU
-        : trap[3]; */
   if (floor % 8 === 7 && huntsLeft < settings.dangerousHunts) {
     const rescueTraps =
       trapKey === vriftStates.tower
@@ -2906,17 +2914,6 @@ function valourRift() {
       );
       completeTransaction(true, itemType, itemQuantity, false);
     }
-    // if (
-    //   user.trinket_item_id === 1553 &&
-    //   parseQuantity(user.trinket_quantity) < getRandomInteger(17, 26)
-    // ) {
-    //   logging('auto buy Rift Vacuum');
-    //   const itemType = 'rift_vacuum_trinket';
-    //   const itemQuantity = 111;
-    //   setTimeout(() => {
-    //     completeTransaction(true, itemType, itemQuantity, false);
-    //   }, 3000);
-    // }
   };
   if (settings.isAutoBuyItem)
     setTimeout(() => {
