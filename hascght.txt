@@ -96,6 +96,41 @@ checks = [
     }
   }
 ];
+// Seasonal Garden check Bosses
+checks = [
+  {
+    isByMouseType: checkedProperty.isByMouseType,
+    atEnvironmentType: 'seasonal_garden',
+    target: 'winter_mage',
+    successCallback() {
+      travel('fort_rox');
+    }
+  },
+  {
+    isByMouseType: checkedProperty.isByMouseType,
+    atEnvironmentType: 'seasonal_garden',
+    target: 'vinetail',
+    successCallback() {
+      travel('fort_rox');
+    }
+  },
+  {
+    isByMouseType: checkedProperty.isByMouseType,
+    atEnvironmentType: 'seasonal_garden',
+    target: 'summer_mage',
+    successCallback() {
+      travel('fort_rox');
+    }
+  },
+  {
+    isByMouseType: checkedProperty.isByMouseType,
+    atEnvironmentType: 'seasonal_garden',
+    target: 'harvester',
+    successCallback() {
+      travel('fort_rox');
+    }
+  }
+];
 // run hasCaughtAction
 hasCaughtAction(checks);
 /** check journal to find if caught target mouse(by data-mouse-type/mouse name) */
