@@ -2061,7 +2061,7 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = getEnvironmentType();
   if (environmentType !== targetEnvironmentType) return;
-  logging('valourRift_0.6.48.30.25');
+  logging('valourRift_0.6.48.30.26');
   // my own hard-coded constants
   const gString = 'Gauntlet String';
   const bgString = 'Brie String,' + gString;
@@ -2656,7 +2656,8 @@ function valourRift() {
   // Auto stop toggle CF and auto-retreat by upgrade
   if (currentLevelIndex === upgradePlans.length - 1) {
     settings.trap.tower.eclipse[4] = false;
-    settings.trap.uu.eclipse[4] = false;
+    if (settings.trap.uu.eclipse[4] === null)
+      settings.trap.uu.eclipse[4] = false;
     settings.isAutoRetreat = false;
   } else if (currentLevelIndex > 9) {
     settings.trap.tower.eclipse[4] = false;
