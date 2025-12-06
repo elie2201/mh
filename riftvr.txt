@@ -2061,7 +2061,7 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = getEnvironmentType();
   if (environmentType !== targetEnvironmentType) return;
-  logging('valourRift_0.6.48.30.26');
+  logging('valourRift_0.6.49.30.26');
   // my own hard-coded constants
   const gString = 'Gauntlet String';
   const bgString = 'Brie String,' + gString;
@@ -2131,6 +2131,7 @@ function valourRift() {
     ppRunNeedCf: 800,
     ppRunNeedBait: 900,
     isAutoAugment: true,
+    uuRunExtraFrags: 0,
     uuRunExtraSecret: 1000,
     isSigilHunter: null,
     isSecretResearch: null,
@@ -2488,18 +2489,19 @@ function valourRift() {
         if (currentLevelIndex < 13) return;
         // Since 6-6-4, if unlocked UU/SSte and have enough gold/sigil/secret, run UU/SSteUU
         // enable Secret Research when enough sigil in normal tower.
-        // UU必要條件: UU+SH+SSi+中途升級所需的 secret
+        // UU必要條件: (UU+額外的 frags)+SH+SSi+額外的 secret
         this.isOkUU =
           settings.isUltimateUmbra !== false &&
           this.augmentations.ultimateUmbra.isUnlock &&
           this.items.frag.quantity >=
-            this.augmentations.ultimateUmbra.howMuchNeed &&
+            this.augmentations.ultimateUmbra.howMuchNeed +
+              settings.uuRunExtraFrags &&
           this.items.gold.quantity >=
             this.augmentations.sigilHunter.howMuchNeed &&
           this.items.sigil.quantity >=
             this.augmentations.superSiphon.howMuchNeed &&
           this.items.secret.quantity >= settings.uuRunExtraSecret;
-        // ssteUU必要條件: UU+SH+(SSi+SR)+(SSte+中途升級所需的 secret)
+        // ssteUU必要條件: (UU+額外的 frags)+SH+(SSi+SR)+(SSte+額外的 secret)
         this.isOkSsteUU =
           settings.isStringStepping !== false &&
           this.augmentations.stringStepping.isUnlock &&
