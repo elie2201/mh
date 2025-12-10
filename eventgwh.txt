@@ -20,50 +20,49 @@ function gwh() {
     ].indexOf(enviromentType) < 0
   )
     return;
-  logging('gwh_1.1.9.0.0');
+  logging('gwh_1.1.11.0.1');
   const pp = 'Pecan Pecorino';
   const gouda = 'Gouda Cheese';
-  const enrcBase = 'Attuned Enerchi Induction';
-  const sgBase = 'Seasonal Gift';
+  // const sb = 'SUPER';
+  // const lk2C = 'Spooky Charm,Snowball Charm,Cactus Charm,Luck Charm';
+  const lk3C = 'Luck Charm';
+  const gotdB = 'Seasonal Gift';
+  const gotdC = 'Tarnished Charm,Unstable Charm,Gift Wrapped,None';
   const enerchi = 'Enerchi Charm';
-  const gotdCharm = 'Tarnished Charm,Unstable Charm,Gift Wrapped,Luck Charm';
-  const luck3Charm = 'Luck Charm';
+  // grove ppTrap
+  const gT = 'Boiling Cauldron';
+  const gnB = 'Attuned Enerchi Induction';
+  const gnC = enerchi;
+  const ggC = gotdC;
+  // workshop ppTrap
+  const wT = 'best.weapon.tactical';
+  const wnB = 'Attuned Enerchi Induction';
+  const wnC = enerchi;
+  const wgC = gotdC;
+  // fortress ppTrap
+  const fT = 'best.weapon.tactical';
+  const fnB = 'Attuned Enerchi Induction';
+  const fnC = lk3C;
+  const fgC = lk3C;
+  // fortress fsTrap
+  const fsnB = 'Attuned Enerchi Induction';
+  const fsnC = lk3C;
+  const fsgC = lk3C;
+  // normalTrap
+  const nT = 'Boiling Cauldron';
+  const nnB = 'Attuned Enerchi Induction';
+  const nnC = enerchi;
+  const ngC = gotdC;
   const defaultSettings = {
     startPpQty: 14,
     ppKeptQty: 2,
     startCinnamonQty: 37,
     cinnamonKeptQty: 3,
-    isMapping: false,
-    winter_hunt_grove: {
-      ppTrap: {
-        normal: [pp, '', enrcBase, enerchi, false, [false, false, false]],
-        gotd: [pp, '', sgBase, 'none', false, [false, false, false]]
-      }
-    },
-    winter_hunt_workshop: {
-      ppTrap: {
-        normal: [pp, '', enrcBase, enerchi, false, [false, false, false]],
-        gotd: [pp, '', sgBase, 'none', false, [false, false, false]]
-      }
-    },
-    winter_hunt_fortress: {
-      ppTrap: {
-        normal: [pp, '', sgBase, luck3Charm, false, [false, false, false]],
-        gotd: [pp, '', sgBase, luck3Charm, false, [false, false, false]]
-      },
-      fsTrap: {
-        normal: [pp, '', sgBase, luck3Charm, true, [true, false, false]],
-        gotd: [pp, '', sgBase, luck3Charm, true, [true, false, false]]
-      }
-    },
-    isGoodGoTd: true,
-    normalTrap: {
-      normal: [gouda, '', enrcBase, enerchi, false, [false, false, false]],
-      gotd: [gouda, '', sgBase, gotdCharm, false, [false, false, false]]
-    },
+    fsKeptQty: 3,
+    goHailstoneQty: 27,
+    hailstoneKeptQty: 2,
     isAutoGolem: true,
-    minGolemDelayTime: 3500,
-    maxGolemDelayTime: 5000,
+    maxGolemsUse: 3,
     golemSetup: {
       defaultTarget: [
         'floating_islands',
@@ -71,13 +70,40 @@ function gwh() {
         'floating_islands'
       ] // queso_river kings_arms queso_plains queso_quarry
     },
+    minGolemDelayTime: 3500,
+    maxGolemDelayTime: 5000,
     isAutoMapping: true,
-    fsKeptQty: 3,
-    goHailstoneQty: 27,
-    hailstoneKeptQty: 2,
-    ifShutdown: {
+    shutdown: {
       isLeaveFortressIf36: true,
-      ifForgeOffIf12: true
+      isForgeOffIf12: true
+    },
+    isMapping: false,
+    winter_hunt_grove: {
+      ppTrap: {
+        normal: [pp, gT, gnB, gnC, false, [false, false, false]],
+        gotd: [pp, gT, gotdB, ggC, false, [false, false, false]]
+      }
+    },
+    winter_hunt_workshop: {
+      ppTrap: {
+        normal: [pp, wT, wnB, wnC, false, [false, false, false]],
+        gotd: [pp, wT, gotdB, wgC, false, [false, false, false]]
+      }
+    },
+    winter_hunt_fortress: {
+      ppTrap: {
+        normal: [pp, fT, fnB, fnC, false, [false, false, false]],
+        gotd: [pp, fT, gotdB, fgC, false, [false, false, false]]
+      },
+      fsTrap: {
+        normal: [pp, fT, fsnB, fsnC, true, [true, false, false]],
+        gotd: [pp, fT, gotdB, fsgC, true, [true, false, false]]
+      }
+    },
+    isGoodGoTd: true,
+    normalTrap: {
+      normal: [gouda, nT, nnB, nnC, false, [false, false, false]],
+      gotd: [gouda, nT, gotdB, ngC, false, [false, false, false]]
     }
   };
   const settings = isProd
@@ -205,9 +231,9 @@ function gwh() {
       handleTrap(trap, quest);
     });
     /* travel('winter_hunt_grove', 2000, () => {
-    const trap = getNormalTrap(setup);
-    handleTrap(trap, quest);
-  }); */
+      const trap = getNormalTrap(setup);
+      handleTrap(trap, quest);
+    }); */
   }
   function autoMapping(setup, callback) {
     // map completed
@@ -316,21 +342,20 @@ function gwh() {
       return;
     }
     /* if (cinnamonQty > setup.startCinnamonQty - 3) {
-    const trap = getNormalTrap(setup);
-    handleTrap(trap, quest);
-    return;
-  } */
+      const trap = getNormalTrap(setup);
+      handleTrap(trap, quest);
+      return;
+    } */
     checkTrap(quest, setup);
   }
   function checkTrap(quest, setup) {
     const enviromentType = user.environment_type;
     const items = quest.items;
     /* const gppQty = items.glazed_pecan_pecorino_cheese.quantity;
-  if (gppQty > setup.startGppQty) {
-    armAllTraps(...setup.gppTrap);
-  } else if (gppQty <= setup.gppKeptQty) {
-
-  } // 沒有 else就是因為 else就是對應在大於跟小於中間,不做事 */
+    if (gppQty > setup.startGppQty) {
+      armAllTraps(...setup.gppTrap);
+    } else if (gppQty <= setup.gppKeptQty) {
+    } // 沒有 else就是因為 else就是對應在大於跟小於中間,不做事 */
     const ppQty = items.pecan_pecorino_cheese.quantity;
     let trap = null;
     if (ppQty >= setup.startPpQty) {
@@ -341,8 +366,8 @@ function gwh() {
     }
     handleTrap(trap, quest);
     /* setTimeout(() => {
-    checkGolem(quest, setup);
-  }, 10000); */
+      checkGolem(quest, setup);
+    }, 10000); */
   }
   function handleTrap(trap, quest) {
     toggleFestiveSpirit(trap, quest);
@@ -417,8 +442,8 @@ function gwh() {
     console.log('currently in', enviromentType);
     if (enviromentType != 'winter_hunt_fortress') return;
     console.log(booleanArray, from, to);
-    /* const begin = from || 0;
-  const end = to || 2; */
+    // const begin = from || 0;
+    // const end = to || 2;
     let begin = from;
     let end = to;
     if (begin != 0 && !begin) begin = 0;
@@ -457,14 +482,14 @@ function gwh() {
     console.log('currently in', enviromentType);
     if (enviromentType != 'winter_hunt_workshop') return;
     console.log(booleanArray, from, to);
-    /* const begin = from || 0;
-  const end = to || 2; */
+    // const begin = from || 0;
+    // const end = to || 2;
     let begin = from;
     let end = to;
     if (begin != 0 && !begin) begin = 0;
     if (end != 0 && !end) end = 2;
     if (begin > end) return;
-    console.log('need to try toggle cannons', begin, end);
+    console.log('need to try toggle forges', begin, end);
     let boolArray = booleanArray;
     if (!boolArray) boolArray = [false, false, false];
     toggleForge(begin, boolArray[begin]);
@@ -496,7 +521,7 @@ function gwh() {
     const quest = getQuest();
     console.log('Run checkGolem', quest);
     const golems = quest.golems;
-    for (let i = 0; i < golems.length; i++) {
+    for (let i = 0; i < setup.maxGolemsUse; i++) {
       const golem = golems[i];
       if (golem.can_upgrade) {
         console.log('upgrade golem');
@@ -508,7 +533,7 @@ function gwh() {
         return;
       }
     }
-    for (let i = 0; i < golems.length; i++) {
+    for (let i = 0; i < setup.maxGolemsUse; i++) {
       const golem = golems[i];
       if (golem.can_claim) {
         console.log('claim golem');
@@ -520,7 +545,7 @@ function gwh() {
         return;
       }
     }
-    for (let i = 0; i < golems.length; i++) {
+    for (let i = 0; i < setup.maxGolemsUse; i++) {
       const golem = golems[i];
       if (golem.can_build) {
         console.log('build golem');
@@ -534,9 +559,9 @@ function gwh() {
     }
     console.log('End checkGolem');
     /* const popup = new jsDialog();
-  popup.addToken('{*title*}', 'End checkGolem.');
-  popup.addToken('{*content*}', 'Check golem finished');
-  popup.show(); */
+    popup.addToken('{*title*}', 'End checkGolem.');
+    popup.addToken('{*content*}', 'Check golem finished');
+    popup.show(); */
   }
   function getQuest() {
     switch (user.environment_type) {
