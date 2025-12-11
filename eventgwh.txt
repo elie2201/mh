@@ -20,7 +20,7 @@ function gwh() {
     ].indexOf(enviromentType) < 0
   )
     return;
-  logging('gwh_1.1.13.0.1');
+  logging('gwh_1.1.14.0.1');
   // prettier-ignore
   // const upgradePlans = [
   //   [2, 1, 1], [2, 2, 1], [2, 2, 2],
@@ -103,12 +103,18 @@ function gwh() {
     golemSetup: { defaultTarget: st.defaultTarget },
     minGolemDelayTime: 3500,
     maxGolemDelayTime: 5000,
+    isGoodGoTd: true,
+    badGotdDates: [],
     isAutoMapping: true,
     shutdown: {
       isLeaveFortressIf36: true,
       isForgeOffIf12: true
     },
     isMapping: false,
+    normalTrap: {
+      normal: [st.n0, st.nT, st.nnB, st.nnC, false, [false, false, false]],
+      gotd: [st.n0, st.nT, gotdB, st.ngC, false, [false, false, false]]
+    },
     winter_hunt_grove: {
       ppTrap: {
         normal: [pp, st.gT, st.gnB, st.gnC, false, [false, false, false]],
@@ -130,16 +136,14 @@ function gwh() {
         normal: [pp, st.fT, st.fsnB, st.fsnC, true, [true, false, false]],
         gotd: [pp, st.fT, gotdB, st.fsgC, true, [true, false, false]]
       }
-    },
-    isGoodGoTd: true,
-    normalTrap: {
-      normal: [st.n0, st.nT, st.nnB, st.nnC, false, [false, false, false]],
-      gotd: [st.n0, st.nT, gotdB, st.ngC, false, [false, false, false]]
     }
   };
   const settings = isProd
     ? getStorageToObject(targetEnvironmentType, defaultSettings)
     : defaultSettings;
+  const todayUTC = new Date().toISOString().split('T')[0];
+  if (settings.badGotdDates && settings.badGotdDates.indexOf(todayUTC) > -1)
+    settings.isGoodGoTd = false;
   // Get item information from location-specific quest in location-specific algorithm.
   // check trap by item information and run location-specific algorithm.
   switch (enviromentType) {
