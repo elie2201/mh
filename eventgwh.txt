@@ -20,39 +20,75 @@ function gwh() {
     ].indexOf(enviromentType) < 0
   )
     return;
-  logging('gwh_1.1.11.0.1');
+  logging('gwh_1.1.13.0.1');
+  // prettier-ignore
+  // const upgradePlans = [
+  //   [2, 1, 1], [2, 2, 1], [2, 2, 2],
+  //   [3, 2, 2], [3, 3, 2], [3, 3, 3],
+  //   [4, 3, 3], [4, 4, 3], [4, 4, 4],
+  //   [5, 4, 4], [6, 4, 4], [6, 5, 4],
+  //   [6, 6, 4], [6, 6, 5], [6, 6, 6],
+  //   [7, 6, 6], [8, 6, 6], [8, 7, 6],
+  //   [8, 8, 6], [8, 8, 7], [8, 8, 8],
+  //   [9, 8, 8], [10, 8, 8], [10, 9, 8],
+  //   [10, 10, 8], [10, 10, 9], [10, 10, 10],
+  //   [11, 10, 10], [11, 11, 10], [11, 11, 11],
+  //   [12, 11, 11], [12, 12, 11], [12, 12, 12],
+  //   [13, 12, 12], [13, 13, 12], [13, 13, 13],
+  //   [14, 13, 13], [14, 14, 13], [14, 14, 14],
+  //   [15, 14, 14], [15, 15, 14], [15, 15, 15],
+  //   [16, 15, 15], [16, 16, 15], [16, 16, 16],
+  //   [17, 16, 16], [17, 17, 16], [17, 17, 17],
+  //   [18, 17, 17], [18, 18, 17], [18, 18, 18],
+  //   [19, 18, 18], [19, 19, 18], [19, 19, 19],
+  //   [20, 19, 19], [20, 20, 19], [20, 20, 20]
+  // ]
+  const fi = 'floating_islands';
+  // const ka = 'kings_arms';
+  // const qr = 'queso_river';
+  // const qp = 'queso_plains';
+  // const qq = 'queso_quarry';
   const pp = 'Pecan Pecorino';
   const gouda = 'Gouda Cheese';
   // const sb = 'SUPER';
-  // const lk2C = 'Spooky Charm,Snowball Charm,Cactus Charm,Luck Charm';
-  const lk3C = 'Luck Charm';
+  // const bestArcane = 'best.weapon.arcane';
+  // const bestPhysical = 'best.weapon.physical';
+  const bestTactical = 'best.weapon.tactical';
+  const bct = 'Boiling Cauldron';
+  const aeib = 'Attuned Enerchi Induction';
   const gotdB = 'Seasonal Gift';
   const gotdC = 'Tarnished Charm,Unstable Charm,Gift Wrapped,None';
   const enerchi = 'Enerchi Charm';
-  // grove ppTrap
-  const gT = 'Boiling Cauldron';
-  const gnB = 'Attuned Enerchi Induction';
-  const gnC = enerchi;
-  const ggC = gotdC;
-  // workshop ppTrap
-  const wT = 'best.weapon.tactical';
-  const wnB = 'Attuned Enerchi Induction';
-  const wnC = enerchi;
-  const wgC = gotdC;
-  // fortress ppTrap
-  const fT = 'best.weapon.tactical';
-  const fnB = 'Attuned Enerchi Induction';
-  const fnC = lk3C;
-  const fgC = lk3C;
-  // fortress fsTrap
-  const fsnB = 'Attuned Enerchi Induction';
-  const fsnC = lk3C;
-  const fsgC = lk3C;
-  // normalTrap
-  const nT = 'Boiling Cauldron';
-  const nnB = 'Attuned Enerchi Induction';
-  const nnC = enerchi;
-  const ngC = gotdC;
+  // const lk2C = 'Spooky Charm,Snowball Charm,Cactus Charm,Luck Charm';
+  const lk3C = 'Luck Charm';
+  const st = {
+    defaultTarget: [fi, fi, fi],
+    // grove ppTrap
+    gT: bct,
+    gnB: aeib,
+    gnC: enerchi,
+    ggC: gotdC,
+    // workshop ppTrap
+    wT: bestTactical,
+    wnB: aeib,
+    wnC: enerchi,
+    wgC: gotdC,
+    // fortress ppTrap
+    fT: bestTactical,
+    fnB: aeib,
+    fnC: lk3C,
+    fgC: lk3C,
+    // fortress fsTrap
+    fsnB: aeib,
+    fsnC: lk3C,
+    fsgC: lk3C,
+    // normalTrap
+    n0: gouda,
+    nT: bct,
+    nnB: aeib,
+    nnC: enerchi,
+    ngC: gotdC
+  };
   const defaultSettings = {
     startPpQty: 14,
     ppKeptQty: 2,
@@ -62,14 +98,9 @@ function gwh() {
     goHailstoneQty: 27,
     hailstoneKeptQty: 2,
     isAutoGolem: true,
+    isAutoUpgrade: true,
     maxGolemsUse: 3,
-    golemSetup: {
-      defaultTarget: [
-        'floating_islands',
-        'floating_islands',
-        'floating_islands'
-      ] // queso_river kings_arms queso_plains queso_quarry
-    },
+    golemSetup: { defaultTarget: st.defaultTarget },
     minGolemDelayTime: 3500,
     maxGolemDelayTime: 5000,
     isAutoMapping: true,
@@ -80,30 +111,30 @@ function gwh() {
     isMapping: false,
     winter_hunt_grove: {
       ppTrap: {
-        normal: [pp, gT, gnB, gnC, false, [false, false, false]],
-        gotd: [pp, gT, gotdB, ggC, false, [false, false, false]]
+        normal: [pp, st.gT, st.gnB, st.gnC, false, [false, false, false]],
+        gotd: [pp, st.gT, gotdB, st.ggC, false, [false, false, false]]
       }
     },
     winter_hunt_workshop: {
       ppTrap: {
-        normal: [pp, wT, wnB, wnC, false, [false, false, false]],
-        gotd: [pp, wT, gotdB, wgC, false, [false, false, false]]
+        normal: [pp, st.wT, st.wnB, st.wnC, false, [false, false, false]],
+        gotd: [pp, st.wT, gotdB, st.wgC, false, [false, false, false]]
       }
     },
     winter_hunt_fortress: {
       ppTrap: {
-        normal: [pp, fT, fnB, fnC, false, [false, false, false]],
-        gotd: [pp, fT, gotdB, fgC, false, [false, false, false]]
+        normal: [pp, st.fT, st.fnB, st.fnC, false, [false, false, false]],
+        gotd: [pp, st.fT, gotdB, st.fgC, false, [false, false, false]]
       },
       fsTrap: {
-        normal: [pp, fT, fsnB, fsnC, true, [true, false, false]],
-        gotd: [pp, fT, gotdB, fsgC, true, [true, false, false]]
+        normal: [pp, st.fT, st.fsnB, st.fsnC, true, [true, false, false]],
+        gotd: [pp, st.fT, gotdB, st.fsgC, true, [true, false, false]]
       }
     },
     isGoodGoTd: true,
     normalTrap: {
-      normal: [gouda, nT, nnB, nnC, false, [false, false, false]],
-      gotd: [gouda, nT, gotdB, ngC, false, [false, false, false]]
+      normal: [st.n0, st.nT, st.nnB, st.nnC, false, [false, false, false]],
+      gotd: [st.n0, st.nT, gotdB, st.ngC, false, [false, false, false]]
     }
   };
   const settings = isProd
@@ -521,18 +552,19 @@ function gwh() {
     const quest = getQuest();
     console.log('Run checkGolem', quest);
     const golems = quest.golems;
-    for (let i = 0; i < setup.maxGolemsUse; i++) {
-      const golem = golems[i];
-      if (golem.can_upgrade) {
-        console.log('upgrade golem');
-        upgradeGolem(golem.slot);
-        golem.can_upgrade = false;
-        setTimeout(() => {
-          checkGolem(setup);
-        }, Math.floor(setup.minGolemDelayTime + Math.random() * (setup.maxGolemDelayTime - setup.minGolemDelayTime)));
-        return;
+    if (setup.isAutoUpgrade)
+      for (let i = 0; i < setup.maxGolemsUse; i++) {
+        const golem = golems[i];
+        if (golem.can_upgrade) {
+          console.log('upgrade golem');
+          upgradeGolem(golem.slot);
+          golem.can_upgrade = false;
+          setTimeout(() => {
+            checkGolem(setup);
+          }, Math.floor(setup.minGolemDelayTime + Math.random() * (setup.maxGolemDelayTime - setup.minGolemDelayTime)));
+          return;
+        }
       }
-    }
     for (let i = 0; i < setup.maxGolemsUse; i++) {
       const golem = golems[i];
       if (golem.can_claim) {
