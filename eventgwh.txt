@@ -20,7 +20,7 @@ function gwh() {
     ].indexOf(enviromentType) < 0
   )
     return;
-  logging('gwh_1.1.14.0.1');
+  logging('gwh_1.1.15.0.1');
   // prettier-ignore
   // const upgradePlans = [
   //   [2, 1, 1], [2, 2, 1], [2, 2, 2],
@@ -559,7 +559,12 @@ function gwh() {
     if (setup.isAutoUpgrade)
       for (let i = 0; i < setup.maxGolemsUse; i++) {
         const golem = golems[i];
-        if (golem.can_upgrade) {
+        // 優先升級使用中(待 claim算使用中).
+        // can_return不能用來判斷使用中,因為牽涉到有沒有 bell
+        if (
+          golem.can_upgrade &&
+          (golem.hunts_remaining > 0 || golem.can_claim)
+        ) {
           console.log('upgrade golem');
           upgradeGolem(golem.slot);
           golem.can_upgrade = false;
