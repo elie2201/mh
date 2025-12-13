@@ -26,7 +26,7 @@ function gwh() {
     ].indexOf(enviromentType) < 0
   )
     return;
-  logging('gwh_1.1.17.1.3');
+  logging('gwh_1.1.17.1.5');
   // prettier-ignore
   // const upgradePlans = [
   //   [2, 1, 1], [2, 2, 1], [2, 2, 2],
@@ -375,7 +375,7 @@ function gwh() {
     if (trap) armAllTraps(...trap);
     if (settings.isAutoGolem)
       setTimeout(() => {
-        checkGolem(quest, setup);
+        checkGolem(setup);
       }, Math.floor(12000 + Math.random() * 3000));
   }
   function getNormalTrap(setup) {
@@ -634,29 +634,31 @@ function gwh() {
   }
   // claimReward(0)
   function claimReward(slot, callback) {
+    // 點下 claim button後 claim reward請求就送出了, popup只是顯示結果而已,不需確認
     const claimClass =
       '.headsUpDisplayWinterHuntRegionView__golemClaimRewardButton';
     $(claimClass)[slot].click();
-    const element = $(
-      '.greatWinterHuntDialogView__bigButton.greatWinterHuntClaimRewardDialogView__continueButton'
-    )[0];
-    const params = {
-      action: 'claim_reward',
-      slot: slot
-    };
-    ajax(element, params).then(() => {
-      const X = document.querySelector('#jsDialogClose');
-      if (X) X.click();
-      if (callback)
-        setTimeout(() => {
-          callback();
-        }, 2000);
-    });
-    // setTimeout(() => {
-    //   const continueButtonClass =
-    //     '.greatWinterHuntDialogView__bigButton.greatWinterHuntClaimRewardDialogView__continueButton';
-    //   $(continueButtonClass).click();
-    // }, 2000);
+    setTimeout(() => {
+      const continueButtonClass =
+        '.greatWinterHuntDialogView__bigButton.greatWinterHuntClaimRewardDialogView__continueButton';
+      $(continueButtonClass).click();
+    }, 2000);
+    // const element = $(
+    //   '.greatWinterHuntDialogView__bigButton.greatWinterHuntClaimRewardDialogView__continueButton'
+    // )[0];
+    // const element = null; // document.querySelector('.headsUpDisplayWinterHuntRegionView__golemClaimRewardButton');
+    // const params = {
+    //   action: 'claim_reward',
+    //   slot: slot
+    // };
+    // ajax(element, params).then(() => {
+    //   const X = document.querySelector('#jsDialogClose');
+    //   if (X) X.click();
+    //   if (callback)
+    //     setTimeout(() => {
+    //       callback();
+    //     }, 2000);
+    // });
     /* const target = $(element);
     const slot = target.data('slot');
     const params = {
