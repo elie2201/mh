@@ -18,6 +18,9 @@ function gwh() {
     workshop: 'winter_hunt_workshop',
     fortress: 'winter_hunt_fortress'
   };
+  const scrollChests = {
+    'Naughty List': 'naughty_2022_list_chest_convertible'
+  };
   if (
     [
       'winter_hunt_grove',
@@ -26,7 +29,7 @@ function gwh() {
     ].indexOf(enviromentType) < 0
   )
     return;
-  logging('gwh_1.1.17.2.11');
+  logging('gwh_1.1.18.2.11');
   // prettier-ignore
   // const upgradePlans = [
   //   [2, 1, 1], [2, 2, 1], [2, 2, 2],
@@ -181,7 +184,18 @@ function gwh() {
     if (map && map.is_complete) {
       console.log('Claim map reward:', map.map_id);
       hg.utils.TreasureMapUtil.claim(map.map_id, () => {
-        if (callback) setTimeout(callback, 2000);
+        setTimeout(() => {
+          hg.utils.UserInventory.useConvertible(
+            scrollChests[map.name],
+            1,
+            (data) => {
+              console.log(data.success == 1 ? 'success' : 'failed', data);
+              setTimeout(() => {
+                if (callback) setTimeout(callback, 2000);
+              }, 2000);
+            }
+          );
+        }, 1000);
       });
       return;
     }
