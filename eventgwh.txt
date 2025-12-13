@@ -12,6 +12,12 @@ function gwh() {
   const isProd = false;
   const targetEnvironmentType = 'greatWinterHunt';
   const enviromentType = getEnvironmentType();
+  const todayUTC = new Date().toISOString().split('T')[0];
+  const gwhAreas = {
+    hill: 'winter_hunt_grove',
+    workshop: 'winter_hunt_workshop',
+    fortress: 'winter_hunt_fortress'
+  };
   if (
     [
       'winter_hunt_grove',
@@ -20,7 +26,7 @@ function gwh() {
     ].indexOf(enviromentType) < 0
   )
     return;
-  logging('gwh_1.1.15.0.1');
+  logging('gwh_1.1.16.0.1');
   // prettier-ignore
   // const upgradePlans = [
   //   [2, 1, 1], [2, 2, 1], [2, 2, 2],
@@ -136,38 +142,86 @@ function gwh() {
         normal: [pp, st.fT, st.fsnB, st.fsnC, true, [true, false, false]],
         gotd: [pp, st.fT, gotdB, st.fsgC, true, [true, false, false]]
       }
+    },
+    areaBaits: {
+      pp: {
+        id: 2522,
+        type: 'pecan_pecorino_cheese',
+        name: 'Pecan Pecorino Cheese'
+      },
+      gpp: { id: 2733 },
+      type: 'glazed_pecan_pecorino_cheese',
+      name: 'Glazed Pecan Pecorino Cheese'
     }
   };
   const settings = isProd
     ? getStorageToObject(targetEnvironmentType, defaultSettings)
     : defaultSettings;
-  const todayUTC = new Date().toISOString().split('T')[0];
-  if (settings.badGotdDates && settings.badGotdDates.indexOf(todayUTC) > -1)
-    settings.isGoodGoTd = false;
+  run();
+  function run() {
+    autoSettings();
+  }
+  function autoSettings() {
+    if (settings.badGotdDates && settings.badGotdDates.indexOf(todayUTC) > -1)
+      settings.isGoodGoTd = false;
+    // autoMapping(settings, () => {
+    //   const nextMapArea = getNextMapArea();
+    //   if (nextMapArea === '') return;
+    //   if (nextMapArea === enviromentType) checkArea(settings);
+    //   travel(nextMapArea, 2000, checkArea(settings));
+    // });
+    autoMapping(settings, checkArea(settings));
+  }
+  function autoMapping(setup, callback) {
+    if (!setup.isAutoMapping) {
+      callback();
+    }
+    // map completed
+    const map = getMapByClass(MapClasses.event);
+    if (map && map.is_complete) {
+      console.log('Claim map reward:', map.map_id);
+      hg.utils.TreasureMapUtil.claim(map.map_id, () => {
+        if (callback) setTimeout(callback, 2000);
+      });
+      return;
+    }
+    callback();
+  }
+  // function getNextMapArea() {
+  //   return enviromentType === gwhAreas.hill
+  //     ? gwhAreas.hill
+  //     : enviromentType === gwhAreas.workshop
+  //     ? gwhAreas.hill
+  //     : enviromentType === gwhAreas.fortress
+  //     ? gwhAreas.workshop
+  //     : '';
+  // }
+  function checkArea(settings) {
+    switch (enviromentType) {
+      case gwhAreas.hill:
+        cinnamonHill(settings);
+        break;
+
+      case gwhAreas.workshop:
+        golemWorkshop(settings);
+        break;
+
+      case gwhAreas.fortress:
+        iceFortress(settings);
+        break;
+
+      default:
+        break;
+    }
+    if (settings.isAutoGolem)
+      setTimeout(() => {
+        checkGolem(settings);
+      }, Math.floor(12000 + Math.random() * 3000));
+  }
   // Get item information from location-specific quest in location-specific algorithm.
   // check trap by item information and run location-specific algorithm.
-  switch (enviromentType) {
-    case 'winter_hunt_grove':
-      cinnamonHill(settings);
-      break;
-
-    case 'winter_hunt_workshop':
-      golemWorkshop(settings);
-      break;
-
-    case 'winter_hunt_fortress':
-      iceFortress(settings);
-      break;
-
-    default:
-      break;
-  }
-  if (settings.isAutoGolem)
-    setTimeout(() => {
-      checkGolem(settings);
-    }, Math.floor(12000 + Math.random() * 3000));
   function iceFortress(setup) {
-    const quest = user.quests.QuestIceFortress;
+    const quest = isProd ? user.quests.QuestIceFortress : QuestIceFortress;
     const items = quest.items;
     const ppQty = items.pecan_pecorino_cheese.quantity;
     const fsQty = items.festive_spirit_stat_item.quantity;
@@ -180,71 +234,23 @@ function gwh() {
         quest.shield.health == 36 &&
         stoneQty < setup.goHailstoneQty
       ) {
-        travel('winter_hunt_workshop', 2000, () => {
-          const trap =
-            setup.winter_hunt_workshop.ppTrap[
-              setup.isGoodGoTd ? 'gotd' : 'normal'
-            ];
-          handleTrap(trap, quest);
-        });
+        travel(gwhAreas.workshop, 2000, checkTrap(setup));
         return;
       }
     }
+    if (checkMapMiceWarning(setup, gwhAreas.workshop)) return;
     let trap = null;
-    if (
-      autoMapping(setup, () => {
-        travel('winter_hunt_workshop', 2000, () => {
-          const trap =
-            setup.winter_hunt_workshop.ppTrap[
-              setup.isGoodGoTd ? 'gotd' : 'normal'
-            ];
-          // trap[0] = 'Glazed Pecan, Pecan Pecorino';
-          handleTrap(trap, quest);
-        });
-      })
-    ) {
-      console.log('autoMapping executed');
-      return;
-    }
-    // map completed
-    /* const map = getMapByClass('event');
-    const questRelic = user.quests.QuestRelicHunter;
-    if (setup.isAutoMapping) {
-      if (!map || map.is_complete || questRelic.mice_warning) {
-        if (map && map.is_complete) {
-          console.log('Claim map reward:', map.map_id);
-          hg.utils.TreasureMapUtil.claim(map.map_id, () => {});
-        }
-        setTimeout(() => {
-          travel('winter_hunt_workshop', 2000, () => {
-            const trap =
-              setup.winter_hunt_workshop.ppTrap[
-                setup.isGoodGoTd ? 'gotd' : 'normal'
-              ];
-            // trap[0] = 'Glazed Pecan, Pecan Pecorino';
-            handleTrap(trap, quest);
-          });
-        }, 2000);
-        return;
-      }
-    } */
-    if (setup.isMapping) {
-      setTimeout(() => {
-        checkTrap(quest, setup);
-      }, Math.floor(2500 + Math.random() * 300));
-      return;
-    }
     // Boss跟 Break shield都需要 FS,但 Boss不需要 hailstone跟 PP
     if (fsQty > setup.fsKeptQty) {
-      // Frost King
       if (quest.shield.health == 0) {
+        // Frost King
         trap = getNormalTrap(setup);
         trap[0] = 'SUPER';
         trap[2] = 'Seasonal Gift';
         trap[3] = 'none';
         trap[4] = true;
         trap[5] = [false, false, false];
-        handleTrap(trap, quest);
+        handleTrap(trap, quest, setup);
         return;
       }
       // Breaking shield
@@ -253,34 +259,35 @@ function gwh() {
           setup.winter_hunt_fortress.fsTrap[
             setup.isGoodGoTd ? 'gotd' : 'normal'
           ];
-        handleTrap(trap, quest);
+        handleTrap(trap, quest, setup);
         return;
       }
+    }
+    if (setup.isMapping) {
+      if (ppQty > setup.ppKeptQty) {
+        trap =
+          setup[enviromentType]['ppTrap'][setup.isGoodGoTd ? 'gotd' : 'normal'];
+        handleTrap(trap, quest, setup);
+        return;
+      }
+      travel(gwhAreas.hill, 2000, checkArea(settings));
+      return;
     }
     // 沒 event cheese, FS或 hailstone就離開
     // 除非是正在 mapping(mapping時停用 FS)或 boss,不在 Fortess用 pp/gpp以外的 cheese
     // 因為FS只在破壁時用.有 FS在 Fortess用 normal cheese是損失
-    travel('winter_hunt_workshop', 2000, () => {
-      const trap =
-        setup.winter_hunt_workshop.ppTrap[setup.isGoodGoTd ? 'gotd' : 'normal'];
-      handleTrap(trap, quest);
-    });
-    /* travel('winter_hunt_grove', 2000, () => {
+    travel(gwhAreas.workshop, 2000, checkArea(setup));
+    /* travel(gwhAreas.hill, 2000, () => {
       const trap = getNormalTrap(setup);
       handleTrap(trap, quest);
     }); */
   }
-  function autoMapping(setup, callback) {
-    // map completed
-    const map = getMapByClass(MapClasses.event);
-    const questRelic = user.quests.QuestRelicHunter;
+  function checkMapMiceWarning(setup, nextArea) {
+    const questRelic = isProd ? user.quests.QuestRelicHunter : QuestRelicHunter;
     if (setup.isAutoMapping) {
-      if (!map || map.is_complete || questRelic.mice_warning) {
-        if (map && map.is_complete) {
-          console.log('Claim map reward:', map.map_id);
-          hg.utils.TreasureMapUtil.claim(map.map_id, () => {});
-        }
-        setTimeout(callback, 2000);
+      const isLeaving = questRelic && questRelic.mice_warning;
+      if (isLeaving) {
+        travel(nextArea, 2000, checkArea(setup));
         return true;
       }
     }
@@ -304,93 +311,32 @@ function gwh() {
         }, Math.floor(12000 + Math.random() * 3000));
       }
     }
-    if (
-      autoMapping(setup, () => {
-        travel('winter_hunt_grove', 2000, () => {
-          const trap = getNormalTrap(setup);
-          handleTrap(trap, quest);
-        });
-      })
-    )
-      return;
-    // map completed
-    /* const map = getMapByClass('event');
-    const questRelic = user.quests.QuestRelicHunter;
-    if (setup.isAutoMapping) {
-      if (!map || map.is_complete || questRelic.mice_warning) {
-        if (map && map.is_complete) {
-          console.log('Claim map reward:', map.map_id);
-          hg.utils.TreasureMapUtil.claim(map.map_id, () => {});
-        }
-        setTimeout(() => {
-          travel('winter_hunt_grove', 2000, () => {
-            const trap = getNormalTrap(setup);
-            handleTrap(trap, quest);
-          });
-        }, 2000);
-        return;
-      }
-    } */
+    if (checkMapMiceWarning(setup, gwhAreas.hill)) return;
     // const ppQty = items.pecan_pecorino_cheese.quantity;
     const cinnamonQty = items.compressed_cinnamon_coal_stat_item.quantity;
-    if (cinnamonQty <= setup.cinnamonKeptQty) {
-      console.log('travel to Cinnamon Hill');
-      travel('winter_hunt_grove', 2000, () => {
-        const trap = getNormalTrap(setup);
-        // if (ppQty >= setup.ppKeptQty) trap[0] = gwhCheeseNames.pp;
-        handleTrap(trap, quest);
-      });
-      return;
+    if (cinnamonQty > setup.cinnamonKeptQty) {
+      checkTrap(setup);
     }
-    checkTrap(quest, setup);
+    console.log('travel to Cinnamon Hill');
+    travel(gwhAreas.hill, 2000, checkArea(setup));
+    return;
   }
   function cinnamonHill(setup) {
     const quest = user.quests.QuestCinnamonTreeGrove;
     const items = quest.items;
-    const ppQty = items.pecan_pecorino_cheese.quantity;
-    // map completed
-    const map = getMapByClass(MapClasses.event);
-    const questRelic = user.quests.QuestRelicHunter;
-    if (setup.isAutoMapping) {
-      if (!map || map.is_complete || questRelic.mice_warning) {
-        if (map && map.is_complete) {
-          console.log('Claim map reward:', map.map_id);
-          hg.utils.TreasureMapUtil.claim(map.map_id, () => {});
-        }
-        setTimeout(() => {
-          const trap = getNormalTrap(setup);
-          handleTrap(trap, quest);
-        }, 2000);
-        return;
-      }
-    }
     const cinnamonQty = items.compressed_cinnamon_coal_stat_item.quantity;
-    if (cinnamonQty >= setup.startCinnamonQty && ppQty > setup.ppKeptQty) {
+    // if (ppQty < setup.startPpQty) checkTrap(quest, setup);
+    if (cinnamonQty > setup.startCinnamonQty) {
       console.log('travel to Golem Workshop');
-      travel('winter_hunt_workshop', 2000, () => {
-        const trap =
-          setup.winter_hunt_workshop.ppTrap[
-            setup.isGoodGoTd ? 'gotd' : 'normal'
-          ];
-        handleTrap(trap, quest);
-      });
+      travel(gwhAreas.workshop, 2000, checkArea(setup));
       return;
     }
-    /* if (cinnamonQty > setup.startCinnamonQty - 3) {
-      const trap = getNormalTrap(setup);
-      handleTrap(trap, quest);
-      return;
-    } */
-    checkTrap(quest, setup);
+    checkTrap(setup);
   }
-  function checkTrap(quest, setup) {
-    const enviromentType = user.environment_type;
+  function checkTrap(setup) {
+    const enviromentType = getEnvironmentType();
+    const quest = getQuest();
     const items = quest.items;
-    /* const gppQty = items.glazed_pecan_pecorino_cheese.quantity;
-    if (gppQty > setup.startGppQty) {
-      armAllTraps(...setup.gppTrap);
-    } else if (gppQty <= setup.gppKeptQty) {
-    } // 沒有 else就是因為 else就是對應在大於跟小於中間,不做事 */
     const ppQty = items.pecan_pecorino_cheese.quantity;
     let trap = null;
     if (ppQty >= setup.startPpQty) {
@@ -398,18 +344,24 @@ function gwh() {
         setup[enviromentType]['ppTrap'][setup.isGoodGoTd ? 'gotd' : 'normal'];
     } else if (ppQty <= setup.ppKeptQty) {
       trap = getNormalTrap(setup);
+    } else {
+      if (
+        [setup.areaBaits.pp.id, setup.areaBaits.gpp.id].indexOf(
+          getBaitItemId()
+        ) > -1
+      )
+        trap =
+          setup[enviromentType]['ppTrap'][setup.isGoodGoTd ? 'gotd' : 'normal'];
+      else trap = getNormalTrap(setup);
     }
-    handleTrap(trap, quest);
-    /* setTimeout(() => {
-      checkGolem(quest, setup);
-    }, 10000); */
+    handleTrap(trap, quest, setup);
   }
-  function handleTrap(trap, quest) {
+  function handleTrap(trap, quest, setup) {
     toggleFestiveSpirit(trap, quest);
-    if (trap)
-      setTimeout(() => {
-        armAllTraps(...trap);
-      }, Math.floor(2600 + Math.random() * 400));
+    if (trap) armAllTraps(...trap);
+    setTimeout(() => {
+      checkGolem(quest, setup);
+    }, 10000);
   }
   function getNormalTrap(setup) {
     return setup['normalTrap'][setup.isGoodGoTd ? 'gotd' : 'normal'];
@@ -711,6 +663,21 @@ function gwh() {
       console.log(JSON.parse(localStorage.scarfingDestinations));
     }
   }
+  function travel(environmentType, milliseconds, callback) {
+    // prettier-ignore
+    // console.log('travel to:', environmentType, 'and reload after', milliseconds, 'seconds. callback', callback);
+    if (user.environment_type == environmentType) return;
+    const timeout = milliseconds ? milliseconds : 2000;
+    hg.utils.User.travel(environmentType, () => {
+      if (timeout >= 0) {
+        window.setTimeout(function () {
+          // console.log(callback);
+          if (callback) callback();
+          else window.location.href = 'https://www.mousehuntgame.com/';
+        }, timeout);
+      }
+    });
+  }
 }
 // End #gwh
 
@@ -811,10 +778,60 @@ function gwh() {
 } */
 
 const MapClasses = { treasuer: 'treasure', poster: 'poster', event: 'event' };
+const MyUtils = { parseQuantity() {} };
 const user = {};
 user.environment_type = 'claw_shot_city';
-user.quests = {};
-user.quests.QuestIceFortress = {
+const QuestRelicHunter = {
+  invites_hash: '7f6fb0c86a620f0e255a16ffafa6e92a',
+  inventory_hash: 'ee21ec573e49c083c76c3eaa6a9fd12d',
+  notifications: 0,
+  num_invites: 0,
+  new_chat: false,
+  mice_warning: true,
+  label: 'Naughty List',
+  value: '3 Remaining',
+  image:
+    'https://www.mousehuntgame.com/images/items/convertibles/73ce87f96fe15f039f0953e3aae63df0.gif?cv=8',
+  maps: [
+    {
+      map_id: 6810774,
+      name: 'Empyrean Sky Palace Treasure Map',
+      hash: 'd4964cd2ee2a103f85863ab13dcb1455',
+      thumb:
+        'https://www.mousehuntgame.com/images/items/convertibles/4deb109ea8159ae1af831d1dac44e694.gif?cv=8',
+      num_found: 33,
+      num_total: 45,
+      is_rare: null,
+      is_complete: null,
+      is_favourite: null,
+      has_message: null,
+      map_class: 'treasure'
+    },
+    {
+      map_id: 7099977,
+      name: 'Naughty List',
+      hash: 'ecd79fed5a11afa0ec16a47ce07d98fc',
+      thumb:
+        'https://www.mousehuntgame.com/images/items/convertibles/73ce87f96fe15f039f0953e3aae63df0.gif?cv=8',
+      num_found: 12,
+      num_total: 15,
+      is_rare: null,
+      is_complete: null,
+      is_favourite: null,
+      has_message: null,
+      map_class: 'event'
+    }
+  ],
+  favourite_map_sn_user_ids: [],
+  num_maps_dusted: 14,
+  default_map_id: 7099977,
+  items: {
+    rare_map_dust_stat_item: 1,
+    map_clue_stat_item: 982,
+    ancient_relic_collectible: '1,375'
+  }
+};
+const QuestIceFortress = {
   environment_type: 'winter_hunt_fortress',
   bait_type: 'gouda_cheese',
   can_enable_fuel: true,
@@ -2827,7 +2844,7 @@ user.quests.QuestIceFortress = {
   },
   canvas_page_url: 'https://www.mousehuntgame.com/'
 };
-user.quests.QuestGolemWorkshop = {
+const QuestGolemWorkshop = {
   environment_type: 'winter_hunt_workshop',
   bait_type: 'pecan_pecorino_cheese',
   can_enable_fuel: true,
@@ -4817,7 +4834,7 @@ user.quests.QuestGolemWorkshop = {
   },
   canvas_page_url: 'https://www.mousehuntgame.com/'
 };
-user.quests.QuestCinnamonTreeGrove = {
+const QuestCinnamonTreeGrove = {
   environment_type: 'winter_hunt_grove',
   bait_type: 'pecan_pecorino_cheese',
   can_enable_fuel: true,
@@ -6781,6 +6798,11 @@ user.quests.QuestCinnamonTreeGrove = {
   },
   canvas_page_url: 'https://www.mousehuntgame.com/'
 };
+user.quests = {};
+user.quests.QuestRelicHunter = QuestRelicHunter;
+user.quests.QuestIceFortress = QuestIceFortress;
+user.quests.QuestGolemWorkshop = QuestGolemWorkshop;
+user.quests.QuestCinnamonTreeGrove = QuestCinnamonTreeGrove;
 const hg = {};
 const $ = {};
 const jsDialog = {};
@@ -6831,19 +6853,12 @@ function getMapByClass(mapClass) {
   }
   return null;
 }
-function travel(environmentType, milliseconds, callback) {
-  // prettier-ignore
-  console.log('travel to:', environmentType, 'and reload after', milliseconds, 'seconds. callback', callback);
-  if (user.environment_type == environmentType) return;
-  const timeout = milliseconds ? milliseconds : 2000;
-  hg.utils.User.travel(environmentType);
-  if (timeout >= 0) {
-    window.setTimeout(function () {
-      console.log(callback);
-      if (callback) callback();
-      else window.location.href = 'https://www.mousehuntgame.com/';
-    }, timeout);
-  }
+/**
+ * Get current bait item id.
+ * @return {BigInt} current bait item id
+ */
+function getBaitItemId() {
+  return MyUtils.parseQuantity(user.bait_item_id);
 }
 function armAllTraps(bait, weapon, base, charm) {
   console.log('arm following traps:', bait, weapon, base, charm);
