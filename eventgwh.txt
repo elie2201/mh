@@ -26,7 +26,7 @@ function gwh() {
     ].indexOf(enviromentType) < 0
   )
     return;
-  logging('gwh_1.1.17.1.5');
+  logging('gwh_1.1.17.1.6');
   // prettier-ignore
   // const upgradePlans = [
   //   [2, 1, 1], [2, 2, 1], [2, 2, 2],
@@ -150,9 +150,11 @@ function gwh() {
         type: 'pecan_pecorino_cheese',
         name: 'Pecan Pecorino Cheese'
       },
-      gpp: { id: 2733 },
-      type: 'glazed_pecan_pecorino_cheese',
-      name: 'Glazed Pecan Pecorino Cheese'
+      gpp: {
+        id: 2733,
+        type: 'glazed_pecan_pecorino_cheese',
+        name: 'Glazed Pecan Pecorino Cheese'
+      }
     }
   };
   const settings = isProd
@@ -403,6 +405,7 @@ function gwh() {
   // ajax(null, { action: 'toggle_maker', maker_type: 'head' }, 'managers/ajax/events/winter_hunt_golem_workshop.php');
   function ajax(element, params, uri) {
     console.log('GWH ajax');
+    const callbackurl = 'https://www.mousehuntgame.com/';
     return new Promise((resolve, reject) => {
       const lastReadJournalEntryId = parseInt(
         document
@@ -415,7 +418,7 @@ function gwh() {
         data: params,
         dataType: 'json',
         type: 'post',
-        url: MOUSEHUNT_BASE_URL + uri, // 'managers/ajax/events/winter_hunt_region.php',
+        url: callbackurl + uri, // 'managers/ajax/events/winter_hunt_region.php',
         success: function (data) {
           eventRegistry.doEvent('ajax_response', data);
           if (data.success) {
@@ -747,7 +750,94 @@ function gwh() {
 }
 // End #gwh
 
-/* function ajax(element, params) {
+(() => {
+  claimReward(2);
+  function claimReward(slot, callback) {
+    // 點下 claim button後 claim reward請求就送出了, popup只是顯示結果而已,不需確認
+    const claimClass =
+      '.headsUpDisplayWinterHuntRegionView__golemClaimRewardButton';
+    $(claimClass)[slot].click();
+    // setTimeout(() => {
+    //   const continueButtonClass =
+    //     '.greatWinterHuntDialogView__bigButton.greatWinterHuntClaimRewardDialogView__continueButton';
+    //   $(continueButtonClass).click();
+    // }, 2000);
+    const element = $(
+      '.greatWinterHuntDialogView__bigButton.greatWinterHuntClaimRewardDialogView__continueButton'
+    )[0];
+    // const element = null; // document.querySelector('.headsUpDisplayWinterHuntRegionView__golemClaimRewardButton');
+    const params = {
+      action: 'claim_reward',
+      slot: slot
+    };
+    // result in error ==>
+    ajax(element, params, 'managers/ajax/events/winter_hunt_region.php').then(
+      () => {
+        const X = document.querySelector('#jsDialogClose');
+        if (X) X.click();
+        if (callback)
+          setTimeout(() => {
+            callback();
+          }, 2000);
+      }
+    );
+    /* const target = $(element);
+    const slot = target.data('slot');
+    const params = {
+      action: 'claim_reward',
+      slot: slot
+    };
+    ajax(element, params).then((data) => {
+      hg.views.GreatWinterHuntClaimRewardDialogView.setRewards(
+        data.golem_rewards
+      );
+      hg.views.GreatWinterHuntClaimRewardDialogView.setDataHandler(getData);
+      hg.views.GreatWinterHuntClaimRewardDialogView.setSlot(slot);
+      hg.views.GreatWinterHuntClaimRewardDialogView.show();
+    }); */
+  }
+  function ajax(element, params, uri) {
+    console.log('GWH ajax');
+    const callbackurl = 'https://www.mousehuntgame.com/';
+    return new Promise((resolve, reject) => {
+      const lastReadJournalEntryId = parseInt(
+        document
+          .querySelector('div[data-entry-id]')
+          .getAttribute('data-entry-id')
+      );
+      params['last_read_journal_entry_id'] = lastReadJournalEntryId;
+      params['uh'] = user.unique_hash;
+      $.ajax({
+        data: params,
+        dataType: 'json',
+        type: 'post',
+        url: callbackurl + uri, // 'managers/ajax/events/winter_hunt_region.php',
+        success: function (data) {
+          eventRegistry.doEvent('ajax_response', data);
+          if (data.success) {
+            resolve(data);
+          } else {
+            reject(data);
+          }
+        },
+        error: function () {
+          // eslint-disable-next-line new-cap
+          const popup = new jsDialog();
+          popup.setTemplate('error');
+          popup.addToken('{*title*}', 'An error has occurred.');
+          popup.addToken('{*content*}', 'An error occurred. Please try again!');
+          popup.show();
+          // target.removeClass('busy');
+          // eslint-disable-next-line prefer-promise-reject-errors
+          reject();
+        }
+      });
+    });
+  }
+})();
+
+/* 
+function ajax(element, params) {
   return new Promise((resolve, reject) => {
     const target = $(element);
     if (target.hasClass('busy') || target.hasClass('disabled')) {
@@ -777,7 +867,8 @@ function gwh() {
       }
     });
   });
-} */
+}
+ */
 
 // claimReward(0)
 // function claimReward(slot) {
