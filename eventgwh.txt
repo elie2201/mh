@@ -26,7 +26,7 @@ function gwh() {
     ].indexOf(enviromentType) < 0
   )
     return;
-  logging('gwh_1.1.17.1.6');
+  logging('gwh_1.1.17.1.9');
   // prettier-ignore
   // const upgradePlans = [
   //   [2, 1, 1], [2, 2, 1], [2, 2, 2],
@@ -167,12 +167,6 @@ function gwh() {
   function autoSettings() {
     if (settings.badGotdDates && settings.badGotdDates.indexOf(todayUTC) > -1)
       settings.isGoodGoTd = false;
-    // autoMapping(settings, () => {
-    //   const nextMapArea = getNextMapArea();
-    //   if (nextMapArea === '') return;
-    //   if (nextMapArea === enviromentType) checkArea(settings);
-    //   travel(nextMapArea, 2000, checkArea(settings));
-    // });
     autoMapping(settings, () => {
       checkArea(settings);
     });
@@ -193,27 +187,18 @@ function gwh() {
     }
     callback();
   }
-  // function getNextMapArea() {
-  //   return enviromentType === gwhAreas.hill
-  //     ? gwhAreas.hill
-  //     : enviromentType === gwhAreas.workshop
-  //     ? gwhAreas.hill
-  //     : enviromentType === gwhAreas.fortress
-  //     ? gwhAreas.workshop
-  //     : '';
-  // }
-  function checkArea(settings) {
+  function checkArea(setup) {
     switch (enviromentType) {
       case gwhAreas.hill:
-        cinnamonHill(settings);
+        cinnamonHill(setup);
         break;
 
       case gwhAreas.workshop:
-        golemWorkshop(settings);
+        golemWorkshop(setup);
         break;
 
       case gwhAreas.fortress:
-        iceFortress(settings);
+        iceFortress(setup);
         break;
 
       default:
@@ -246,7 +231,16 @@ function gwh() {
         return;
       }
     }
-    if (checkMapMiceWarning(setup, gwhAreas.workshop)) return;
+    if (setup.isAutoMapping) {
+      const map = getMapByClass(MapClasses.event);
+      if (!map) {
+        travel(gwhAreas.hill, 2000, () => {
+          checkArea(setup);
+        });
+        return;
+      }
+      if (checkMapMiceWarning(setup, gwhAreas.workshop)) return;
+    }
     let trap = null;
     // Boss跟 Break shield都需要 FS,但 Boss不需要 hailstone跟 PP
     if (fsQty > setup.fsKeptQty) {
@@ -279,7 +273,7 @@ function gwh() {
         return;
       }
       travel(gwhAreas.hill, 2000, () => {
-        checkArea(settings);
+        checkArea(setup);
       });
       return;
     }
@@ -295,10 +289,12 @@ function gwh() {
     }); */
   }
   function checkMapMiceWarning(setup, nextArea) {
-    const questRelic = isProd ? user.quests.QuestRelicHunter : QuestRelicHunter;
     if (!setup.isAutoMapping) {
       return false;
     }
+    const map = getMapByClass(MapClasses.event);
+    if (!map) return false;
+    const questRelic = isProd ? user.quests.QuestRelicHunter : QuestRelicHunter;
     const isLeaving = questRelic && questRelic.mice_warning;
     if (isLeaving) {
       travel(nextArea, 2000, () => {
@@ -326,7 +322,9 @@ function gwh() {
         }, Math.floor(12000 + Math.random() * 3000));
       }
     }
-    if (checkMapMiceWarning(setup, gwhAreas.hill)) return;
+    if (setup.isAutoMapping) {
+      if (checkMapMiceWarning(setup, gwhAreas.hill)) return;
+    }
     // const ppQty = items.pecan_pecorino_cheese.quantity;
     const cinnamonQty = items.compressed_cinnamon_coal_stat_item.quantity;
     if (cinnamonQty > setup.cinnamonKeptQty) {
@@ -342,7 +340,12 @@ function gwh() {
     const quest = user.quests.QuestCinnamonTreeGrove;
     const items = quest.items;
     const cinnamonQty = items.compressed_cinnamon_coal_stat_item.quantity;
-    // if (ppQty < setup.startPpQty) checkTrap(quest, setup);
+    if (setup.isAutoMapping) {
+      const ppQty = items.pecan_pecorino_cheese.quantity;
+      if (ppQty > setup.startPpQty) {
+        if (checkMapMiceWarning(setup, gwhAreas.fortress)) return;
+      }
+    }
     if (cinnamonQty > setup.startCinnamonQty) {
       console.log('travel to Golem Workshop');
       travel(gwhAreas.workshop, 2000, () => {
@@ -372,10 +375,26 @@ function gwh() {
     }
     handleTrap(trap, quest, setup);
   }
+  function getQuest() {
+    const enviromentType = getEnvironmentType();
+    switch (enviromentType) {
+      case gwhAreas.hill:
+        return user.quests.QuestCinnamonTreeGrove;
+
+      case gwhAreas.workshop:
+        return user.quests.QuestGolemWorkshop;
+
+      case gwhAreas.fortress:
+        return user.quests.QuestIceFortress;
+
+      default:
+        return null;
+    }
+  }
   function handleTrap(trap, quest, setup) {
     toggleFestiveSpirit(trap, quest);
     if (trap) armAllTraps(...trap);
-    if (settings.isAutoGolem)
+    if (setup.isAutoGolem)
       setTimeout(() => {
         checkGolem(setup);
       }, Math.floor(12000 + Math.random() * 3000));
@@ -590,22 +609,6 @@ function gwh() {
     popup.addToken('{*content*}', 'Check golem finished');
     popup.show(); */
   }
-  function getQuest() {
-    const enviromentType = getEnvironmentType();
-    switch (enviromentType) {
-      case gwhAreas.hill:
-        return user.quests.QuestCinnamonTreeGrove;
-
-      case gwhAreas.workshop:
-        return user.quests.QuestGolemWorkshop;
-
-      case gwhAreas.fortress:
-        return user.quests.QuestIceFortress;
-
-      default:
-        return null;
-    }
-  }
   // upgradeGolem(0);
   function upgradeGolem(slot, callback) {
     /* $('.headsUpDisplayWinterHuntRegionView__golemUpgradeButton')[0].click();
@@ -638,30 +641,34 @@ function gwh() {
   // claimReward(0)
   function claimReward(slot, callback) {
     // 點下 claim button後 claim reward請求就送出了, popup只是顯示結果而已,不需確認
-    const claimClass =
-      '.headsUpDisplayWinterHuntRegionView__golemClaimRewardButton';
-    $(claimClass)[slot].click();
-    setTimeout(() => {
-      const continueButtonClass =
-        '.greatWinterHuntDialogView__bigButton.greatWinterHuntClaimRewardDialogView__continueButton';
-      $(continueButtonClass).click();
-    }, 2000);
-    // const element = $(
-    //   '.greatWinterHuntDialogView__bigButton.greatWinterHuntClaimRewardDialogView__continueButton'
-    // )[0];
-    // const element = null; // document.querySelector('.headsUpDisplayWinterHuntRegionView__golemClaimRewardButton');
-    // const params = {
-    //   action: 'claim_reward',
-    //   slot: slot
-    // };
-    // ajax(element, params).then(() => {
-    //   const X = document.querySelector('#jsDialogClose');
-    //   if (X) X.click();
+    // const claimClass =
+    //   '.headsUpDisplayWinterHuntRegionView__golemClaimRewardButton';
+    // $(claimClass)[slot].click();
+    // setTimeout(() => {
+    //   const continueButtonClass =
+    //     '.greatWinterHuntDialogView__bigButton.greatWinterHuntClaimRewardDialogView__continueButton';
+    //   $(continueButtonClass).click();
     //   if (callback)
     //     setTimeout(() => {
     //       callback();
     //     }, 2000);
-    // });
+    // }, 2000);
+    // const element = $(
+    //   '.greatWinterHuntDialogView__bigButton.greatWinterHuntClaimRewardDialogView__continueButton'
+    // )[0];
+    const element = null; // document.querySelector('.headsUpDisplayWinterHuntRegionView__golemClaimRewardButton');
+    const params = {
+      action: 'claim_reward',
+      slot: slot
+    };
+    ajax(element, params).then(() => {
+      const X = document.querySelector('#jsDialogClose');
+      if (X) X.click();
+      if (callback)
+        setTimeout(() => {
+          callback();
+        }, 2000);
+    });
     /* const target = $(element);
     const slot = target.data('slot');
     const params = {
@@ -934,7 +941,7 @@ function ajax(element, params) {
   });
 } */
 
-const MOUSEHUNT_BASE_URL = 'https://www.mousehuntgame.com/';
+// const MOUSEHUNT_BASE_URL = 'https://www.mousehuntgame.com/';
 const MapClasses = { treasuer: 'treasure', poster: 'poster', event: 'event' };
 const MyUtils = { parseQuantity() {} };
 const eventRegistry = {};
