@@ -26,7 +26,7 @@ function gwh() {
     ].indexOf(enviromentType) < 0
   )
     return;
-  logging('gwh_1.1.16.0.1');
+  logging('gwh_1.1.17.1.2');
   // prettier-ignore
   // const upgradePlans = [
   //   [2, 1, 1], [2, 2, 1], [2, 2, 2],
@@ -75,9 +75,10 @@ function gwh() {
     gnC: enerchi,
     ggC: gotdC,
     // workshop ppTrap
-    wT: bestTactical,
+    wn1: bestTactical,
     wnB: aeib,
     wnC: enerchi,
+    wg1: bestTactical,
     wgC: gotdC,
     // fortress ppTrap
     fT: bestTactical,
@@ -112,11 +113,11 @@ function gwh() {
     isGoodGoTd: true,
     badGotdDates: [],
     isAutoMapping: true,
+    isMapping: false,
     shutdown: {
       isLeaveFortressIf36: true,
       isForgeOffIf12: true
     },
-    isMapping: false,
     normalTrap: {
       normal: [st.n0, st.nT, st.nnB, st.nnC, false, [false, false, false]],
       gotd: [st.n0, st.nT, gotdB, st.ngC, false, [false, false, false]]
@@ -129,8 +130,8 @@ function gwh() {
     },
     winter_hunt_workshop: {
       ppTrap: {
-        normal: [pp, st.wT, st.wnB, st.wnC, false, [false, false, false]],
-        gotd: [pp, st.wT, gotdB, st.wgC, false, [false, false, false]]
+        normal: [pp, st.wn1, st.wnB, st.wnC, false, [false, false, false]],
+        gotd: [pp, st.wg1, gotdB, st.wgC, false, [false, false, false]]
       }
     },
     winter_hunt_fortress: {
@@ -175,6 +176,7 @@ function gwh() {
   function autoMapping(setup, callback) {
     if (!setup.isAutoMapping) {
       callback();
+      return;
     }
     // map completed
     const map = getMapByClass(MapClasses.event);
@@ -213,10 +215,10 @@ function gwh() {
       default:
         break;
     }
-    if (settings.isAutoGolem)
-      setTimeout(() => {
-        checkGolem(settings);
-      }, Math.floor(12000 + Math.random() * 3000));
+    // if (settings.isAutoGolem)
+    //   setTimeout(() => {
+    //     checkGolem(settings);
+    //   }, Math.floor(12000 + Math.random() * 3000));
   }
   // Get item information from location-specific quest in location-specific algorithm.
   // check trap by item information and run location-specific algorithm.
@@ -284,12 +286,13 @@ function gwh() {
   }
   function checkMapMiceWarning(setup, nextArea) {
     const questRelic = isProd ? user.quests.QuestRelicHunter : QuestRelicHunter;
-    if (setup.isAutoMapping) {
-      const isLeaving = questRelic && questRelic.mice_warning;
-      if (isLeaving) {
-        travel(nextArea, 2000, checkArea(setup));
-        return true;
-      }
+    if (!setup.isAutoMapping) {
+      return false;
+    }
+    const isLeaving = questRelic && questRelic.mice_warning;
+    if (isLeaving) {
+      travel(nextArea, 2000, checkArea(setup));
+      return true;
     }
     return false;
   }
@@ -316,10 +319,10 @@ function gwh() {
     const cinnamonQty = items.compressed_cinnamon_coal_stat_item.quantity;
     if (cinnamonQty > setup.cinnamonKeptQty) {
       checkTrap(setup);
+      return;
     }
     console.log('travel to Cinnamon Hill');
     travel(gwhAreas.hill, 2000, checkArea(setup));
-    return;
   }
   function cinnamonHill(setup) {
     const quest = user.quests.QuestCinnamonTreeGrove;
@@ -359,9 +362,10 @@ function gwh() {
   function handleTrap(trap, quest, setup) {
     toggleFestiveSpirit(trap, quest);
     if (trap) armAllTraps(...trap);
-    setTimeout(() => {
-      checkGolem(quest, setup);
-    }, 10000);
+    if (settings.isAutoGolem)
+      setTimeout(() => {
+        checkGolem(quest, setup);
+      }, Math.floor(12000 + Math.random() * 3000));
   }
   function getNormalTrap(setup) {
     return setup['normalTrap'][setup.isGoodGoTd ? 'gotd' : 'normal'];
@@ -389,7 +393,6 @@ function gwh() {
   function ajax(element, params, uri) {
     console.log('GWH ajax');
     return new Promise((resolve, reject) => {
-      const callbackurl = 'https://www.mousehuntgame.com/';
       const lastReadJournalEntryId = parseInt(
         document
           .querySelector('div[data-entry-id]')
@@ -401,8 +404,9 @@ function gwh() {
         data: params,
         dataType: 'json',
         type: 'post',
-        url: callbackurl + uri, // 'managers/ajax/events/winter_hunt_region.php',
+        url: MOUSEHUNT_BASE_URL + uri, // 'managers/ajax/events/winter_hunt_region.php',
         success: function (data) {
+          eventRegistry.doEvent('ajax_response', data);
           if (data.success) {
             resolve(data);
           } else {
@@ -518,11 +522,17 @@ function gwh() {
           (golem.hunts_remaining > 0 || golem.can_claim)
         ) {
           console.log('upgrade golem');
-          upgradeGolem(golem.slot);
-          golem.can_upgrade = false;
-          setTimeout(() => {
-            checkGolem(setup);
-          }, Math.floor(setup.minGolemDelayTime + Math.random() * (setup.maxGolemDelayTime - setup.minGolemDelayTime)));
+          upgradeGolem(golem.slot, () => {
+            golem.can_upgrade = false;
+            setTimeout(() => {
+              checkGolem(setup);
+            }, 1000);
+          });
+          // upgradeGolem(golem.slot);
+          // golem.can_upgrade = false;
+          // setTimeout(() => {
+          //   checkGolem(setup);
+          // }, Math.floor(setup.minGolemDelayTime + Math.random() * (setup.maxGolemDelayTime - setup.minGolemDelayTime)));
           return;
         }
       }
@@ -530,11 +540,16 @@ function gwh() {
       const golem = golems[i];
       if (golem.can_claim) {
         console.log('claim golem');
-        claimReward(golem.slot);
-        golem.can_claim = false;
-        setTimeout(() => {
-          checkGolem(setup);
-        }, Math.floor(setup.minGolemDelayTime + Math.random() * (setup.maxGolemDelayTime - setup.minGolemDelayTime)));
+        claimReward(golem.slot, () => {
+          golem.can_claim = false;
+          setTimeout(() => {
+            checkGolem(setup);
+          }, 1000);
+        });
+        // golem.can_claim = false;
+        // setTimeout(() => {
+        //   checkGolem(setup);
+        // }, Math.floor(setup.minGolemDelayTime + Math.random() * (setup.maxGolemDelayTime - setup.minGolemDelayTime)));
         return;
       }
     }
@@ -542,11 +557,16 @@ function gwh() {
       const golem = golems[i];
       if (golem.can_build) {
         console.log('build golem');
-        buildGolem(golem.slot, setup.golemSetup.defaultTarget[i]);
-        golem.can_build = false;
-        setTimeout(() => {
-          checkGolem(setup);
-        }, Math.floor(setup.minGolemDelayTime + Math.random() * (setup.maxGolemDelayTime - setup.minGolemDelayTime)));
+        buildGolem(golem.slot, setup.golemSetup.defaultTarget[i], () => {
+          golem.can_build = false;
+          setTimeout(() => {
+            checkGolem(setup);
+          }, 1000);
+        });
+        // golem.can_build = false;
+        // setTimeout(() => {
+        //   checkGolem(setup);
+        // }, Math.floor(setup.minGolemDelayTime + Math.random() * (setup.maxGolemDelayTime - setup.minGolemDelayTime)));
         return;
       }
     }
@@ -557,14 +577,15 @@ function gwh() {
     popup.show(); */
   }
   function getQuest() {
-    switch (user.environment_type) {
-      case 'winter_hunt_grove':
+    const enviromentType = getEnvironmentType();
+    switch (enviromentType) {
+      case gwhAreas.hill:
         return user.quests.QuestCinnamonTreeGrove;
 
-      case 'winter_hunt_workshop':
+      case gwhAreas.workshop:
         return user.quests.QuestGolemWorkshop;
 
-      case 'winter_hunt_fortress':
+      case gwhAreas.fortress:
         return user.quests.QuestIceFortress;
 
       default:
@@ -572,15 +593,15 @@ function gwh() {
     }
   }
   // upgradeGolem(0);
-  function upgradeGolem(slot) {
+  function upgradeGolem(slot, callback) {
     /* $('.headsUpDisplayWinterHuntRegionView__golemUpgradeButton')[0].click();
     $(
       '.greatWinterHuntGolemManagerUpgradeTabView__upgradeButton.greatWinterHuntDialogView__bigButton'
     ).click(); */
-    $('.headsUpDisplayWinterHuntRegionView__golemUpgradeButton')[0].click();
-    setTimeout(() => {
-      document.getElementById('jsDialogClose').click();
-    }, 2000);
+    $('.headsUpDisplayWinterHuntRegionView__golemUpgradeButton')[slot].click();
+    // setTimeout(() => {
+    //   document.getElementById('jsDialogClose').click();
+    // }, 2000);
     const element = $(
       '.greatWinterHuntGolemManagerUpgradeTabView__upgradeButton.greatWinterHuntDialogView__bigButton'
     )[0];
@@ -588,18 +609,43 @@ function gwh() {
       action: 'upgrade_golem',
       slot: slot
     };
-    hg.views.GreatWinterHuntGolemManagerUpgradeTabView.ajax(element, params);
+    hg.views.GreatWinterHuntGolemManagerUpgradeTabView.ajax(
+      element,
+      params
+    ).then(() => {
+      const X = document.querySelector('#jsDialogClose');
+      if (X) X.click();
+      if (callback)
+        setTimeout(() => {
+          callback();
+        }, 2000);
+    });
   }
   // claimReward(0)
-  function claimReward(slot) {
+  function claimReward(slot, callback) {
     const claimClass =
       '.headsUpDisplayWinterHuntRegionView__golemClaimRewardButton';
     $(claimClass)[slot].click();
-    setTimeout(() => {
-      const continueButtonClass =
-        '.greatWinterHuntDialogView__bigButton.greatWinterHuntClaimRewardDialogView__continueButton';
-      $(continueButtonClass).click();
-    }, 2000);
+    const element = $(
+      '.greatWinterHuntDialogView__bigButton.greatWinterHuntClaimRewardDialogView__continueButton'
+    )[0];
+    const params = {
+      action: 'claim_reward',
+      slot: slot
+    };
+    ajax(element, params).then(() => {
+      const X = document.querySelector('#jsDialogClose');
+      if (X) X.click();
+      if (callback)
+        setTimeout(() => {
+          callback();
+        }, 2000);
+    });
+    // setTimeout(() => {
+    //   const continueButtonClass =
+    //     '.greatWinterHuntDialogView__bigButton.greatWinterHuntClaimRewardDialogView__continueButton';
+    //   $(continueButtonClass).click();
+    // }, 2000);
     /* const target = $(element);
     const slot = target.data('slot');
     const params = {
@@ -616,12 +662,13 @@ function gwh() {
     }); */
   }
   // buildGolem(golem.slot, 'queso_river'); // floating_islands
-  function buildGolem(slot, environmentType) {
+  function buildGolem(slot, environmentType, callback) {
+    const storageKey = 'scarfingDestinations';
     const scarfQty = getQuest().items.golden_scarf_stat_item.quantity;
     let scarfingDestination = null;
     let scarfingDestinations = null;
     if (scarfQty > 0) {
-      scarfingDestinations = localStorage.scarfingDestinations;
+      scarfingDestinations = localStorage[storageKey];
       if (scarfingDestinations) {
         scarfingDestinations = JSON.parse(scarfingDestinations);
         if (scarfingDestinations.length > 0 && scarfingDestinations[0][1] != '')
@@ -640,27 +687,33 @@ function gwh() {
     $(
       '.headsUpDisplayWinterHuntRegionView__golemBuildButton.headsUpDisplayWinterHuntRegionView__golemActionButton'
     )[slot * 2 + 1].click();
-    setTimeout(() => {
-      // $('#jsDialogClose').click();
-      document.getElementById('jsDialogClose').click();
-    }, 1000);
-    setTimeout(() => {
-      const quest = getQuest();
-      hg.views.GreatWinterHuntGolemManagerLaunchTabView.ajax(null, {
-        action: 'build_golem',
-        slot: slot,
-        environment: destination,
-        has_scarf: isScarf ? 1 : 0,
-        has_hat: isHat ? 1 : 0,
-        arms: quest.golems[slot].paperdoll.arms,
-        head: quest.golems[slot].paperdoll.head,
-        legs: quest.golems[slot].paperdoll.legs,
-        torso: quest.golems[slot].paperdoll.torso
-      });
-    }, 2000);
+    const element = $(
+      '.greatWinterHuntDialogView__bigButton greatWinterHuntGolemManagerLaunchTabView__buildButton'
+    )[0];
+    // setTimeout(() => {
+    const quest = getQuest();
+    hg.views.GreatWinterHuntGolemManagerLaunchTabView.ajax(element, {
+      action: 'build_golem',
+      slot: slot,
+      environment: destination,
+      has_scarf: isScarf ? 1 : 0,
+      has_hat: isHat ? 1 : 0,
+      arms: quest.golems[slot].paperdoll.arms,
+      head: quest.golems[slot].paperdoll.head,
+      legs: quest.golems[slot].paperdoll.legs,
+      torso: quest.golems[slot].paperdoll.torso
+    }).then(() => {
+      const X = document.querySelector('#jsDialogClose');
+      if (X) X.click();
+      if (callback)
+        setTimeout(() => {
+          callback();
+        }, 2000);
+    });
+    // }, 2000);
     if (isScarf) {
-      localStorage.scarfingDestinations = JSON.stringify(scarfingDestinations);
-      console.log(JSON.parse(localStorage.scarfingDestinations));
+      localStorage[storageKey] = JSON.stringify(scarfingDestinations);
+      console.log(JSON.parse(localStorage[storageKey]));
     }
   }
   function travel(environmentType, milliseconds, callback) {
@@ -777,8 +830,10 @@ function gwh() {
   });
 } */
 
+const MOUSEHUNT_BASE_URL = 'https://www.mousehuntgame.com/';
 const MapClasses = { treasuer: 'treasure', poster: 'poster', event: 'event' };
 const MyUtils = { parseQuantity() {} };
+const eventRegistry = {};
 const user = {};
 user.environment_type = 'claw_shot_city';
 const QuestRelicHunter = {
