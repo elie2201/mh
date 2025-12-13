@@ -26,7 +26,7 @@ function gwh() {
     ].indexOf(enviromentType) < 0
   )
     return;
-  logging('gwh_1.1.17.1.2');
+  logging('gwh_1.1.17.1.3');
   // prettier-ignore
   // const upgradePlans = [
   //   [2, 1, 1], [2, 2, 1], [2, 2, 2],
@@ -171,7 +171,9 @@ function gwh() {
     //   if (nextMapArea === enviromentType) checkArea(settings);
     //   travel(nextMapArea, 2000, checkArea(settings));
     // });
-    autoMapping(settings, checkArea(settings));
+    autoMapping(settings, () => {
+      checkArea(settings);
+    });
   }
   function autoMapping(setup, callback) {
     if (!setup.isAutoMapping) {
@@ -236,7 +238,9 @@ function gwh() {
         quest.shield.health == 36 &&
         stoneQty < setup.goHailstoneQty
       ) {
-        travel(gwhAreas.workshop, 2000, checkTrap(setup));
+        travel(gwhAreas.workshop, 2000, () => {
+          checkTrap(setup);
+        });
         return;
       }
     }
@@ -272,13 +276,17 @@ function gwh() {
         handleTrap(trap, quest, setup);
         return;
       }
-      travel(gwhAreas.hill, 2000, checkArea(settings));
+      travel(gwhAreas.hill, 2000, () => {
+        checkArea(settings);
+      });
       return;
     }
     // 沒 event cheese, FS或 hailstone就離開
     // 除非是正在 mapping(mapping時停用 FS)或 boss,不在 Fortess用 pp/gpp以外的 cheese
     // 因為FS只在破壁時用.有 FS在 Fortess用 normal cheese是損失
-    travel(gwhAreas.workshop, 2000, checkArea(setup));
+    travel(gwhAreas.workshop, 2000, () => {
+      checkArea(setup);
+    });
     /* travel(gwhAreas.hill, 2000, () => {
       const trap = getNormalTrap(setup);
       handleTrap(trap, quest);
@@ -291,7 +299,9 @@ function gwh() {
     }
     const isLeaving = questRelic && questRelic.mice_warning;
     if (isLeaving) {
-      travel(nextArea, 2000, checkArea(setup));
+      travel(nextArea, 2000, () => {
+        checkArea(setup);
+      });
       return true;
     }
     return false;
@@ -322,7 +332,9 @@ function gwh() {
       return;
     }
     console.log('travel to Cinnamon Hill');
-    travel(gwhAreas.hill, 2000, checkArea(setup));
+    travel(gwhAreas.hill, 2000, () => {
+      checkArea(setup);
+    });
   }
   function cinnamonHill(setup) {
     const quest = user.quests.QuestCinnamonTreeGrove;
@@ -331,7 +343,9 @@ function gwh() {
     // if (ppQty < setup.startPpQty) checkTrap(quest, setup);
     if (cinnamonQty > setup.startCinnamonQty) {
       console.log('travel to Golem Workshop');
-      travel(gwhAreas.workshop, 2000, checkArea(setup));
+      travel(gwhAreas.workshop, 2000, () => {
+        checkArea(setup);
+      });
       return;
     }
     checkTrap(setup);
@@ -348,11 +362,8 @@ function gwh() {
     } else if (ppQty <= setup.ppKeptQty) {
       trap = getNormalTrap(setup);
     } else {
-      if (
-        [setup.areaBaits.pp.id, setup.areaBaits.gpp.id].indexOf(
-          getBaitItemId()
-        ) > -1
-      )
+      const areaBaitIds = [setup.areaBaits.pp.id, setup.areaBaits.gpp.id];
+      if (areaBaitIds.indexOf(getBaitItemId()) > -1)
         trap =
           setup[enviromentType]['ppTrap'][setup.isGoodGoTd ? 'gotd' : 'normal'];
       else trap = getNormalTrap(setup);
