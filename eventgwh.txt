@@ -26,7 +26,7 @@ function gwh() {
     ].indexOf(enviromentType) < 0
   )
     return;
-  logging('gwh_1.1.17.2.10');
+  logging('gwh_1.1.17.2.11');
   // prettier-ignore
   // const upgradePlans = [
   //   [2, 1, 1], [2, 2, 1], [2, 2, 2],
@@ -188,6 +188,7 @@ function gwh() {
     callback();
   }
   function checkArea(setup) {
+    const enviromentType = getEnvironmentType();
     switch (enviromentType) {
       case gwhAreas.hill:
         cinnamonHill(setup);
