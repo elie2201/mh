@@ -29,7 +29,7 @@ function gwh() {
     ].indexOf(enviromentType) < 0
   )
     return;
-  logging('gwh_1.1.18.2.11');
+  logging('gwh_1.1.18.2.12');
   // prettier-ignore
   // const upgradePlans = [
   //   [2, 1, 1], [2, 2, 1], [2, 2, 2],
@@ -334,7 +334,7 @@ function gwh() {
       }
     }
     if (setup.isAutoMapping) {
-      if (checkMapMiceWarning(setup, gwhAreas.hill)) return;
+      // if (checkMapMiceWarning(setup, gwhAreas.hill)) return;
     }
     // const ppQty = items.pecan_pecorino_cheese.quantity;
     const cinnamonQty = items.compressed_cinnamon_coal_stat_item.quantity;
