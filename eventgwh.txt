@@ -29,7 +29,7 @@ function gwh() {
     ].indexOf(enviromentType) < 0
   )
     return;
-  logging('gwh_1.1.18.2.12');
+  logging('gwh_1.1.19.2.12');
   // prettier-ignore
   // const upgradePlans = [
   //   [2, 1, 1], [2, 2, 1], [2, 2, 2],
@@ -251,6 +251,10 @@ function gwh() {
         return;
       }
       if (checkMapMiceWarning(setup, gwhAreas.workshop)) return;
+      // auto mapping時要兼顧破壁,所以有 map mice+有 pp+有 FS才留在 workshop
+      // 這邊不強制中斷
+      // checkTrap(setup);
+      // return;
     }
     let trap = null;
     // Boss跟 Break shield都需要 FS,但 Boss不需要 hailstone跟 PP
@@ -276,6 +280,7 @@ function gwh() {
         return;
       }
     }
+    // 強制 mapping時 pp不夠也不留在 fortress. pp夠的話,用不破壁設定
     if (setup.isMapping) {
       if (ppQty > setup.ppKeptQty) {
         trap =
@@ -288,9 +293,9 @@ function gwh() {
       });
       return;
     }
-    // 沒 event cheese, FS或 hailstone就離開
-    // 因為FS只在破壁時用.有 FS在 Fortess用 normal cheese是損失
-    // 除非是正在 mapping(mapping時停用 FS)或 boss,不在 Fortess用 pp/gpp以外的 cheese
+    // 到這邊就是沒 event cheese, FS或 hailstone,離開
+    // 因為FS只在破壁/Boss時用.有 FS在 Fortess用 normal cheese是損失
+    // 除了強制 mapping(強制 mapping時停用 FS)跟 boss外,不在 Fortess用 pp/gpp以外的 cheese
     travel(gwhAreas.workshop, 2000, () => {
       checkArea(setup);
     });
@@ -319,6 +324,7 @@ function gwh() {
     const quest = user.quests.QuestGolemWorkshop;
     const items = quest.items;
     const isShutdown = quest.is_shutdown_enabled;
+    const cinnamonQty = items.compressed_cinnamon_coal_stat_item.quantity;
     if (isShutdown) {
       if (setup.shutdown.isForgeOffIf12) {
         setTimeout(() => {
@@ -334,10 +340,12 @@ function gwh() {
       }
     }
     if (setup.isAutoMapping) {
-      // if (checkMapMiceWarning(setup, gwhAreas.hill)) return;
+      if (checkMapMiceWarning(setup, gwhAreas.hill)) return;
+      // auto mapping時要兼顧 forge,所以有 map mice且有 Cinnamon才留在 workshop
+      // checkTrap(setup);
+      // return;
     }
     // const ppQty = items.pecan_pecorino_cheese.quantity;
-    const cinnamonQty = items.compressed_cinnamon_coal_stat_item.quantity;
     if (cinnamonQty > setup.cinnamonKeptQty) {
       checkTrap(setup);
       return;
@@ -350,12 +358,24 @@ function gwh() {
   function cinnamonHill(setup) {
     const quest = user.quests.QuestCinnamonTreeGrove;
     const items = quest.items;
+    const ppQty = items.pecan_pecorino_cheese.quantity;
+    const fsQty = items.festive_spirit_stat_item.quantity;
+    const stoneQty = items.hailstone_stat_item.quantity;
     const cinnamonQty = items.compressed_cinnamon_coal_stat_item.quantity;
     if (setup.isAutoMapping) {
-      const ppQty = items.pecan_pecorino_cheese.quantity;
-      if (ppQty > setup.startPpQty) {
+      // fsQty也放進去,要自動要嚴格點.
+      // fs不夠還是要去破壁的話,要強制 mapping且修改 fortress的 ppTrap
+      if (
+        ppQty > setup.startPpQty &&
+        stoneQty > setup.goHailstoneQty &&
+        fsQty > setup.fsKeptQty
+      ) {
         if (checkMapMiceWarning(setup, gwhAreas.fortress)) return;
       }
+      // Hill沒有小遊戲, auto mapping時單純解 map/收集PP, 不管 Cinnamon
+      // 有這個斷點,應該不會無限 travel了,但是還是要小心
+      checkTrap(setup);
+      return;
     }
     if (cinnamonQty > setup.startCinnamonQty) {
       console.log('travel to Golem Workshop');
