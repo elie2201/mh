@@ -29,7 +29,7 @@ function gwh() {
     ].indexOf(enviromentType) < 0
   )
     return;
-  logging('gwh_1.1.19.2.12');
+  logging('gwh_1.1.20.2.12');
   // prettier-ignore
   // const upgradePlans = [
   //   [2, 1, 1], [2, 2, 1], [2, 2, 2],
@@ -280,7 +280,7 @@ function gwh() {
         return;
       }
     }
-    // 強制 mapping時 pp不夠也不留在 fortress. pp夠的話,用不破壁設定
+    // 即使強制 mapping, pp不夠也不留在 fortress. pp夠的話,用不破壁設定
     if (setup.isMapping) {
       if (ppQty > setup.ppKeptQty) {
         trap =
@@ -339,7 +339,8 @@ function gwh() {
         }, Math.floor(12000 + Math.random() * 3000));
       }
     }
-    if (setup.isAutoMapping) {
+    const map = getMapByClass(MapClasses.event);
+    if (setup.isAutoMapping && map) {
       if (checkMapMiceWarning(setup, gwhAreas.hill)) return;
       // auto mapping時要兼顧 forge,所以有 map mice且有 Cinnamon才留在 workshop
       // checkTrap(setup);
@@ -362,7 +363,8 @@ function gwh() {
     const fsQty = items.festive_spirit_stat_item.quantity;
     const stoneQty = items.hailstone_stat_item.quantity;
     const cinnamonQty = items.compressed_cinnamon_coal_stat_item.quantity;
-    if (setup.isAutoMapping) {
+    const map = getMapByClass(MapClasses.event);
+    if (setup.isAutoMapping && map) {
       // fsQty也放進去,要自動要嚴格點.
       // fs不夠還是要去破壁的話,要強制 mapping且修改 fortress的 ppTrap
       if (
