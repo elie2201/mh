@@ -29,7 +29,7 @@ function gwh() {
     ].indexOf(enviromentType) < 0
   )
     return;
-  logging('gwh_1.2.21.3.16');
+  logging('gwh_1.2.21.3.17');
   // prettier-ignore
   // const upgradePlans = [
   //   [2, 1, 1], [2, 2, 1], [2, 2, 2],
@@ -364,6 +364,7 @@ function gwh() {
     const isNotLeaving = false;
     if (!setup.isAutoMapping) return isNotLeaving;
     if (setup.isMapping) return isNotLeaving;
+    const enviromentType = getEnvironmentType();
     // 這裡已經是 isAutoMapping了,沒 map/mapInfo一律先回 Hill
     // 可以觀察看看要一律先回 Hill還是視同 !setup.isAutoMapping
     if (!map || !mapInfo) {
@@ -373,7 +374,6 @@ function gwh() {
       });
       return isLeaving;
     }
-    const enviromentType = getEnvironmentType();
     if (mapInfo[enviromentType]) return isNotLeaving;
     if (mapInfo[gwhAreas.fortress] && isStartFortress) {
       travel(gwhAreas.fortress, 2000, () => {
