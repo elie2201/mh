@@ -29,7 +29,7 @@ function gwh() {
     ].indexOf(enviromentType) < 0
   )
     return;
-  logging('gwh_1.2.20.2.15');
+  logging('gwh_1.2.20.2.16');
   // prettier-ignore
   // const upgradePlans = [
   //   [2, 1, 1], [2, 2, 1], [2, 2, 2],
@@ -434,10 +434,11 @@ function gwh() {
     if (isMapTravelling(setup)) return;
     // auto mapping要兼顧 forge
     if (isEndWorkshop) {
-      console.log('travel to Cinnamon Hill');
+      console.log('is end workshop, travel to Cinnamon Hill');
       travel(gwhAreas.hill, 2000, () => {
         checkArea(setup);
       });
+      return;
     }
     checkTrap(setup);
     return;
