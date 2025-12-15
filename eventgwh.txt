@@ -29,7 +29,7 @@ function gwh() {
     ].indexOf(enviromentType) < 0
   )
     return;
-  logging('gwh_1.2.22.3.18');
+  logging('gwh_1.2.22.3.19');
   // prettier-ignore
   // const upgradePlans = [
   //   [2, 1, 1], [2, 2, 1], [2, 2, 2],
@@ -458,8 +458,11 @@ function gwh() {
         return;
       }
       // Hill沒 mice不見得能離開,去另外兩個地方有額外條件
-      // auto mapping時優先存 bait吧!?
-      if (!mapInfo[gwhAreas.hill]) {
+      // 還有個 all要注意
+      if (
+        !mapInfo[gwhAreas.hill] &&
+        (mapInfo[gwhAreas.fortress] || mapInfo[gwhAreas.workshop])
+      ) {
         handleTrap(getNormalTrap(setup), quest, setup);
         return;
       }
