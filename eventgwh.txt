@@ -11,7 +11,7 @@ if (user.quests.MiniEventSnowballShowdown) gwh();
 function gwh() {
   const isProd = false;
   const targetEnvironmentType = 'greatWinterHunt';
-  const enviromentType = getEnvironmentType();
+  const enviromentType = MhUtils.getEnvironmentType();
   const todayUTC = new Date().toISOString().split('T')[0];
   const gwhAreas = {
     hill: 'winter_hunt_grove',
@@ -29,7 +29,7 @@ function gwh() {
     ].indexOf(enviromentType) < 0
   )
     return;
-  logging('gwh_1.2.21.3.17');
+  logging('gwh_1.2.22.3.18');
   // prettier-ignore
   // const upgradePlans = [
   //   [2, 1, 1], [2, 2, 1], [2, 2, 2],
@@ -271,7 +271,7 @@ function gwh() {
     callback();
   }
   function checkArea(setup) {
-    const enviromentType = getEnvironmentType();
+    const enviromentType = MhUtils.getEnvironmentType();
     console.log('checkArea:', enviromentType, setup);
     switch (enviromentType) {
       case gwhAreas.hill:
@@ -364,7 +364,7 @@ function gwh() {
     const isNotLeaving = false;
     if (!setup.isAutoMapping) return isNotLeaving;
     if (setup.isMapping) return isNotLeaving;
-    const enviromentType = getEnvironmentType();
+    const enviromentType = MhUtils.getEnvironmentType();
     // 這裡已經是 isAutoMapping了,沒 map/mapInfo一律先回 Hill
     // 可以觀察看看要一律先回 Hill還是視同 !setup.isAutoMapping
     if (!map || !mapInfo) {
@@ -457,6 +457,12 @@ function gwh() {
         handleTrap(getNormalTrap(setup), quest, setup);
         return;
       }
+      // Hill沒 mice不見得能離開,去另外兩個地方有額外條件
+      // auto mapping時優先存 bait吧!?
+      if (!mapInfo[gwhAreas.hill]) {
+        handleTrap(getNormalTrap(setup), quest, setup);
+        return;
+      }
       // auto mapping時不 checkCinnamon
       checkTrap(setup);
       return;
@@ -475,7 +481,7 @@ function gwh() {
     return false;
   }
   function checkTrap(setup) {
-    const enviromentType = getEnvironmentType();
+    const enviromentType = MhUtils.getEnvironmentType();
     const quest = getQuest();
     let trap = null;
     if (myItems.pp > setup.startPpQty) {
@@ -500,7 +506,7 @@ function gwh() {
     handleTrap(trap, quest, setup);
   }
   function getQuest() {
-    const enviromentType = getEnvironmentType();
+    const enviromentType = MhUtils.getEnvironmentType();
     switch (enviromentType) {
       case gwhAreas.hill:
         return user.quests.QuestCinnamonTreeGrove;
@@ -1140,6 +1146,7 @@ function ajax(element, params) {
 // const MOUSEHUNT_BASE_URL = 'https://www.mousehuntgame.com/';
 const MapClasses = { treasuer: 'treasure', poster: 'poster', event: 'event' };
 const MyUtils = { parseQuantity() {} };
+const MhUtils = { getEnvironmentType() {} };
 const eventRegistry = {};
 const user = {};
 user.environment_type = 'claw_shot_city';
@@ -11593,17 +11600,6 @@ const hg = {};
 const $ = {};
 const jsDialog = {};
 // MH & my-mh-aid functions
-function getEnvironmentType() {
-  const rtn = trimToEmpty(user.environment_type);
-  // console.plog(`Current location environment_type: ${rtn}`);
-  return rtn;
-}
-function trimToEmpty(str) {
-  return trimToDefault(str);
-}
-function trimToDefault(str, deflt) {
-  return str === 0 ? '0' : ((str || (deflt ? deflt : '')) + '').trim();
-}
 function logging(...any) {
   const debug = true;
   if (debug) {
