@@ -29,7 +29,7 @@ function gwh() {
     ].indexOf(enviromentType) < 0
   )
     return;
-  logging('gwh_1.2.21.2.16');
+  logging('gwh_1.2.21.3.16');
   // prettier-ignore
   // const upgradePlans = [
   //   [2, 1, 1], [2, 2, 1], [2, 2, 2],
@@ -106,7 +106,7 @@ function gwh() {
   const defaultSettings = {
     startPpQty: 14,
     ppKeptQty: 2,
-    gppKeptQty: 2,
+    gppEndQty: 2,
     gppArea: 'winter_hunt_grove',
     startCinnamonQty: 37,
     cinnamonKeptQty: 3,
@@ -436,7 +436,7 @@ function gwh() {
     if (isMapTravelling(setup)) return;
     // auto mapping要兼顧 forge
     if (isEndWorkshop) {
-      console.log('is end workshop, travel to Cinnamon Hill');
+      console.log('isEndWorkshop, travel to Cinnamon Hill');
       travel(gwhAreas.hill, 2000, () => {
         checkArea(setup);
       });
@@ -491,7 +491,7 @@ function gwh() {
     const isAutoGpp =
       setup.isAutoMapping &&
       mapInfo.isGpp &&
-      myItems.gpp > setup.gppKeptQty &&
+      myItems.gpp > setup.gppEndQty &&
       // 在 Hill用 GPP效率比較高,可以預設
       (!setup.gppArea ||
         setup.gppArea === '' ||
