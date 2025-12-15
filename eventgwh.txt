@@ -29,7 +29,7 @@ function gwh() {
     ].indexOf(enviromentType) < 0
   )
     return;
-  logging('gwh_1.2.20.2.14');
+  logging('gwh_1.2.20.2.15');
   // prettier-ignore
   // const upgradePlans = [
   //   [2, 1, 1], [2, 2, 1], [2, 2, 2],
@@ -175,9 +175,11 @@ function gwh() {
   let isEndWorkshop = false;
   run();
   function run() {
+    console.log('run');
     autoSettings();
   }
   function autoSettings() {
+    console.log('autoSettings');
     if (settings.badGotdDates && settings.badGotdDates.indexOf(todayUTC) > -1)
       settings.isGoodGoTd = false;
     if (!settings.isAutoMapping) {
@@ -208,7 +210,7 @@ function gwh() {
       if (completedIds && completedIds.length > 0)
         completed = completed.concat(completedIds);
     }
-    console.log(completed);
+    console.log('completed mouse ids', completed);
     const mouses = mapInfo.treasure_map.goals.mouse;
     for (let i = 0; i < mouses.length; i++) {
       const mouse = mouses[i];
@@ -241,17 +243,20 @@ function gwh() {
     return rtn;
   }
   function autoMapping(callback) {
+    console.log('autoMapping');
     // map completed
-    const map = getMapByClass(MapClasses.event);
+    map = getMapByClass(MapClasses.event);
     if (map && map.is_complete) {
-      console.log('Claim map reward:', map.map_id);
+      const mapName = map.name;
+      console.log(`Claim map reward, id: ${map.map_id}, name: ${mapName}`);
       hg.utils.TreasureMapUtil.claim(map.map_id, () => {
         setTimeout(() => {
           hg.utils.UserInventory.useConvertible(
-            scrollChests[map.name],
+            scrollChests[mapName],
             1,
             (data) => {
               console.log(data.success == 1 ? 'success' : 'failed', data);
+              map = null;
               setTimeout(() => {
                 if (callback) setTimeout(callback, 2000);
               }, 2000);
@@ -265,6 +270,7 @@ function gwh() {
   }
   function checkArea(setup) {
     const enviromentType = getEnvironmentType();
+    console.log('checkArea:', enviromentType, setup);
     switch (enviromentType) {
       case gwhAreas.hill:
         cinnamonHill(setup);
@@ -282,6 +288,7 @@ function gwh() {
   // Get item information from location-specific quest in location-specific algorithm.
   // check trap by item information and run location-specific algorithm.
   function iceFortress(setup) {
+    console.log('iceFortress(', setup);
     const quest = isProd ? user.quests.QuestIceFortress : QuestIceFortress;
     const items = quest.items;
     initMyItems(items, setup);
@@ -305,10 +312,10 @@ function gwh() {
     // checkTrap(setup);
     // return;
     let trap = null;
-    // Boss跟 Break shield都需要 FS,但 Boss不需要 hailstone跟 PP
+    console.log('Boss跟 Break shield都需要 FS,但 Boss不需要 hailstone跟 PP');
     if (myItems.fs > setup.fsKeptQty) {
       if (quest.shield.health == 0) {
-        // Frost King
+        console.log('Frost King');
         trap = getNormalTrap(setup);
         trap[0] = 'SUPER';
         trap[2] = 'Seasonal Gift';
@@ -318,7 +325,7 @@ function gwh() {
         handleTrap(trap, quest, setup);
         return;
       }
-      // Breaking shield
+      console.log('Breaking shield');
       if (
         myItems.pp > setup.ppKeptQty &&
         myItems.hailstone > setup.hailstoneKeptQty
@@ -350,6 +357,7 @@ function gwh() {
     });
   }
   function isMapTravelling(setup) {
+    console.log('isMapTravelling(', setup);
     const isLeaving = true;
     const isNotLeaving = false;
     if (!setup.isAutoMapping) return isNotLeaving;
@@ -384,6 +392,7 @@ function gwh() {
     return isLeaving;
   }
   function initMyItems(items, setup) {
+    console.log('initMyItems', items, setup);
     myItems.pp = MyUtils.parseQuantity(items.pecan_pecorino_cheese.quantity);
     myItems.gpp = MyUtils.parseQuantity(
       items.glazed_pecan_pecorino_cheese.quantity
@@ -403,6 +412,7 @@ function gwh() {
     isEndWorkshop = myItems.cinnamon < setup.cinnamonKeptQty;
   }
   function golemWorkshop(setup) {
+    console.log('golemWorkshop(', setup);
     const quest = user.quests.QuestGolemWorkshop;
     const items = quest.items;
     initMyItems(items, setup);
@@ -433,6 +443,7 @@ function gwh() {
     return;
   }
   function cinnamonHill(setup) {
+    console.log('cinnamonHill(', setup);
     const quest = user.quests.QuestCinnamonTreeGrove;
     const items = quest.items;
     initMyItems(items, setup);
@@ -508,14 +519,16 @@ function gwh() {
     const isEnable = trap ? trap[4] : false;
     const isCannonsEnable = trap ? trap[5] : [false, false, false];
     // user.quests.QuestCinnamonTreeGrove.is_fuel_enabled;
-    const fsQty = quest.items.festive_spirit_stat_item.quantity;
+    const fsQty = MyUtils.parseQuantity(
+      quest.items.festive_spirit_stat_item.quantity
+    );
     // $('.headsUpDisplayWinterHuntRegionView__fuelButton', _container)
     // if (fsQty < 1) return;
     if (fsQty > 0 && (quest.is_fuel_enabled || false) != isEnable) {
       console.log('need to toggle FS');
       const uri = 'managers/ajax/events/winter_hunt_region.php';
       ajax(null, { action: 'toggle_fuel' }, uri).then(callback);
-    }
+    } else callback();
     // cannon location checked in taggleCannons()
     setTimeout(() => {
       toggleCannons(isCannonsEnable);
