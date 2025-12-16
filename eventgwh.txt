@@ -33,7 +33,7 @@ function gwh() {
     ].indexOf(enviromentType) < 0
   )
     return;
-  logging('gwh_1.2.23.5.20');
+  logging('gwh_1.2.24.5.20');
   // prettier-ignore
   // const upgradePlans = [
   //   [2, 1, 1], [2, 2, 1], [2, 2, 2],
@@ -392,14 +392,16 @@ function gwh() {
         return;
       }
     }
+    // isMapping=沒 map mice就離開,
+    // !isMapping:
+    // 在 Fortress是不管 map mice玩破壁並控制要用 ppTrap還是 fsTrap
+    // 在 Workshop是不管 map mice玩 forge
+    // 在 Hill是不管 map mice,玩收集 cinnamon<=>forge
     if (isMapTravelling(setup)) return;
-    // auto mapping時要兼顧破壁,所以有 map mice + 有 pp + 有 FS才留在 workshop
-    // 這邊不強制中斷
-    // checkTrap(setup);
-    // return;
     let trap = null;
     console.log('Boss跟 Break shield都需要 FS,但 Boss不需要 hailstone跟 PP');
     if (myItems.fs > setup.fsKeptQty) {
+      // 最低數量 fs,免得連 boss都沒得用
       if (quest.shield.health == 0) {
         console.log('Frost King');
         trap = getNormalTrap(setup);
@@ -411,43 +413,39 @@ function gwh() {
         handleTrap(trap, quest, setup);
         return;
       }
-      console.log('Breaking shield');
+      console.log('Breaking shield, isMapping時用 ppTrap');
       if (
         myItems.pp > setup.ppKeptQty &&
         myItems.hailstone > setup.hailstoneKeptQty
       ) {
+        // fs不夠時要用 isMapping,用 ppTrap,但是至少要給 Frost King用 fs
+        if (setup.isMapping) {
+          trap =
+            setup.winter_hunt_fortress.ppTrap[setup.isGoodGoTd ? gotd : normal];
+          handleTrap(trap, quest, setup);
+          return;
+        }
+        // 如果不想做 map又沒有 fs,就得改 fsTrap. !isMapping就是用 fsTrap
         trap =
           setup.winter_hunt_fortress.fsTrap[setup.isGoodGoTd ? gotd : normal];
         handleTrap(trap, quest, setup);
         return;
       }
     }
-    // 即使強制 mapping, pp不夠也不留在 fortress. pp夠的話,用不破壁設定
-    if (setup.isMapping) {
-      if (myItems.pp > setup.ppKeptQty) {
-        trap =
-          setup.winter_hunt_fortress.ppTrap[setup.isGoodGoTd ? gotd : normal];
-        handleTrap(trap, quest, setup);
-        return;
-      }
-      travel(gwhAreas.hill, 2000, () => {
-        checkArea(setup);
-      });
-      return;
-    }
-    // 到這邊就是沒 event cheese, FS或 hailstone,離開
-    // 因為FS只在破壁/Boss時用.有 FS在 Fortess用 normal cheese是損失
-    // 除了強制 mapping(強制 mapping時停用 FS)跟 boss外,不在 Fortess用 pp/gpp以外的 cheese
+    // 到這邊就是沒 event cheese, FS(至少Boss)或 hailstone,離開
+    // 因為FS只在破壁(有多的話)/Boss時用.有 FS在 Fortess用 normal cheese是損失
+    // 除了 boss外,不在 Fortess用 pp/gpp以外的 cheese
     travel(gwhAreas.workshop, 2000, () => {
       checkArea(setup);
     });
   }
+  /** 如果 !setup.isMapping,不檢查還有沒有 map mice就回傳 false,*/
   function isMapTravelling(setup) {
     console.log('isMapTravelling(', setup);
     const isLeaving = true;
     const isNotLeaving = false;
     if (!setup.isAutoMapping) return isNotLeaving;
-    if (setup.isMapping) return isNotLeaving;
+    if (!setup.isMapping) return isNotLeaving;
     const enviromentType = MhUtils.getEnvironmentType();
     // 這裡已經是 isAutoMapping了,沒 map/mapInfo一律先回 Hill
     // 可以觀察看看要一律先回 Hill還是視同 !setup.isAutoMapping
