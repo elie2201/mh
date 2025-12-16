@@ -23,7 +23,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.26.7.20';
+  const version = 'gwh_1.2.28.7.20';
   isProd ? logging(version) : console.log(version);
   const scrollChests = {
     'Naughty List': {
@@ -183,7 +183,28 @@ function gwh() {
   run();
   function run() {
     console.log('run');
-    autoSettings();
+    const track = getQuest.reward_track;
+    if (track.can_claim)
+      claimTrackReward(() => {
+        track.can_claim = false;
+        autoSettings();
+      });
+  }
+  function claimTrackReward(callback) {
+    const element = null;
+    const params = {
+      action: 'claim_reward_track'
+    };
+    ajax(element, params, 'managers/ajax/events/winter_hunt_region.php').then(
+      () => {
+        const X = document.querySelector('#jsDialogClose');
+        if (X) X.click();
+        if (callback)
+          setTimeout(() => {
+            callback();
+          }, 2000);
+      }
+    );
   }
   function autoSettings() {
     console.log('autoSettings');
@@ -203,12 +224,20 @@ function gwh() {
         const info = isProd ? data : mapInfo;
         mapInfo = parseMapInfo(info);
         console.log('mapInfo:', mapInfo);
+        // game data有時會沒 sync
+        if (mapInfo && mapInfo.isCompleted) {
+          setTimeout(() => {
+            run();
+          }, 1000);
+          return;
+        }
         checkArea(settings);
       });
     });
   }
   function parseMapInfo(mapInfo) {
     const rtn = {};
+    if (mapInfo.treasure_map.can_claim_reward) rtn.isCompleted = true;
     const hunters = mapInfo.treasure_map.hunters;
     let completed = [];
     for (let i = 0; i < hunters.length; i++) {
@@ -1014,6 +1043,92 @@ function gwh() {
   }
 }
 // End #gwh
+
+// claim track reward單元測試
+(() => {
+  const gwhAreas = {
+    hill: 'winter_hunt_grove',
+    workshop: 'winter_hunt_workshop',
+    fortress: 'winter_hunt_fortress'
+  };
+  const MhUtils = {
+    getEnvironmentType() {
+      return user.environment_type;
+    }
+  };
+  const quest = getQuest();
+  if (quest.reward_track.can_claim)
+    claimTrackReward(() => {
+      quest.reward_track.can_claim = false;
+    });
+  function claimTrackReward(callback) {
+    const element = null;
+    const params = {
+      action: 'claim_reward_track'
+    };
+    ajax(element, params, 'managers/ajax/events/winter_hunt_region.php').then(
+      () => {
+        const X = document.querySelector('#jsDialogClose');
+        if (X) X.click();
+        if (callback)
+          setTimeout(() => {
+            callback();
+          }, 2000);
+      }
+    );
+  }
+  function getQuest() {
+    const enviromentType = MhUtils.getEnvironmentType();
+    switch (enviromentType) {
+      case gwhAreas.hill:
+        return user.quests.QuestCinnamonTreeGrove;
+      case gwhAreas.workshop:
+        return user.quests.QuestGolemWorkshop;
+      case gwhAreas.fortress:
+        return user.quests.QuestIceFortress;
+      default:
+        return null;
+    }
+  }
+  function ajax(element, params, uri) {
+    console.log('GWH ajax');
+    const callbackurl = 'https://www.mousehuntgame.com/';
+    return new Promise((resolve, reject) => {
+      const lastReadJournalEntryId = parseInt(
+        document
+          .querySelector('div[data-entry-id]')
+          .getAttribute('data-entry-id')
+      );
+      params['last_read_journal_entry_id'] = lastReadJournalEntryId;
+      params['uh'] = user.unique_hash;
+      $.ajax({
+        data: params,
+        dataType: 'json',
+        type: 'post',
+        url: callbackurl + uri, // 'managers/ajax/events/winter_hunt_region.php',
+        success: function (data) {
+          eventRegistry.doEvent('ajax_response', data);
+          if (data.success) {
+            resolve(data);
+          } else {
+            reject(data);
+          }
+        },
+        error: function () {
+          // eslint-disable-next-line new-cap
+          const popup = new jsDialog();
+          popup.setTemplate('error');
+          popup.addToken('{*title*}', 'An error has occurred.');
+          popup.addToken('{*content*}', 'An error occurred. Please try again!');
+          popup.show();
+          // target.removeClass('busy');
+          // eslint-disable-next-line prefer-promise-reject-errors
+          reject();
+        }
+      });
+    });
+  }
+})();
 
 // build golem單元測試
 /* 
