@@ -33,7 +33,7 @@ function gwh() {
     ].indexOf(enviromentType) < 0
   )
     return;
-  logging('gwh_1.2.24.5.20');
+  logging('gwh_1.2.25.5.20');
   // prettier-ignore
   // const upgradePlans = [
   //   [2, 1, 1], [2, 2, 1], [2, 2, 2],
@@ -507,10 +507,10 @@ function gwh() {
           const quest = user.quests.QuestGolemWorkshop;
           // prettier-ignore
           const a = [
-          quest.workshop.head.num_hunts_remaining != 12 && quest.workshop.head.is_active,
-          quest.workshop.torso.num_hunts_remaining != 12 && quest.workshop.torso.is_active,
-          quest.workshop.limb.num_hunts_remaining != 6 && quest.workshop.limb.is_active
-        ];
+            quest.workshop.head.num_hunts_remaining != 12 && quest.workshop.head.is_active,
+            quest.workshop.torso.num_hunts_remaining != 12 && quest.workshop.torso.is_active,
+            quest.workshop.limb.num_hunts_remaining != 6 && quest.workshop.limb.is_active
+          ];
           toggleForges(a);
         }, Math.floor(12000 + Math.random() * 3000));
       }
@@ -773,11 +773,6 @@ function gwh() {
               checkGolem(setup);
             }, 1000);
           });
-          // upgradeGolem(golem.slot);
-          // golem.can_upgrade = false;
-          // setTimeout(() => {
-          //   checkGolem(setup);
-          // }, Math.floor(setup.minGolemDelayTime + Math.random() * (setup.maxGolemDelayTime - setup.minGolemDelayTime)));
           return;
         }
       }
@@ -791,10 +786,6 @@ function gwh() {
             checkGolem(setup);
           }, 1000);
         });
-        // golem.can_claim = false;
-        // setTimeout(() => {
-        //   checkGolem(setup);
-        // }, Math.floor(setup.minGolemDelayTime + Math.random() * (setup.maxGolemDelayTime - setup.minGolemDelayTime)));
         return;
       }
     }
@@ -808,10 +799,6 @@ function gwh() {
             checkGolem(setup);
           }, 1000);
         });
-        // golem.can_build = false;
-        // setTimeout(() => {
-        //   checkGolem(setup);
-        // }, Math.floor(setup.minGolemDelayTime + Math.random() * (setup.maxGolemDelayTime - setup.minGolemDelayTime)));
         return;
       }
     }
@@ -898,60 +885,115 @@ function gwh() {
       hg.views.GreatWinterHuntClaimRewardDialogView.show();
     }); */
   }
-  // buildGolem(golem.slot, 'queso_river'); // floating_islands
+  // buildGolem(golem.slot, 'queso_river', () => { console.log('Finished'); }); // floating_islands
   function buildGolem(slot, environmentType, callback) {
+    const version = `buildGolem(${slot}, ${environmentType}, callback)`;
+    isProd ? logging(version) : console.log(version);
     const storageKey = 'scarfingDestinations';
-    const scarfQty = getQuest().items.golden_scarf_stat_item.quantity;
-    let scarfingDestination = null;
-    let scarfingDestinations = null;
-    if (scarfQty > 0) {
-      scarfingDestinations = localStorage[storageKey];
-      if (scarfingDestinations) {
-        scarfingDestinations = JSON.parse(scarfingDestinations);
-        if (scarfingDestinations.length > 0 && scarfingDestinations[0][1] != '')
-          if (
-            scarfingDestinations[0][0] == -1 ||
-            scarfingDestinations[0][0] == slot
-          )
-            scarfingDestination = scarfingDestinations.shift(0)[1];
+    const hasScarf =
+      MyUtils.parseQuantity(getQuest().items.golden_scarf_stat_item.quantity) >
+      0;
+    const hasHat =
+      MyUtils.parseQuantity(
+        getQuest().items.golem_magical_hat_stat_item.quantity
+      ) > 0;
+    const scarfingDestinations =
+      (hasScarf || hasHat) && localStorage[storageKey]
+        ? JSON.parse(localStorage[storageKey])
+        : null;
+    console.log('original scarfingDestinations', scarfingDestinations);
+    const chosenIndex = findScarfingDestination(
+      slot,
+      scarfingDestinations,
+      hasScarf,
+      hasHat
+    );
+    const destination =
+      chosenIndex < 0
+        ? [-1, environmentType, false, false]
+        : scarfingDestinations.splice(chosenIndex, 1)[0];
+    const target = destination[1];
+    const isScarf = destination[2] && hasScarf ? 1 : 0;
+    const isHat = destination[3] && hasHat ? 1 : 0;
+    if (!isProd) {
+      console.log(
+        `buildGolem, chosenIndex: ${chosenIndex}, environment: ${target}, has_scarf: ${isScarf}, has_hat: ${isHat}, scarfingDestinations:`,
+        scarfingDestinations
+      );
+      if (chosenIndex > -1) {
+        localStorage[storageKey] = JSON.stringify(scarfingDestinations);
+        console.log(JSON.parse(localStorage[storageKey]));
       }
+      if (callback) callback();
+      return;
     }
-    const isScarf = scarfingDestination ? true : false;
-    const isHat = false;
-    const destination = scarfingDestination
-      ? scarfingDestination
-      : environmentType;
     $(
       '.headsUpDisplayWinterHuntRegionView__golemBuildButton.headsUpDisplayWinterHuntRegionView__golemActionButton'
     )[slot * 2 + 1].click();
     const element = $(
       '.greatWinterHuntDialogView__bigButton greatWinterHuntGolemManagerLaunchTabView__buildButton'
     )[0];
-    // setTimeout(() => {
     const quest = getQuest();
     hg.views.GreatWinterHuntGolemManagerLaunchTabView.ajax(element, {
       action: 'build_golem',
       slot: slot,
-      environment: destination,
-      has_scarf: isScarf ? 1 : 0,
-      has_hat: isHat ? 1 : 0,
+      environment: target,
+      has_scarf: isScarf,
+      has_hat: isHat,
       arms: quest.golems[slot].paperdoll.arms,
       head: quest.golems[slot].paperdoll.head,
       legs: quest.golems[slot].paperdoll.legs,
       torso: quest.golems[slot].paperdoll.torso
     }).then(() => {
+      if (chosenIndex > -1) {
+        localStorage[storageKey] = JSON.stringify(scarfingDestinations);
+        console.log(JSON.parse(localStorage[storageKey]));
+      }
       const X = document.querySelector('#jsDialogClose');
       if (X) X.click();
       if (callback)
         setTimeout(() => {
           callback();
-        }, 2000);
+        }, 1000);
     });
-    // }, 2000);
-    if (isScarf) {
-      localStorage[storageKey] = JSON.stringify(scarfingDestinations);
-      console.log(JSON.parse(localStorage[storageKey]));
+  }
+  function findScarfingDestination(
+    slot,
+    scarfingDestinations,
+    hasScarf,
+    hasHat
+  ) {
+    const version = `findScarfingDestination(${slot}, ${scarfingDestinations}, ${hasScarf}, ${hasHat})`;
+    isProd ? logging(version) : console.log(version);
+    let rtn = -1;
+    if (!scarfingDestinations) return rtn;
+    if (!hasScarf && !hasHat) return rtn;
+    if (slot > 2 || slot < 0) return rtn;
+    // 先找有沒有與 slot一致的 scarfingDestination
+    for (let i = 0; i < scarfingDestinations.length; i++) {
+      const element = scarfingDestinations[i];
+      if (
+        element[0] === slot &&
+        (element[2] === hasScarf || element[3] === hasHat)
+      ) {
+        rtn = i;
+        break;
+      }
     }
+    // 如果沒有,找第一個可以在任意 slot送的 scarfingDestination
+    if (rtn === -1)
+      for (let i = 0; i < scarfingDestinations.length; i++) {
+        const element = scarfingDestinations[i];
+        if (
+          element[0] === -1 &&
+          (element[2] === hasScarf || element[3] === hasHat)
+        ) {
+          rtn = i;
+          break;
+        }
+      }
+    console.log(`found chosenIndex: ${rtn}`);
+    return rtn;
   }
   function travel(environmentType, milliseconds, callback) {
     // prettier-ignore
@@ -970,6 +1012,195 @@ function gwh() {
   }
 }
 // End #gwh
+
+// build golem單元測試
+/* 
+(() => {
+  const storageKey = 'scarfingDestinations';
+  const l = {
+    csc: 'claw_shot_city',
+    qr: 'queso_river',
+    qp: 'queso_plains',
+    qq: 'queso_quarry',
+    laby: 'labyrinth',
+    zk: 'ancient_city',
+    fi: 'floating_islands',
+    ff: 'foreword_farm',
+    toc: 'table_of_contents',
+    pp: 'prologue_pond',
+    vr: 'rift_valour',
+    mp: 'moussu_picchu',
+    bwr: 'rift_bristle_woods'
+  };
+  const a = [];
+  for (let i = 0; i < 10; i++) {
+    const element = [-1, l.bwr, true, false];
+    a.push(element);
+  }
+  for (let i = 0; i < 9; i++) {
+    const element = [-1, l.mp, true, false];
+    a.push(element);
+  }
+  for (let i = 0; i < 9; i++) {
+    const element = [2, l.csc, true, false];
+    a.push(element);
+  }
+  for (let i = 0; i < 9; i++) {
+    const element = [2, l.toc, false, true];
+    a.push(element);
+  }
+  for (let i = 0; i < 9; i++) {
+    const element = [2, l.fi, false, true];
+    a.push(element);
+  }
+  for (let i = 0; i < 9; i++) {
+    const element = [-1, l.fi, true, false];
+    a.push(element);
+  }
+  localStorage[storageKey] = JSON.stringify(a);
+  console.log(JSON.parse(localStorage[storageKey]));
+})();
+ */
+(() => {
+  const isProd = false;
+  const l = {
+    csc: 'claw_shot_city',
+    qr: 'queso_river',
+    qp: 'queso_plains',
+    qq: 'queso_quarry',
+    laby: 'labyrinth',
+    zk: 'ancient_city',
+    fi: 'floating_islands',
+    ff: 'foreword_farm',
+    toc: 'table_of_contents',
+    pp: 'prologue_pond',
+    vr: 'rift_valour',
+    mp: 'moussu_picchu',
+    bwr: 'rift_bristle_woods'
+  };
+  const golem = { slot: 2 };
+  const target = l.bwr;
+  const getQuest = () => {
+    return {
+      items: {
+        golden_scarf_stat_item: { quantity: 1 },
+        golem_magical_hat_stat_item: { quantity: 1 }
+      }
+    };
+  };
+  buildGolem(golem.slot, target, () => {
+    console.log('Finished');
+  }); // floating_islands
+  function buildGolem(slot, environmentType, callback) {
+    const version = `buildGolem(${slot}, ${environmentType}, callback)`;
+    isProd ? logging(version) : console.log(version);
+    const storageKey = 'scarfingDestinations';
+    const hasScarf =
+      MyUtils.parseQuantity(getQuest().items.golden_scarf_stat_item.quantity) >
+      0;
+    const hasHat =
+      MyUtils.parseQuantity(
+        getQuest().items.golem_magical_hat_stat_item.quantity
+      ) > 0;
+    const scarfingDestinations =
+      (hasScarf || hasHat) && localStorage[storageKey]
+        ? JSON.parse(localStorage[storageKey])
+        : null;
+    console.log('original scarfingDestinations', scarfingDestinations);
+    const chosenIndex = findScarfingDestination(
+      slot,
+      scarfingDestinations,
+      hasScarf,
+      hasHat
+    );
+    const destination =
+      chosenIndex < 0
+        ? [-1, environmentType, false, false]
+        : scarfingDestinations.splice(chosenIndex, 1)[0];
+    const target = destination[1];
+    const isScarf = destination[2] && hasScarf ? 1 : 0;
+    const isHat = destination[3] && hasHat ? 1 : 0;
+    if (!isProd) {
+      console.log(
+        `buildGolem, chosenIndex: ${chosenIndex}, environment: ${target}, has_scarf: ${isScarf}, has_hat: ${isHat}, scarfingDestinations:`,
+        scarfingDestinations
+      );
+      if (chosenIndex > -1) {
+        localStorage[storageKey] = JSON.stringify(scarfingDestinations);
+        console.log(JSON.parse(localStorage[storageKey]));
+      }
+      if (callback) callback();
+      return;
+    }
+    $(
+      '.headsUpDisplayWinterHuntRegionView__golemBuildButton.headsUpDisplayWinterHuntRegionView__golemActionButton'
+    )[slot * 2 + 1].click();
+    const element = $(
+      '.greatWinterHuntDialogView__bigButton greatWinterHuntGolemManagerLaunchTabView__buildButton'
+    )[0];
+    const quest = getQuest();
+    hg.views.GreatWinterHuntGolemManagerLaunchTabView.ajax(element, {
+      action: 'build_golem',
+      slot: slot,
+      environment: target,
+      has_scarf: isScarf,
+      has_hat: isHat,
+      arms: quest.golems[slot].paperdoll.arms,
+      head: quest.golems[slot].paperdoll.head,
+      legs: quest.golems[slot].paperdoll.legs,
+      torso: quest.golems[slot].paperdoll.torso
+    }).then(() => {
+      if (chosenIndex > -1) {
+        localStorage[storageKey] = JSON.stringify(scarfingDestinations);
+        console.log(JSON.parse(localStorage[storageKey]));
+      }
+      const X = document.querySelector('#jsDialogClose');
+      if (X) X.click();
+      if (callback)
+        setTimeout(() => {
+          callback();
+        }, 1000);
+    });
+  }
+  function findScarfingDestination(
+    slot,
+    scarfingDestinations,
+    hasScarf,
+    hasHat
+  ) {
+    const version = `findScarfingDestination(${slot}, ${scarfingDestinations}, ${hasScarf}, ${hasHat})`;
+    isProd ? logging(version) : console.log(version);
+    let rtn = -1;
+    if (!scarfingDestinations) return rtn;
+    if (!hasScarf && !hasHat) return rtn;
+    if (slot > 2 || slot < 0) return rtn;
+    // 先找有沒有與 slot一致的 scarfingDestination
+    for (let i = 0; i < scarfingDestinations.length; i++) {
+      const element = scarfingDestinations[i];
+      if (
+        element[0] === slot &&
+        (element[2] === hasScarf || element[3] === hasHat)
+      ) {
+        rtn = i;
+        break;
+      }
+    }
+    // 如果沒有,找第一個可以在任意 slot送的 scarfingDestination
+    if (rtn === -1)
+      for (let i = 0; i < scarfingDestinations.length; i++) {
+        const element = scarfingDestinations[i];
+        if (
+          element[0] === -1 &&
+          (element[2] === hasScarf || element[3] === hasHat)
+        ) {
+          rtn = i;
+          break;
+        }
+      }
+    console.log(`found chosenIndex: ${rtn}`);
+    return rtn;
+  }
+})();
 
 // auto mapping單元測試
 (() => {
