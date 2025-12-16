@@ -19,7 +19,11 @@ function gwh() {
     fortress: 'winter_hunt_fortress'
   };
   const scrollChests = {
-    'Naughty List': 'naughty_2022_list_chest_convertible'
+    'Naughty List': {
+      scroll: 'naughty_list_convertible',
+      chest: 'naughty_2022_list_chest_convertible',
+      isAutoOpen: true
+    }
   };
   if (
     [
@@ -29,7 +33,7 @@ function gwh() {
     ].indexOf(enviromentType) < 0
   )
     return;
-  logging('gwh_1.2.22.3.20');
+  logging('gwh_1.2.23.3.20');
   // prettier-ignore
   // const upgradePlans = [
   //   [2, 1, 1], [2, 2, 1], [2, 2, 2],
@@ -70,9 +74,10 @@ function gwh() {
   const bct = 'Boiling Cauldron';
   const aeib = 'Attuned Enerchi Induction';
   const gotdB = 'Seasonal Gift';
-  const gotdC = 'Tarnished Charm,Unstable Charm,Gift Wrapped,None';
+  const gotdC = 'Tarnished Charm,Unstable Charm,None';
   const enerchi = 'Enerchi Charm';
-  // const lk2C = 'Spooky Charm,Snowball Charm,Cactus Charm,Luck Charm';
+  const lk2C =
+    'Gift Wrapped,Spooky Charm,Snowball Charm,Cactus Charm,Luck Charm';
   const lk3C = 'Luck Charm';
   const st = {
     defaultTarget: [fi, fi, fi],
@@ -85,8 +90,8 @@ function gwh() {
     wn1: bestTactical,
     wnB: aeib,
     wnC: enerchi,
-    wg1: bestTactical,
-    wgC: gotdC,
+    wg1: bct,
+    wgC: lk2C,
     // fortress ppTrap
     fT: bestTactical,
     fnB: aeib,
@@ -244,31 +249,110 @@ function gwh() {
     }
     return rtn;
   }
+  // autoMapping(() => { console.log('Finished'); });
   function autoMapping(callback) {
-    console.log('autoMapping');
+    const version = 'autoMapping_1.0.0.0.0';
+    isProd ? logging(version) : console.log(version);
+    const selfInvoking = () => {
+      setTimeout(() => {
+        autoMapping(callback);
+      }, 1000);
+    };
     // map completed
     map = getMapByClass(MapClasses.event);
     if (map && map.is_complete) {
-      const mapName = map.name;
-      console.log(`Claim map reward, id: ${map.map_id}, name: ${mapName}`);
-      hg.utils.TreasureMapUtil.claim(map.map_id, () => {
-        setTimeout(() => {
-          hg.utils.UserInventory.useConvertible(
-            scrollChests[mapName],
-            1,
-            (data) => {
-              console.log(data.success == 1 ? 'success' : 'failed', data);
-              map = null;
-              setTimeout(() => {
-                if (callback) setTimeout(callback, 2000);
-              }, 2000);
-            }
-          );
-        }, 1000);
-      });
+      autoClaimMapReward(selfInvoking);
+      map = null;
+      return;
+    }
+    // accept invite
+    const quest = user.quests.QuestRelicHunter;
+    if (!map && (quest.num_invites || 0) > 0) {
+      autoAcceptInvite(MapClasses.event, selfInvoking);
       return;
     }
     callback();
+  }
+  // autoClaimMapReward(() => { console.log('Finished'); });
+  function autoClaimMapReward(callback) {
+    // const isProd = false;
+    const version = 'autoClaimMapReward_1.0.0.0.0';
+    isProd ? logging(version) : console.log(version);
+    const maps = user.quests.QuestRelicHunter.maps;
+    // 沒 map視同完成 claim檢查,執行 callback離開自己
+    if (!maps || maps.length == 0) {
+      if (callback) callback();
+      return;
+    }
+    const selfInvoking = () => {
+      autoClaimMapReward(callback);
+    };
+    for (let i = 0; i < maps.length; i++) {
+      const map = maps[i];
+      console.log('Check auto claim map reward!!', map.map_id, map.is_complete);
+      if (map.is_complete) {
+        const mapName = map.name;
+        console.log(`Claim map reward, id: ${map.map_id}, name: ${mapName}`);
+        // 先 claim reward
+        hg.utils.TreasureMapUtil.claim(map.map_id, () => {
+          const scrollChest = scrollChests[MyUtils.trimToEmpty(mapName)];
+          // claim後如果有對應的 chest且自動開,等 1秒開箱
+          if (scrollChest && scrollChest.isAutoOpen) {
+            const chest = scrollChest['chest'];
+            setTimeout(() => {
+              hg.utils.UserInventory.useConvertible(chest, 1, (data) => {
+                console.log(data.success == 1 ? 'success' : 'failed', data);
+                // 開箱後回 call自己檢查還有沒有待 claim的 map
+                setTimeout(selfInvoking, 1000);
+              });
+            }, 1000);
+            return;
+          }
+          // 沒開箱的話,直接回 call自己檢查還有沒有待 claim的 map
+          setTimeout(selfInvoking, 1000);
+        });
+        // 有處理到完成的 map,就中斷迴圈
+        return;
+      }
+    }
+    // for loop沒有被中斷並回 call的話,代表全都不能 claim=完成 claim檢查, callback
+    if (callback) callback();
+  }
+  // autoAcceptInvite('event', () => { console.log('Finished'); });
+  function autoAcceptInvite(mapClass, callback) {
+    // const isProd = false;
+    const version = `autoAcceptInvite(${mapClass})_1.0.0.0.0`;
+    isProd ? logging(version) : console.log(version);
+    const isAccepted = true;
+    const isNotAccepted = !isAccepted;
+    const quest = user.quests.QuestRelicHunter;
+    if ((quest.num_invites || 0) < 1) return isNotAccepted;
+    const map = getMapByClass(mapClass);
+    if (map) return isNotAccepted;
+    console.log(`auto accept map invite of map class: ${mapClass}`);
+    hg.controllers.TreasureMapController.showCommunity();
+    setTimeout(() => {
+      $('a[data-map-id]').each((i, e) => {
+        console.log(e.className);
+        if (e.className.indexOf('mousehuntActionButton') > -1) {
+          // e.click();
+          const mapId = parseInt(e.getAttribute('data-map-id'));
+          console.log(`map request id: ${mapId}`);
+          if (!Number.isNaN(mapId)) {
+            console.log('auto accept map invite of map id', mapId);
+            hg.utils.TreasureMapUtil.acceptInvite(mapId, () => {
+              const X = document.querySelector('#jsDialogClose');
+              if (X) X.click();
+              if (callback)
+                setTimeout(() => {
+                  callback();
+                }, 2000);
+            });
+          }
+        }
+      });
+    }, parseInt(3500 + Math.random() * 1500));
+    return isAccepted;
   }
   function checkArea(setup) {
     const enviromentType = MhUtils.getEnvironmentType();
@@ -425,10 +509,10 @@ function gwh() {
           const quest = user.quests.QuestGolemWorkshop;
           // prettier-ignore
           const a = [
-            quest.workshop.head.num_hunts_remaining != 12 && quest.workshop.head.is_active,
-            quest.workshop.torso.num_hunts_remaining != 12 && quest.workshop.torso.is_active,
-            quest.workshop.limb.num_hunts_remaining != 6 && quest.workshop.limb.is_active
-          ];
+          quest.workshop.head.num_hunts_remaining != 12 && quest.workshop.head.is_active,
+          quest.workshop.torso.num_hunts_remaining != 12 && quest.workshop.torso.is_active,
+          quest.workshop.limb.num_hunts_remaining != 6 && quest.workshop.limb.is_active
+        ];
           toggleForges(a);
         }, Math.floor(12000 + Math.random() * 3000));
       }
@@ -889,6 +973,206 @@ function gwh() {
 }
 // End #gwh
 
+// auto mapping單元測試
+(() => {
+  const isProd = false;
+  const MapClasses = { treasuer: 'treasure', poster: 'poster', event: 'event' };
+  const scrollChests = {
+    'Naughty List': {
+      scroll: 'naughty_list_convertible',
+      chest: 'naughty_2022_list_chest_convertible',
+      isAutoOpen: true
+    }
+  };
+  let map = null;
+  autoMapping(() => {
+    console.log('Finished');
+  });
+  function autoMapping(callback) {
+    const version = 'autoMapping_1.0.0.0.0';
+    isProd ? logging(version) : console.log(version);
+    const selfInvoking = () => {
+      setTimeout(() => {
+        autoMapping(callback);
+      }, 1000);
+    };
+    // map completed
+    map = getMapByClass(MapClasses.event);
+    if (map && map.is_complete) {
+      autoClaimMapReward(selfInvoking);
+      map = null;
+      return;
+    }
+    // accept invite
+    const quest = user.quests.QuestRelicHunter;
+    if (!map && (quest.num_invites || 0) > 0) {
+      autoAcceptInvite(MapClasses.event, selfInvoking);
+      return;
+    }
+    callback();
+  }
+  // autoClaimMapReward(() => { console.log('Finished'); });
+  function autoClaimMapReward(callback) {
+    // const isProd = false;
+    const version = 'autoClaimMapReward_1.0.0.0.0';
+    isProd ? logging(version) : console.log(version);
+    const maps = user.quests.QuestRelicHunter.maps;
+    // 沒 map視同完成 claim檢查,執行 callback離開自己
+    if (!maps || maps.length == 0) {
+      if (callback) callback();
+      return;
+    }
+    const selfInvoking = () => {
+      autoClaimMapReward(callback);
+    };
+    for (let i = 0; i < maps.length; i++) {
+      const map = maps[i];
+      console.log('Check auto claim map reward!!', map.map_id, map.is_complete);
+      if (map.is_complete) {
+        const mapName = map.name;
+        console.log(`Claim map reward, id: ${map.map_id}, name: ${mapName}`);
+        // 先 claim reward
+        hg.utils.TreasureMapUtil.claim(map.map_id, () => {
+          const scrollChest = scrollChests[MyUtils.trimToEmpty(mapName)];
+          // claim後如果有對應的 chest且自動開,等 1秒開箱
+          if (scrollChest && scrollChest.isAutoOpen) {
+            const chest = scrollChest['chest'];
+            setTimeout(() => {
+              hg.utils.UserInventory.useConvertible(chest, 1, (data) => {
+                console.log(data.success == 1 ? 'success' : 'failed', data);
+                // 開箱後回 call自己檢查還有沒有待 claim的 map
+                setTimeout(selfInvoking, 1000);
+              });
+            }, 1000);
+            return;
+          }
+          // 沒開箱的話,直接回 call自己檢查還有沒有待 claim的 map
+          setTimeout(selfInvoking, 1000);
+        });
+        // 有處理到完成的 map,就中斷迴圈
+        return;
+      }
+    }
+    // for loop沒有被中斷並回 call的話,代表全都不能 claim=完成 claim檢查, callback
+    if (callback) callback();
+  }
+  // autoAcceptInvite('event', () => { console.log('Finished'); });
+  function autoAcceptInvite(mapClass, callback) {
+    // const isProd = false;
+    const version = `autoAcceptInvite(${mapClass})_1.0.0.0.0`;
+    isProd ? logging(version) : console.log(version);
+    const isAccepted = true;
+    const isNotAccepted = !isAccepted;
+    const quest = user.quests.QuestRelicHunter;
+    if ((quest.num_invites || 0) < 1) return isNotAccepted;
+    const map = getMapByClass(mapClass);
+    if (map) return isNotAccepted;
+    console.log(`auto accept map invite of map class: ${mapClass}`);
+    hg.controllers.TreasureMapController.showCommunity();
+    setTimeout(() => {
+      $('a[data-map-id]').each((i, e) => {
+        console.log(e.className);
+        if (e.className.indexOf('mousehuntActionButton') > -1) {
+          // e.click();
+          const mapId = parseInt(e.getAttribute('data-map-id'));
+          console.log(`map request id: ${mapId}`);
+          if (!Number.isNaN(mapId)) {
+            console.log('auto accept map invite of map id', mapId);
+            hg.utils.TreasureMapUtil.acceptInvite(mapId, () => {
+              const X = document.querySelector('#jsDialogClose');
+              if (X) X.click();
+              if (callback)
+                setTimeout(() => {
+                  callback();
+                }, 2000);
+            });
+          }
+        }
+      });
+    }, parseInt(3500 + Math.random() * 1500));
+    return isAccepted;
+  }
+  function getMapByClass(mapClass) {
+    const maps = user.quests.QuestRelicHunter.maps;
+    for (let i = 0; i < maps.length; i++) {
+      const element = maps[i];
+      if (element.map_class == mapClass) {
+        return element;
+      }
+    }
+    return null;
+  }
+})();
+
+// mapInfo單元測試
+(() => {
+  const MapClasses = { treasuer: 'treasure', poster: 'poster', event: 'event' };
+  const gwhAreas = {
+    hill: 'winter_hunt_grove',
+    workshop: 'winter_hunt_workshop',
+    fortress: 'winter_hunt_fortress'
+  };
+  const isProd = true;
+  const map = getMapByClass(MapClasses.event);
+  hg.utils.TreasureMapUtil.getMapInfo(map.map_id, (data) => {
+    const info = isProd ? data : mapInfo;
+    console.log(parseMapInfo(info));
+  });
+  function parseMapInfo(mapInfo) {
+    const rtn = {};
+    const hunters = mapInfo.treasure_map.hunters;
+    let completed = [];
+    for (let i = 0; i < hunters.length; i++) {
+      const hunter = hunters[i];
+      const completedIds = hunter.completed_goal_ids.mouse;
+      if (completedIds && completedIds.length > 0)
+        completed = completed.concat(completedIds);
+    }
+    console.log(completed);
+    const mouses = mapInfo.treasure_map.goals.mouse;
+    for (let i = 0; i < mouses.length; i++) {
+      const mouse = mouses[i];
+      if (completed.indexOf(mouse.unique_id) > -1) continue;
+      const type = mouse.type;
+      if (['joy', 'glazed'].indexOf(type) > -1) rtn.isGpp = true;
+      const areaIds = mouse.environment_ids;
+      if (areaIds && areaIds.length === 1) {
+        let area = null;
+        switch (areaIds[0]) {
+          case 68:
+            area = gwhAreas.fortress;
+            break;
+          case 69:
+            area = gwhAreas.hill;
+            break;
+          case 70:
+            area = gwhAreas.workshop;
+            break;
+          default:
+            break;
+        }
+        if (!rtn[area]) rtn[area] = [];
+        rtn[area].push(type);
+      } else {
+        if (!rtn['all']) rtn['all'] = [];
+        rtn['all'].push(type);
+      }
+    }
+    return rtn;
+  }
+  function getMapByClass(mapClass) {
+    const maps = user.quests.QuestRelicHunter.maps;
+    for (let i = 0; i < maps.length; i++) {
+      const element = maps[i];
+      if (element.map_class == mapClass) {
+        return element;
+      }
+    }
+    return null;
+  }
+})();
+
+// claim map reward單元測試
 (() => {
   claimReward(2);
   function claimReward(slot, callback) {
@@ -975,73 +1259,6 @@ function gwh() {
         }
       });
     });
-  }
-})();
-
-(() => {
-  const MapClasses = { treasuer: 'treasure', poster: 'poster', event: 'event' };
-  const gwhAreas = {
-    hill: 'winter_hunt_grove',
-    workshop: 'winter_hunt_workshop',
-    fortress: 'winter_hunt_fortress'
-  };
-  const isProd = true;
-  const map = getMapByClass(MapClasses.event);
-  hg.utils.TreasureMapUtil.getMapInfo(map.map_id, (data) => {
-    const info = isProd ? data : mapInfo;
-    console.log(parseMapInfo(info));
-  });
-  function parseMapInfo(mapInfo) {
-    const rtn = {};
-    const hunters = mapInfo.treasure_map.hunters;
-    let completed = [];
-    for (let i = 0; i < hunters.length; i++) {
-      const hunter = hunters[i];
-      const completedIds = hunter.completed_goal_ids.mouse;
-      if (completedIds && completedIds.length > 0)
-        completed = completed.concat(completedIds);
-    }
-    console.log(completed);
-    const mouses = mapInfo.treasure_map.goals.mouse;
-    for (let i = 0; i < mouses.length; i++) {
-      const mouse = mouses[i];
-      if (completed.indexOf(mouse.unique_id) > -1) continue;
-      const type = mouse.type;
-      if (['joy', 'glazed'].indexOf(type) > -1) rtn.isGpp = true;
-      const areaIds = mouse.environment_ids;
-      if (areaIds && areaIds.length === 1) {
-        let area = null;
-        switch (areaIds[0]) {
-          case 68:
-            area = gwhAreas.fortress;
-            break;
-          case 69:
-            area = gwhAreas.hill;
-            break;
-          case 70:
-            area = gwhAreas.workshop;
-            break;
-          default:
-            break;
-        }
-        if (!rtn[area]) rtn[area] = [];
-        rtn[area].push(type);
-      } else {
-        if (!rtn['all']) rtn['all'] = [];
-        rtn['all'].push(type);
-      }
-    }
-    return rtn;
-  }
-  function getMapByClass(mapClass) {
-    const maps = user.quests.QuestRelicHunter.maps;
-    for (let i = 0; i < maps.length; i++) {
-      const element = maps[i];
-      if (element.map_class == mapClass) {
-        return element;
-      }
-    }
-    return null;
   }
 })();
 
