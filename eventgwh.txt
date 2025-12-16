@@ -33,7 +33,7 @@ function gwh() {
     ].indexOf(enviromentType) < 0
   )
     return;
-  logging('gwh_1.2.23.4.20');
+  logging('gwh_1.2.23.5.20');
   // prettier-ignore
   // const upgradePlans = [
   //   [2, 1, 1], [2, 2, 1], [2, 2, 2],
@@ -275,6 +275,7 @@ function gwh() {
   }
   // autoClaimMapReward(() => { console.log('Finished'); });
   function autoClaimMapReward(callback) {
+    // const isProd =  false;
     const version = 'autoClaimMapReward_1.0.0.0.0';
     isProd ? logging(version) : console.log(version);
     const maps = user.quests.QuestRelicHunter.maps;
@@ -319,6 +320,7 @@ function gwh() {
   }
   // autoAcceptInvite('event', () => { console.log('Finished'); });
   function autoAcceptInvite(mapClass, callback) {
+    // const isProd =  false;
     const version = `autoAcceptInvite(${mapClass})_1.0.0.0.0`;
     isProd ? logging(version) : console.log(version);
     const isAccepted = true;
@@ -973,7 +975,8 @@ function gwh() {
 
 // auto mapping單元測試
 (() => {
-  const isProd = false;
+  // prettier-ignore
+  const isProd =  false;
   const MapClasses = { treasuer: 'treasure', poster: 'poster', event: 'event' };
   const scrollChests = {
     'Naughty List': {
@@ -1011,6 +1014,7 @@ function gwh() {
   }
   // autoClaimMapReward(() => { console.log('Finished'); });
   function autoClaimMapReward(callback) {
+    // const isProd =  false;
     const version = 'autoClaimMapReward_1.0.0.0.0';
     isProd ? logging(version) : console.log(version);
     const maps = user.quests.QuestRelicHunter.maps;
@@ -1055,6 +1059,7 @@ function gwh() {
   }
   // autoAcceptInvite('event', () => { console.log('Finished'); });
   function autoAcceptInvite(mapClass, callback) {
+    // const isProd =  false;
     const version = `autoAcceptInvite(${mapClass})_1.0.0.0.0`;
     isProd ? logging(version) : console.log(version);
     const isAccepted = true;
