@@ -11,13 +11,20 @@ if (user.quests.MiniEventSnowballShowdown) gwh();
 function gwh() {
   const isProd = false;
   const targetEnvironmentType = 'greatWinterHunt';
-  const enviromentType = MhUtils.getEnvironmentType();
-  const todayUTC = new Date().toISOString().split('T')[0];
   const gwhAreas = {
     hill: 'winter_hunt_grove',
     workshop: 'winter_hunt_workshop',
     fortress: 'winter_hunt_fortress'
   };
+  const enviromentType = MhUtils.getEnvironmentType();
+  if (
+    [gwhAreas.hill, gwhAreas.workshop, gwhAreas.fortress].indexOf(
+      enviromentType
+    ) < 0
+  )
+    return;
+  const version = 'gwh_1.2.26.7.20';
+  isProd ? logging(version) : console.log(version);
   const scrollChests = {
     'Naughty List': {
       scroll: 'naughty_list_convertible',
@@ -25,15 +32,7 @@ function gwh() {
       isAutoOpen: true
     }
   };
-  if (
-    [
-      'winter_hunt_grove',
-      'winter_hunt_workshop',
-      'winter_hunt_fortress'
-    ].indexOf(enviromentType) < 0
-  )
-    return;
-  logging('gwh_1.2.25.5.20');
+  const todayUTC = new Date().toISOString().split('T')[0];
   // prettier-ignore
   // const upgradePlans = [
   //   [2, 1, 1], [2, 2, 1], [2, 2, 2],
@@ -120,7 +119,8 @@ function gwh() {
     hailstoneKeptQty: 2,
     isAutoGolem: true,
     isAutoUpgrade: true,
-    maxGolemsUse: 3,
+    autoGolems: 2,
+    autoUpgradeGolems: 2,
     golemSetup: { defaultTarget: st.defaultTarget },
     minGolemDelayTime: 3500,
     maxGolemDelayTime: 5000,
@@ -758,7 +758,7 @@ function gwh() {
     console.log('Run checkGolem', quest);
     const golems = quest.golems;
     if (setup.isAutoUpgrade)
-      for (let i = 0; i < setup.maxGolemsUse; i++) {
+      for (let i = 0; i < setup.autoUpgradeGolems; i++) {
         const golem = golems[i];
         // 優先升級使用中(待 claim算使用中).
         // can_return不能用來判斷使用中,因為牽涉到有沒有 bell
@@ -776,7 +776,7 @@ function gwh() {
           return;
         }
       }
-    for (let i = 0; i < setup.maxGolemsUse; i++) {
+    for (let i = 0; i < setup.autoGolems; i++) {
       const golem = golems[i];
       if (golem.can_claim) {
         console.log('claim golem');
@@ -789,7 +789,7 @@ function gwh() {
         return;
       }
     }
-    for (let i = 0; i < setup.maxGolemsUse; i++) {
+    for (let i = 0; i < setup.autoGolems; i++) {
       const golem = golems[i];
       if (golem.can_build) {
         console.log('build golem');
@@ -963,8 +963,10 @@ function gwh() {
     hasScarf,
     hasHat
   ) {
-    const version = `findScarfingDestination(${slot}, ${scarfingDestinations}, ${hasScarf}, ${hasHat})`;
-    isProd ? logging(version) : console.log(version);
+    const version = `findScarfingDestination(${slot}, {scarfingDestinations}, ${hasScarf}, ${hasHat})`;
+    isProd
+      ? logging(version, scarfingDestinations)
+      : console.log(version, scarfingDestinations);
     let rtn = -1;
     if (!scarfingDestinations) return rtn;
     if (!hasScarf && !hasHat) return rtn;
