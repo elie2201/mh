@@ -23,7 +23,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.28.7.21';
+  const version = 'gwh_1.2.28.7.22';
   isProd ? logging(version) : console.log(version);
   const scrollChests = {
     'Naughty List': {
@@ -184,11 +184,14 @@ function gwh() {
   function run() {
     console.log('run');
     const track = getQuest().reward_track;
-    if (track.can_claim)
+    if (track.can_claim) {
       claimTrackReward(() => {
         track.can_claim = false;
         autoSettings();
       });
+      return;
+    }
+    autoSettings();
   }
   function claimTrackReward(callback) {
     const element = null;
