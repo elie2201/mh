@@ -23,7 +23,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.30.9.22';
+  const version = 'gwh_1.2.31.10.22';
   isProd ? logging(version) : console.log(version);
   const scrollChests = {
     'Naughty List': {
@@ -284,12 +284,12 @@ function gwh() {
       autoAcceptInvite(MapClasses.event, selfInvoking);
       return;
     }
-    // buy and use scroll checking(invite in buy and use)
+    // autoMaptain: buy and use scroll checking(invite in buy and use)
     callback();
   }
   // autoClaimMapReward(() => { console.log('Finished'); });
   function autoClaimMapReward(callback) {
-    // const isProd =  false;
+    // const isProd = false;
     const version = 'autoClaimMapReward_1.0.0.0.0';
     isProd ? logging(version) : console.log(version);
     const maps = user.quests.QuestRelicHunter.maps;
@@ -334,7 +334,7 @@ function gwh() {
   }
   // autoAcceptInvite('event', () => { console.log('Finished'); });
   function autoAcceptInvite(mapClass, callback) {
-    // const isProd =  false;
+    // const isProd = false;
     const version = `autoAcceptInvite(${mapClass})_1.0.0.0.0`;
     isProd ? logging(version) : console.log(version);
     const isAccepted = true;
@@ -509,7 +509,9 @@ function gwh() {
     // mapping時不要去 workshop用 normal cheese浪費 cinnamon
     isStartWorkshop =
       myItems.cinnamon > setup.startCinnamonQty &&
-      (!setup.isMapping || myItems.pp > setup.startPpQty);
+      (!setup.isMapping ||
+        myItems.pp > parseInt(setup.startCinnamonQty / 3) ||
+        myItems.pp > setup.startPpQty);
     isEndWorkshop = myItems.cinnamon < setup.cinnamonKeptQty;
   }
   function golemWorkshop(setup) {
@@ -12274,3 +12276,4 @@ hg.views.GreatWinterHuntGolemManagerLaunchTabView.ajax(null, {
 // 以這邊來說,正在往上走要 arm Gouda,正在往下走要 arm PP
 // 也不能用給出預設值解,因為只要一 reload就變成預設值了=>原本用 Gouda往上走在大於跟小於中間,一 reload變成預設值 PP往下走了
 // 更何況這邊要常常 travel來 travel去的
+// 目前的勉強解法是在大於跟小於中間時檢查 cheese id是否在範圍內,如果不在範圍內就用預設值
