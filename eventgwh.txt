@@ -16,6 +16,15 @@ function gwh() {
     workshop: 'winter_hunt_workshop',
     fortress: 'winter_hunt_fortress'
   };
+  const enviromentType = MhUtils.getEnvironmentType();
+  if (
+    [gwhAreas.hill, gwhAreas.workshop, gwhAreas.fortress].indexOf(
+      enviromentType
+    ) < 0
+  )
+    return;
+  const version = 'gwh_1.2.36.10.25';
+  isProd ? logging(version) : console.log(version);
   const allSnuids = {
     angel: '100000656351135',
     angela: '100000556925297',
@@ -56,25 +65,16 @@ function gwh() {
   };
   // prettier-ignore
   const mapGroups = [
-  [allSnuids.elie],[allSnuids.raphael],[allSnuids.van],[allSnuids.levi],[allSnuids.pola],
-  [allSnuids.weyl],[allSnuids.levine],[allSnuids.kelly],[allSnuids.angel],[allSnuids.mina],
-  [allSnuids.vanne],[allSnuids.angelie],[allSnuids.anthony],[allSnuids.monica],[allSnuids.vivienne],
-  [allSnuids.lydia],[allSnuids.kevin],[allSnuids.nina],[allSnuids.rose],
-  [allSnuids.vera],[allSnuids.hsilung],[allSnuids.angela],[allSnuids.kitty],[allSnuids.mary],
-  [allSnuids.riemann],[allSnuids.kaze],[allSnuids.sky],[allSnuids.shallow],[allSnuids.furt],
-  [allSnuids.feynmann],[allSnuids.rebecca],[allSnuids.renee],[allSnuids.haruhi],[allSnuids.Umr],
-  [allSnuids.scent],[allSnuids.steins]
-];
+    [allSnuids.elie],[allSnuids.raphael],[allSnuids.van],[allSnuids.levi],[allSnuids.pola],
+    [allSnuids.weyl],[allSnuids.levine],[allSnuids.kelly],[allSnuids.angel],[allSnuids.mina],
+    [allSnuids.vanne],[allSnuids.angelie],[allSnuids.anthony],[allSnuids.monica],[allSnuids.vivienne],
+    [allSnuids.lydia],[allSnuids.kevin],[allSnuids.nina],[allSnuids.rose],
+    [allSnuids.vera],[allSnuids.hsilung],[allSnuids.angela],[allSnuids.kitty],[allSnuids.mary],
+    [allSnuids.riemann],[allSnuids.kaze],[allSnuids.sky],[allSnuids.shallow],[allSnuids.furt],
+    [allSnuids.feynmann],[allSnuids.rebecca],[allSnuids.renee],[allSnuids.haruhi],[allSnuids.Umr],
+    [allSnuids.scent],[allSnuids.steins]
+  ];
   const isMaptainKey = 'isMaptain';
-  const enviromentType = MhUtils.getEnvironmentType();
-  if (
-    [gwhAreas.hill, gwhAreas.workshop, gwhAreas.fortress].indexOf(
-      enviromentType
-    ) < 0
-  )
-    return;
-  const version = 'gwh_1.2.34.10.25';
-  isProd ? logging(version) : console.log(version);
   const scrollChests = {
     'Naughty List': {
       scroll: 'naughty_list_convertible',
@@ -679,7 +679,13 @@ function gwh() {
       }
       // Hill沒 mice不見得能離開,去另外兩個地方有額外條件
       // 還有個 all在 hill可以 PP抓.還有 workshop的 cinnamon也要 PP收集
-      if (!mapInfo[gwhAreas.hill] && mapInfo[gwhAreas.fortress]) {
+      // 所以只剩 fortress時才強制 normal bait
+      if (
+        !mapInfo[gwhAreas.hill] &&
+        !mapInfo[gwhAreas.workshop] &&
+        !mapInfo['all'] &&
+        mapInfo[gwhAreas.fortress]
+      ) {
         handleTrap(getNormalTrap(setup), quest, setup);
         return;
       }
@@ -706,13 +712,17 @@ function gwh() {
     let trap = null;
     if (myItems.pp > setup.startPpQty) {
       trap = setup[enviromentType][ppTrap][setup.isGoodGoTd ? gotd : normal];
+      // 在 Hill只剩 sporty_ski_instructor/golem_jockey/wreath_thief時用 PP
+      if (enviromentType === gwhAreas.hill) checkHillPPMiceBait(trap, setup);
     } else if (myItems.pp <= setup.ppKeptQty) {
       trap = getNormalTrap(setup);
     } else {
       const areaBaitIds = getAreaBaitIds(setup);
-      if (areaBaitIds.indexOf(getBaitItemId()) > -1)
+      if (areaBaitIds.indexOf(MhUtils.getBaitItemId()) > -1) {
         trap = setup[enviromentType][ppTrap][setup.isGoodGoTd ? gotd : normal];
-      else trap = getNormalTrap(setup);
+        // 在 Hill只剩 sporty_ski_instructor/golem_jockey/wreath_thief時用 PP
+        if (enviromentType === gwhAreas.hill) checkHillPPMiceBait(trap, setup);
+      } else trap = getNormalTrap(setup);
     }
     const isAutoGpp =
       setup.isAutoMapping &&
@@ -725,6 +735,19 @@ function gwh() {
     if (isAutoGpp)
       trap[0] = setup.areaBaits.gpp.name + ',' + setup.areaBaits.pp.name;
     handleTrap(trap, quest, setup);
+  }
+  function checkHillPPMiceBait(trap, setup) {
+    if (MhUtils.getEnvironmentType() !== gwhAreas.hill) return;
+    const ppMice = ['sporty_ski_instructor', 'golem_jockey', 'wreath_thief'];
+    if (containOnly(mapInfo[gwhAreas.hill], ppMice))
+      trap[0] = setup.areaBaits.pp.name;
+  }
+  function containOnly(containing, contained) {
+    for (let i = 0; i < containing.length; i++) {
+      const element = containing[i];
+      if (contained.indexOf(element) < 0) return false;
+    }
+    return true;
   }
   function getAreaBaitIds(setup) {
     const rtn = [];
@@ -12340,13 +12363,6 @@ function getMapByClass(mapClass) {
     }
   }
   return null;
-}
-/**
- * Get current bait item id.
- * @return {BigInt} current bait item id
- */
-function getBaitItemId() {
-  return MyUtils.parseQuantity(user.bait_item_id);
 }
 function armAllTraps(bait, weapon, base, charm) {
   console.log('arm following traps:', bait, weapon, base, charm);
