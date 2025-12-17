@@ -23,8 +23,9 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.36.10.25';
+  const version = 'gwh_1.2.36.10.26';
   isProd ? logging(version) : console.log(version);
+  const all = 'all';
   const allSnuids = {
     angel: '100000656351135',
     angela: '100000556925297',
@@ -311,8 +312,8 @@ function gwh() {
         if (!rtn[area]) rtn[area] = [];
         rtn[area].push(type);
       } else {
-        if (!rtn['all']) rtn['all'] = [];
-        rtn['all'].push(type);
+        if (!rtn[all]) rtn[all] = [];
+        rtn[all].push(type);
       }
     }
     return rtn;
@@ -683,7 +684,7 @@ function gwh() {
       if (
         !mapInfo[gwhAreas.hill] &&
         !mapInfo[gwhAreas.workshop] &&
-        !mapInfo['all'] &&
+        !mapInfo[all] &&
         mapInfo[gwhAreas.fortress]
       ) {
         handleTrap(getNormalTrap(setup), quest, setup);
@@ -712,7 +713,6 @@ function gwh() {
     let trap = null;
     if (myItems.pp > setup.startPpQty) {
       trap = setup[enviromentType][ppTrap][setup.isGoodGoTd ? gotd : normal];
-      // 在 Hill只剩 sporty_ski_instructor/golem_jockey/wreath_thief時用 PP
       if (enviromentType === gwhAreas.hill) checkHillPPMiceBait(trap, setup);
     } else if (myItems.pp <= setup.ppKeptQty) {
       trap = getNormalTrap(setup);
@@ -720,7 +720,6 @@ function gwh() {
       const areaBaitIds = getAreaBaitIds(setup);
       if (areaBaitIds.indexOf(MhUtils.getBaitItemId()) > -1) {
         trap = setup[enviromentType][ppTrap][setup.isGoodGoTd ? gotd : normal];
-        // 在 Hill只剩 sporty_ski_instructor/golem_jockey/wreath_thief時用 PP
         if (enviromentType === gwhAreas.hill) checkHillPPMiceBait(trap, setup);
       } else trap = getNormalTrap(setup);
     }
@@ -736,8 +735,11 @@ function gwh() {
       trap[0] = setup.areaBaits.gpp.name + ',' + setup.areaBaits.pp.name;
     handleTrap(trap, quest, setup);
   }
+  /** 在 Hill只剩 sporty_ski_instructor/golem_jockey/wreath_thief且 mapInfo.all沒有 mice時強制 PP */
   function checkHillPPMiceBait(trap, setup) {
     if (MhUtils.getEnvironmentType() !== gwhAreas.hill) return;
+    if (mapInfo[all]) return;
+    if (!mapInfo[gwhAreas.hill]) return;
     const ppMice = ['sporty_ski_instructor', 'golem_jockey', 'wreath_thief'];
     if (containOnly(mapInfo[gwhAreas.hill], ppMice))
       trap[0] = setup.areaBaits.pp.name;
@@ -1624,6 +1626,7 @@ function gwh() {
     workshop: 'winter_hunt_workshop',
     fortress: 'winter_hunt_fortress'
   };
+  const all = 'all';
   const isProd = true;
   const map = getMapByClass(MapClasses.event);
   hg.utils.TreasureMapUtil.getMapInfo(map.map_id, (data) => {
@@ -1666,8 +1669,8 @@ function gwh() {
         if (!rtn[area]) rtn[area] = [];
         rtn[area].push(type);
       } else {
-        if (!rtn['all']) rtn['all'] = [];
-        rtn['all'].push(type);
+        if (!rtn[all]) rtn[all] = [];
+        rtn[all].push(type);
       }
     }
     return rtn;
