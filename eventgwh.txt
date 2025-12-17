@@ -73,7 +73,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.34.10.22';
+  const version = 'gwh_1.2.34.10.23';
   isProd ? logging(version) : console.log(version);
   const scrollChests = {
     'Naughty List': {
@@ -709,7 +709,7 @@ function gwh() {
     } else if (myItems.pp <= setup.ppKeptQty) {
       trap = getNormalTrap(setup);
     } else {
-      const areaBaitIds = getAreaBaitIds();
+      const areaBaitIds = getAreaBaitIds(setup);
       if (areaBaitIds.indexOf(getBaitItemId()) > -1)
         trap = setup[enviromentType][ppTrap][setup.isGoodGoTd ? gotd : normal];
       else trap = getNormalTrap(setup);
