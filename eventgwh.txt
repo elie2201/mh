@@ -16,6 +16,56 @@ function gwh() {
     workshop: 'winter_hunt_workshop',
     fortress: 'winter_hunt_fortress'
   };
+  const allSnuids = {
+    angel: '100000656351135',
+    angela: '100000556925297',
+    angelie: '100000724831315',
+    anthony: '100000612521913',
+    levine: '100000578963305',
+    elie: '1842354617',
+    kelly: '100001064572224',
+    kevin: '100000636731698',
+    kitty: '100000541126764',
+    levi: '1142000722517150',
+    lydia: 'hg_8222e273c0d07aa036e56ed17a8f7884',
+    mary: '100000520204559',
+    mina: '100000669404954',
+    monica: '100000633987931',
+    nina: '100000473806593',
+    pola: '100000062975901',
+    raphael: '468834843316798',
+    rose: '100000533948473',
+    hsilung: '100000122134338',
+    van: '100000096968840',
+    vera: 'hg_7b359afdc278e154c3c6f5c6a2f1ba31',
+    vivienne: '100000638927202',
+    weyl: '1794714531',
+    vanne: '100000438303274',
+    riemann: 'hg_d783ff747d3b60073ef541d335ff901d',
+    kaze: 'hg_1602095c6c0a2376b3bbb12e417df9a4',
+    sky: 'hg_3207d1fd7e0a8bca4bdef74c378a6a32',
+    shallow: 'hg_81538b33309a53ae077d5f01f53f6c06',
+    furt: 'hg_62a01c775dd2fe8670b6cb46b31c1318',
+    feynmann: 'hg_2d25dd402e32439c658e10b62d1d64bf',
+    rebecca: 'hg_3aee6d83ca43348e580141870193b531',
+    renee: 'hg_91cbc542b246f2f8b4f0f3b446915199',
+    haruhi: 'hg_5eeb1174c05069baa7fa40bd82897130',
+    Umr: 'hg_52952f2bb5ff36565d7936529f156349',
+    scent: 'hg_219f8417793705b8bfe8c4a01ecce1fc',
+    steins: 'hg_9ab9014e7b20bd60ce4a31485651e008'
+  };
+  // prettier-ignore
+  const mapGroups = [
+  [allSnuids.elie],[allSnuids.raphael],[allSnuids.van],[allSnuids.levi],[allSnuids.pola],
+  [allSnuids.weyl],[allSnuids.levine],[allSnuids.kelly],[allSnuids.angel],[allSnuids.mina],
+  [allSnuids.vanne],[allSnuids.angelie],[allSnuids.anthony],[allSnuids.monica],[allSnuids.vivienne],
+  [allSnuids.lydia],[allSnuids.kevin],[allSnuids.nina],[allSnuids.rose],
+  [allSnuids.vera],[allSnuids.hsilung],[allSnuids.angela],[allSnuids.kitty],[allSnuids.mary],
+  [allSnuids.riemann],[allSnuids.kaze],[allSnuids.sky],[allSnuids.shallow],[allSnuids.furt],
+  [allSnuids.feynmann],[allSnuids.rebecca],[allSnuids.renee],[allSnuids.haruhi],[allSnuids.Umr],
+  [allSnuids.scent],[allSnuids.steins]
+];
+  const isMaptainKey = 'isMaptain';
   const enviromentType = MhUtils.getEnvironmentType();
   if (
     [gwhAreas.hill, gwhAreas.workshop, gwhAreas.fortress].indexOf(
@@ -23,7 +73,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.31.10.22';
+  const version = 'gwh_1.2.34.10.22';
   isProd ? logging(version) : console.log(version);
   const scrollChests = {
     'Naughty List': {
@@ -194,6 +244,11 @@ function gwh() {
     isProd ? logging('autoSettings') : console.log('autoSettings');
     if (settings.badGotdDates && settings.badGotdDates.indexOf(todayUTC) > -1)
       settings.isGoodGoTd = false;
+    // auto mapping時啟動 forge/breaking的數量減半,增加 mapping的效率
+    if (settings.isAutoMapping) {
+      settings.startCinnamonQty = Math.round(settings.startCinnamonQty / 2);
+      settings.goHailstoneQty = Math.round(settings.goHailstoneQty / 2);
+    }
     if (!settings.isAutoMapping) {
       checkArea(settings);
       return;
@@ -264,7 +319,7 @@ function gwh() {
   }
   // autoMapping(() => { console.log('Finished'); });
   function autoMapping(callback) {
-    const version = 'autoMapping_1.0.0.0.0';
+    const version = 'autoMapping_1.0.0.0.3';
     isProd ? logging(version) : console.log(version);
     const selfInvoking = () => {
       setTimeout(() => {
@@ -285,6 +340,16 @@ function gwh() {
       return;
     }
     // autoMaptain: buy and use scroll checking(invite in buy and use)
+    if (!map) {
+      if (localStorage[isMaptainKey] === 'true') {
+        autoMaptain(
+          MapClasses.event,
+          scrollChests['Naughty List'].scroll,
+          selfInvoking
+        );
+        return;
+      }
+    }
     callback();
   }
   // autoClaimMapReward(() => { console.log('Finished'); });
@@ -367,6 +432,60 @@ function gwh() {
       });
     }, parseInt(3500 + Math.random() * 1500));
     return isAccepted;
+  }
+  // autoMaptain(MapClasses.event, 'lunar_new_year_scroll_case_convertible');
+  function autoMaptain(mapClass, scrollType, callback) {
+    // const isProd = false;
+    const version = `autoMaptain(${mapClass}, ${scrollType})_1.0.0.0.0`;
+    isProd ? logging(version) : console.log(version);
+    if (localStorage[isMaptainKey] !== 'true') return; // autoMapping必須先檢查,不然異常,斷
+    if (!mapClass || !MapClasses[mapClass]) return; // 異常,斷
+    if (!scrollType || scrollType == '') return; // 異常,斷
+    const map = getMapByClass(mapClass);
+    if (map) return; // autoMapping必須先檢查,不然異常,斷
+    const snuid = MhUtils.getSnUserId();
+    let snuids = null;
+    for (let i = 0; i < mapGroups.length; i++) {
+      snuids = mapGroups[i];
+      if (snuids.indexOf(snuid) > -1) break;
+    }
+    // 下面那行很危險,如果 callback(回 autoMapping檢查沒有 map又是 maptain)絕對無限循環
+    // 直接 return程式就斷了
+    // if (!snuids || !Array.isArray(snuids) || snuids.length == 0) return;
+    if (snuids && snuids.length > 0) {
+      console.log('map group found, open scroll and invite');
+      snuids = snuids.slice();
+      snuids.splice(snuids.indexOf(snuid), 1);
+      console.log('After remove self', snuids, mapGroups);
+    }
+    MhUtils.completeTransaction(true, scrollType, 1, false, () => {
+      hg.utils.UserInventory.useConvertible(
+        scrollType,
+        1,
+        () => {
+          console.log('After scroll opened, invite map members');
+          autoInvite(mapClass, snuids, callback);
+        },
+        parseInt(5000 + Math.random() * 2000)
+      );
+    });
+  }
+  // autoInvite
+  function autoInvite(mapClass, snuids, callback) {
+    const map = getMapByClass('event');
+    if (!map) {
+      if (callback) callback;
+      return;
+    }
+    if (!snuids || snuids.length < 1) {
+      if (callback) callback;
+      return;
+    }
+    hg.utils.TreasureMapUtil.sendInvites(map.map_id, snuids);
+    setTimeout(() => {
+      MhUtils.closeAnyJsDialog();
+      if (callback) callback();
+    }, 2000);
   }
   function checkArea(setup) {
     const enviromentType = MhUtils.getEnvironmentType();
@@ -590,7 +709,7 @@ function gwh() {
     } else if (myItems.pp <= setup.ppKeptQty) {
       trap = getNormalTrap(setup);
     } else {
-      const areaBaitIds = [setup.areaBaits.pp.id, setup.areaBaits.gpp.id];
+      const areaBaitIds = getAreaBaitIds();
       if (areaBaitIds.indexOf(getBaitItemId()) > -1)
         trap = setup[enviromentType][ppTrap][setup.isGoodGoTd ? gotd : normal];
       else trap = getNormalTrap(setup);
@@ -603,8 +722,18 @@ function gwh() {
       (!setup.gppArea ||
         setup.gppArea === '' ||
         setup.gppArea === enviromentType);
-    if (isAutoGpp) trap[0] = setup.areaBaits.gpp.name;
+    if (isAutoGpp)
+      trap[0] = setup.areaBaits.gpp.name + ',' + setup.areaBaits.pp.name;
     handleTrap(trap, quest, setup);
+  }
+  function getAreaBaitIds(setup) {
+    const rtn = [];
+    const areaBaits = setup.areaBaits;
+    for (const key in areaBaits) {
+      if (!Object.hasOwn(areaBaits, key)) continue;
+      const areaBait = areaBaits[key];
+      rtn.push(areaBait.id);
+    }
   }
   function getQuest() {
     const enviromentType = MhUtils.getEnvironmentType();
