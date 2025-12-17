@@ -23,7 +23,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.28.8.22';
+  const version = 'gwh_1.2.30.9.22';
   isProd ? logging(version) : console.log(version);
   const scrollChests = {
     'Naughty List': {
@@ -187,35 +187,11 @@ function gwh() {
   let isEndWorkshop = false;
   run();
   function run() {
-    console.log('run');
-    const track = getQuest().reward_track;
-    if (track.can_claim) {
-      claimTrackReward(() => {
-        track.can_claim = false;
-        autoSettings();
-      });
-      return;
-    }
+    isProd ? logging('run') : console.log('run');
     autoSettings();
   }
-  function claimTrackReward(callback) {
-    const element = null;
-    const params = {
-      action: 'claim_reward_track'
-    };
-    ajax(element, params, 'managers/ajax/events/winter_hunt_region.php').then(
-      () => {
-        const X = document.querySelector('#jsDialogClose');
-        if (X) X.click();
-        if (callback)
-          setTimeout(() => {
-            callback();
-          }, 2000);
-      }
-    );
-  }
   function autoSettings() {
-    console.log('autoSettings');
+    isProd ? logging('autoSettings') : console.log('autoSettings');
     if (settings.badGotdDates && settings.badGotdDates.indexOf(todayUTC) > -1)
       settings.isGoodGoTd = false;
     if (!settings.isAutoMapping) {
@@ -295,19 +271,20 @@ function gwh() {
         autoMapping(callback);
       }, 1000);
     };
-    // map completed
+    // claim map reward checking
     map = getMapByClass(MapClasses.event);
     if (map && map.is_complete) {
       autoClaimMapReward(selfInvoking);
       map = null;
       return;
     }
-    // accept invite
+    // accept invite checking
     const quest = user.quests.QuestRelicHunter;
     if (!map && (quest.num_invites || 0) > 0) {
       autoAcceptInvite(MapClasses.event, selfInvoking);
       return;
     }
+    // buy and use scroll checking(invite in buy and use)
     callback();
   }
   // autoClaimMapReward(() => { console.log('Finished'); });
@@ -529,7 +506,10 @@ function gwh() {
       myItems.pp > setup.startPpQty &&
       myItems.hailstone > setup.goHailstoneQty &&
       myItems.fs > setup.fsKeptQty;
-    isStartWorkshop = myItems.cinnamon > setup.startCinnamonQty;
+    // mapping時不要去 workshop用 normal cheese浪費 cinnamon
+    isStartWorkshop =
+      myItems.cinnamon > setup.startCinnamonQty &&
+      (!setup.isMapping || myItems.pp > setup.startPpQty);
     isEndWorkshop = myItems.cinnamon < setup.cinnamonKeptQty;
   }
   function golemWorkshop(setup) {
@@ -790,10 +770,12 @@ function gwh() {
     ajax(null, params, uri);
   }
   function checkGolem(setup) {
+    isProd ? logging('Run checkGolem') : console.log('Run checkGolem');
     if (!setup.isAutoGolem) return;
     const quest = getQuest();
     console.log('Run checkGolem', quest);
     const golems = quest.golems;
+    const track = quest.reward_track;
     if (setup.isAutoUpgrade)
       for (let i = 0; i < setup.autoUpgradeGolems; i++) {
         const golem = golems[i];
@@ -840,10 +822,30 @@ function gwh() {
       }
     }
     console.log('End checkGolem');
-    /* const popup = new jsDialog();
-    popup.addToken('{*title*}', 'End checkGolem.');
-    popup.addToken('{*content*}', 'Check golem finished');
-    popup.show(); */
+    if (track.can_claim) {
+      // claimTrackReward(() => {
+      //   track.can_claim = false;
+      //   autoSettings();
+      // });
+      // return;
+      claimTrackReward();
+    }
+  }
+  function claimTrackReward(callback) {
+    const element = null;
+    const params = {
+      action: 'claim_reward_track'
+    };
+    ajax(element, params, 'managers/ajax/events/winter_hunt_region.php').then(
+      () => {
+        const X = document.querySelector('#jsDialogClose');
+        if (X) X.click();
+        if (callback)
+          setTimeout(() => {
+            callback();
+          }, 2000);
+      }
+    );
   }
   // upgradeGolem(0);
   function upgradeGolem(slot, callback) {
