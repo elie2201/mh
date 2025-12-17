@@ -73,7 +73,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.34.10.24';
+  const version = 'gwh_1.2.34.10.25';
   isProd ? logging(version) : console.log(version);
   const scrollChests = {
     'Naughty List': {
@@ -474,11 +474,11 @@ function gwh() {
   function autoInvite(mapClass, snuids, callback) {
     const map = getMapByClass('event');
     if (!map) {
-      if (callback) callback;
+      if (callback) callback();
       return;
     }
     if (!snuids || snuids.length < 1) {
-      if (callback) callback;
+      if (callback) callback();
       return;
     }
     hg.utils.TreasureMapUtil.sendInvites(map.map_id, snuids);
