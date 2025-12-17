@@ -23,7 +23,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.36.10.26';
+  const version = 'gwh_1.2.36.10.27';
   isProd ? logging(version) : console.log(version);
   const all = 'all';
   const allSnuids = {
@@ -629,9 +629,8 @@ function gwh() {
     // mapping時不要去 workshop用 normal cheese浪費 cinnamon
     isStartWorkshop =
       myItems.cinnamon > setup.startCinnamonQty &&
-      (!setup.isMapping ||
-        myItems.pp > parseInt(setup.startCinnamonQty / 3) ||
-        myItems.pp > setup.startPpQty);
+      (!setup.isMapping || myItems.pp > setup.startPpQty);
+    // || myItems.pp > parseInt(setup.startCinnamonQty / 3) // 不能 1/3,不然 workshop的 checkTrap還是會用 normal bait
     isEndWorkshop = myItems.cinnamon < setup.cinnamonKeptQty;
   }
   function golemWorkshop(setup) {
