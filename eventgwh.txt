@@ -23,12 +23,17 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.28.7.22';
+  const version = 'gwh_1.2.28.8.22';
   isProd ? logging(version) : console.log(version);
   const scrollChests = {
     'Naughty List': {
       scroll: 'naughty_list_convertible',
       chest: 'naughty_2022_list_chest_convertible',
+      isAutoOpen: true
+    },
+    'Rare Naughty List': {
+      scroll: 'naughty_list_convertible',
+      chest: 'rare_naughty_2022_list_chest_convertible',
       isAutoOpen: true
     }
   };
