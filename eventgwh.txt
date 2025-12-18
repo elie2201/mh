@@ -23,7 +23,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.36.10.27';
+  const version = 'gwh_1.2.36.10.28';
   isProd ? logging(version) : console.log(version);
   const all = 'all';
   const allSnuids = {
@@ -712,14 +712,14 @@ function gwh() {
     let trap = null;
     if (myItems.pp > setup.startPpQty) {
       trap = setup[enviromentType][ppTrap][setup.isGoodGoTd ? gotd : normal];
-      if (enviromentType === gwhAreas.hill) checkHillPPMiceBait(trap, setup);
+      checkPPMiceBait(trap, setup);
     } else if (myItems.pp <= setup.ppKeptQty) {
       trap = getNormalTrap(setup);
     } else {
       const areaBaitIds = getAreaBaitIds(setup);
       if (areaBaitIds.indexOf(MhUtils.getBaitItemId()) > -1) {
         trap = setup[enviromentType][ppTrap][setup.isGoodGoTd ? gotd : normal];
-        if (enviromentType === gwhAreas.hill) checkHillPPMiceBait(trap, setup);
+        checkPPMiceBait(trap, setup);
       } else trap = getNormalTrap(setup);
     }
     const isAutoGpp =
@@ -734,13 +734,27 @@ function gwh() {
       trap[0] = setup.areaBaits.gpp.name + ',' + setup.areaBaits.pp.name;
     handleTrap(trap, quest, setup);
   }
-  /** 在 Hill只剩 sporty_ski_instructor/golem_jockey/wreath_thief且 mapInfo.all沒有 mice時強制 PP */
-  function checkHillPPMiceBait(trap, setup) {
-    if (MhUtils.getEnvironmentType() !== gwhAreas.hill) return;
+  /**
+   * 強制 PP:
+   * 在 hill只剩 sporty_ski_instructor/golem_jockey/wreath_thief且 mapInfo.all沒有 mice時
+   * 在 workshop只剩 christmas_tree/present且 mapInfo.all沒有 mice時
+   * 在 fortress只剩 glacia_ice_fist且 mapInfo.all沒有 mice時
+   */
+  function checkPPMiceBait(trap, setup) {
+    const environmentType = MhUtils.getEnvironmentType();
+    // if (MhUtils.getEnvironmentType() !== gwhAreas.hill) return;
     if (mapInfo[all]) return;
-    if (!mapInfo[gwhAreas.hill]) return;
-    const ppMice = ['sporty_ski_instructor', 'golem_jockey', 'wreath_thief'];
-    if (containOnly(mapInfo[gwhAreas.hill], ppMice))
+    // if (!mapInfo[gwhAreas.hill]) return;
+    const ppMice = {
+      winter_hunt_grove: [
+        'sporty_ski_instructor',
+        'golem_jockey',
+        'wreath_thief'
+      ],
+      winter_hunt_workshop: ['christmas_tree', 'present'],
+      winter_hunt_fortress: ['glacia_ice_fist']
+    };
+    if (containOnly(mapInfo[environmentType], ppMice[environmentType]))
       trap[0] = setup.areaBaits.pp.name;
   }
   function containOnly(containing, contained) {
