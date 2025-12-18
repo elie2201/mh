@@ -23,7 +23,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.36.10.29';
+  const version = 'gwh_1.2.36.10.30';
   isProd ? logging(version) : console.log(version);
   const all = 'all';
   const allSnuids = {
@@ -184,6 +184,7 @@ function gwh() {
     badGotdDates: [],
     isAutoMapping: true,
     isMapping: false,
+    isCheckPpMiceBait: true,
     shutdown: {
       isLeaveFortressIf36: true,
       isForgeOffIf12: true
@@ -712,14 +713,14 @@ function gwh() {
     let trap = null;
     if (myItems.pp > setup.startPpQty) {
       trap = setup[enviromentType][ppTrap][setup.isGoodGoTd ? gotd : normal];
-      checkPPMiceBait(trap, setup);
+      // checkPPMiceBait(trap, setup);
     } else if (myItems.pp <= setup.ppKeptQty) {
       trap = getNormalTrap(setup);
     } else {
       const areaBaitIds = getAreaBaitIds(setup);
       if (areaBaitIds.indexOf(MhUtils.getBaitItemId()) > -1) {
         trap = setup[enviromentType][ppTrap][setup.isGoodGoTd ? gotd : normal];
-        checkPPMiceBait(trap, setup);
+        // checkPPMiceBait(trap, setup);
       } else trap = getNormalTrap(setup);
     }
     const isAutoGpp =
@@ -758,7 +759,7 @@ function gwh() {
       trap[0] = setup.areaBaits.pp.name;
   }
   function containOnly(containing, contained) {
-    if (!containing || !contained) return;
+    if (!containing || !contained) return false;
     for (let i = 0; i < containing.length; i++) {
       const element = containing[i];
       if (contained.indexOf(element) < 0) return false;
@@ -790,7 +791,12 @@ function gwh() {
   }
   function handleTrap(trap, quest, setup) {
     toggleFestiveSpirit(trap, quest, () => {
-      if (trap) armAllTraps(...trap);
+      if (trap) {
+        // 裝備 GPP時,如果 isCheckPpMiceBait,checkPPMiceBait
+        if (trap[0].indexOf('Glazed') === 0 && settings.isCheckPpMiceBait)
+          checkPPMiceBait(trap, setup);
+        armAllTraps(...trap);
+      }
       if (setup.isAutoGolem)
         setTimeout(() => {
           checkGolem(setup);
