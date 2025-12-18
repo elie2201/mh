@@ -23,7 +23,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.36.10.28';
+  const version = 'gwh_1.2.36.10.29';
   isProd ? logging(version) : console.log(version);
   const all = 'all';
   const allSnuids = {
@@ -758,6 +758,7 @@ function gwh() {
       trap[0] = setup.areaBaits.pp.name;
   }
   function containOnly(containing, contained) {
+    if (!containing || !contained) return;
     for (let i = 0; i < containing.length; i++) {
       const element = containing[i];
       if (contained.indexOf(element) < 0) return false;
