@@ -23,7 +23,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.37.11.33';
+  const version = 'gwh_1.2.37.11.34';
   isProd ? logging(version) : console.log(version);
   const all = 'all';
   const isMaptainKey = 'isMaptain';
@@ -478,6 +478,7 @@ function gwh() {
         () => {
           console.log('After scroll opened, invite map members');
           autoInvite(mapClass, snuids, callback);
+          localStorage[isMaptainKey] = 'false';
         },
         parseInt(5000 + Math.random() * 2000)
       );
