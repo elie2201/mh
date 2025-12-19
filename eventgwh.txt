@@ -23,7 +23,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.38.12.37';
+  const version = 'gwh_1.2.38.12.38';
   isProd ? logging(version) : console.log(version);
   const all = 'all';
   const isMaptainKey = 'isMaptain';
@@ -490,15 +490,17 @@ function gwh() {
   function autoInvite(mapClass, snuids, callback) {
     const map = getMapByClass('event');
     if (!map) {
-      if (callback) callback();
-      // 沒 auto invite的話,要關掉 open scroll打開的 map popup
-      MhUtils.closeAnyJsDialog();
+      setTimeout(() => {
+        MhUtils.closeAnyJsDialog();
+        if (callback) callback();
+      }, 2000);
       return;
     }
     if (!snuids || snuids.length < 1) {
-      if (callback) callback();
-      // 沒 auto invite的話,要關掉 open scroll打開的 map popup
-      MhUtils.closeAnyJsDialog();
+      setTimeout(() => {
+        MhUtils.closeAnyJsDialog();
+        if (callback) callback();
+      }, 2000);
       return;
     }
     hg.utils.TreasureMapUtil.sendInvites(map.map_id, snuids);
