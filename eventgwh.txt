@@ -23,7 +23,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.36.11.30';
+  const version = 'gwh_1.2.36.11.31';
   isProd ? logging(version) : console.log(version);
   const all = 'all';
   const allSnuids = {
@@ -625,14 +625,15 @@ function gwh() {
     myItems.fs = MyUtils.parseQuantity(items.festive_spirit_stat_item.quantity);
     isStartFortress =
       myItems.pp > setup.startPpQty &&
-      myItems.hailstone > setup.goHailstoneQty &&
-      myItems.fs > setup.fsKeptQty;
+      myItems.fs > setup.fsKeptQty &&
+      (setup.isMapping || myItems.hailstone > setup.goHailstoneQty);
     // mapping時不要去 workshop用 normal cheese浪費 cinnamon
     isStartWorkshop =
-      myItems.cinnamon > setup.startCinnamonQty &&
-      (!setup.isMapping || myItems.pp > setup.startPpQty);
+      myItems.pp > setup.startPpQty &&
+      (setup.isMapping || myItems.cinnamon > setup.startCinnamonQty);
     // || myItems.pp > parseInt(setup.startCinnamonQty / 3) // 不能 1/3,不然 workshop的 checkTrap還是會用 normal bait
-    isEndWorkshop = myItems.cinnamon < setup.cinnamonKeptQty;
+    isEndWorkshop =
+      !setup.isMapping && myItems.cinnamon < setup.cinnamonKeptQty;
   }
   function golemWorkshop(setup) {
     console.log('golemWorkshop(', setup);
