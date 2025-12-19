@@ -23,7 +23,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.36.10.30';
+  const version = 'gwh_1.2.36.11.30';
   isProd ? logging(version) : console.log(version);
   const all = 'all';
   const allSnuids = {
@@ -752,7 +752,7 @@ function gwh() {
         'golem_jockey',
         'wreath_thief'
       ],
-      winter_hunt_workshop: ['christmas_tree', 'present'],
+      winter_hunt_workshop: ['christmas_tree', 'present', 'toy_builder'],
       winter_hunt_fortress: ['glacia_ice_fist']
     };
     if (containOnly(mapInfo[environmentType], ppMice[environmentType]))
