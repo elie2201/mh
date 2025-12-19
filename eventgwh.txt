@@ -23,7 +23,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.38.12.38';
+  const version = 'gwh_1.2.38.12.39';
   isProd ? logging(version) : console.log(version);
   const all = 'all';
   const isMaptainKey = 'isMaptain';
@@ -665,9 +665,9 @@ function gwh() {
     isEndFortress =
       myItems.pp <= setup.ppKeptQty ||
       (!setup.isMapping && isDangerHailstoneQty);
-    // mapping時不要去 workshop用 normal cheese浪費 cinnamon
+    // mapping時不要去 workshop用 normal cheese浪費收集 cinnamon的機會
     isStartWorkshop =
-      myItems.pp > setup.startPpQty &&
+      (!setup.isMapping || myItems.pp > setup.startPpQty) &&
       (setup.isMapping || myItems.cinnamon > setup.startCinnamonQty);
     // || myItems.pp > parseInt(setup.startCinnamonQty / 3) // 不能 1/3,不然 workshop的 checkTrap還是會用 normal bait
     isEndWorkshop =
