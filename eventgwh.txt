@@ -23,7 +23,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.38.11.36';
+  const version = 'gwh_1.2.38.12.37';
   isProd ? logging(version) : console.log(version);
   const all = 'all';
   const isMaptainKey = 'isMaptain';
@@ -135,8 +135,8 @@ function gwh() {
     badGotdDates: [],
     isAutoMapping: true,
     isMapping: false,
-    isForcedMapClearOrder: true,
     isCheckPpMiceBait: true,
+    isForcedMapClearOrder: true,
     shutdown: {
       isLeaveFortressIf36: true,
       isForgeOffIf12: true
@@ -612,29 +612,24 @@ function gwh() {
       return isNotLeaving;
     // 區域沒專屬老鼠或強制狩獵區域順序
     // hill有 map mice且不在 hill,去 hill
-    if (mapInfo[gwhAreas.hill] && enviromentType !== gwhAreas.hill) {
+    if (mapInfo[gwhAreas.hill]) {
+      if (enviromentType === gwhAreas.hill) return isNotLeaving;
       travel(gwhAreas.hill, 2000, () => {
         checkArea(setup);
       });
       return isLeaving;
     }
     // workshop有 map mice且滿足前往 workshop條件且不在 workshop,去 workshop
-    if (
-      mapInfo[gwhAreas.workshop] &&
-      enviromentType !== gwhAreas.workshop &&
-      isStartWorkshop
-    ) {
+    if (mapInfo[gwhAreas.workshop] && isStartWorkshop) {
+      if (enviromentType === gwhAreas.workshop) return isNotLeaving;
       travel(gwhAreas.workshop, 2000, () => {
         checkArea(setup);
       });
       return isLeaving;
     }
     // fortress有 map mice且滿足前往 fortress條件且不在 fortress,去 fortress
-    if (
-      mapInfo[gwhAreas.fortress] &&
-      enviromentType !== gwhAreas.fortress &&
-      isStartFortress
-    ) {
+    if (mapInfo[gwhAreas.fortress] && isStartFortress) {
+      if (enviromentType === gwhAreas.fortress) return isNotLeaving;
       travel(gwhAreas.fortress, 2000, () => {
         checkArea(setup);
       });
