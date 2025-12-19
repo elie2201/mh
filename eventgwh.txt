@@ -23,7 +23,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.36.11.32';
+  const version = 'gwh_1.2.36.11.33';
   isProd ? logging(version) : console.log(version);
   const all = 'all';
   const allSnuids = {
@@ -626,7 +626,7 @@ function gwh() {
       myItems.fs > setup.fsKeptQty &&
       (setup.isMapping || myItems.hailstone > setup.goHailstoneQty);
     isEndFortress =
-      myItems.pp < setup.ppKeptQty ||
+      myItems.pp <= setup.ppKeptQty ||
       (!setup.isMapping && myItems.hailstone <= setup.hailstoneKeptQty);
     // mapping時不要去 workshop用 normal cheese浪費 cinnamon
     isStartWorkshop =
