@@ -26,7 +26,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.39.12.41';
+  const version = 'gwh_1.2.40.12.43';
   isProd ? logging(version) : console.log(version);
   const all = 'all';
   const maptainTypeKey = 'maptainType';
@@ -380,13 +380,15 @@ function gwh() {
           if (!Number.isNaN(mapId)) {
             console.log('auto accept map invite of map id', mapId);
             hg.utils.TreasureMapUtil.acceptInvite(mapId, () => {
-              const X = document.querySelector('#jsDialogClose');
-              if (X) X.click();
+              MhUtils.closeAnyJsDialog();
               if (callback)
                 setTimeout(() => {
                   callback();
                 }, 2000);
             });
+            // 只自動接受一個邀請,在 RR-mapping可能比較不會出錯
+            // 因為有時會同時存在前一組跟後一組的邀請(後開的 map先完成)
+            return;
           }
         }
       });
@@ -690,6 +692,7 @@ function gwh() {
       myItems.pp > setup.startPpQty &&
       myItems.fs > setup.fsKeptQty &&
       (setup.isMapping || myItems.hailstone > setup.goHailstoneQty);
+    // fortress沒 PP回 hill農,不在 fortress農
     isEndFortress =
       myItems.pp <= setup.ppKeptQty ||
       (!setup.isMapping && isDangerHailstoneQty);
@@ -698,8 +701,20 @@ function gwh() {
       (!setup.isMapping || myItems.pp > setup.startPpQty) &&
       (setup.isMapping || myItems.cinnamon > setup.startCinnamonQty);
     // || myItems.pp > parseInt(setup.startCinnamonQty / 3) // 不能 1/3,不然 workshop的 checkTrap還是會用 normal bait
+    // workshop沒 PP: mapping時回 hill農,不是 mapping時在 workshop農
     isEndWorkshop =
-      !setup.isMapping && myItems.cinnamon < setup.cinnamonKeptQty;
+      (setup.isMapping && myItems.pp <= setup.ppKeptQty) ||
+      (!setup.isMapping && myItems.cinnamon < setup.cinnamonKeptQty);
+    console.log('after init myItems:', myItems);
+    console.log(
+      `isDangerHailstoneQty: ${isDangerHailstoneQty}`,
+      `isStartFortress: ${isStartFortress}`,
+      `isEndFortress: ${isEndFortress}`
+    );
+    console.log(
+      `isStartWorkshop:${isStartWorkshop}`,
+      `isEndWorkshop:${isEndWorkshop}`
+    );
   }
   function golemWorkshop(setup) {
     console.log('golemWorkshop(', setup);
@@ -1082,8 +1097,7 @@ function gwh() {
     };
     ajax(element, params, 'managers/ajax/events/winter_hunt_region.php').then(
       () => {
-        const X = document.querySelector('#jsDialogClose');
-        if (X) X.click();
+        MhUtils.closeAnyJsDialog();
         if (callback)
           setTimeout(() => {
             callback();
@@ -1112,8 +1126,7 @@ function gwh() {
       element,
       params
     ).then(() => {
-      const X = document.querySelector('#jsDialogClose');
-      if (X) X.click();
+      MhUtils.closeAnyJsDialog();
       if (callback)
         setTimeout(() => {
           callback();
@@ -1145,8 +1158,7 @@ function gwh() {
     };
     ajax(element, params, 'managers/ajax/events/winter_hunt_region.php').then(
       () => {
-        const X = document.querySelector('#jsDialogClose');
-        if (X) X.click();
+        MhUtils.closeAnyJsDialog();
         if (callback)
           setTimeout(() => {
             callback();
@@ -1232,8 +1244,7 @@ function gwh() {
         localStorage[storageKey] = JSON.stringify(scarfingDestinations);
         console.log(JSON.parse(localStorage[storageKey]));
       }
-      const X = document.querySelector('#jsDialogClose');
-      if (X) X.click();
+      MhUtils.closeAnyJsDialog();
       if (callback)
         setTimeout(() => {
           callback();
