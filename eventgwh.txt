@@ -17,6 +17,8 @@ function gwh() {
     fortress: 'winter_hunt_fortress'
   };
   const maptainTypes = { always: 'always', once: 'once', no: '' };
+  const isLeaving = true;
+  const isNotLeaving = false;
   const enviromentType = MhUtils.getEnvironmentType();
   if (
     [gwhAreas.hill, gwhAreas.workshop, gwhAreas.fortress].indexOf(
@@ -24,7 +26,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.39.12.40';
+  const version = 'gwh_1.2.39.12.41';
   isProd ? logging(version) : console.log(version);
   const all = 'all';
   const maptainTypeKey = 'maptainType';
@@ -603,69 +605,69 @@ function gwh() {
   /** 如果 !setup.isMapping,不檢查還有沒有 map mice就回傳 false,*/
   function isMapTravelling(setup) {
     console.log('isMapTravelling(', setup);
-    const isLeaving = true;
-    const isNotLeaving = false;
     if (!setup.isAutoMapping) return isNotLeaving;
     if (!setup.isMapping) return isNotLeaving;
-    const enviromentType = MhUtils.getEnvironmentType();
+    const environmentType = MhUtils.getEnvironmentType();
     // 這裡已經是 isAutoMapping了,沒 map/mapInfo一律先回 Hill
     // 可以觀察看看要一律先回 Hill還是視同 !setup.isAutoMapping
-    if (!map || !mapInfo) {
-      if (enviromentType === gwhAreas.hill) return isNotLeaving;
-      travel(gwhAreas.hill, 2000, () => {
-        checkArea(setup);
-      });
-      return isLeaving;
-    }
+    if (!map || !mapInfo) return goHill(setup);
     // 不強制 mapping區域順序且區域還有專屬老鼠
-    if (!setup.isForcedMapClearOrder && mapInfo[enviromentType])
+    if (!setup.isForcedMapClearOrder && mapInfo[environmentType])
       return isNotLeaving;
     // 區域沒專屬老鼠或強制 mapping區域順序
     // hill有 map mice且不在 hill,去 hill
-    if (mapInfo[gwhAreas.hill]) {
-      if (enviromentType === gwhAreas.hill) return isNotLeaving;
-      travel(gwhAreas.hill, 2000, () => {
-        checkArea(setup);
-      });
-      return isLeaving;
-    }
-    // workshop有 map mice且滿足前往 workshop條件且不在 workshop,去 workshop
+    if (mapInfo[gwhAreas.hill]) return goHill(setup);
+    // workshop有 map mice
     if (mapInfo[gwhAreas.workshop]) {
-      if (enviromentType === gwhAreas.workshop) {
+      // 在 workshop
+      if (environmentType === gwhAreas.workshop) {
         if (!isEndWorkshop) return isNotLeaving;
-        // 還有 map mice但必須終止就回 hill收集
-        travel(gwhAreas.hill, 2000, () => {
-          checkArea(setup);
-        });
-        return isLeaving;
+        // 還有 map mice但必須終止就回 hill農資源
+        return goHill(setup);
       }
       // 不在 workshop
-      if (!isStartWorkshop) return isNotLeaving;
-      travel(gwhAreas.workshop, 2000, () => {
-        checkArea(setup);
-      });
-      return isLeaving;
+      // 能啟動
+      if (isStartWorkshop) return goWorkshop(setup);
+      // 不能啟動-回 hill農資源
+      return goHill(setup);
     }
-    // fortress有 map mice且滿足前往 fortress條件且不在 fortress,去 fortress
+    // fortress有 map mice
     if (mapInfo[gwhAreas.fortress]) {
-      if (enviromentType === gwhAreas.fortress) {
+      // 在 fortress
+      if (environmentType === gwhAreas.fortress) {
         if (!isEndFortress) return isNotLeaving;
-        // 還有 map mice但必須終止就回 hill收集
-        travel(gwhAreas.hill, 2000, () => {
-          checkArea(setup);
-        });
-        return isLeaving;
+        // 還有 map mice但必須終止就回 hill農資源
+        return goHill(setup);
       }
       // 不在 fortress
-      if (!isStartFortress) return isNotLeaving;
-      travel(gwhAreas.fortress, 2000, () => {
-        checkArea(setup);
-      });
-      return isLeaving;
+      // 能啟動
+      if (isStartFortress) return goFortress(setup);
+      // 不能啟動-回 hill農資源
+      return goHill(setup);
     }
     // 只剩 all area mice,在 hill狩獵
-    if (enviromentType === gwhAreas.hill) return isNotLeaving;
+    return goHill(setup);
+  }
+  function goHill(setup) {
+    const environmentType = MhUtils.getEnvironmentType();
+    if (environmentType === gwhAreas.hill) return isNotLeaving;
     travel(gwhAreas.hill, 2000, () => {
+      checkArea(setup);
+    });
+    return isLeaving;
+  }
+  function goWorkshop(setup) {
+    const environmentType = MhUtils.getEnvironmentType();
+    if (environmentType === gwhAreas.workshop) return isNotLeaving;
+    travel(gwhAreas.workshop, 2000, () => {
+      checkArea(setup);
+    });
+    return isLeaving;
+  }
+  function goFortress(setup) {
+    const environmentType = MhUtils.getEnvironmentType();
+    if (environmentType === gwhAreas.fortress) return isNotLeaving;
+    travel(gwhAreas.fortress, 2000, () => {
       checkArea(setup);
     });
     return isLeaving;
