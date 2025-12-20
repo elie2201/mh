@@ -16,6 +16,7 @@ function gwh() {
     workshop: 'winter_hunt_workshop',
     fortress: 'winter_hunt_fortress'
   };
+  const maptainTypes = { always: 'always', once: 'once', no: '' };
   const enviromentType = MhUtils.getEnvironmentType();
   if (
     [gwhAreas.hill, gwhAreas.workshop, gwhAreas.fortress].indexOf(
@@ -23,10 +24,10 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.38.12.39';
+  const version = 'gwh_1.2.39.12.40';
   isProd ? logging(version) : console.log(version);
   const all = 'all';
-  const isMaptainKey = 'isMaptain';
+  const maptainTypeKey = 'maptainType';
   const scrollChests = {
     'Naughty List': {
       scroll: 'naughty_list_convertible',
@@ -297,7 +298,8 @@ function gwh() {
     }
     // autoMaptain: buy and use scroll checking(invite in buy and use)
     if (!map) {
-      if (localStorage[isMaptainKey] === 'true') {
+      const okMaptain = [maptainTypes.always, maptainTypes.once];
+      if (okMaptain.indexOf(localStorage[maptainTypeKey]) > -1) {
         autoMaptain(
           MapClasses.event,
           scrollChests['Naughty List'].scroll,
@@ -393,6 +395,7 @@ function gwh() {
   function autoMaptain(mapClass, scrollType, callback) {
     // const isProd = false;
     const version = `autoMaptain(${mapClass}, ${scrollType})_1.0.0.0.0`;
+    isProd ? logging(version) : console.log(version);
     const allSnuids = {
       angel: '100000656351135',
       angela: '100000556925297',
@@ -451,8 +454,9 @@ function gwh() {
       [allSnuids.scent,allSnuids.steins,allSnuids.riemann,allSnuids.kaze,allSnuids.sky],
       [allSnuids.steins,allSnuids.riemann,allSnuids.kaze,allSnuids.sky,allSnuids.shallow]
     ];
-    isProd ? logging(version) : console.log(version);
-    if (localStorage[isMaptainKey] !== 'true') return; // autoMapping必須先檢查,不然異常,斷
+    const maptainType = localStorage[maptainTypeKey];
+    if ([maptainTypes.always, maptainTypes.once].indexOf(maptainType) < 0)
+      return; // autoMapping必須先檢查,不然異常,斷
     if (!mapClass || !MapClasses[mapClass]) return; // 異常,斷
     if (!scrollType || scrollType == '') return; // 異常,斷
     const map = getMapByClass(mapClass);
@@ -480,7 +484,8 @@ function gwh() {
         () => {
           console.log('After scroll opened, invite map members');
           autoInvite(mapClass, snuids, callback);
-          localStorage[isMaptainKey] = 'false';
+          if (maptainType === maptainTypes.once)
+            localStorage[maptainTypeKey] = maptainTypes.no;
         },
         parseInt(5000 + Math.random() * 2000)
       );
@@ -488,6 +493,9 @@ function gwh() {
   }
   // autoInvite
   function autoInvite(mapClass, snuids, callback) {
+    // const isProd = false;
+    const version = `autoInvite(${mapClass}, ${snuids}, ${callback})_1.0.0.0.0`;
+    isProd ? logging(version) : console.log(version);
     const map = getMapByClass('event');
     if (!map) {
       setTimeout(() => {
@@ -612,7 +620,7 @@ function gwh() {
     // 不強制 mapping區域順序且區域還有專屬老鼠
     if (!setup.isForcedMapClearOrder && mapInfo[enviromentType])
       return isNotLeaving;
-    // 區域沒專屬老鼠或強制狩獵區域順序
+    // 區域沒專屬老鼠或強制 mapping區域順序
     // hill有 map mice且不在 hill,去 hill
     if (mapInfo[gwhAreas.hill]) {
       if (enviromentType === gwhAreas.hill) return isNotLeaving;
@@ -622,16 +630,34 @@ function gwh() {
       return isLeaving;
     }
     // workshop有 map mice且滿足前往 workshop條件且不在 workshop,去 workshop
-    if (mapInfo[gwhAreas.workshop] && isStartWorkshop) {
-      if (enviromentType === gwhAreas.workshop) return isNotLeaving;
+    if (mapInfo[gwhAreas.workshop]) {
+      if (enviromentType === gwhAreas.workshop) {
+        if (!isEndWorkshop) return isNotLeaving;
+        // 還有 map mice但必須終止就回 hill收集
+        travel(gwhAreas.hill, 2000, () => {
+          checkArea(setup);
+        });
+        return isLeaving;
+      }
+      // 不在 workshop
+      if (!isStartWorkshop) return isNotLeaving;
       travel(gwhAreas.workshop, 2000, () => {
         checkArea(setup);
       });
       return isLeaving;
     }
     // fortress有 map mice且滿足前往 fortress條件且不在 fortress,去 fortress
-    if (mapInfo[gwhAreas.fortress] && isStartFortress) {
-      if (enviromentType === gwhAreas.fortress) return isNotLeaving;
+    if (mapInfo[gwhAreas.fortress]) {
+      if (enviromentType === gwhAreas.fortress) {
+        if (!isEndFortress) return isNotLeaving;
+        // 還有 map mice但必須終止就回 hill收集
+        travel(gwhAreas.hill, 2000, () => {
+          checkArea(setup);
+        });
+        return isLeaving;
+      }
+      // 不在 fortress
+      if (!isStartFortress) return isNotLeaving;
       travel(gwhAreas.fortress, 2000, () => {
         checkArea(setup);
       });
