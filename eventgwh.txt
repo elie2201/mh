@@ -26,7 +26,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.40.12.43';
+  const version = 'gwh_1.2.40.12.44';
   isProd ? logging(version) : console.log(version);
   const all = 'all';
   const maptainTypeKey = 'maptainType';
@@ -388,7 +388,7 @@ function gwh() {
             });
             // 只自動接受一個邀請,在 RR-mapping可能比較不會出錯
             // 因為有時會同時存在前一組跟後一組的邀請(後開的 map先完成)
-            return;
+            return false; // jquery each use return false to break looping
           }
         }
       });
@@ -1670,7 +1670,7 @@ function gwh() {
   }
   // autoAcceptInvite('event', () => { console.log('Finished'); });
   function autoAcceptInvite(mapClass, callback) {
-    // const isProd =  false;
+    // const isProd = false;
     const version = `autoAcceptInvite(${mapClass})_1.0.0.0.0`;
     isProd ? logging(version) : console.log(version);
     const isAccepted = true;
@@ -1691,6 +1691,7 @@ function gwh() {
           if (!Number.isNaN(mapId)) {
             console.log('auto accept map invite of map id', mapId);
             hg.utils.TreasureMapUtil.acceptInvite(mapId, () => {
+              // MhUtils.closeAnyJsDialog();
               const X = document.querySelector('#jsDialogClose');
               if (X) X.click();
               if (callback)
@@ -1698,6 +1699,9 @@ function gwh() {
                   callback();
                 }, 2000);
             });
+            // 只自動接受一個邀請,在 RR-mapping可能比較不會出錯
+            // 因為有時會同時存在前一組跟後一組的邀請(後開的 map先完成)
+            return false; // jquery each use return false to break looping
           }
         }
       });
