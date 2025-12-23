@@ -26,7 +26,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.41.12.44';
+  const version = 'gwh_1.2.42.12.44';
   isProd ? logging(version) : console.log(version);
   const all = 'all';
   const maptainTypeKey = 'maptainType';
@@ -645,7 +645,11 @@ function gwh() {
       // 在 fortress
       if (environmentType === gwhAreas.fortress) {
         if (!isEndFortress) return isNotLeaving;
-        // 還有 map mice但必須終止就回 hill農資源
+        // 還有 map mice但必須終止時
+        // 如果 cinnamon太多就回 workshop農資源
+        if (myItems.cinnamon > setup.startCinnamonQty * 2)
+          return goWorkshop(setup);
+        // 預設回 hill農資源
         return goHill(setup);
       }
       // 不在 fortress
