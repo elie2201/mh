@@ -26,10 +26,11 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.45.12.46';
+  const version = 'gwh_1.2.47.12.46';
   isProd ? logging(version) : console.log(version);
   const all = 'all';
   const maptainTypeKey = 'maptainType';
+  const dusterCycleKey = 'dusterCycle';
   const scrollChests = {
     'Naughty List': {
       scroll: 'naughty_list_convertible',
@@ -205,10 +206,10 @@ function gwh() {
     if (settings.badGotdDates && settings.badGotdDates.indexOf(todayUTC) > -1)
       settings.isGoodGoTd = false;
     // auto mapping時啟動 forge/breaking的數量減半,增加 mapping的效率
-    if (settings.isAutoMapping) {
-      settings.startCinnamonQty = Math.round(settings.startCinnamonQty / 2);
-      settings.goHailstoneQty = Math.round(settings.goHailstoneQty / 2);
-    }
+    // if (settings.isAutoMapping) {
+    //   settings.startCinnamonQty = Math.round(settings.startCinnamonQty / 2);
+    //   settings.goHailstoneQty = Math.round(settings.goHailstoneQty / 2);
+    // } // 不需要了. isMapping時無視 startCinnamonQty/goHailstoneQty
     if (!settings.isAutoMapping) {
       checkArea(settings);
       return;
@@ -249,7 +250,10 @@ function gwh() {
       return;
     }
     const rtn = {};
+    rtn.mapId = myMap.map_id;
     if (myMap.can_claim_reward) rtn.isCompleted = true;
+    if (!myMap.can_send_invites) rtn.isFull = true;
+    if (!myMap.can_upgrade) rtn.isDusted = true;
     const hunters = myMap.hunters;
     let completed = [];
     for (let i = 0; i < hunters.length; i++) {
@@ -324,11 +328,41 @@ function gwh() {
         return;
       }
     }
+    // auto dust map when map is full and not dusted yet
+    if (mapInfo && !mapInfo.isDusted && mapInfo.isFull) {
+      const okMaptain = [maptainTypes.always, maptainTypes.once];
+      if (okMaptain.indexOf(localStorage[dusterCycleKey]) > -1) {
+        console.log('It is ok to dust');
+        autoDust(callback);
+        return;
+      }
+    }
     callback();
+  }
+  // autoDust(() => { console.log('Finish'); });
+  function autoDust(callback) {
+    const version = 'autoDust_1.0.0.0.0';
+    isProd ? logging(version, callback) : console.log(version, callback);
+    const dusterCycle = localStorage[dusterCycleKey];
+    if ([maptainTypes.always, maptainTypes.once].indexOf(dusterCycle) < 0) {
+      callback(); // autoMapping不須先檢查,異常就跳過跑 callback
+      return;
+    }
+    if (!mapInfo) {
+      callback(); // 需要 mapInfo的 mapId,沒有就跳過跑 callback
+      return;
+    }
+    // upgrade map
+    const next = () => {
+      if (dusterCycle === maptainTypes.once)
+        localStorage[dusterCycleKey] = maptainTypes.no;
+      callback();
+    };
+    const mapId = mapInfo.mapId;
+    if (mapId) hg.utils.TreasureMapUtil.upgrade(mapId, next, callback);
   }
   // autoClaimMapReward(() => { console.log('Finished'); });
   function autoClaimMapReward(callback) {
-    // const isProd = false;
     const version = 'autoClaimMapReward_1.0.0.0.0';
     isProd ? logging(version) : console.log(version);
     const maps = user.quests.QuestRelicHunter.maps;
@@ -373,7 +407,6 @@ function gwh() {
   }
   // autoAcceptInvite('event', () => { console.log('Finished'); });
   function autoAcceptInvite(mapClass, callback) {
-    // const isProd = false;
     const version = `autoAcceptInvite(${mapClass})_1.0.0.0.0`;
     isProd ? logging(version) : console.log(version);
     const isAccepted = true;
@@ -411,7 +444,6 @@ function gwh() {
   }
   // autoMaptain(MapClasses.event, 'lunar_new_year_scroll_case_convertible');
   function autoMaptain(mapClass, scrollType, callback) {
-    // const isProd = false;
     const version = `autoMaptain(${mapClass}, ${scrollType})_1.0.0.0.0`;
     isProd ? logging(version) : console.log(version);
     const allSnuids = {
@@ -511,7 +543,6 @@ function gwh() {
   }
   // autoInvite
   function autoInvite(mapClass, snuids, callback) {
-    // const isProd = false;
     const version = `autoInvite(${mapClass}, ${snuids}, ${callback})_1.0.0.0.0`;
     isProd ? logging(version) : console.log(version);
     const map = getMapByClass('event');
@@ -1388,6 +1419,126 @@ function gwh() {
 }
 // End #gwh
 
+// auto dust單元測試
+(() => {
+  const isProd = false;
+  const MapClasses = { treasuer: 'treasure', poster: 'poster', event: 'event' };
+  const dusterCycleKey = 'dusterCycle';
+  const maptainTypes = { always: 'always', once: 'once', no: '' };
+  const gwhAreas = {
+    hill: 'winter_hunt_grove',
+    workshop: 'winter_hunt_workshop',
+    fortress: 'winter_hunt_fortress'
+  };
+  const all = 'all';
+  let map = getMapByClass(MapClasses.event);
+  let mapInfo = null;
+  hg.utils.TreasureMapUtil.getMapInfo(map.map_id, (data) => {
+    const info = data; // MapInfo;
+    mapInfo = parseMapInfo(info);
+    console.log(mapInfo);
+    if (mapInfo && !mapInfo.isDusted && mapInfo.isFull) {
+      const okMaptain = [maptainTypes.always, maptainTypes.once];
+      if (okMaptain.indexOf(localStorage[dusterCycleKey]) > -1) {
+        console.log('It is ok to dust');
+        autoDust(() => {
+          console.log('Finish');
+        });
+        return;
+      }
+    }
+  });
+  function autoDust(callback) {
+    const version = 'autoDust_1.0.0.0.0';
+    isProd ? logging(version, callback) : console.log(version, callback);
+    const dusterCycle = localStorage[dusterCycleKey];
+    if ([maptainTypes.always, maptainTypes.once].indexOf(dusterCycle) < 0) {
+      callback(); // autoMapping不須先檢查,異常就跳過跑 callback
+      return;
+    }
+    if (!mapInfo) {
+      callback(); // 需要 mapInfo的 mapId,沒有就跳過跑 callback
+      return;
+    }
+    // upgrade map
+    const next = () => {
+      if (dusterCycle === maptainTypes.once)
+        localStorage[dusterCycleKey] = maptainTypes.no;
+      callback();
+    };
+    const mapId = mapInfo.mapId;
+    if (mapId) hg.utils.TreasureMapUtil.upgrade(mapId, next, callback);
+  }
+  function parseMapInfo(mapInfo) {
+    const version = 'parseMapInfo(';
+    isProd ? logging(version, mapInfo) : console.log(version, mapInfo);
+    if (!mapInfo) {
+      map = null;
+      mapInfo = null;
+      return;
+    }
+    const myMap = mapInfo.treasure_map;
+    if (!myMap) {
+      map = null;
+      mapInfo = null;
+      return;
+    }
+    const rtn = {};
+    rtn.mapId = myMap.map_id;
+    if (myMap.can_claim_reward) rtn.isCompleted = true;
+    if (!myMap.can_send_invites) rtn.isFull = true;
+    if (!myMap.can_upgrade) rtn.isDusted = true;
+    const hunters = myMap.hunters;
+    let completed = [];
+    for (let i = 0; i < hunters.length; i++) {
+      const hunter = hunters[i];
+      const completedIds = hunter.completed_goal_ids.mouse;
+      if (completedIds && completedIds.length > 0)
+        completed = completed.concat(completedIds);
+    }
+    console.log('completed mouse ids', completed);
+    const mouses = myMap.goals.mouse;
+    for (let i = 0; i < mouses.length; i++) {
+      const mouse = mouses[i];
+      if (completed.indexOf(mouse.unique_id) > -1) continue;
+      const type = mouse.type;
+      if (['joy', 'glazed'].indexOf(type) > -1) rtn.isGpp = true;
+      const areaIds = mouse.environment_ids;
+      if (areaIds && areaIds.length === 1) {
+        let area = null;
+        switch (areaIds[0]) {
+          case 68:
+            area = gwhAreas.fortress;
+            break;
+          case 69:
+            area = gwhAreas.hill;
+            break;
+          case 70:
+            area = gwhAreas.workshop;
+            break;
+          default:
+            break;
+        }
+        if (!rtn[area]) rtn[area] = [];
+        rtn[area].push(type);
+      } else {
+        if (!rtn[all]) rtn[all] = [];
+        rtn[all].push(type);
+      }
+    }
+    return rtn;
+  }
+  function getMapByClass(mapClass) {
+    const maps = user.quests.QuestRelicHunter.maps;
+    for (let i = 0; i < maps.length; i++) {
+      const element = maps[i];
+      if (element.map_class == mapClass) {
+        return element;
+      }
+    }
+    return null;
+  }
+})();
 // claim track reward單元測試
 (() => {
   const gwhAreas = {
@@ -1473,7 +1624,6 @@ function gwh() {
     });
   }
 })();
-
 // build golem單元測試
 /* 
 (() => {
@@ -1662,7 +1812,6 @@ function gwh() {
     return rtn;
   }
 })();
-
 // auto mapping單元測試
 (() => {
   // prettier-ignore
@@ -1704,7 +1853,6 @@ function gwh() {
   }
   // autoClaimMapReward(() => { console.log('Finished'); });
   function autoClaimMapReward(callback) {
-    // const isProd =  false;
     const version = 'autoClaimMapReward_1.0.0.0.0';
     isProd ? logging(version) : console.log(version);
     const maps = user.quests.QuestRelicHunter.maps;
@@ -1749,7 +1897,6 @@ function gwh() {
   }
   // autoAcceptInvite('event', () => { console.log('Finished'); });
   function autoAcceptInvite(mapClass, callback) {
-    // const isProd = false;
     const version = `autoAcceptInvite(${mapClass})_1.0.0.0.0`;
     isProd ? logging(version) : console.log(version);
     const isAccepted = true;
@@ -1798,7 +1945,6 @@ function gwh() {
     return null;
   }
 })();
-
 // mapInfo單元測試
 (() => {
   const MapClasses = { treasuer: 'treasure', poster: 'poster', event: 'event' };
@@ -1808,21 +1954,34 @@ function gwh() {
     fortress: 'winter_hunt_fortress'
   };
   const all = 'all';
-  const isProd = true;
-  const map = getMapByClass(MapClasses.event);
+  const isProd = false;
+  let map = getMapByClass(MapClasses.event);
+  let mapInfo = null;
   hg.utils.TreasureMapUtil.getMapInfo(map.map_id, (data) => {
     const info = data; // MapInfo;
-    console.log(parseMapInfo(info));
+    mapInfo = parseMapInfo(info);
+    console.log(mapInfo);
   });
   function parseMapInfo(mapInfo) {
     const version = 'parseMapInfo(';
     isProd ? logging(version, mapInfo) : console.log(version, mapInfo);
+    if (!mapInfo) {
+      map = null;
+      mapInfo = null;
+      return;
+    }
+    const myMap = mapInfo.treasure_map;
+    if (!myMap) {
+      map = null;
+      mapInfo = null;
+      return;
+    }
     const rtn = {};
-    const map = mapInfo.treasure_map;
-    if (map.can_claim_reward) rtn.isCompleted = true;
-    if (!map.can_send_invites) rtn.isFull = true;
-    if (!map.can_upgrade) rtn.isDusted = true;
-    const hunters = map.hunters;
+    rtn.mapId = myMap.map_id;
+    if (myMap.can_claim_reward) rtn.isCompleted = true;
+    if (!myMap.can_send_invites) rtn.isFull = true;
+    if (!myMap.can_upgrade) rtn.isDusted = true;
+    const hunters = myMap.hunters;
     let completed = [];
     for (let i = 0; i < hunters.length; i++) {
       const hunter = hunters[i];
@@ -1831,7 +1990,7 @@ function gwh() {
         completed = completed.concat(completedIds);
     }
     console.log('completed mouse ids', completed);
-    const mouses = map.goals.mouse;
+    const mouses = myMap.goals.mouse;
     for (let i = 0; i < mouses.length; i++) {
       const mouse = mouses[i];
       if (completed.indexOf(mouse.unique_id) > -1) continue;
@@ -1873,7 +2032,6 @@ function gwh() {
     return null;
   }
 })();
-
 // claim map reward單元測試
 (() => {
   claimReward(2);
