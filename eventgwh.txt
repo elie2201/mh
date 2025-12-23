@@ -26,7 +26,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.40.12.44';
+  const version = 'gwh_1.2.41.12.44';
   isProd ? logging(version) : console.log(version);
   const all = 'all';
   const maptainTypeKey = 'maptainType';
@@ -221,7 +221,7 @@ function gwh() {
       hg.utils.TreasureMapUtil.getMapInfo(map.map_id, (data) => {
         const info = isProd ? data : mapInfo;
         mapInfo = parseMapInfo(info);
-        console.log('mapInfo:', mapInfo);
+        console.log('parsed mapInfo:', mapInfo);
         // game data有時會沒 sync
         if (mapInfo && mapInfo.isCompleted) {
           setTimeout(() => {
@@ -234,9 +234,12 @@ function gwh() {
     });
   }
   function parseMapInfo(mapInfo) {
+    const version = 'parseMapInfo(';
+    isProd ? logging(version, mapInfo) : console.log(version, mapInfo);
     const rtn = {};
-    if (mapInfo.treasure_map.can_claim_reward) rtn.isCompleted = true;
-    const hunters = mapInfo.treasure_map.hunters;
+    const map = mapInfo.treasure_map;
+    if (map.can_claim_reward) rtn.isCompleted = true;
+    const hunters = map.hunters;
     let completed = [];
     for (let i = 0; i < hunters.length; i++) {
       const hunter = hunters[i];
@@ -245,7 +248,7 @@ function gwh() {
         completed = completed.concat(completedIds);
     }
     console.log('completed mouse ids', completed);
-    const mouses = mapInfo.treasure_map.goals.mouse;
+    const mouses = map.goals.mouse;
     for (let i = 0; i < mouses.length; i++) {
       const mouse = mouses[i];
       if (completed.indexOf(mouse.unique_id) > -1) continue;
@@ -522,6 +525,8 @@ function gwh() {
     }, 2000);
   }
   function checkArea(setup) {
+    const version = 'checkArea(';
+    isProd ? logging(version, setup) : console.log(version, setup);
     const enviromentType = MhUtils.getEnvironmentType();
     console.log('checkArea:', enviromentType, setup);
     switch (enviromentType) {
@@ -541,7 +546,8 @@ function gwh() {
   // Get item information from location-specific quest in location-specific algorithm.
   // check trap by item information and run location-specific algorithm.
   function iceFortress(setup) {
-    console.log('iceFortress(', setup);
+    const version = 'iceFortress(';
+    isProd ? logging(version, setup) : console.log(version, setup);
     const quest = isProd ? user.quests.QuestIceFortress : QuestIceFortress;
     const items = quest.items;
     initMyItems(items, setup);
@@ -606,7 +612,8 @@ function gwh() {
   }
   /** 如果 !setup.isMapping,不檢查還有沒有 map mice就回傳 false,*/
   function isMapTravelling(setup) {
-    console.log('isMapTravelling(', setup);
+    const version = 'isMapTravelling(';
+    isProd ? logging(version, setup) : console.log(version, setup);
     if (!setup.isAutoMapping) return isNotLeaving;
     if (!setup.isMapping) return isNotLeaving;
     const environmentType = MhUtils.getEnvironmentType();
@@ -651,6 +658,8 @@ function gwh() {
     return goHill(setup);
   }
   function goHill(setup) {
+    const version = 'goHill(';
+    isProd ? logging(version, setup) : console.log(version, setup);
     const environmentType = MhUtils.getEnvironmentType();
     if (environmentType === gwhAreas.hill) return isNotLeaving;
     travel(gwhAreas.hill, 2000, () => {
@@ -659,6 +668,8 @@ function gwh() {
     return isLeaving;
   }
   function goWorkshop(setup) {
+    const version = 'goWorkshop(';
+    isProd ? logging(version, setup) : console.log(version, setup);
     const environmentType = MhUtils.getEnvironmentType();
     if (environmentType === gwhAreas.workshop) return isNotLeaving;
     travel(gwhAreas.workshop, 2000, () => {
@@ -667,6 +678,8 @@ function gwh() {
     return isLeaving;
   }
   function goFortress(setup) {
+    const version = 'goFortress(';
+    isProd ? logging(version, setup) : console.log(version, setup);
     const environmentType = MhUtils.getEnvironmentType();
     if (environmentType === gwhAreas.fortress) return isNotLeaving;
     travel(gwhAreas.fortress, 2000, () => {
@@ -675,7 +688,10 @@ function gwh() {
     return isLeaving;
   }
   function initMyItems(items, setup) {
-    console.log('initMyItems', items, setup);
+    const version = 'initMyItems';
+    isProd
+      ? logging(version, items, setup)
+      : console.log(version, items, setup);
     myItems.pp = MyUtils.parseQuantity(items.pecan_pecorino_cheese.quantity);
     myItems.gpp = MyUtils.parseQuantity(
       items.glazed_pecan_pecorino_cheese.quantity
@@ -717,7 +733,7 @@ function gwh() {
     );
   }
   function golemWorkshop(setup) {
-    console.log('golemWorkshop(', setup);
+    logging('golemWorkshop(', setup);
     const quest = user.quests.QuestGolemWorkshop;
     const items = quest.items;
     initMyItems(items, setup);
@@ -749,7 +765,8 @@ function gwh() {
     return;
   }
   function cinnamonHill(setup) {
-    console.log('cinnamonHill(', setup);
+    const version = 'cinnamonHill(';
+    isProd ? logging(version, setup) : console.log(version, setup);
     const quest = user.quests.QuestCinnamonTreeGrove;
     const items = quest.items;
     initMyItems(items, setup);
@@ -780,6 +797,8 @@ function gwh() {
     checkTrap(setup);
   }
   function checkCinnamon(setup) {
+    const version = 'checkCinnamon(';
+    isProd ? logging(version, setup) : console.log(version, setup);
     if (isStartWorkshop) {
       console.log('travel to Golem Workshop');
       travel(gwhAreas.workshop, 2000, () => {
@@ -790,6 +809,8 @@ function gwh() {
     return false;
   }
   function checkTrap(setup) {
+    const version = 'checkTrap(';
+    isProd ? logging(version, setup) : console.log(version, setup);
     const enviromentType = MhUtils.getEnvironmentType();
     const quest = getQuest();
     let trap = null;
@@ -824,6 +845,8 @@ function gwh() {
    * 在 fortress只剩 glacia_ice_fist且 mapInfo.all沒有 mice時
    */
   function checkPPMiceBait(trap, setup) {
+    const version = 'checkPPMiceBait(';
+    isProd ? logging(version, trap, setup) : console.log(version, trap, setup);
     const environmentType = MhUtils.getEnvironmentType();
     // if (MhUtils.getEnvironmentType() !== gwhAreas.hill) return;
     if (mapInfo[all]) return;
@@ -841,6 +864,10 @@ function gwh() {
       trap[0] = setup.areaBaits.pp.name;
   }
   function containOnly(containing, contained) {
+    const version = 'containOnly(';
+    isProd
+      ? logging(version, containing, contained)
+      : console.log(version, containing, contained);
     if (!containing || !contained) return false;
     for (let i = 0; i < containing.length; i++) {
       const element = containing[i];
@@ -849,6 +876,8 @@ function gwh() {
     return true;
   }
   function getAreaBaitIds(setup) {
+    const version = 'getAreaBaitIds(';
+    isProd ? logging(version, setup) : console.log(version, setup);
     const rtn = [];
     const areaBaits = setup.areaBaits;
     for (const key in areaBaits) {
@@ -859,6 +888,8 @@ function gwh() {
     return rtn;
   }
   function getQuest() {
+    const version = 'getQuest';
+    isProd ? logging(version) : console.log(version);
     const enviromentType = MhUtils.getEnvironmentType();
     switch (enviromentType) {
       case gwhAreas.hill:
@@ -872,6 +903,10 @@ function gwh() {
     }
   }
   function handleTrap(trap, quest, setup) {
+    const version = 'handleTrap(';
+    isProd
+      ? logging(version, trap, quest, setup)
+      : console.log(version, trap, quest, setup);
     toggleFestiveSpirit(trap, quest, () => {
       if (trap) {
         // 裝備 GPP時,如果 isCheckPpMiceBait,checkPPMiceBait
@@ -886,10 +921,16 @@ function gwh() {
     });
   }
   function getNormalTrap(setup) {
+    const version = 'getNormalTrap(';
+    isProd ? logging(version, setup) : console.log(version, setup);
     return setup['normalTrap'][setup.isGoodGoTd ? gotd : normal];
   }
   // toggleFestiveSpirit([null,null,null,null,true,[true,false,false]], user.quests.QuestIceFortress);
   function toggleFestiveSpirit(trap, quest, callback) {
+    const version = 'toggleFestiveSpirit(';
+    isProd
+      ? logging(version, trap, quest, callback)
+      : console.log(version, trap, quest, callback);
     const isEnable = trap ? trap[4] : false;
     const isCannonsEnable = trap ? trap[5] : [false, false, false];
     // user.quests.QuestCinnamonTreeGrove.is_fuel_enabled;
@@ -911,7 +952,8 @@ function gwh() {
   // ajax(null, { action: 'toggle_fuel' }, 'managers/ajax/events/winter_hunt_region.php');
   // ajax(null, { action: 'toggle_maker', maker_type: 'head' }, 'managers/ajax/events/winter_hunt_golem_workshop.php');
   function ajax(element, params, uri) {
-    console.log('GWH ajax');
+    const version = 'GWH ajax';
+    isProd ? logging(version) : console.log(version);
     const callbackurl = 'https://www.mousehuntgame.com/';
     return new Promise((resolve, reject) => {
       const lastReadJournalEntryId = parseInt(
@@ -950,7 +992,9 @@ function gwh() {
   }
   // toggleCannons([true, false, true]);
   function toggleCannons(booleanArray, from, to) {
-    const enviromentType = user.environment_type || '';
+    const version = `toggleCannons(${booleanArray}, ${from}, ${to})`;
+    isProd ? logging(version) : console.log(version);
+    const enviromentType = MhUtils.getEnvironmentType();
     console.log('currently in', enviromentType);
     if (enviromentType != 'winter_hunt_fortress') return;
     console.log(booleanArray, from, to);
@@ -970,6 +1014,8 @@ function gwh() {
     }, Math.floor(400 + Math.random() * 300));
   }
   function toggleCannon(index, isEnable) {
+    const version = `toggleCannon(${index}, ${isEnable})`;
+    isProd ? logging(version) : console.log(version);
     const enviromentType = user.environment_type;
     console.log('currently in', enviromentType);
     if (enviromentType != 'winter_hunt_fortress') return;
@@ -990,7 +1036,9 @@ function gwh() {
   }
   // toggleForges([false, false, false]);
   function toggleForges(booleanArray, from, to) {
-    const enviromentType = user.environment_type || '';
+    const version = `toggleForges(${booleanArray}, ${from}, ${to})`;
+    isProd ? logging(version) : console.log(version);
+    const enviromentType = MhUtils.getEnvironmentType();
     console.log('currently in', enviromentType);
     if (enviromentType != 'winter_hunt_workshop') return;
     console.log(booleanArray, from, to);
@@ -1010,7 +1058,9 @@ function gwh() {
     }, Math.floor(400 + Math.random() * 300));
   }
   function toggleForge(index, isEnable) {
-    const enviromentType = user.environment_type;
+    const version = `toggleForge(${index}, ${isEnable})`;
+    isProd ? logging(version) : console.log(version);
+    const enviromentType = MhUtils.getEnvironmentType();
     console.log('currently in', enviromentType);
     if (enviromentType != 'winter_hunt_workshop') return;
     console.log('right location, try toggling');
@@ -1029,7 +1079,8 @@ function gwh() {
     ajax(null, params, uri);
   }
   function checkGolem(setup) {
-    isProd ? logging('Run checkGolem') : console.log('Run checkGolem');
+    const version = 'Run checkGolem';
+    isProd ? logging(version) : console.log(version);
     if (!setup.isAutoGolem) return;
     const quest = getQuest();
     console.log('Run checkGolem', quest);
@@ -1091,6 +1142,8 @@ function gwh() {
     }
   }
   function claimTrackReward(callback) {
+    const version = 'claimTrackReward(';
+    isProd ? logging(version, callback) : console.log(version, callback);
     const element = null;
     const params = {
       action: 'claim_reward_track'
@@ -1107,6 +1160,8 @@ function gwh() {
   }
   // upgradeGolem(0);
   function upgradeGolem(slot, callback) {
+    const version = `upgradeGolem(${slot},`;
+    isProd ? logging(version, callback) : console.log(version, callback);
     /* $('.headsUpDisplayWinterHuntRegionView__golemUpgradeButton')[0].click();
     $(
       '.greatWinterHuntGolemManagerUpgradeTabView__upgradeButton.greatWinterHuntDialogView__bigButton'
@@ -1135,6 +1190,8 @@ function gwh() {
   }
   // claimReward(0)
   function claimReward(slot, callback) {
+    const version = `claimGolemReward(${slot}`;
+    isProd ? logging(version, callback) : console.log(version, callback);
     // 點下 claim button後 claim reward請求就送出了, popup只是顯示結果而已,不需確認
     // const claimClass =
     //   '.headsUpDisplayWinterHuntRegionView__golemClaimRewardButton';
@@ -1292,8 +1349,8 @@ function gwh() {
     return rtn;
   }
   function travel(environmentType, milliseconds, callback) {
-    // prettier-ignore
-    // console.log('travel to:', environmentType, 'and reload after', milliseconds, 'seconds. callback', callback);
+    const version = `travel(${environmentType}, ${milliseconds},`;
+    isProd ? logging(version, callback) : console.log(version, callback);
     if (user.environment_type == environmentType) return;
     const timeout = milliseconds ? milliseconds : 2000;
     hg.utils.User.travel(environmentType, () => {
