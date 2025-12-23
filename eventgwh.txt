@@ -26,7 +26,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.43.12.46';
+  const version = 'gwh_1.2.45.12.46';
   isProd ? logging(version) : console.log(version);
   const all = 'all';
   const maptainTypeKey = 'maptainType';
@@ -220,7 +220,7 @@ function gwh() {
         return;
       }
       hg.utils.TreasureMapUtil.getMapInfo(map.map_id, (data) => {
-        const info = isProd ? data : mapInfo;
+        const info = isProd ? data : MapInfo;
         mapInfo = parseMapInfo(info);
         console.log('parsed mapInfo:', mapInfo);
         // game data有時會沒 sync
@@ -237,10 +237,20 @@ function gwh() {
   function parseMapInfo(mapInfo) {
     const version = 'parseMapInfo(';
     isProd ? logging(version, mapInfo) : console.log(version, mapInfo);
+    if (!mapInfo) {
+      map = null;
+      mapInfo = null;
+      return;
+    }
+    const myMap = mapInfo.treasure_map;
+    if (!myMap) {
+      map = null;
+      mapInfo = null;
+      return;
+    }
     const rtn = {};
-    const map = mapInfo.treasure_map;
-    if (map.can_claim_reward) rtn.isCompleted = true;
-    const hunters = map.hunters;
+    if (myMap.can_claim_reward) rtn.isCompleted = true;
+    const hunters = myMap.hunters;
     let completed = [];
     for (let i = 0; i < hunters.length; i++) {
       const hunter = hunters[i];
@@ -249,7 +259,7 @@ function gwh() {
         completed = completed.concat(completedIds);
     }
     console.log('completed mouse ids', completed);
-    const mouses = map.goals.mouse;
+    const mouses = myMap.goals.mouse;
     for (let i = 0; i < mouses.length; i++) {
       const mouse = mouses[i];
       if (completed.indexOf(mouse.unique_id) > -1) continue;
@@ -739,6 +749,7 @@ function gwh() {
       `isEndFortress: ${isEndFortress}`
     );
     console.log(
+      `isTooManyCinnamon:${isTooManyCinnamon}`,
       `isStartWorkshop:${isStartWorkshop}`,
       `isEndWorkshop:${isEndWorkshop}`
     );
@@ -1800,12 +1811,18 @@ function gwh() {
   const isProd = true;
   const map = getMapByClass(MapClasses.event);
   hg.utils.TreasureMapUtil.getMapInfo(map.map_id, (data) => {
-    const info = isProd ? data : mapInfo;
+    const info = data; // MapInfo;
     console.log(parseMapInfo(info));
   });
   function parseMapInfo(mapInfo) {
+    const version = 'parseMapInfo(';
+    isProd ? logging(version, mapInfo) : console.log(version, mapInfo);
     const rtn = {};
-    const hunters = mapInfo.treasure_map.hunters;
+    const map = mapInfo.treasure_map;
+    if (map.can_claim_reward) rtn.isCompleted = true;
+    if (!map.can_send_invites) rtn.isFull = true;
+    if (!map.can_upgrade) rtn.isDusted = true;
+    const hunters = map.hunters;
     let completed = [];
     for (let i = 0; i < hunters.length; i++) {
       const hunter = hunters[i];
@@ -1813,8 +1830,8 @@ function gwh() {
       if (completedIds && completedIds.length > 0)
         completed = completed.concat(completedIds);
     }
-    console.log(completed);
-    const mouses = mapInfo.treasure_map.goals.mouse;
+    console.log('completed mouse ids', completed);
+    const mouses = map.goals.mouse;
     for (let i = 0; i < mouses.length; i++) {
       const mouse = mouses[i];
       if (completed.indexOf(mouse.unique_id) > -1) continue;
@@ -8069,7 +8086,7 @@ const QuestCinnamonTreeGrove = {
   },
   canvas_page_url: 'https://www.mousehuntgame.com/'
 };
-const mapInfo = {
+const MapInfo = {
   asset_package_hash: '8a47b5fc363',
   server_info: '10.209.35.208 - web-xmas-as86d840c9',
   user: {
