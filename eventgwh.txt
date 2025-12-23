@@ -26,7 +26,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.43.12.45';
+  const version = 'gwh_1.2.43.12.46';
   isProd ? logging(version) : console.log(version);
   const all = 'all';
   const maptainTypeKey = 'maptainType';
@@ -726,9 +726,11 @@ function gwh() {
       (!setup.isMapping || myItems.pp > setup.startPpQty) &&
       (setup.isMapping || myItems.cinnamon > setup.startCinnamonQty);
     // || myItems.pp > parseInt(setup.startCinnamonQty / 3) // 不能 1/3,不然 workshop的 checkTrap還是會用 normal bait
-    // workshop沒 PP: mapping時回 hill農,不是 mapping時在 workshop農
+    // workshop沒 PP: mapping且沒有 cinnamon過剩時回 hill農,不是 mapping時在 workshop農
     isEndWorkshop =
-      (setup.isMapping && myItems.pp <= setup.ppKeptQty) ||
+      (setup.isMapping &&
+        myItems.pp <= setup.ppKeptQty &&
+        !isTooManyCinnamon) ||
       (!setup.isMapping && myItems.cinnamon < setup.cinnamonKeptQty);
     console.log('after init myItems:', myItems);
     console.log(
