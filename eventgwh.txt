@@ -26,7 +26,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.48.12.47';
+  const version = 'gwh_1.2.49.12.47';
   isProd ? logging(version) : console.log(version);
   const all = 'all';
   const maptainTypeKey = 'maptainType';
@@ -692,13 +692,13 @@ function gwh() {
     if (mapInfo[gwhAreas.workshop]) {
       // 在 workshop
       if (environmentType === gwhAreas.workshop) {
-        if (!isEndWorkshop) return isNotLeaving;
+        if (!isEndWorkshop || isTooManyCinnamon) return isNotLeaving;
         // 還有 map mice但必須終止就回 hill農資源
         return goHill(setup);
       }
       // 不在 workshop
       // 能啟動
-      if (isStartWorkshop) return goWorkshop(setup);
+      if (isStartWorkshop || isTooManyCinnamon) return goWorkshop(setup);
       // 不能啟動-回 hill農資源
       return goHill(setup);
     }
