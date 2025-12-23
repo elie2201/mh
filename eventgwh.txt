@@ -26,7 +26,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.47.12.46';
+  const version = 'gwh_1.2.47.12.47';
   isProd ? logging(version) : console.log(version);
   const all = 'all';
   const maptainTypeKey = 'maptainType';
@@ -215,24 +215,88 @@ function gwh() {
       return;
     }
     autoMapping(() => {
-      map = getMapByClass(MapClasses.event);
-      if (!map) {
-        checkArea(settings);
+      // map = getMapByClass(MapClasses.event);
+      // if (!map) {
+      //   checkArea(settings);
+      //   return;
+      // }
+      // hg.utils.TreasureMapUtil.getMapInfo(map.map_id, (data) => {
+      //   const info = isProd ? data : MapInfo;
+      //   mapInfo = parseMapInfo(info);
+      //   console.log('parsed mapInfo:', mapInfo);
+      //   // game data有時會沒 sync
+      //   if (mapInfo && mapInfo.isCompleted) {
+      //     setTimeout(() => {
+      //       run();
+      //     }, 1000);
+      //     return;
+      //   }
+      //   checkArea(settings);
+      // });
+      checkArea(settings);
+    });
+  }
+  // autoMapping(() => { console.log('Finished'); });
+  function autoMapping(callback) {
+    const version = 'autoMapping_1.0.0.0.4';
+    isProd ? logging(version) : console.log(version);
+    const selfInvoking = () => {
+      setTimeout(() => {
+        autoMapping(callback);
+      }, 1000);
+    };
+    const okMaptain = [maptainTypes.always, maptainTypes.once];
+    // claim map reward checking
+    map = getMapByClass(MapClasses.event);
+    if (map && map.is_complete) {
+      autoClaimMapReward(selfInvoking);
+      map = null;
+      return;
+    }
+    // accept invite checking
+    const quest = user.quests.QuestRelicHunter;
+    if (!map && (quest.num_invites || 0) > 0) {
+      autoAcceptInvite(MapClasses.event, selfInvoking);
+      return;
+    }
+    // autoMaptain: buy and use scroll checking(invite in buy and use)
+    if (!map) {
+      if (okMaptain.indexOf(localStorage[maptainTypeKey]) > -1) {
+        autoMaptain(
+          MapClasses.event,
+          scrollChests['Naughty List'].scroll,
+          selfInvoking
+        );
         return;
       }
-      hg.utils.TreasureMapUtil.getMapInfo(map.map_id, (data) => {
-        const info = isProd ? data : MapInfo;
-        mapInfo = parseMapInfo(info);
-        console.log('parsed mapInfo:', mapInfo);
-        // game data有時會沒 sync
-        if (mapInfo && mapInfo.isCompleted) {
-          setTimeout(() => {
-            run();
-          }, 1000);
+    }
+    hg.utils.TreasureMapUtil.getMapInfo(map.map_id, (data) => {
+      const info = isProd ? data : MapInfo;
+      mapInfo = parseMapInfo(info);
+      if (mapInfo && mapInfo.isCompleted) {
+        console.plog('game data有時會沒 sync: map is completed');
+        setTimeout(() => {
+          MhUtils.reloadWithMessage('map completed? Reloading...');
+          // run();
+        }, 1000);
+        return;
+      }
+      console.log('auto dust map when map is full and not dusted yet', mapInfo);
+      // 減少讀取 localStorage
+      if (mapInfo && !mapInfo.isDusted && mapInfo.isFull) {
+        console.log('Map is ok to dust');
+        if (okMaptain.indexOf(localStorage[dusterCycleKey]) > -1) {
+          console.log('I am ok to dust');
+          autoDust(() => {
+            mapInfo.isDusted = true;
+            callback();
+          });
           return;
         }
-        checkArea(settings);
-      });
+        callback();
+        return;
+      }
+      callback();
     });
   }
   function parseMapInfo(mapInfo) {
@@ -293,51 +357,6 @@ function gwh() {
       }
     }
     return rtn;
-  }
-  // autoMapping(() => { console.log('Finished'); });
-  function autoMapping(callback) {
-    const version = 'autoMapping_1.0.0.0.3';
-    isProd ? logging(version) : console.log(version);
-    const selfInvoking = () => {
-      setTimeout(() => {
-        autoMapping(callback);
-      }, 1000);
-    };
-    // claim map reward checking
-    map = getMapByClass(MapClasses.event);
-    if (map && map.is_complete) {
-      autoClaimMapReward(selfInvoking);
-      map = null;
-      return;
-    }
-    // accept invite checking
-    const quest = user.quests.QuestRelicHunter;
-    if (!map && (quest.num_invites || 0) > 0) {
-      autoAcceptInvite(MapClasses.event, selfInvoking);
-      return;
-    }
-    // autoMaptain: buy and use scroll checking(invite in buy and use)
-    if (!map) {
-      const okMaptain = [maptainTypes.always, maptainTypes.once];
-      if (okMaptain.indexOf(localStorage[maptainTypeKey]) > -1) {
-        autoMaptain(
-          MapClasses.event,
-          scrollChests['Naughty List'].scroll,
-          selfInvoking
-        );
-        return;
-      }
-    }
-    // auto dust map when map is full and not dusted yet
-    if (mapInfo && !mapInfo.isDusted && mapInfo.isFull) {
-      const okMaptain = [maptainTypes.always, maptainTypes.once];
-      if (okMaptain.indexOf(localStorage[dusterCycleKey]) > -1) {
-        console.log('It is ok to dust');
-        autoDust(callback);
-        return;
-      }
-    }
-    callback();
   }
   // autoDust(() => { console.log('Finish'); });
   function autoDust(callback) {
@@ -1437,6 +1456,7 @@ function gwh() {
     const info = data; // MapInfo;
     mapInfo = parseMapInfo(info);
     console.log(mapInfo);
+    console.log('auto dust map when map is full and not dusted yet');
     if (mapInfo && !mapInfo.isDusted && mapInfo.isFull) {
       const okMaptain = [maptainTypes.always, maptainTypes.once];
       if (okMaptain.indexOf(localStorage[dusterCycleKey]) > -1) {
@@ -2223,7 +2243,10 @@ function ajax(element, params) {
 // const MOUSEHUNT_BASE_URL = 'https://www.mousehuntgame.com/';
 const MapClasses = { treasuer: 'treasure', poster: 'poster', event: 'event' };
 const MyUtils = { parseQuantity() {} };
-const MhUtils = { getEnvironmentType() {} };
+const MhUtils = {
+  getEnvironmentType() {},
+  reloadWithMessage(msg, soundHorn) {}
+};
 const eventRegistry = {};
 const user = {};
 user.environment_type = 'claw_shot_city';
