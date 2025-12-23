@@ -26,7 +26,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.47.12.47';
+  const version = 'gwh_1.2.48.12.47';
   isProd ? logging(version) : console.log(version);
   const all = 'all';
   const maptainTypeKey = 'maptainType';
@@ -356,6 +356,7 @@ function gwh() {
         rtn[all].push(type);
       }
     }
+    console.log('parsed mapInfo:', rtn);
     return rtn;
   }
   // autoDust(() => { console.log('Finish'); });
