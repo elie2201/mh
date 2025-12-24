@@ -26,7 +26,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.49.12.47';
+  const version = 'gwh_1.2.49.12.48';
   isProd ? logging(version) : console.log(version);
   const all = 'all';
   const maptainTypeKey = 'maptainType';
@@ -246,22 +246,25 @@ function gwh() {
       }, 1000);
     };
     const okMaptain = [maptainTypes.always, maptainTypes.once];
-    // claim map reward checking
+    console.log('claim map reward checking');
     map = getMapByClass(MapClasses.event);
     if (map && map.is_complete) {
       autoClaimMapReward(selfInvoking);
       map = null;
       return;
     }
-    // accept invite checking
+    console.log('accept invite checking');
     const quest = user.quests.QuestRelicHunter;
     if (!map && (quest.num_invites || 0) > 0) {
       autoAcceptInvite(MapClasses.event, selfInvoking);
       return;
     }
-    // autoMaptain: buy and use scroll checking(invite in buy and use)
+    console.log(
+      'autoMaptain: buy and use scroll checking(invite in buy and use)'
+    );
     if (!map) {
       if (okMaptain.indexOf(localStorage[maptainTypeKey]) > -1) {
+        console.log('is autoMaptain, buy and use scroll and invite');
         autoMaptain(
           MapClasses.event,
           scrollChests['Naughty List'].scroll,
@@ -269,7 +272,11 @@ function gwh() {
         );
         return;
       }
+      console.log('不在地圖中又不是 maptain,結束 autoMapping呼叫 callback');
+      callback();
+      return;
     }
+    console.log('Must be in map, mapId:', map.map_id);
     hg.utils.TreasureMapUtil.getMapInfo(map.map_id, (data) => {
       const info = isProd ? data : MapInfo;
       mapInfo = parseMapInfo(info);
