@@ -46,7 +46,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.50.12.48';
+  const version = 'gwh_1.2.50.12.49';
   isProd ? logging(version) : console.log(version);
   const all = 'all';
   const maptainTypeKey = 'maptainType';
@@ -402,8 +402,11 @@ function gwh() {
     const mapGroup = findNowGroup(mapInfo);
     if (!mapGroup) return;
     if (MhUtils.getSnUserId() !== mapGroup[3]) return;
-    localStorage[maptainTypeKey] = maptainTypes.once;
-    localStorage[dusterCycleKey] = maptainTypes.once;
+    // 減少寫入 localStorage
+    if (localStorage[maptainTypeKey] !== maptainTypes.once)
+      localStorage[maptainTypeKey] = maptainTypes.once;
+    if (localStorage[dusterCycleKey] !== maptainTypes.once)
+      localStorage[dusterCycleKey] = maptainTypes.once;
   }
   function findNowGroup(mapInfo) {
     const version = 'findNowGroup(';
