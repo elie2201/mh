@@ -46,7 +46,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.50.13.49';
+  const version = 'gwh_1.2.50.13.50';
   isProd ? logging(version) : console.log(version);
   const all = 'all';
   const maptainTypeKey = 'maptainType';
@@ -316,8 +316,11 @@ function gwh() {
       if (mapInfo && mapInfo.isFull) {
         if (!mapInfo.isDusted) {
           console.log('Map is full and not dusted, ok to dust');
-          if (okMaptain.indexOf(localStorage[dusterCycleKey]) > -1) {
-            console.log('I am ok to dust');
+          if (
+            okMaptain.indexOf(localStorage[dusterCycleKey]) > -1 &&
+            MhUtils.getSnUserId() === mapInfo.maptain
+          ) {
+            console.log('I am maptain and ok to dust');
             autoDust(() => {
               mapInfo.isDusted = true;
               console.log(
