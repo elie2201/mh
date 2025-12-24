@@ -46,7 +46,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.50.12.49';
+  const version = 'gwh_1.2.50.13.49';
   isProd ? logging(version) : console.log(version);
   const all = 'all';
   const maptainTypeKey = 'maptainType';
@@ -1454,42 +1454,42 @@ function gwh() {
   };
   const all = 'all';
   const allSnuids = {
-    angel: '100000656351135',
-    angela: '100000556925297',
-    angelie: '100000724831315',
-    anthony: '100000612521913',
-    levine: '100000578963305',
-    elie: '1842354617',
-    kelly: '100001064572224',
-    kevin: '100000636731698',
-    kitty: '100000541126764',
-    levi: '1142000722517150',
-    lydia: 'hg_8222e273c0d07aa036e56ed17a8f7884',
-    mary: '100000520204559',
-    mina: '100000669404954',
-    monica: '100000633987931',
-    nina: '100000473806593',
-    pola: '100000062975901',
-    raphael: '468834843316798',
-    rose: '100000533948473',
-    hsilung: '100000122134338',
-    van: '100000096968840',
-    vera: 'hg_7b359afdc278e154c3c6f5c6a2f1ba31',
-    vivienne: '100000638927202',
-    weyl: '1794714531',
-    vanne: '100000438303274',
-    riem: 'hg_d783ff747d3b60073ef541d335ff901d',
-    kaze: 'hg_1602095c6c0a2376b3bbb12e417df9a4',
-    sky: 'hg_3207d1fd7e0a8bca4bdef74c378a6a32',
-    shall: 'hg_81538b33309a53ae077d5f01f53f6c06',
-    furt: 'hg_62a01c775dd2fe8670b6cb46b31c1318',
-    feyn: 'hg_2d25dd402e32439c658e10b62d1d64bf',
-    rebec: 'hg_3aee6d83ca43348e580141870193b531',
-    renee: 'hg_91cbc542b246f2f8b4f0f3b446915199',
-    haru: 'hg_5eeb1174c05069baa7fa40bd82897130',
-    Umr: 'hg_52952f2bb5ff36565d7936529f156349',
-    scent: 'hg_219f8417793705b8bfe8c4a01ecce1fc',
-    stein: 'hg_9ab9014e7b20bd60ce4a31485651e008'
+    angel: '',
+    angela: '',
+    angelie: '',
+    anthony: '',
+    levine: '',
+    elie: '',
+    kelly: '',
+    kevin: '',
+    kitty: '',
+    levi: '',
+    lydia: '',
+    mary: '',
+    mina: '',
+    monica: '',
+    nina: '',
+    pola: '',
+    raphael: '',
+    rose: '',
+    hsilung: '',
+    van: '',
+    vera: '',
+    vivienne: '',
+    weyl: '',
+    vanne: '',
+    riem: '',
+    kaze: '',
+    sky: '',
+    shall: '',
+    furt: '',
+    feyn: '',
+    rebec: '',
+    renee: '',
+    haru: '',
+    Umr: '',
+    scent: '',
+    stein: ''
   };
   // prettier-ignore
   const mapGroups = [
@@ -1799,8 +1799,11 @@ function gwh() {
     const mapGroup = findNowGroup(mapInfo);
     if (!mapGroup) return;
     if (MhUtils.getSnUserId() !== mapGroup[3]) return;
-    localStorage[maptainTypeKey] = maptainTypes.once;
-    localStorage[dusterCycleKey] = maptainTypes.once;
+    // 減少寫入 localStorage
+    if (localStorage[maptainTypeKey] !== maptainTypes.once)
+      localStorage[maptainTypeKey] = maptainTypes.once;
+    if (localStorage[dusterCycleKey] !== maptainTypes.once)
+      localStorage[dusterCycleKey] = maptainTypes.once;
   }
   function findNowGroup(mapInfo) {
     const version = 'findNowGroup(';
