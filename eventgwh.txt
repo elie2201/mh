@@ -19,6 +19,26 @@ function gwh() {
   const maptainTypes = { always: 'always', once: 'once', no: '' };
   const isLeaving = true;
   const isNotLeaving = false;
+  // prettier-ignore
+  const mapGroups = [
+    [allSnuids.elie],[allSnuids.raphael],[allSnuids.van],[allSnuids.levi],[allSnuids.pola],
+    [allSnuids.weyl],[allSnuids.levine],[allSnuids.kelly],[allSnuids.angel],[allSnuids.mina],
+    [allSnuids.vanne],[allSnuids.angelie],[allSnuids.anthony],[allSnuids.monica],[allSnuids.vivienne],
+    [allSnuids.lydia],[allSnuids.kevin],[allSnuids.nina],[allSnuids.rose],
+    [allSnuids.vera],[allSnuids.hsilung],[allSnuids.angela],[allSnuids.kitty],[allSnuids.mary],
+    [allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt],
+    [allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn],
+    [allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec],
+    [allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee],
+    [allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru],
+    [allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr],
+    [allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent],
+    [allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein],
+    [allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem],
+    [allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze],
+    [allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky],
+    [allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall]
+  ];
   const enviromentType = MhUtils.getEnvironmentType();
   if (
     [gwhAreas.hill, gwhAreas.workshop, gwhAreas.fortress].indexOf(
@@ -26,7 +46,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.49.12.48';
+  const version = 'gwh_1.2.50.12.48';
   isProd ? logging(version) : console.log(version);
   const all = 'all';
   const maptainTypeKey = 'maptainType';
@@ -247,7 +267,7 @@ function gwh() {
     };
     const okMaptain = [maptainTypes.always, maptainTypes.once];
     console.log('claim map reward checking');
-    map = getMapByClass(MapClasses.event);
+    map = MhUtils.getMapByClass(MapClasses.event);
     if (map && map.is_complete) {
       autoClaimMapReward(selfInvoking);
       map = null;
@@ -259,12 +279,10 @@ function gwh() {
       autoAcceptInvite(MapClasses.event, selfInvoking);
       return;
     }
-    console.log(
-      'autoMaptain: buy and use scroll checking(invite in buy and use)'
-    );
+    console.log('autoMaptain: buy scroll=>use scroll=>(invite) checking');
     if (!map) {
       if (okMaptain.indexOf(localStorage[maptainTypeKey]) > -1) {
-        console.log('is autoMaptain, buy and use scroll and invite');
+        console.log('is autoMaptain, buy=>use scroll=>invite');
         autoMaptain(
           MapClasses.event,
           scrollChests['Naughty List'].scroll,
@@ -280,26 +298,45 @@ function gwh() {
     hg.utils.TreasureMapUtil.getMapInfo(map.map_id, (data) => {
       const info = isProd ? data : MapInfo;
       mapInfo = parseMapInfo(info);
-      if (mapInfo && mapInfo.isCompleted) {
-        console.plog('game data有時會沒 sync: map is completed');
-        setTimeout(() => {
-          MhUtils.reloadWithMessage('map completed? Reloading...');
-          // run();
-        }, 1000);
+      if (!mapInfo) {
+        map = null;
+        callback();
         return;
       }
-      console.log('auto dust map when map is full and not dusted yet', mapInfo);
+      if (mapInfo && mapInfo.isCompleted) {
+        console.plog('到這裡不應該 map is completed.game data沒 sync?');
+        setTimeout(() => {
+          MhUtils.reloadWithMessage('map completed!? Reloading...');
+          // run();
+        }, 2000);
+        return;
+      }
       // 減少讀取 localStorage
-      if (mapInfo && !mapInfo.isDusted && mapInfo.isFull) {
-        console.log('Map is ok to dust');
-        if (okMaptain.indexOf(localStorage[dusterCycleKey]) > -1) {
-          console.log('I am ok to dust');
-          autoDust(() => {
-            mapInfo.isDusted = true;
-            callback();
-          });
-          return;
+      console.log('mapInfo exists and is full?', mapInfo);
+      if (mapInfo && mapInfo.isFull) {
+        if (!mapInfo.isDusted) {
+          console.log('Map is full and not dusted, ok to dust');
+          if (okMaptain.indexOf(localStorage[dusterCycleKey]) > -1) {
+            console.log('I am ok to dust');
+            autoDust(() => {
+              mapInfo.isDusted = true;
+              console.log(
+                'localStorage:',
+                localStorage[maptainTypeKey],
+                localStorage[dusterCycleKey]
+              );
+              callback();
+            });
+            return;
+          }
         }
+        console.log('Map is full and dusted, auto next maptain when dusted');
+        autoNextMaptain(mapInfo);
+        console.log(
+          'localStorage:',
+          localStorage[maptainTypeKey],
+          localStorage[dusterCycleKey]
+        );
         callback();
         return;
       }
@@ -309,17 +346,9 @@ function gwh() {
   function parseMapInfo(mapInfo) {
     const version = 'parseMapInfo(';
     isProd ? logging(version, mapInfo) : console.log(version, mapInfo);
-    if (!mapInfo) {
-      map = null;
-      mapInfo = null;
-      return;
-    }
+    if (!mapInfo) return null;
     const myMap = mapInfo.treasure_map;
-    if (!myMap) {
-      map = null;
-      mapInfo = null;
-      return;
-    }
+    if (!myMap) return null;
     const rtn = {};
     rtn.mapId = myMap.map_id;
     if (myMap.can_claim_reward) rtn.isCompleted = true;
@@ -329,6 +358,7 @@ function gwh() {
     let completed = [];
     for (let i = 0; i < hunters.length; i++) {
       const hunter = hunters[i];
+      if (hunter.captain) rtn.maptain = (hunter.sn_user_id + '').trim();
       const completedIds = hunter.completed_goal_ids.mouse;
       if (completedIds && completedIds.length > 0)
         completed = completed.concat(completedIds);
@@ -366,7 +396,26 @@ function gwh() {
     console.log('parsed mapInfo:', rtn);
     return rtn;
   }
-  // autoDust(() => { console.log('Finish'); });
+  function autoNextMaptain(mapInfo) {
+    const version = 'autoNextMaptain(';
+    isProd ? logging(version, mapInfo) : console.log(version, mapInfo);
+    const mapGroup = findNowGroup(mapInfo);
+    if (!mapGroup) return;
+    if (MhUtils.getSnUserId() !== mapGroup[3]) return;
+    localStorage[maptainTypeKey] = maptainTypes.once;
+    localStorage[dusterCycleKey] = maptainTypes.once;
+  }
+  function findNowGroup(mapInfo) {
+    const version = 'findNowGroup(';
+    isProd ? logging(version, mapInfo) : console.log(version, mapInfo);
+    const maptain = mapInfo.maptain;
+    for (let i = 0; i < mapGroups.length; i++) {
+      const mapGroup = mapGroups[i];
+      const groupMaptain = mapGroup[0];
+      if (groupMaptain === maptain) return mapGroup;
+    }
+    return null;
+  }
   function autoDust(callback) {
     const version = 'autoDust_1.0.0.0.0';
     isProd ? logging(version, callback) : console.log(version, callback);
@@ -440,7 +489,7 @@ function gwh() {
     const isNotAccepted = !isAccepted;
     const quest = user.quests.QuestRelicHunter;
     if ((quest.num_invites || 0) < 1) return isNotAccepted;
-    const map = getMapByClass(mapClass);
+    const map = MhUtils.getMapByClass(mapClass);
     if (map) return isNotAccepted;
     console.log(`auto accept map invite of map class: ${mapClass}`);
     hg.controllers.TreasureMapController.showCommunity();
@@ -473,70 +522,12 @@ function gwh() {
   function autoMaptain(mapClass, scrollType, callback) {
     const version = `autoMaptain(${mapClass}, ${scrollType})_1.0.0.0.0`;
     isProd ? logging(version) : console.log(version);
-    const allSnuids = {
-      angel: '100000656351135',
-      angela: '100000556925297',
-      angelie: '100000724831315',
-      anthony: '100000612521913',
-      levine: '100000578963305',
-      elie: '1842354617',
-      kelly: '100001064572224',
-      kevin: '100000636731698',
-      kitty: '100000541126764',
-      levi: '1142000722517150',
-      lydia: 'hg_8222e273c0d07aa036e56ed17a8f7884',
-      mary: '100000520204559',
-      mina: '100000669404954',
-      monica: '100000633987931',
-      nina: '100000473806593',
-      pola: '100000062975901',
-      raphael: '468834843316798',
-      rose: '100000533948473',
-      hsilung: '100000122134338',
-      van: '100000096968840',
-      vera: 'hg_7b359afdc278e154c3c6f5c6a2f1ba31',
-      vivienne: '100000638927202',
-      weyl: '1794714531',
-      vanne: '100000438303274',
-      riemann: 'hg_d783ff747d3b60073ef541d335ff901d',
-      kaze: 'hg_1602095c6c0a2376b3bbb12e417df9a4',
-      sky: 'hg_3207d1fd7e0a8bca4bdef74c378a6a32',
-      shallow: 'hg_81538b33309a53ae077d5f01f53f6c06',
-      furt: 'hg_62a01c775dd2fe8670b6cb46b31c1318',
-      feynmann: 'hg_2d25dd402e32439c658e10b62d1d64bf',
-      rebecca: 'hg_3aee6d83ca43348e580141870193b531',
-      renee: 'hg_91cbc542b246f2f8b4f0f3b446915199',
-      haruhi: 'hg_5eeb1174c05069baa7fa40bd82897130',
-      Umr: 'hg_52952f2bb5ff36565d7936529f156349',
-      scent: 'hg_219f8417793705b8bfe8c4a01ecce1fc',
-      steins: 'hg_9ab9014e7b20bd60ce4a31485651e008'
-    };
-    // prettier-ignore
-    const mapGroups = [
-      [allSnuids.elie],[allSnuids.raphael],[allSnuids.van],[allSnuids.levi],[allSnuids.pola],
-      [allSnuids.weyl],[allSnuids.levine],[allSnuids.kelly],[allSnuids.angel],[allSnuids.mina],
-      [allSnuids.vanne],[allSnuids.angelie],[allSnuids.anthony],[allSnuids.monica],[allSnuids.vivienne],
-      [allSnuids.lydia],[allSnuids.kevin],[allSnuids.nina],[allSnuids.rose],
-      [allSnuids.vera],[allSnuids.hsilung],[allSnuids.angela],[allSnuids.kitty],[allSnuids.mary],
-      [allSnuids.riemann,allSnuids.kaze,allSnuids.sky,allSnuids.shallow,allSnuids.furt],
-      [allSnuids.kaze,allSnuids.sky,allSnuids.shallow,allSnuids.furt,allSnuids.feynmann],
-      [allSnuids.sky,allSnuids.shallow,allSnuids.furt,allSnuids.feynmann,allSnuids.rebecca],
-      [allSnuids.shallow,allSnuids.furt,allSnuids.feynmann,allSnuids.rebecca,allSnuids.renee],
-      [allSnuids.furt,allSnuids.feynmann,allSnuids.rebecca,allSnuids.renee,allSnuids.haruhi],
-      [allSnuids.feynmann,allSnuids.rebecca,allSnuids.renee,allSnuids.haruhi,allSnuids.Umr],
-      [allSnuids.rebecca,allSnuids.renee,allSnuids.haruhi,allSnuids.Umr,allSnuids.scent],
-      [allSnuids.renee,allSnuids.haruhi,allSnuids.Umr,allSnuids.scent,allSnuids.steins],
-      [allSnuids.haruhi,allSnuids.Umr,allSnuids.scent,allSnuids.steins,allSnuids.riemann],
-      [allSnuids.Umr,allSnuids.scent,allSnuids.steins,allSnuids.riemann,allSnuids.kaze],
-      [allSnuids.scent,allSnuids.steins,allSnuids.riemann,allSnuids.kaze,allSnuids.sky],
-      [allSnuids.steins,allSnuids.riemann,allSnuids.kaze,allSnuids.sky,allSnuids.shallow]
-    ];
     const maptainType = localStorage[maptainTypeKey];
     if ([maptainTypes.always, maptainTypes.once].indexOf(maptainType) < 0)
       return; // autoMapping必須先檢查,不然異常,斷
     if (!mapClass || !MapClasses[mapClass]) return; // 異常,斷
     if (!scrollType || scrollType == '') return; // 異常,斷
-    const map = getMapByClass(mapClass);
+    const map = MhUtils.getMapByClass(mapClass);
     if (map) return; // autoMapping必須先檢查,不然異常,斷
     const snuid = MhUtils.getSnUserId();
     let snuids = null;
@@ -572,7 +563,7 @@ function gwh() {
   function autoInvite(mapClass, snuids, callback) {
     const version = `autoInvite(${mapClass}, ${snuids}, ${callback})_1.0.0.0.0`;
     isProd ? logging(version) : console.log(version);
-    const map = getMapByClass('event');
+    const map = MhUtils.getMapByClass('event');
     if (!map) {
       setTimeout(() => {
         MhUtils.closeAnyJsDialog();
@@ -1446,10 +1437,11 @@ function gwh() {
 }
 // End #gwh
 
-// auto dust單元測試
+// auto next maptain單元測試
 (() => {
   const isProd = false;
   const MapClasses = { treasuer: 'treasure', poster: 'poster', event: 'event' };
+  const maptainTypeKey = 'maptainType';
   const dusterCycleKey = 'dusterCycle';
   const maptainTypes = { always: 'always', once: 'once', no: '' };
   const gwhAreas = {
@@ -1458,58 +1450,298 @@ function gwh() {
     fortress: 'winter_hunt_fortress'
   };
   const all = 'all';
-  let map = getMapByClass(MapClasses.event);
-  let mapInfo = null;
-  hg.utils.TreasureMapUtil.getMapInfo(map.map_id, (data) => {
-    const info = data; // MapInfo;
-    mapInfo = parseMapInfo(info);
-    console.log(mapInfo);
-    console.log('auto dust map when map is full and not dusted yet');
-    if (mapInfo && !mapInfo.isDusted && mapInfo.isFull) {
-      const okMaptain = [maptainTypes.always, maptainTypes.once];
-      if (okMaptain.indexOf(localStorage[dusterCycleKey]) > -1) {
-        console.log('It is ok to dust');
-        autoDust(() => {
-          console.log('Finish');
-        });
-        return;
+  const allSnuids = {
+    angel: '100000656351135',
+    angela: '100000556925297',
+    angelie: '100000724831315',
+    anthony: '100000612521913',
+    levine: '100000578963305',
+    elie: '1842354617',
+    kelly: '100001064572224',
+    kevin: '100000636731698',
+    kitty: '100000541126764',
+    levi: '1142000722517150',
+    lydia: 'hg_8222e273c0d07aa036e56ed17a8f7884',
+    mary: '100000520204559',
+    mina: '100000669404954',
+    monica: '100000633987931',
+    nina: '100000473806593',
+    pola: '100000062975901',
+    raphael: '468834843316798',
+    rose: '100000533948473',
+    hsilung: '100000122134338',
+    van: '100000096968840',
+    vera: 'hg_7b359afdc278e154c3c6f5c6a2f1ba31',
+    vivienne: '100000638927202',
+    weyl: '1794714531',
+    vanne: '100000438303274',
+    riem: 'hg_d783ff747d3b60073ef541d335ff901d',
+    kaze: 'hg_1602095c6c0a2376b3bbb12e417df9a4',
+    sky: 'hg_3207d1fd7e0a8bca4bdef74c378a6a32',
+    shall: 'hg_81538b33309a53ae077d5f01f53f6c06',
+    furt: 'hg_62a01c775dd2fe8670b6cb46b31c1318',
+    feyn: 'hg_2d25dd402e32439c658e10b62d1d64bf',
+    rebec: 'hg_3aee6d83ca43348e580141870193b531',
+    renee: 'hg_91cbc542b246f2f8b4f0f3b446915199',
+    haru: 'hg_5eeb1174c05069baa7fa40bd82897130',
+    Umr: 'hg_52952f2bb5ff36565d7936529f156349',
+    scent: 'hg_219f8417793705b8bfe8c4a01ecce1fc',
+    stein: 'hg_9ab9014e7b20bd60ce4a31485651e008'
+  };
+  // prettier-ignore
+  const mapGroups = [
+    [allSnuids.elie],[allSnuids.raphael],[allSnuids.van],[allSnuids.levi],[allSnuids.pola],
+    [allSnuids.weyl],[allSnuids.levine],[allSnuids.kelly],[allSnuids.angel],[allSnuids.mina],
+    [allSnuids.vanne],[allSnuids.angelie],[allSnuids.anthony],[allSnuids.monica],[allSnuids.vivienne],
+    [allSnuids.lydia],[allSnuids.kevin],[allSnuids.nina],[allSnuids.rose],
+    [allSnuids.vera],[allSnuids.hsilung],[allSnuids.angela],[allSnuids.kitty],[allSnuids.mary],
+    [allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt],
+    [allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn],
+    [allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec],
+    [allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee],
+    [allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru],
+    [allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr],
+    [allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent],
+    [allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein],
+    [allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem],
+    [allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze],
+    [allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky],
+    [allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall]
+  ];
+  /** Utilities */
+  const MyUtils = (function () {
+    const utils = {
+      /**
+       * Format date to ISO date string format yyyy-MM-dd.
+       * Return today's date string if no argument
+       */
+      toISODateString(date) {
+        const d = date ? date : new Date();
+        return d.toLocaleDateString('en-CA');
+      },
+      /** Remove any comma in number expression and then parse to integer
+       * return 0 if argument is null or isNaN(after remove comma)
+       */
+      parseQuantity(qty) {
+        const strQty = ((qty || 0) + '').trim();
+        const rtn = parseInt(strQty.replaceAll(',', ''));
+        return Number.isNaN(rtn) ? 0 : rtn;
+      },
+      /** trim string or number, to empty if null or undefined */
+      trimToEmpty(str) {
+        return this.trimToDefault(str);
+      },
+      /** trim string or number, to default if null or undefined */
+      trimToDefault(str, deflt) {
+        return str === 0 ? '0' : ((str || (deflt ? deflt : '')) + '').trim();
+      },
+      /** get a integer between min and max */
+      getRandomInteger(min, max) {
+        return parseInt(min + Math.random() * (max - min));
+      },
+      /** create new array containing distinct element of original array */
+      distinctArray(array) {
+        const rtn = [];
+        for (let i = 0; i < array.length; i++) {
+          const element = array[i];
+          if (rtn.indexOf(element) < 0) rtn.push(element);
+        }
+        return rtn;
+      },
+      /**
+       * Check if argument is null or undefined
+       * or string of both.
+       * Not including empty string.
+       * @param {*} obj
+       * @return true if argument is null
+       * or undefined or string of both.
+       */
+      isNullOrUndefined(obj) {
+        return (
+          obj === null ||
+          obj === undefined ||
+          obj === 'null' ||
+          obj === 'undefined'
+        );
+      },
+      /**
+       * 用 keyName從 localStorage getItem.
+       * 如果取出來的字串 isNullOrUndefined,
+       * 將 objDefault stringify存回 localStorage.
+       * json parse取出的字串成物件 obj.
+       * 將 obj與 objDefault比對屬性,
+       * obj如果有缺少 objDefault的屬性,
+       * 將缺少的屬性從 objDefault copy給obj後回寫 localStorage.
+       * @param {String} keyName
+       * @param {*} objDefault
+       * @return {*} json parse後的物件
+       */
+      getStorageToObject(keyName, objDefault) {
+        let obj = this.getStorage(keyName);
+        let bCheckNewProp = true;
+        if (this.isNullOrUndefined(obj)) {
+          obj = JSON.stringify(objDefault);
+          this.setStorage(keyName, obj);
+          bCheckNewProp = false;
+        }
+        obj = JSON.parse(obj);
+        if (bCheckNewProp) {
+          if (this.assignMissingDefault(obj, objDefault)) {
+            this.setStorage(keyName, JSON.stringify(obj));
+          }
+        }
+        return obj;
+      },
+      /**
+       * if the web browser support HTML5 storage,
+       * 用 name作為 key從 localStorage中 getItem.
+       * @param {String} name key name
+       * @return
+       */
+      getStorage(name) {
+        if (
+          'localStorage' in window &&
+          !this.isNullOrUndefined(window.localStorage)
+        ) {
+          return window.localStorage.getItem(name);
+        }
+      },
+      /** if the web browser support HTML5 storage, store it */
+      setStorage(name, value) {
+        if (
+          'localStorage' in window &&
+          !this.isNullOrUndefined(window.localStorage)
+        ) {
+          window.localStorage.setItem(name, value);
+        }
+      },
+      /**
+       * 將 objDefault中有但 obj沒有的屬性 copy給 obj
+       * @param {*} obj
+       * @param {*} defaultObj
+       * @return {Boolean} if any property copied
+       */
+      assignMissingDefault(obj, defaultObj) {
+        let isResave = false;
+        for (const key in defaultObj) {
+          if (
+            Object.prototype.hasOwnProperty.call(defaultObj, key) &&
+            !Object.prototype.hasOwnProperty.call(obj, key)
+          ) {
+            const element = defaultObj[key];
+            obj[key] = element;
+            isResave = true;
+          }
+        }
+        return isResave;
+      },
+      /**
+       * Parse datetime or time str to datetime in milliseconds.
+       * Prepend today's Date if str is time expression(without T or start with T).
+       * Express UTC time with Z at end.
+       */
+      parseDateTime(str) {
+        if (this.trimToEmpty(str) === '') return null;
+        if (str.indexOf('T') === 0)
+          return Date.parse(this.toISODateString() + str);
+        if (str.indexOf('T') > 0) return Date.parse(str);
+        return Date.parse(this.toISODateString() + 'T' + str);
       }
-    }
-  });
-  function autoDust(callback) {
-    const version = 'autoDust_1.0.0.0.0';
-    isProd ? logging(version, callback) : console.log(version, callback);
-    const dusterCycle = localStorage[dusterCycleKey];
-    if ([maptainTypes.always, maptainTypes.once].indexOf(dusterCycle) < 0) {
-      callback(); // autoMapping不須先檢查,異常就跳過跑 callback
-      return;
-    }
-    if (!mapInfo) {
-      callback(); // 需要 mapInfo的 mapId,沒有就跳過跑 callback
-      return;
-    }
-    // upgrade map
-    const next = () => {
-      if (dusterCycle === maptainTypes.once)
-        localStorage[dusterCycleKey] = maptainTypes.no;
-      callback();
     };
-    const mapId = mapInfo.mapId;
-    if (mapId) hg.utils.TreasureMapUtil.upgrade(mapId, next, callback);
-  }
+    return utils;
+  })();
+  /** Mousehunt Utils */
+  const MhUtils = (function () {
+    const mhUtils = {
+      /** get sn_user_id */
+      getSnUserId() {
+        return MyUtils.trimToEmpty(user.sn_user_id);
+      },
+      /**
+       * Find a working map by map_class
+       * @param {String} mapClass
+       * @returns
+       */
+      getMapByClass(mapClass) {
+        const maps = user.quests.QuestRelicHunter.maps;
+        for (let i = 0; i < maps.length; i++) {
+          const element = maps[i];
+          if (element.map_class == mapClass) {
+            return element;
+          }
+        }
+        return null;
+      }
+    };
+    return mhUtils;
+  })();
+
+  let map = MhUtils.getMapByClass(MapClasses.event);
+  let mapInfo = null;
+  const okMaptain = [maptainTypes.always, maptainTypes.once];
+  const callback = () => {
+    console.log('Finished');
+  };
+  console.log('Must be in map, mapId:', map.map_id);
+  hg.utils.TreasureMapUtil.getMapInfo(map.map_id, (data) => {
+    mapInfo = parseMapInfo(data);
+    if (!mapInfo) {
+      map = null;
+      callback();
+      return;
+    }
+    if (mapInfo && mapInfo.isCompleted) {
+      console.plog('到這裡不應該 map is completed.game data沒 sync?');
+      setTimeout(() => {
+        MhUtils.reloadWithMessage('map completed!? Reloading...');
+        // run();
+      }, 2000);
+      return;
+    }
+    // 減少讀取 localStorage
+    console.log('mapInfo exists and is full?', mapInfo);
+    if (mapInfo && mapInfo.isFull) {
+      if (!mapInfo.isDusted) {
+        console.log('Map is full and not dusted, ok to dust');
+        if (okMaptain.indexOf(localStorage[dusterCycleKey]) > -1) {
+          console.log('I am ok to dust');
+          autoDust(() => {
+            mapInfo.isDusted = true;
+            console.log(
+              'localStorage:',
+              localStorage[maptainTypeKey],
+              localStorage[dusterCycleKey]
+            );
+            callback();
+          });
+          return;
+        }
+      }
+      console.log('Map is full and dusted, auto next maptain when dusted');
+      autoNextMaptain(mapInfo);
+      console.log(
+        'localStorage:',
+        localStorage[maptainTypeKey],
+        localStorage[dusterCycleKey]
+      );
+      callback();
+      return;
+    }
+    callback();
+  });
   function parseMapInfo(mapInfo) {
     const version = 'parseMapInfo(';
     isProd ? logging(version, mapInfo) : console.log(version, mapInfo);
     if (!mapInfo) {
-      map = null;
-      mapInfo = null;
-      return;
+      // map = null;
+      // mapInfo = null;
+      return null;
     }
     const myMap = mapInfo.treasure_map;
     if (!myMap) {
-      map = null;
-      mapInfo = null;
-      return;
+      // map = null;
+      // mapInfo = null;
+      return null;
     }
     const rtn = {};
     rtn.mapId = myMap.map_id;
@@ -1520,6 +1752,7 @@ function gwh() {
     let completed = [];
     for (let i = 0; i < hunters.length; i++) {
       const hunter = hunters[i];
+      if (hunter.captain) rtn.maptain = (hunter.sn_user_id + '').trim();
       const completedIds = hunter.completed_goal_ids.mouse;
       if (completedIds && completedIds.length > 0)
         completed = completed.concat(completedIds);
@@ -1554,19 +1787,168 @@ function gwh() {
         rtn[all].push(type);
       }
     }
+    console.log('parsed mapInfo:', rtn);
     return rtn;
   }
-  function getMapByClass(mapClass) {
-    const maps = user.quests.QuestRelicHunter.maps;
-    for (let i = 0; i < maps.length; i++) {
-      const element = maps[i];
-      if (element.map_class == mapClass) {
-        return element;
-      }
+  function autoNextMaptain(mapInfo) {
+    const version = 'autoNextMaptain(';
+    isProd ? logging(version, mapInfo) : console.log(version, mapInfo);
+    const mapGroup = findNowGroup(mapInfo);
+    if (!mapGroup) return;
+    if (MhUtils.getSnUserId() !== mapGroup[3]) return;
+    localStorage[maptainTypeKey] = maptainTypes.once;
+    localStorage[dusterCycleKey] = maptainTypes.once;
+  }
+  function findNowGroup(mapInfo) {
+    const version = 'findNowGroup(';
+    isProd ? logging(version, mapInfo) : console.log(version, mapInfo);
+    const maptain = mapInfo.maptain;
+    for (let i = 0; i < mapGroups.length; i++) {
+      const mapGroup = mapGroups[i];
+      const groupMaptain = mapGroup[0];
+      if (groupMaptain === maptain) return mapGroup;
     }
     return null;
   }
+  function autoDust(callback) {
+    const version = 'autoDust_1.0.0.0.0';
+    isProd ? logging(version, callback) : console.log(version, callback);
+    const dusterCycle = localStorage[dusterCycleKey];
+    if ([maptainTypes.always, maptainTypes.once].indexOf(dusterCycle) < 0) {
+      callback(); // autoMapping不須先檢查,異常就跳過跑 callback
+      return;
+    }
+    if (!mapInfo) {
+      callback(); // 需要 mapInfo的 mapId,沒有就跳過跑 callback
+      return;
+    }
+    // upgrade map
+    const next = () => {
+      if (dusterCycle === maptainTypes.once)
+        localStorage[dusterCycleKey] = maptainTypes.no;
+      callback();
+    };
+    const mapId = mapInfo.mapId;
+    if (mapId) hg.utils.TreasureMapUtil.upgrade(mapId, next, callback);
+  }
 })();
+
+// auto dust單元測試
+(() => {
+  const isProd = false;
+  const MapClasses = { treasuer: 'treasure', poster: 'poster', event: 'event' };
+  const dusterCycleKey = 'dusterCycle';
+  const maptainTypes = { always: 'always', once: 'once', no: '' };
+  const gwhAreas = {
+    hill: 'winter_hunt_grove',
+    workshop: 'winter_hunt_workshop',
+    fortress: 'winter_hunt_fortress'
+  };
+  const all = 'all';
+  let map = MhUtils.getMapByClass(MapClasses.event);
+  let mapInfo = null;
+  hg.utils.TreasureMapUtil.getMapInfo(map.map_id, (data) => {
+    const info = data; // MapInfo;
+    mapInfo = parseMapInfo(info);
+    console.log(mapInfo);
+    map = MhUtils.getMapByClass(MapClasses.event);
+    console.log('auto dust map when map is full and not dusted yet');
+    if (mapInfo && !mapInfo.isDusted && mapInfo.isFull) {
+      const okMaptain = [maptainTypes.always, maptainTypes.once];
+      if (okMaptain.indexOf(localStorage[dusterCycleKey]) > -1) {
+        console.log('It is ok to dust');
+        autoDust(() => {
+          console.log('Finish');
+          console.log(localStorage[dusterCycleKey]);
+        });
+        return;
+      }
+    }
+  });
+  function autoDust(callback) {
+    const version = 'autoDust_1.0.0.0.0';
+    isProd ? logging(version, callback) : console.log(version, callback);
+    const dusterCycle = localStorage[dusterCycleKey];
+    if ([maptainTypes.always, maptainTypes.once].indexOf(dusterCycle) < 0) {
+      callback(); // autoMapping不須先檢查,異常就跳過跑 callback
+      return;
+    }
+    if (!mapInfo) {
+      callback(); // 需要 mapInfo的 mapId,沒有就跳過跑 callback
+      return;
+    }
+    // upgrade map
+    const next = () => {
+      if (dusterCycle === maptainTypes.once)
+        localStorage[dusterCycleKey] = maptainTypes.no;
+      callback();
+    };
+    const mapId = mapInfo.mapId;
+    if (mapId) hg.utils.TreasureMapUtil.upgrade(mapId, next, callback);
+  }
+  function parseMapInfo(mapInfo) {
+    const version = 'parseMapInfo(';
+    isProd ? logging(version, mapInfo) : console.log(version, mapInfo);
+    if (!mapInfo) {
+      // map = null;
+      // mapInfo = null;
+      return null;
+    }
+    const myMap = mapInfo.treasure_map;
+    if (!myMap) {
+      // map = null;
+      // mapInfo = null;
+      return null;
+    }
+    const rtn = {};
+    rtn.mapId = myMap.map_id;
+    if (myMap.can_claim_reward) rtn.isCompleted = true;
+    if (!myMap.can_send_invites) rtn.isFull = true;
+    if (!myMap.can_upgrade) rtn.isDusted = true;
+    const hunters = myMap.hunters;
+    let completed = [];
+    for (let i = 0; i < hunters.length; i++) {
+      const hunter = hunters[i];
+      if (hunter.captain) rtn.maptain = (hunter.sn_user_id + '').trim();
+      const completedIds = hunter.completed_goal_ids.mouse;
+      if (completedIds && completedIds.length > 0)
+        completed = completed.concat(completedIds);
+    }
+    console.log('completed mouse ids', completed);
+    const mouses = myMap.goals.mouse;
+    for (let i = 0; i < mouses.length; i++) {
+      const mouse = mouses[i];
+      if (completed.indexOf(mouse.unique_id) > -1) continue;
+      const type = mouse.type;
+      if (['joy', 'glazed'].indexOf(type) > -1) rtn.isGpp = true;
+      const areaIds = mouse.environment_ids;
+      if (areaIds && areaIds.length === 1) {
+        let area = null;
+        switch (areaIds[0]) {
+          case 68:
+            area = gwhAreas.fortress;
+            break;
+          case 69:
+            area = gwhAreas.hill;
+            break;
+          case 70:
+            area = gwhAreas.workshop;
+            break;
+          default:
+            break;
+        }
+        if (!rtn[area]) rtn[area] = [];
+        rtn[area].push(type);
+      } else {
+        if (!rtn[all]) rtn[all] = [];
+        rtn[all].push(type);
+      }
+    }
+    console.log('parsed mapInfo:', rtn);
+    return rtn;
+  }
+})();
+
 // claim track reward單元測試
 (() => {
   const gwhAreas = {
@@ -1652,6 +2034,7 @@ function gwh() {
     });
   }
 })();
+
 // build golem單元測試
 /* 
 (() => {
@@ -1840,6 +2223,7 @@ function gwh() {
     return rtn;
   }
 })();
+
 // auto mapping單元測試
 (() => {
   // prettier-ignore
@@ -1973,6 +2357,7 @@ function gwh() {
     return null;
   }
 })();
+
 // mapInfo單元測試
 (() => {
   const MapClasses = { treasuer: 'treasure', poster: 'poster', event: 'event' };
@@ -1989,20 +2374,21 @@ function gwh() {
     const info = data; // MapInfo;
     mapInfo = parseMapInfo(info);
     console.log(mapInfo);
+    map = MhUtils.getMapByClass(MapClasses.event);
   });
   function parseMapInfo(mapInfo) {
     const version = 'parseMapInfo(';
     isProd ? logging(version, mapInfo) : console.log(version, mapInfo);
     if (!mapInfo) {
-      map = null;
-      mapInfo = null;
-      return;
+      // map = null;
+      // mapInfo = null;
+      return null;
     }
     const myMap = mapInfo.treasure_map;
     if (!myMap) {
-      map = null;
-      mapInfo = null;
-      return;
+      // map = null;
+      // mapInfo = null;
+      return null;
     }
     const rtn = {};
     rtn.mapId = myMap.map_id;
@@ -2013,6 +2399,7 @@ function gwh() {
     let completed = [];
     for (let i = 0; i < hunters.length; i++) {
       const hunter = hunters[i];
+      if (hunter.captain) rtn.maptain = (hunter.sn_user_id + '').trim();
       const completedIds = hunter.completed_goal_ids.mouse;
       if (completedIds && completedIds.length > 0)
         completed = completed.concat(completedIds);
@@ -2047,6 +2434,7 @@ function gwh() {
         rtn[all].push(type);
       }
     }
+    console.log('parsed mapInfo:', rtn);
     return rtn;
   }
   function getMapByClass(mapClass) {
@@ -2060,6 +2448,7 @@ function gwh() {
     return null;
   }
 })();
+
 // claim map reward單元測試
 (() => {
   claimReward(2);
@@ -2250,10 +2639,58 @@ function ajax(element, params) {
 
 // const MOUSEHUNT_BASE_URL = 'https://www.mousehuntgame.com/';
 const MapClasses = { treasuer: 'treasure', poster: 'poster', event: 'event' };
+const allSnuids = {
+  angel: '',
+  angela: '',
+  angelie: '',
+  anthony: '',
+  levine: '',
+  elie: '',
+  kelly: '',
+  kevin: '',
+  kitty: '',
+  levi: '',
+  lydia: '',
+  mary: '',
+  mina: '',
+  monica: '',
+  nina: '',
+  pola: '',
+  raphael: '',
+  rose: '',
+  hsilung: '',
+  van: '',
+  vera: '',
+  vivienne: '',
+  weyl: '',
+  vanne: '',
+  riem: '',
+  kaze: '',
+  sky: '',
+  shall: '',
+  furt: '',
+  feyn: '',
+  rebec: '',
+  renee: '',
+  haru: '',
+  Umr: '',
+  scent: '',
+  stein: ''
+};
 const MyUtils = { parseQuantity() {} };
 const MhUtils = {
   getEnvironmentType() {},
-  reloadWithMessage(msg, soundHorn) {}
+  reloadWithMessage(msg, soundHorn) {},
+  getMapByClass(mapClass) {
+    const maps = user.quests.QuestRelicHunter.maps;
+    for (let i = 0; i < maps.length; i++) {
+      const element = maps[i];
+      if (element.map_class == mapClass) {
+        return element;
+      }
+    }
+    return null;
+  }
 };
 const eventRegistry = {};
 const user = {};
@@ -12733,16 +13170,6 @@ function getStorageToObject(key, obj) {
 console.plog = (...args) => {
   console.log(args);
 };
-function getMapByClass(mapClass) {
-  const maps = user.quests.QuestRelicHunter.maps;
-  for (let i = 0; i < maps.length; i++) {
-    const element = maps[i];
-    if (element.map_class == mapClass) {
-      return element;
-    }
-  }
-  return null;
-}
 function armAllTraps(bait, weapon, base, charm) {
   console.log('arm following traps:', bait, weapon, base, charm);
 }
