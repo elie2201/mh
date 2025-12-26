@@ -46,7 +46,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.50.13.50';
+  const version = 'gwh_1.2.52.13.50';
   isProd ? logging(version) : console.log(version);
   const all = 'all';
   const maptainTypeKey = 'maptainType';
@@ -161,6 +161,8 @@ function gwh() {
     isMapping: false,
     isCheckPpMiceBait: true,
     isForcedMapClearOrder: true,
+    dropMapGppAsGppLessThan: 30, // GPP數量少於此, drop需要 GPP的 map
+    dropMapGlazyAsGppLessThan: 50, // GPP數量少於此, drop有 Glazy的 map(做 Joy的 map有機會多抓 Glazy)
     shutdown: {
       isLeaveFortressIf36: true,
       isForgeOffIf12: true
@@ -295,60 +297,69 @@ function gwh() {
       return;
     }
     console.log('Must be in map, mapId:', map.map_id);
-    hg.utils.TreasureMapUtil.getMapInfo(map.map_id, (data) => {
-      const info = isProd ? data : MapInfo;
-      mapInfo = parseMapInfo(info);
-      if (!mapInfo) {
-        map = null;
-        callback();
-        return;
-      }
-      if (mapInfo && mapInfo.isCompleted) {
-        console.plog('到這裡不應該 map is completed.game data沒 sync?');
-        setTimeout(() => {
-          MhUtils.reloadWithMessage('map completed!? Reloading...');
-          // run();
-        }, 2000);
-        return;
-      }
-      // 減少讀取 localStorage
-      console.log('mapInfo exists and is full?', mapInfo);
-      if (mapInfo && mapInfo.isFull) {
-        if (!mapInfo.isDusted) {
-          console.log('Map is full and not dusted, ok to dust');
-          if (
-            okMaptain.indexOf(localStorage[dusterCycleKey]) > -1 &&
-            MhUtils.getSnUserId() === mapInfo.maptain
-          ) {
-            console.log('I am maptain and ok to dust');
-            autoDust(() => {
-              mapInfo.isDusted = true;
-              console.log(
-                'localStorage:',
-                localStorage[maptainTypeKey],
-                localStorage[dusterCycleKey]
-              );
-              callback();
-            });
-            return;
-          }
+    hg.utils.TreasureMapUtil.getMapInfo(
+      map.map_id,
+      (data) => {
+        const info = isProd ? data : MapInfo;
+        mapInfo = parseMapInfo(info);
+        if (!mapInfo) {
+          map = null;
+          callback();
+          return;
         }
-        console.log('Map is full and dusted, auto next maptain when dusted');
-        autoNextMaptain(mapInfo);
-        console.log(
-          'localStorage:',
-          localStorage[maptainTypeKey],
-          localStorage[dusterCycleKey]
-        );
+        if (mapInfo && mapInfo.isCompleted) {
+          console.plog('到這裡不應該 map is completed.game data沒 sync?');
+          setTimeout(() => {
+            MhUtils.reloadWithMessage('Why map completed!? Reloading...');
+            // run();
+          }, 2000);
+          return;
+        }
+        // 減少讀取 localStorage
+        console.log('mapInfo exists and is full?', mapInfo);
+        if (mapInfo && mapInfo.isFull) {
+          if (!mapInfo.isDusted) {
+            console.log('Map is full and not dusted, ok to dust');
+            if (
+              okMaptain.indexOf(localStorage[dusterCycleKey]) > -1 &&
+              MhUtils.getSnUserId() === mapInfo.maptain
+            ) {
+              console.log('I am maptain and ok to dust');
+              autoDust(() => {
+                mapInfo.isDusted = true;
+                console.log(
+                  'localStorage:',
+                  localStorage[maptainTypeKey],
+                  localStorage[dusterCycleKey]
+                );
+                callback();
+              });
+              return;
+            }
+          }
+          console.log('Map is full and dusted, auto next maptain when dusted');
+          autoNextMaptain(mapInfo);
+          console.log(
+            'localStorage:',
+            localStorage[maptainTypeKey],
+            localStorage[dusterCycleKey]
+          );
+          callback();
+          return;
+        }
         callback();
-        return;
+      },
+      // 這邊必須有 mapInfo了,沒有就 reload
+      () => {
+        MhUtils.reloadWithMessage('getMapInfo failed, Reloading...');
       }
-      callback();
-    });
+    );
   }
   function parseMapInfo(mapInfo) {
     const version = 'parseMapInfo(';
     isProd ? logging(version, mapInfo) : console.log(version, mapInfo);
+    const joyMouseType = 'joy';
+    const glazyMouseType = 'glazed';
     if (!mapInfo) return null;
     const myMap = mapInfo.treasure_map;
     if (!myMap) return null;
@@ -367,12 +378,14 @@ function gwh() {
         completed = completed.concat(completedIds);
     }
     console.log('completed mouse ids', completed);
+    rtn.completed = completed;
     const mouses = myMap.goals.mouse;
     for (let i = 0; i < mouses.length; i++) {
       const mouse = mouses[i];
       if (completed.indexOf(mouse.unique_id) > -1) continue;
       const type = mouse.type;
-      if (['joy', 'glazed'].indexOf(type) > -1) rtn.isGpp = true;
+      if ([joyMouseType, glazyMouseType].indexOf(type) > -1) rtn.isGpp = true;
+      if (glazyMouseType === type) rtn.isGlazy = true;
       const areaIds = mouse.environment_ids;
       if (areaIds && areaIds.length === 1) {
         let area = null;
@@ -631,6 +644,7 @@ function gwh() {
         return;
       }
     }
+    if (checkDropMap(setup)) return;
     // isMapping=沒 map mice就離開,
     // !isMapping:
     // 在 Fortress是不管 map mice玩破壁並控制要用 ppTrap還是 fsTrap
@@ -675,6 +689,52 @@ function gwh() {
     travel(gwhAreas.workshop, 2000, () => {
       checkArea(setup);
     });
+  }
+  function checkDropMap(setup) {
+    const version = 'checkDropMap(';
+    isProd ? logging(version, setup) : console.log(version, setup);
+    const isDropped = true;
+    const isNotDropped = false;
+    console.log('沒有 map或 map沒有 GPP mice不檢查');
+    if (!mapInfo || !mapInfo.isGpp) return isNotDropped;
+    console.log('進行中的 map不檢查');
+    if (mapInfo.completed && mapInfo.completed.length > 0) return isNotDropped;
+    console.log('GPP數量夠多不檢查');
+    if (
+      myItems.gpp >= setup.dropMapGppAsGppLessThan &&
+      myItems.gpp >= setup.dropMapGlazyAsGppLessThan
+    )
+      return isNotDropped;
+    console.log('開始檢查');
+    let isDropMap =
+      mapInfo.isGpp && myItems.gpp < setup.dropMapGppAsGppLessThan;
+    if (!isDropMap)
+      isDropMap =
+        mapInfo.isGlazy && myItems.gpp < setup.dropMapGlazyAsGppLessThan;
+    if (isDropMap) {
+      console.log(
+        `map isGpp:${mapInfo.isGpp} && GPP ${myItems.gpp} < ${setup.dropMapGppAsGppLessThan}`
+      );
+      console.log(
+        `map isGlazy:${mapInfo.isGlazy} && GPP ${myItems.gpp} < ${setup.dropMapGlazyAsGppLessThan}`
+      );
+      hg.utils.TreasureMapUtil.leave(
+        mapInfo.mapId,
+        () => {
+          map = null;
+          mapInfo = null;
+          setTimeout(() => {
+            checkArea(setup);
+          }, 1000);
+        },
+        () => {
+          MhUtils.reloadWithMessage('Leave map error, Reloading...');
+        }
+      );
+      return isDropped;
+    }
+    console.log(`Not drop map,`);
+    return isNotDropped;
   }
   /** 如果 !setup.isMapping,不檢查還有沒有 map mice就回傳 false,*/
   function isMapTravelling(setup) {
@@ -829,6 +889,7 @@ function gwh() {
         }, Math.floor(12000 + Math.random() * 3000));
       }
     }
+    if (checkDropMap(setup)) return;
     if (isMapTravelling(setup)) return;
     // auto mapping要兼顧 forge
     if (isEndWorkshop) {
@@ -847,6 +908,7 @@ function gwh() {
     const quest = user.quests.QuestCinnamonTreeGrove;
     const items = quest.items;
     initMyItems(items, setup);
+    if (checkDropMap(setup)) return;
     if (isMapTravelling(setup)) return;
     // Hill是 mapping起點,特別處理
     if (setup.isAutoMapping) {
