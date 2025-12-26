@@ -46,7 +46,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.52.13.50';
+  const version = 'gwh_1.2.52.13.52';
   isProd ? logging(version) : console.log(version);
   const all = 'all';
   const maptainTypeKey = 'maptainType';
@@ -365,6 +365,7 @@ function gwh() {
     if (!myMap) return null;
     const rtn = {};
     rtn.mapId = myMap.map_id;
+    rtn.mapName = myMap.name;
     if (myMap.can_claim_reward) rtn.isCompleted = true;
     if (!myMap.can_send_invites) rtn.isFull = true;
     if (!myMap.can_upgrade) rtn.isDusted = true;
@@ -695,8 +696,9 @@ function gwh() {
     isProd ? logging(version, setup) : console.log(version, setup);
     const isDropped = true;
     const isNotDropped = false;
-    console.log('沒有 map或 map沒有 GPP mice不檢查');
-    if (!mapInfo || !mapInfo.isGpp) return isNotDropped;
+    console.log('沒有 map或不是 Naughty List或 map沒有 GPP mice不檢查');
+    if (!mapInfo || mapInfo.mapName.trim() !== 'Naughty List' || !mapInfo.isGpp)
+      return isNotDropped;
     console.log('進行中的 map不檢查');
     if (mapInfo.completed && mapInfo.completed.length > 0) return isNotDropped;
     console.log('GPP數量夠多不檢查');
@@ -897,6 +899,16 @@ function gwh() {
       travel(gwhAreas.hill, 2000, () => {
         checkArea(setup);
       });
+      return;
+    }
+    // autoMapping時,沒 map mice還留在 workshop只有農 PP
+    if (
+      setup.isAutoMapping &&
+      myItems.pp <= setup.startPpQty &&
+      !mapInfo[gwhAreas.workshop] &&
+      !mapInfo[all]
+    ) {
+      handleTrap(getNormalTrap(setup), quest, setup);
       return;
     }
     checkTrap(setup);
