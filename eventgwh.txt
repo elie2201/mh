@@ -16,7 +16,8 @@ function gwh() {
     workshop: 'winter_hunt_workshop',
     fortress: 'winter_hunt_fortress'
   };
-  const maptainTypes = { always: 'always', once: 'once', no: '' };
+  // prettier-ignore
+  const maptainTypes = { always: 'always', once: 'once', no: '', never: 'never' };
   const isLeaving = true;
   const isNotLeaving = false;
   // prettier-ignore
@@ -46,7 +47,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.52.13.52';
+  const version = 'gwh_1.2.53.13.52';
   isProd ? logging(version) : console.log(version);
   const all = 'all';
   const maptainTypeKey = 'maptainType';
@@ -161,8 +162,8 @@ function gwh() {
     isMapping: false,
     isCheckPpMiceBait: true,
     isForcedMapClearOrder: true,
-    dropMapGppAsGppLessThan: 30, // GPP數量少於此, drop需要 GPP的 map
-    dropMapGlazyAsGppLessThan: 50, // GPP數量少於此, drop有 Glazy的 map(做 Joy的 map有機會多抓 Glazy)
+    dropMapGppAsGppLessThan: 40, // GPP數量少於此, drop需要 GPP的 map
+    dropMapGlazyAsGppLessThan: 80, // GPP數量少於此, drop有 Glazy的 map(做 Joy的 map有機會多抓 Glazy)
     shutdown: {
       isLeaveFortressIf36: true,
       isForgeOffIf12: true
@@ -315,7 +316,7 @@ function gwh() {
           }, 2000);
           return;
         }
-        // 減少讀取 localStorage
+        // 先判斷 mapInfo,減少讀取 localStorage
         console.log('mapInfo exists and is full?', mapInfo);
         if (mapInfo && mapInfo.isFull) {
           if (!mapInfo.isDusted) {
@@ -328,21 +329,17 @@ function gwh() {
               autoDust(() => {
                 mapInfo.isDusted = true;
                 console.log(
-                  'localStorage:',
-                  localStorage[maptainTypeKey],
-                  localStorage[dusterCycleKey]
+                  `localStorage: maptainType:${localStorage[maptainTypeKey]},dusterCycle:${localStorage[dusterCycleKey]}`
                 );
                 callback();
               });
               return;
             }
           }
-          console.log('Map is full and dusted, auto next maptain when dusted');
+          console.log('Map is full and dusted, auto next maptain');
           autoNextMaptain(mapInfo);
           console.log(
-            'localStorage:',
-            localStorage[maptainTypeKey],
-            localStorage[dusterCycleKey]
+            `localStorage: maptainType:${localStorage[maptainTypeKey]},dusterCycle:${localStorage[dusterCycleKey]}`
           );
           callback();
           return;
@@ -419,10 +416,12 @@ function gwh() {
     const mapGroup = findNowGroup(mapInfo);
     if (!mapGroup) return;
     if (MhUtils.getSnUserId() !== mapGroup[3]) return;
-    // 減少寫入 localStorage
-    if (localStorage[maptainTypeKey] !== maptainTypes.once)
+    // 判斷不是 once只是為了減少寫入 localStorage,沒有業務邏輯
+    // 判斷不是 never才是新功能: 停止 loop-mapping
+    const notWriteTypes = [maptainTypes.once, maptainTypes.never];
+    if (notWriteTypes.indexOf(localStorage[maptainTypeKey]) < 0)
       localStorage[maptainTypeKey] = maptainTypes.once;
-    if (localStorage[dusterCycleKey] !== maptainTypes.once)
+    if (notWriteTypes.indexOf(localStorage[maptainTypeKey]) < 0)
       localStorage[dusterCycleKey] = maptainTypes.once;
   }
   function findNowGroup(mapInfo) {
@@ -714,10 +713,10 @@ function gwh() {
       isDropMap =
         mapInfo.isGlazy && myItems.gpp < setup.dropMapGlazyAsGppLessThan;
     if (isDropMap) {
-      console.log(
+      console.plog(
         `map isGpp:${mapInfo.isGpp} && GPP ${myItems.gpp} < ${setup.dropMapGppAsGppLessThan}`
       );
-      console.log(
+      console.plog(
         `map isGlazy:${mapInfo.isGlazy} && GPP ${myItems.gpp} < ${setup.dropMapGlazyAsGppLessThan}`
       );
       hg.utils.TreasureMapUtil.leave(
