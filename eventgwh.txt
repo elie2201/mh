@@ -47,7 +47,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.53.13.52';
+  const version = 'gwh_1.2.53.13.53';
   isProd ? logging(version) : console.log(version);
   const all = 'all';
   const maptainTypeKey = 'maptainType';
@@ -421,7 +421,7 @@ function gwh() {
     const notWriteTypes = [maptainTypes.once, maptainTypes.never];
     if (notWriteTypes.indexOf(localStorage[maptainTypeKey]) < 0)
       localStorage[maptainTypeKey] = maptainTypes.once;
-    if (notWriteTypes.indexOf(localStorage[maptainTypeKey]) < 0)
+    if (notWriteTypes.indexOf(localStorage[dusterCycleKey]) < 0)
       localStorage[dusterCycleKey] = maptainTypes.once;
   }
   function findNowGroup(mapInfo) {
