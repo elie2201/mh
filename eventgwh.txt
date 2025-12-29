@@ -68,7 +68,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.54.13.54';
+  const version = 'gwh_1.2.54.13.55';
   isProd ? logging(version) : console.log(version);
   const all = 'all';
   const maptainTypeKey = 'maptainType';
@@ -527,7 +527,7 @@ function gwh() {
         console.log(`Claim map reward, id: ${map.map_id}, name: ${mapName}`);
         // 先 claim reward
         hg.utils.TreasureMapUtil.claim(map.map_id, () => {
-          const scrollChest = findScrollChest[MyUtils.trimToEmpty(mapName)];
+          const scrollChest = findScrollChest(MyUtils.trimToEmpty(mapName));
           // const scrollChest = scrollChests[MyUtils.trimToEmpty(mapName)];
           // claim後如果有對應的 chest且自動開,等 1秒開箱
           if (scrollChest && scrollChest.isAutoOpen) {
