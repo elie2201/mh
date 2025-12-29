@@ -21,25 +21,46 @@ function gwh() {
   const isLeaving = true;
   const isNotLeaving = false;
   // prettier-ignore
-  const mapGroups = [
-    [allSnuids.elie],[allSnuids.raphael],[allSnuids.van],[allSnuids.levi],[allSnuids.pola],
-    [allSnuids.weyl],[allSnuids.levine],[allSnuids.kelly],[allSnuids.angel],[allSnuids.mina],
-    [allSnuids.vanne],[allSnuids.angelie],[allSnuids.anthony],[allSnuids.monica],[allSnuids.vivienne],
-    [allSnuids.lydia],[allSnuids.kevin],[allSnuids.nina],[allSnuids.rose],
-    [allSnuids.vera],[allSnuids.hsilung],[allSnuids.angela],[allSnuids.kitty],[allSnuids.mary],
-    [allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt],
-    [allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn],
-    [allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec],
-    [allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee],
-    [allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru],
-    [allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr],
-    [allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent],
-    [allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein],
-    [allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem],
-    [allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze],
-    [allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky],
-    [allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall]
-  ];
+  const mapGroups = {
+    5: [
+      [allSnuids.elie],[allSnuids.raphael],[allSnuids.van],[allSnuids.levi],[allSnuids.pola],
+      [allSnuids.weyl],[allSnuids.levine],[allSnuids.kelly],[allSnuids.angel],[allSnuids.mina],
+      [allSnuids.vanne],[allSnuids.angelie],[allSnuids.anthony],[allSnuids.monica],[allSnuids.vivienne],
+      [allSnuids.lydia],[allSnuids.kevin],[allSnuids.nina],[allSnuids.rose],
+      [allSnuids.vera],[allSnuids.hsilung],[allSnuids.angela],[allSnuids.kitty],[allSnuids.mary],
+      [allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt],
+      [allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn],
+      [allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec],
+      [allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee],
+      [allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru],
+      [allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr],
+      [allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent],
+      [allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein],
+      [allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem],
+      [allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze],
+      [allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky],
+      [allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall]
+    ],
+    10: [
+      [allSnuids.elie],[allSnuids.raphael],[allSnuids.van],[allSnuids.levi],[allSnuids.pola],
+      [allSnuids.weyl],[allSnuids.levine],[allSnuids.kelly],[allSnuids.angel],[allSnuids.mina],
+      [allSnuids.vanne],[allSnuids.angelie],[allSnuids.anthony],[allSnuids.monica],[allSnuids.vivienne],
+      [allSnuids.lydia],[allSnuids.kevin],[allSnuids.nina],[allSnuids.rose],
+      [allSnuids.vera],[allSnuids.hsilung],[allSnuids.angela],[allSnuids.kitty],[allSnuids.mary],
+      [allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr],
+      [allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent],
+      [allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein],
+      [allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem],
+      [allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze],
+      [allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky],
+      [allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall],
+      [allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt],
+      [allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn],
+      [allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec],
+      [allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee],
+      [allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru]
+    ]
+  };
   const enviromentType = MhUtils.getEnvironmentType();
   if (
     [gwhAreas.hill, gwhAreas.workshop, gwhAreas.fortress].indexOf(
@@ -47,20 +68,28 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.53.13.53';
+  const version = 'gwh_1.2.54.13.53';
   isProd ? logging(version) : console.log(version);
   const all = 'all';
   const maptainTypeKey = 'maptainType';
   const dusterCycleKey = 'dusterCycle';
   const scrollChests = {
-    'Naughty List': {
+    naughtyList: {
+      size: 5,
+      mapClass: MapClasses.event,
+      name: 'Naughty List',
       scroll: 'naughty_list_convertible',
       chest: 'naughty_2022_list_chest_convertible',
+      chestRare: 'rare_naughty_2022_list_chest_convertible',
       isAutoOpen: true
     },
-    'Rare Naughty List': {
-      scroll: 'naughty_list_convertible',
-      chest: 'rare_naughty_2022_list_chest_convertible',
+    newYearsParty: {
+      size: 10,
+      mapClass: MapClasses.event,
+      name: 'New Year',
+      scroll: 'new_year_scroll_case_convertible',
+      chest: 'new_years_chest_convertible',
+      chestRare: 'rare_new_years_chest_convertible',
       isAutoOpen: true
     }
   };
@@ -237,7 +266,7 @@ function gwh() {
       checkArea(settings);
       return;
     }
-    autoMapping(() => {
+    autoMapping('naughtyList', () => {
       // map = getMapByClass(MapClasses.event);
       // if (!map) {
       //   checkArea(settings);
@@ -259,18 +288,23 @@ function gwh() {
       checkArea(settings);
     });
   }
-  // autoMapping(() => { console.log('Finished'); });
-  function autoMapping(callback) {
-    const version = 'autoMapping_1.0.0.0.4';
+  // autoMapping('naughtyList', () => { console.log('Finished'); });
+  function autoMapping(mapTypeKey, callback) {
+    const version = 'autoMapping_1.0.1.0.4';
     isProd ? logging(version) : console.log(version);
     const selfInvoking = () => {
       setTimeout(() => {
-        autoMapping(callback);
+        autoMapping(mapTypeKey, callback);
       }, 1000);
     };
+    const scrollChest = scrollChests[mapTypeKey];
+    if (!scrollChest) {
+      callback();
+      return;
+    }
     const okMaptain = [maptainTypes.always, maptainTypes.once];
     console.log('claim map reward checking');
-    map = MhUtils.getMapByClass(MapClasses.event);
+    map = MhUtils.getMapByClass(scrollChest.mapClass);
     if (map && map.is_complete) {
       autoClaimMapReward(selfInvoking);
       map = null;
@@ -279,7 +313,7 @@ function gwh() {
     console.log('accept invite checking');
     const quest = user.quests.QuestRelicHunter;
     if (!map && (quest.num_invites || 0) > 0) {
-      autoAcceptInvite(MapClasses.event, selfInvoking);
+      autoAcceptInvite(scrollChest.mapClass, selfInvoking);
       return;
     }
     console.log('autoMaptain: buy scroll=>use scroll=>(invite) checking');
@@ -287,8 +321,9 @@ function gwh() {
       if (okMaptain.indexOf(localStorage[maptainTypeKey]) > -1) {
         console.log('is autoMaptain, buy=>use scroll=>invite');
         autoMaptain(
-          MapClasses.event,
-          scrollChests['Naughty List'].scroll,
+          scrollChest.size,
+          scrollChest.mapClass,
+          scrollChest.scroll,
           selfInvoking
         );
         return;
@@ -337,7 +372,7 @@ function gwh() {
             }
           }
           console.log('Map is full and dusted, auto next maptain');
-          autoNextMaptain(mapInfo);
+          autoNextMaptain(12, scrollChest.size, mapInfo);
           console.log(
             `localStorage: maptainType:${localStorage[maptainTypeKey]},dusterCycle:${localStorage[dusterCycleKey]}`
           );
@@ -410,12 +445,21 @@ function gwh() {
     console.log('parsed mapInfo:', rtn);
     return rtn;
   }
-  function autoNextMaptain(mapInfo) {
-    const version = 'autoNextMaptain(';
+  /**
+   * 根據 mapGroups設定, attendance(12)人 RR時,
+   * group中的第 n人:
+   * n = ((mapSize - (attendance % mapSize)) % mapSize) + 1,
+   * index: (mapSize - (attendance % mapSize)) % mapSize,
+   * 為下一個 maptain+duster.
+   * maptainType/dusterCycle為 never時不自動 next maptain.
+   */
+  function autoNextMaptain(attendance, mapSize, mapInfo) {
+    const version = `autoNextMaptain_1.0.1.0.0(${attendance}, ${mapSize},`;
     isProd ? logging(version, mapInfo) : console.log(version, mapInfo);
-    const mapGroup = findNowGroup(mapInfo);
+    const mapGroup = findNowGroup(mapSize, mapInfo);
     if (!mapGroup) return;
-    if (MhUtils.getSnUserId() !== mapGroup[3]) return;
+    const nextMaptainIndex = (mapSize - (attendance % mapSize)) % mapSize;
+    if (MhUtils.getSnUserId() !== mapGroup[nextMaptainIndex]) return;
     // 判斷不是 once只是為了減少寫入 localStorage,沒有業務邏輯
     // 判斷不是 never才是新功能: 停止 loop-mapping
     const notWriteTypes = [maptainTypes.once, maptainTypes.never];
@@ -424,14 +468,19 @@ function gwh() {
     if (notWriteTypes.indexOf(localStorage[dusterCycleKey]) < 0)
       localStorage[dusterCycleKey] = maptainTypes.once;
   }
-  function findNowGroup(mapInfo) {
+  function findNowGroup(mapSize, mapInfo) {
     const version = 'findNowGroup(';
     isProd ? logging(version, mapInfo) : console.log(version, mapInfo);
     const maptain = mapInfo.maptain;
-    for (let i = 0; i < mapGroups.length; i++) {
-      const mapGroup = mapGroups[i];
+    const groups = mapGroups[mapSize];
+    if (!groups) return null;
+    for (let i = 0; i < groups.length; i++) {
+      const mapGroup = groups[i];
       const groupMaptain = mapGroup[0];
-      if (groupMaptain === maptain) return mapGroup;
+      if (groupMaptain === maptain) {
+        console.log('mapGroup found:', mapGroup);
+        return mapGroup;
+      }
     }
     return null;
   }
@@ -458,7 +507,7 @@ function gwh() {
   }
   // autoClaimMapReward(() => { console.log('Finished'); });
   function autoClaimMapReward(callback) {
-    const version = 'autoClaimMapReward_1.0.0.0.0';
+    const version = 'autoClaimMapReward_1.0.1.0.0';
     isProd ? logging(version) : console.log(version);
     const maps = user.quests.QuestRelicHunter.maps;
     // 沒 map視同完成 claim檢查,執行 callback離開自己
@@ -477,10 +526,13 @@ function gwh() {
         console.log(`Claim map reward, id: ${map.map_id}, name: ${mapName}`);
         // 先 claim reward
         hg.utils.TreasureMapUtil.claim(map.map_id, () => {
-          const scrollChest = scrollChests[MyUtils.trimToEmpty(mapName)];
+          const scrollChest = findScrollChest[MyUtils.trimToEmpty(mapName)];
+          // const scrollChest = scrollChests[MyUtils.trimToEmpty(mapName)];
           // claim後如果有對應的 chest且自動開,等 1秒開箱
           if (scrollChest && scrollChest.isAutoOpen) {
-            const chest = scrollChest['chest'];
+            const chest = map.is_rare
+              ? scrollChest['chestRare']
+              : scrollChest['chest'];
             setTimeout(() => {
               hg.utils.UserInventory.useConvertible(chest, 1, (data) => {
                 console.log(data.success == 1 ? 'success' : 'failed', data);
@@ -499,6 +551,19 @@ function gwh() {
     }
     // for loop沒有被中斷並回 call的話,代表全都不能 claim=完成 claim檢查, callback
     if (callback) callback();
+  }
+  function findScrollChest(mapName) {
+    const version = 'findScrollChest(';
+    isProd ? logging(version, mapName) : console.log(version, mapName);
+    for (const key in scrollChests) {
+      if (!Object.hasOwn(scrollChests, key)) continue;
+      const scrollChest = scrollChests[key];
+      if (mapName.indexOf(scrollChest.name) > -1) {
+        console.log('scrollChest found:', scrollChest);
+        return scrollChest;
+      }
+    }
+    return null;
   }
   // autoAcceptInvite('event', () => { console.log('Finished'); });
   function autoAcceptInvite(mapClass, callback) {
@@ -538,8 +603,8 @@ function gwh() {
     return isAccepted;
   }
   // autoMaptain(MapClasses.event, 'lunar_new_year_scroll_case_convertible');
-  function autoMaptain(mapClass, scrollType, callback) {
-    const version = `autoMaptain(${mapClass}, ${scrollType})_1.0.0.0.0`;
+  function autoMaptain(mapSize, mapClass, scrollType, callback) {
+    const version = `autoMaptain(${mapSize}, ${mapClass}, ${scrollType})_1.0.1.0.0`;
     isProd ? logging(version) : console.log(version);
     const maptainType = localStorage[maptainTypeKey];
     if ([maptainTypes.always, maptainTypes.once].indexOf(maptainType) < 0)
@@ -548,22 +613,23 @@ function gwh() {
     if (!scrollType || scrollType == '') return; // 異常,斷
     const map = MhUtils.getMapByClass(mapClass);
     if (map) return; // autoMapping必須先檢查,不然異常,斷
+    const groups = mapGroups[mapSize];
     const snuid = MhUtils.getSnUserId();
     let snuids = null;
-    for (let i = 0; i < mapGroups.length; i++) {
-      snuids = mapGroups[i];
+    for (let i = 0; i < groups.length; i++) {
+      snuids = groups[i];
       if (snuids.indexOf(snuid) === 0) break;
-      // if (snuids.indexOf(snuid) > -1) break;
     }
-    // 下面那行很危險,如果 callback(回 autoMapping檢查沒有 map又是 maptain)絕對無限循環
-    // 直接 return程式就斷了
-    // if (!snuids || !Array.isArray(snuids) || snuids.length == 0) return;
-    if (snuids && snuids.length > 0) {
-      console.log('map group found, open scroll and invite');
-      snuids = snuids.slice();
-      snuids.splice(snuids.indexOf(snuid), 1);
-      console.log('After remove self', snuids, mapGroups);
+    // 下面那行很危險,直接 return程式就斷了
+    // 如果 callback(回 autoMapping檢查沒有 map又是 maptain)絕對無限循環
+    if (!snuids || !Array.isArray(snuids) || snuids.length == 0) {
+      storeError('mapGroup not found');
+      return;
     }
+    console.log('map group found, open scroll and invite');
+    snuids = snuids.slice();
+    snuids.splice(snuids.indexOf(snuid), 1);
+    console.log('After remove self', snuids, mapGroups);
     MhUtils.completeTransaction(true, scrollType, 1, false, () => {
       hg.utils.UserInventory.useConvertible(
         scrollType,
@@ -580,9 +646,9 @@ function gwh() {
   }
   // autoInvite
   function autoInvite(mapClass, snuids, callback) {
-    const version = `autoInvite(${mapClass}, ${snuids}, ${callback})_1.0.0.0.0`;
+    const version = `autoInvite(${mapClass}, ${snuids}, ${callback})_1.0.1.0.0`;
     isProd ? logging(version) : console.log(version);
-    const map = MhUtils.getMapByClass('event');
+    const map = MhUtils.getMapByClass(mapClass);
     if (!map) {
       setTimeout(() => {
         MhUtils.closeAnyJsDialog();
@@ -1516,6 +1582,543 @@ function gwh() {
 }
 // End #gwh
 
+// auto mapping單元測試
+(() => {
+  const isProd = true;
+  const MapClasses = { treasuer: 'treasure', poster: 'poster', event: 'event' };
+  const allSnuids = {
+    angel: '',
+    angela: '',
+    angelie: '',
+    anthony: '',
+    levine: '',
+    elie: '',
+    kelly: '',
+    kevin: '',
+    kitty: '',
+    levi: '',
+    lydia: '',
+    mary: '',
+    mina: '',
+    monica: '',
+    nina: '',
+    pola: '',
+    raphael: '',
+    rose: '',
+    hsilung: '',
+    van: '',
+    vera: '',
+    vivienne: '',
+    weyl: '',
+    vanne: '',
+    riem: '',
+    kaze: '',
+    sky: '',
+    shall: '',
+    furt: '',
+    feyn: '',
+    rebec: '',
+    renee: '',
+    haru: '',
+    Umr: '',
+    scent: '',
+    stein: ''
+  };
+  const gwhAreas = {
+    hill: 'winter_hunt_grove',
+    workshop: 'winter_hunt_workshop',
+    fortress: 'winter_hunt_fortress'
+  };
+  // prettier-ignore
+  const maptainTypes = { always: 'always', once: 'once', no: '', never: 'never' };
+  const all = 'all';
+  const maptainTypeKey = 'maptainType';
+  const dusterCycleKey = 'dusterCycle';
+  const scrollChests = {
+    naughtyList: {
+      size: 5,
+      mapClass: MapClasses.event,
+      name: 'Naughty List',
+      scroll: 'naughty_list_convertible',
+      chest: 'naughty_2022_list_chest_convertible',
+      chestRare: 'rare_naughty_2022_list_chest_convertible',
+      isAutoOpen: true
+    },
+    newYearsParty: {
+      size: 10,
+      mapClass: MapClasses.event,
+      name: 'New Year',
+      scroll: 'new_year_scroll_case_convertible',
+      chest: 'new_years_chest_convertible',
+      chestRare: 'rare_new_years_chest_convertible',
+      isAutoOpen: true
+    }
+  };
+  // prettier-ignore
+  const mapGroups = {
+    5: [
+      [allSnuids.elie],[allSnuids.raphael],[allSnuids.van],[allSnuids.levi],[allSnuids.pola],
+      [allSnuids.weyl],[allSnuids.levine],[allSnuids.kelly],[allSnuids.angel],[allSnuids.mina],
+      [allSnuids.vanne],[allSnuids.angelie],[allSnuids.anthony],[allSnuids.monica],[allSnuids.vivienne],
+      [allSnuids.lydia],[allSnuids.kevin],[allSnuids.nina],[allSnuids.rose],
+      [allSnuids.vera],[allSnuids.hsilung],[allSnuids.angela],[allSnuids.kitty],[allSnuids.mary],
+      [allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt],
+      [allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn],
+      [allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec],
+      [allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee],
+      [allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru],
+      [allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr],
+      [allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent],
+      [allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein],
+      [allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem],
+      [allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze],
+      [allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky],
+      [allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall]
+    ],
+    10: [
+      [allSnuids.elie],[allSnuids.raphael],[allSnuids.van],[allSnuids.levi],[allSnuids.pola],
+      [allSnuids.weyl],[allSnuids.levine],[allSnuids.kelly],[allSnuids.angel],[allSnuids.mina],
+      [allSnuids.vanne],[allSnuids.angelie],[allSnuids.anthony],[allSnuids.monica],[allSnuids.vivienne],
+      [allSnuids.lydia],[allSnuids.kevin],[allSnuids.nina],[allSnuids.rose],
+      [allSnuids.vera],[allSnuids.hsilung],[allSnuids.angela],[allSnuids.kitty],[allSnuids.mary],
+      [allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr],
+      [allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent],
+      [allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein],
+      [allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem],
+      [allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze],
+      [allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky],
+      [allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall],
+      [allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt],
+      [allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn],
+      [allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec],
+      [allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee],
+      [allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru]
+    ]
+  };
+  const MyUtils = {
+    trimToEmpty(str) {
+      return str ? str.trim() : '';
+    }
+  };
+  const MhUtils = {
+    getEnvironmentType() {},
+    /** get sn_user_id */
+    getSnUserId() {
+      return MyUtils.trimToEmpty(user.sn_user_id);
+    },
+    reloadWithMessage(msg, soundHorn) {
+      console.log(msg);
+    },
+    getMapByClass(mapClass) {
+      const maps = user.quests.QuestRelicHunter.maps;
+      for (let i = 0; i < maps.length; i++) {
+        const element = maps[i];
+        if (element.map_class == mapClass) {
+          return element;
+        }
+      }
+      return null;
+    }
+  };
+  let map = null;
+  let mapInfo = null;
+  // prettier-ignore
+  autoMapping('naughtyList', () => { console.log('Finished'); });
+  function autoMapping(mapTypeKey, callback) {
+    const version = 'autoMapping_1.0.1.0.4';
+    isProd ? logging(version) : console.log(version);
+    const selfInvoking = () => {
+      setTimeout(() => {
+        autoMapping(mapTypeKey, callback);
+      }, 1000);
+    };
+    const scrollChest = scrollChests[mapTypeKey];
+    if (!scrollChest) {
+      callback();
+      return;
+    }
+    const okMaptain = [maptainTypes.always, maptainTypes.once];
+    console.log('claim map reward checking');
+    map = MhUtils.getMapByClass(scrollChest.mapClass);
+    if (map && map.is_complete) {
+      autoClaimMapReward(selfInvoking);
+      map = null;
+      return;
+    }
+    console.log('accept invite checking');
+    const quest = user.quests.QuestRelicHunter;
+    if (!map && (quest.num_invites || 0) > 0) {
+      autoAcceptInvite(scrollChest.mapClass, selfInvoking);
+      return;
+    }
+    console.log('autoMaptain: buy scroll=>use scroll=>(invite) checking');
+    if (!map) {
+      if (okMaptain.indexOf(localStorage[maptainTypeKey]) > -1) {
+        console.log('is autoMaptain, buy=>use scroll=>invite');
+        autoMaptain(
+          scrollChest.size,
+          scrollChest.mapClass,
+          scrollChest.scroll,
+          selfInvoking
+        );
+        return;
+      }
+      console.log('不在地圖中又不是 maptain,結束 autoMapping呼叫 callback');
+      callback();
+      return;
+    }
+    console.log('Must be in map, mapId:', map.map_id);
+    hg.utils.TreasureMapUtil.getMapInfo(
+      map.map_id,
+      (data) => {
+        const info = isProd ? data : MapInfo;
+        mapInfo = parseMapInfo(info);
+        if (!mapInfo) {
+          map = null;
+          callback();
+          return;
+        }
+        if (mapInfo && mapInfo.isCompleted) {
+          console.plog('到這裡不應該 map is completed.game data沒 sync?');
+          setTimeout(() => {
+            MhUtils.reloadWithMessage('Why map completed!? Reloading...');
+            // run();
+          }, 2000);
+          return;
+        }
+        // 先判斷 mapInfo,減少讀取 localStorage
+        console.log('mapInfo exists and is full?', mapInfo);
+        if (mapInfo && mapInfo.isFull) {
+          if (!mapInfo.isDusted) {
+            console.log('Map is full and not dusted, ok to dust');
+            if (
+              okMaptain.indexOf(localStorage[dusterCycleKey]) > -1 &&
+              MhUtils.getSnUserId() === mapInfo.maptain
+            ) {
+              console.log('I am maptain and ok to dust');
+              autoDust(() => {
+                mapInfo.isDusted = true;
+                console.log(
+                  `localStorage: maptainType:${localStorage[maptainTypeKey]},dusterCycle:${localStorage[dusterCycleKey]}`
+                );
+                callback();
+              });
+              return;
+            }
+          }
+          console.log('Map is full and dusted, auto next maptain');
+          autoNextMaptain(12, scrollChest.size, mapInfo);
+          console.log(
+            `localStorage: maptainType:${localStorage[maptainTypeKey]},dusterCycle:${localStorage[dusterCycleKey]}`
+          );
+          callback();
+          return;
+        }
+        callback();
+      },
+      // 這邊必須有 mapInfo了,沒有就 reload
+      () => {
+        MhUtils.reloadWithMessage('getMapInfo failed, Reloading...');
+      }
+    );
+  }
+  function parseMapInfo(mapInfo) {
+    const version = 'parseMapInfo(';
+    isProd ? logging(version, mapInfo) : console.log(version, mapInfo);
+    const joyMouseType = 'joy';
+    const glazyMouseType = 'glazed';
+    if (!mapInfo) return null;
+    const myMap = mapInfo.treasure_map;
+    if (!myMap) return null;
+    const rtn = {};
+    rtn.mapId = myMap.map_id;
+    rtn.mapName = myMap.name;
+    if (myMap.can_claim_reward) rtn.isCompleted = true;
+    if (!myMap.can_send_invites) rtn.isFull = true;
+    if (!myMap.can_upgrade) rtn.isDusted = true;
+    const hunters = myMap.hunters;
+    let completed = [];
+    for (let i = 0; i < hunters.length; i++) {
+      const hunter = hunters[i];
+      if (hunter.captain) rtn.maptain = (hunter.sn_user_id + '').trim();
+      const completedIds = hunter.completed_goal_ids.mouse;
+      if (completedIds && completedIds.length > 0)
+        completed = completed.concat(completedIds);
+    }
+    console.log('completed mouse ids', completed);
+    rtn.completed = completed;
+    const mouses = myMap.goals.mouse;
+    for (let i = 0; i < mouses.length; i++) {
+      const mouse = mouses[i];
+      if (completed.indexOf(mouse.unique_id) > -1) continue;
+      const type = mouse.type;
+      if ([joyMouseType, glazyMouseType].indexOf(type) > -1) rtn.isGpp = true;
+      if (glazyMouseType === type) rtn.isGlazy = true;
+      const areaIds = mouse.environment_ids;
+      if (areaIds && areaIds.length === 1) {
+        let area = null;
+        switch (areaIds[0]) {
+          case 68:
+            area = gwhAreas.fortress;
+            break;
+          case 69:
+            area = gwhAreas.hill;
+            break;
+          case 70:
+            area = gwhAreas.workshop;
+            break;
+          default:
+            break;
+        }
+        if (!rtn[area]) rtn[area] = [];
+        rtn[area].push(type);
+      } else {
+        if (!rtn[all]) rtn[all] = [];
+        rtn[all].push(type);
+      }
+    }
+    console.log('parsed mapInfo:', rtn);
+    return rtn;
+  }
+  /**
+   * 根據 mapGroups設定, attendance(12)人 RR時,
+   * group中的第 n人:
+   * n = ((mapSize - (attendance % mapSize)) % mapSize) + 1,
+   * index: (mapSize - (attendance % mapSize)) % mapSize,
+   * 為下一個 maptain+duster.
+   * maptainType/dusterCycle為 never時不自動 next maptain.
+   */
+  function autoNextMaptain(attendance, mapSize, mapInfo) {
+    const version = `autoNextMaptain_1.0.1.0.0(${attendance}, ${mapSize},`;
+    isProd ? logging(version, mapInfo) : console.log(version, mapInfo);
+    const mapGroup = findNowGroup(mapSize, mapInfo);
+    if (!mapGroup) return;
+    const nextMaptainIndex = (mapSize - (attendance % mapSize)) % mapSize;
+    if (MhUtils.getSnUserId() !== mapGroup[nextMaptainIndex]) return;
+    // 判斷不是 once只是為了減少寫入 localStorage,沒有業務邏輯
+    // 判斷不是 never才是新功能: 停止 loop-mapping
+    const notWriteTypes = [maptainTypes.once, maptainTypes.never];
+    if (notWriteTypes.indexOf(localStorage[maptainTypeKey]) < 0)
+      localStorage[maptainTypeKey] = maptainTypes.once;
+    if (notWriteTypes.indexOf(localStorage[dusterCycleKey]) < 0)
+      localStorage[dusterCycleKey] = maptainTypes.once;
+  }
+  function findNowGroup(mapSize, mapInfo) {
+    const version = 'findNowGroup(';
+    isProd ? logging(version, mapInfo) : console.log(version, mapInfo);
+    const maptain = mapInfo.maptain;
+    const groups = mapGroups[mapSize];
+    if (!groups) return null;
+    for (let i = 0; i < groups.length; i++) {
+      const mapGroup = groups[i];
+      const groupMaptain = mapGroup[0];
+      if (groupMaptain === maptain) {
+        console.log('mapGroup found:', mapGroup);
+        return mapGroup;
+      }
+    }
+    return null;
+  }
+  function autoDust(callback) {
+    const version = 'autoDust_1.0.0.0.0';
+    isProd ? logging(version, callback) : console.log(version, callback);
+    const dusterCycle = localStorage[dusterCycleKey];
+    if ([maptainTypes.always, maptainTypes.once].indexOf(dusterCycle) < 0) {
+      callback(); // autoMapping不須先檢查,異常就跳過跑 callback
+      return;
+    }
+    if (!mapInfo) {
+      callback(); // 需要 mapInfo的 mapId,沒有就跳過跑 callback
+      return;
+    }
+    // upgrade map
+    const next = () => {
+      if (dusterCycle === maptainTypes.once)
+        localStorage[dusterCycleKey] = maptainTypes.no;
+      callback();
+    };
+    const mapId = mapInfo.mapId;
+    if (mapId) hg.utils.TreasureMapUtil.upgrade(mapId, next, callback);
+  }
+  // autoClaimMapReward(() => { console.log('Finished'); });
+  function autoClaimMapReward(callback) {
+    const version = 'autoClaimMapReward_1.0.1.0.0';
+    isProd ? logging(version) : console.log(version);
+    const maps = user.quests.QuestRelicHunter.maps;
+    // 沒 map視同完成 claim檢查,執行 callback離開自己
+    if (!maps || maps.length == 0) {
+      if (callback) callback();
+      return;
+    }
+    const selfInvoking = () => {
+      autoClaimMapReward(callback);
+    };
+    for (let i = 0; i < maps.length; i++) {
+      const map = maps[i];
+      console.log('Check auto claim map reward!!', map.map_id, map.is_complete);
+      if (map.is_complete) {
+        const mapName = map.name;
+        console.log(`Claim map reward, id: ${map.map_id}, name: ${mapName}`);
+        // 先 claim reward
+        hg.utils.TreasureMapUtil.claim(map.map_id, () => {
+          const scrollChest = findScrollChest[MyUtils.trimToEmpty(mapName)];
+          // const scrollChest = scrollChests[MyUtils.trimToEmpty(mapName)];
+          // claim後如果有對應的 chest且自動開,等 1秒開箱
+          if (scrollChest && scrollChest.isAutoOpen) {
+            const chest = map.is_rare
+              ? scrollChest['chestRare']
+              : scrollChest['chest'];
+            setTimeout(() => {
+              hg.utils.UserInventory.useConvertible(chest, 1, (data) => {
+                console.log(data.success == 1 ? 'success' : 'failed', data);
+                // 開箱後回 call自己檢查還有沒有待 claim的 map
+                setTimeout(selfInvoking, 1000);
+              });
+            }, 1000);
+            return;
+          }
+          // 沒開箱的話,直接回 call自己檢查還有沒有待 claim的 map
+          setTimeout(selfInvoking, 1000);
+        });
+        // 有處理到完成的 map,就中斷迴圈
+        return;
+      }
+    }
+    // for loop沒有被中斷並回 call的話,代表全都不能 claim=完成 claim檢查, callback
+    if (callback) callback();
+  }
+  function findScrollChest(mapName) {
+    const version = 'findScrollChest(';
+    isProd ? logging(version, mapName) : console.log(version, mapName);
+    for (const key in scrollChests) {
+      if (!Object.hasOwn(scrollChests, key)) continue;
+      const scrollChest = scrollChests[key];
+      if (mapName.indexOf(scrollChest.name) > -1) {
+        console.log('scrollChest found:', scrollChest);
+        return scrollChest;
+      }
+    }
+    return null;
+  }
+  // autoAcceptInvite('event', () => { console.log('Finished'); });
+  function autoAcceptInvite(mapClass, callback) {
+    const version = `autoAcceptInvite(${mapClass})_1.0.0.0.0`;
+    isProd ? logging(version) : console.log(version);
+    const isAccepted = true;
+    const isNotAccepted = !isAccepted;
+    const quest = user.quests.QuestRelicHunter;
+    if ((quest.num_invites || 0) < 1) return isNotAccepted;
+    const map = MhUtils.getMapByClass(mapClass);
+    if (map) return isNotAccepted;
+    console.log(`auto accept map invite of map class: ${mapClass}`);
+    hg.controllers.TreasureMapController.showCommunity();
+    setTimeout(() => {
+      $('a[data-map-id]').each((i, e) => {
+        console.log(e.className);
+        if (e.className.indexOf('mousehuntActionButton') > -1) {
+          // e.click();
+          const mapId = parseInt(e.getAttribute('data-map-id'));
+          console.log(`map request id: ${mapId}`);
+          if (!Number.isNaN(mapId)) {
+            console.log('auto accept map invite of map id', mapId);
+            hg.utils.TreasureMapUtil.acceptInvite(mapId, () => {
+              MhUtils.closeAnyJsDialog();
+              if (callback)
+                setTimeout(() => {
+                  callback();
+                }, 2000);
+            });
+            // 只自動接受一個邀請,在 RR-mapping可能比較不會出錯
+            // 因為有時會同時存在前一組跟後一組的邀請(後開的 map先完成)
+            return false; // jquery each use return false to break looping
+          }
+        }
+      });
+    }, parseInt(3500 + Math.random() * 1500));
+    return isAccepted;
+  }
+  // autoMaptain(MapClasses.event, 'lunar_new_year_scroll_case_convertible');
+  function autoMaptain(mapSize, mapClass, scrollType, callback) {
+    const version = `autoMaptain(${mapSize}, ${mapClass}, ${scrollType})_1.0.1.0.0`;
+    isProd ? logging(version) : console.log(version);
+    const maptainType = localStorage[maptainTypeKey];
+    if ([maptainTypes.always, maptainTypes.once].indexOf(maptainType) < 0)
+      return; // autoMapping必須先檢查,不然異常,斷
+    if (!mapClass || !MapClasses[mapClass]) return; // 異常,斷
+    if (!scrollType || scrollType == '') return; // 異常,斷
+    const map = MhUtils.getMapByClass(mapClass);
+    if (map) return; // autoMapping必須先檢查,不然異常,斷
+    const groups = mapGroups[mapSize];
+    const snuid = MhUtils.getSnUserId();
+    let snuids = null;
+    for (let i = 0; i < groups.length; i++) {
+      snuids = groups[i];
+      if (snuids.indexOf(snuid) === 0) break;
+    }
+    // 下面那行很危險,直接 return程式就斷了
+    // 如果 callback(回 autoMapping檢查沒有 map又是 maptain)絕對無限循環
+    // if (!snuids || !Array.isArray(snuids) || snuids.length == 0) return;
+    if (snuids && snuids.length > 0) {
+      console.log('map group found, open scroll and invite');
+      snuids = snuids.slice();
+      snuids.splice(snuids.indexOf(snuid), 1);
+      console.log('After remove self', snuids, mapGroups);
+    }
+    MhUtils.completeTransaction(true, scrollType, 1, false, () => {
+      hg.utils.UserInventory.useConvertible(
+        scrollType,
+        1,
+        () => {
+          console.log('After scroll opened, invite map members');
+          autoInvite(mapClass, snuids, callback);
+          if (maptainType === maptainTypes.once)
+            localStorage[maptainTypeKey] = maptainTypes.no;
+        },
+        parseInt(5000 + Math.random() * 2000)
+      );
+    });
+  }
+  // autoInvite
+  function autoInvite(mapClass, snuids, callback) {
+    const version = `autoInvite(${mapClass}, ${snuids}, ${callback})_1.0.1.0.0`;
+    isProd ? logging(version) : console.log(version);
+    const map = MhUtils.getMapByClass(mapClass);
+    if (!map) {
+      setTimeout(() => {
+        MhUtils.closeAnyJsDialog();
+        if (callback) callback();
+      }, 2000);
+      return;
+    }
+    if (!snuids || snuids.length < 1) {
+      setTimeout(() => {
+        MhUtils.closeAnyJsDialog();
+        if (callback) callback();
+      }, 2000);
+      return;
+    }
+    hg.utils.TreasureMapUtil.sendInvites(map.map_id, snuids);
+    setTimeout(() => {
+      MhUtils.closeAnyJsDialog();
+      if (callback) callback();
+    }, 2000);
+  }
+  /**
+   * logging function.
+   * Invoke console.log with customization.
+   * @param  {...any} logs
+   */
+  function logging(...any) {
+    const isDebug = true;
+    if (isDebug) {
+      console.groupCollapsed(new Date(), ...any);
+      // console.log(Error().stack);
+      console.trace(...any);
+      console.groupEnd();
+    }
+  }
+})();
+
 // auto next maptain單元測試
 (() => {
   const isProd = false;
@@ -2117,6 +2720,187 @@ function gwh() {
   }
 })();
 
+// mapInfo單元測試
+(() => {
+  const MapClasses = { treasuer: 'treasure', poster: 'poster', event: 'event' };
+  const gwhAreas = {
+    hill: 'winter_hunt_grove',
+    workshop: 'winter_hunt_workshop',
+    fortress: 'winter_hunt_fortress'
+  };
+  const all = 'all';
+  const isProd = false;
+  let map = getMapByClass(MapClasses.event);
+  let mapInfo = null;
+  hg.utils.TreasureMapUtil.getMapInfo(map.map_id, (data) => {
+    const info = data; // MapInfo;
+    mapInfo = parseMapInfo(info);
+    console.log(mapInfo);
+    map = MhUtils.getMapByClass(MapClasses.event);
+  });
+  function parseMapInfo(mapInfo) {
+    const version = 'parseMapInfo(';
+    isProd ? logging(version, mapInfo) : console.log(version, mapInfo);
+    if (!mapInfo) {
+      // map = null;
+      // mapInfo = null;
+      return null;
+    }
+    const myMap = mapInfo.treasure_map;
+    if (!myMap) {
+      // map = null;
+      // mapInfo = null;
+      return null;
+    }
+    const rtn = {};
+    rtn.mapId = myMap.map_id;
+    if (myMap.can_claim_reward) rtn.isCompleted = true;
+    if (!myMap.can_send_invites) rtn.isFull = true;
+    if (!myMap.can_upgrade) rtn.isDusted = true;
+    const hunters = myMap.hunters;
+    let completed = [];
+    for (let i = 0; i < hunters.length; i++) {
+      const hunter = hunters[i];
+      if (hunter.captain) rtn.maptain = (hunter.sn_user_id + '').trim();
+      const completedIds = hunter.completed_goal_ids.mouse;
+      if (completedIds && completedIds.length > 0)
+        completed = completed.concat(completedIds);
+    }
+    console.log('completed mouse ids', completed);
+    const mouses = myMap.goals.mouse;
+    for (let i = 0; i < mouses.length; i++) {
+      const mouse = mouses[i];
+      if (completed.indexOf(mouse.unique_id) > -1) continue;
+      const type = mouse.type;
+      if (['joy', 'glazed'].indexOf(type) > -1) rtn.isGpp = true;
+      const areaIds = mouse.environment_ids;
+      if (areaIds && areaIds.length === 1) {
+        let area = null;
+        switch (areaIds[0]) {
+          case 68:
+            area = gwhAreas.fortress;
+            break;
+          case 69:
+            area = gwhAreas.hill;
+            break;
+          case 70:
+            area = gwhAreas.workshop;
+            break;
+          default:
+            break;
+        }
+        if (!rtn[area]) rtn[area] = [];
+        rtn[area].push(type);
+      } else {
+        if (!rtn[all]) rtn[all] = [];
+        rtn[all].push(type);
+      }
+    }
+    console.log('parsed mapInfo:', rtn);
+    return rtn;
+  }
+  function getMapByClass(mapClass) {
+    const maps = user.quests.QuestRelicHunter.maps;
+    for (let i = 0; i < maps.length; i++) {
+      const element = maps[i];
+      if (element.map_class == mapClass) {
+        return element;
+      }
+    }
+    return null;
+  }
+})();
+
+// claim map reward單元測試
+(() => {
+  claimReward(2);
+  function claimReward(slot, callback) {
+    // 點下 claim button後 claim reward請求就送出了, popup只是顯示結果而已,不需確認
+    // const claimClass =
+    //   '.headsUpDisplayWinterHuntRegionView__golemClaimRewardButton';
+    // $(claimClass)[slot].click();
+    // setTimeout(() => {
+    //   const continueButtonClass =
+    //     '.greatWinterHuntDialogView__bigButton.greatWinterHuntClaimRewardDialogView__continueButton';
+    //   $(continueButtonClass).click();
+    //   if (callback)
+    //     setTimeout(() => {
+    //       callback();
+    //     }, 2000);
+    // }, 2000);
+    // const element = $(
+    //   '.greatWinterHuntDialogView__bigButton.greatWinterHuntClaimRewardDialogView__continueButton'
+    // )[0];
+    const element = null; // document.querySelector('.headsUpDisplayWinterHuntRegionView__golemClaimRewardButton');
+    const params = {
+      action: 'claim_reward',
+      slot: slot
+    };
+    ajax(element, params, 'managers/ajax/events/winter_hunt_region.php').then(
+      () => {
+        const X = document.querySelector('#jsDialogClose');
+        if (X) X.click();
+        if (callback)
+          setTimeout(() => {
+            callback();
+          }, 2000);
+      }
+    );
+    /* const target = $(element);
+    const slot = target.data('slot');
+    const params = {
+      action: 'claim_reward',
+      slot: slot
+    };
+    ajax(element, params).then((data) => {
+      hg.views.GreatWinterHuntClaimRewardDialogView.setRewards(
+        data.golem_rewards
+      );
+      hg.views.GreatWinterHuntClaimRewardDialogView.setDataHandler(getData);
+      hg.views.GreatWinterHuntClaimRewardDialogView.setSlot(slot);
+      hg.views.GreatWinterHuntClaimRewardDialogView.show();
+    }); */
+  }
+  function ajax(element, params, uri) {
+    console.log('GWH ajax');
+    const callbackurl = 'https://www.mousehuntgame.com/';
+    return new Promise((resolve, reject) => {
+      const lastReadJournalEntryId = parseInt(
+        document
+          .querySelector('div[data-entry-id]')
+          .getAttribute('data-entry-id')
+      );
+      params['last_read_journal_entry_id'] = lastReadJournalEntryId;
+      params['uh'] = user.unique_hash;
+      $.ajax({
+        data: params,
+        dataType: 'json',
+        type: 'post',
+        url: callbackurl + uri, // 'managers/ajax/events/winter_hunt_region.php',
+        success: function (data) {
+          eventRegistry.doEvent('ajax_response', data);
+          if (data.success) {
+            resolve(data);
+          } else {
+            reject(data);
+          }
+        },
+        error: function () {
+          // eslint-disable-next-line new-cap
+          const popup = new jsDialog();
+          popup.setTemplate('error');
+          popup.addToken('{*title*}', 'An error has occurred.');
+          popup.addToken('{*content*}', 'An error occurred. Please try again!');
+          popup.show();
+          // target.removeClass('busy');
+          // eslint-disable-next-line prefer-promise-reject-errors
+          reject();
+        }
+      });
+    });
+  }
+})();
+
 // build golem單元測試
 /* 
 (() => {
@@ -2303,321 +3087,6 @@ function gwh() {
       }
     console.log(`found chosenIndex: ${rtn}`);
     return rtn;
-  }
-})();
-
-// auto mapping單元測試
-(() => {
-  // prettier-ignore
-  const isProd =  false;
-  const MapClasses = { treasuer: 'treasure', poster: 'poster', event: 'event' };
-  const scrollChests = {
-    'Naughty List': {
-      scroll: 'naughty_list_convertible',
-      chest: 'naughty_2022_list_chest_convertible',
-      isAutoOpen: true
-    }
-  };
-  let map = null;
-  autoMapping(() => {
-    console.log('Finished');
-  });
-  function autoMapping(callback) {
-    const version = 'autoMapping_1.0.0.0.0';
-    isProd ? logging(version) : console.log(version);
-    const selfInvoking = () => {
-      setTimeout(() => {
-        autoMapping(callback);
-      }, 1000);
-    };
-    // map completed
-    map = getMapByClass(MapClasses.event);
-    if (map && map.is_complete) {
-      autoClaimMapReward(selfInvoking);
-      map = null;
-      return;
-    }
-    // accept invite
-    const quest = user.quests.QuestRelicHunter;
-    if (!map && (quest.num_invites || 0) > 0) {
-      autoAcceptInvite(MapClasses.event, selfInvoking);
-      return;
-    }
-    callback();
-  }
-  // autoClaimMapReward(() => { console.log('Finished'); });
-  function autoClaimMapReward(callback) {
-    const version = 'autoClaimMapReward_1.0.0.0.0';
-    isProd ? logging(version) : console.log(version);
-    const maps = user.quests.QuestRelicHunter.maps;
-    // 沒 map視同完成 claim檢查,執行 callback離開自己
-    if (!maps || maps.length == 0) {
-      if (callback) callback();
-      return;
-    }
-    const selfInvoking = () => {
-      autoClaimMapReward(callback);
-    };
-    for (let i = 0; i < maps.length; i++) {
-      const map = maps[i];
-      console.log('Check auto claim map reward!!', map.map_id, map.is_complete);
-      if (map.is_complete) {
-        const mapName = map.name;
-        console.log(`Claim map reward, id: ${map.map_id}, name: ${mapName}`);
-        // 先 claim reward
-        hg.utils.TreasureMapUtil.claim(map.map_id, () => {
-          const scrollChest = scrollChests[MyUtils.trimToEmpty(mapName)];
-          // claim後如果有對應的 chest且自動開,等 1秒開箱
-          if (scrollChest && scrollChest.isAutoOpen) {
-            const chest = scrollChest['chest'];
-            setTimeout(() => {
-              hg.utils.UserInventory.useConvertible(chest, 1, (data) => {
-                console.log(data.success == 1 ? 'success' : 'failed', data);
-                // 開箱後回 call自己檢查還有沒有待 claim的 map
-                setTimeout(selfInvoking, 1000);
-              });
-            }, 1000);
-            return;
-          }
-          // 沒開箱的話,直接回 call自己檢查還有沒有待 claim的 map
-          setTimeout(selfInvoking, 1000);
-        });
-        // 有處理到完成的 map,就中斷迴圈
-        return;
-      }
-    }
-    // for loop沒有被中斷並回 call的話,代表全都不能 claim=完成 claim檢查, callback
-    if (callback) callback();
-  }
-  // autoAcceptInvite('event', () => { console.log('Finished'); });
-  function autoAcceptInvite(mapClass, callback) {
-    const version = `autoAcceptInvite(${mapClass})_1.0.0.0.0`;
-    isProd ? logging(version) : console.log(version);
-    const isAccepted = true;
-    const isNotAccepted = !isAccepted;
-    const quest = user.quests.QuestRelicHunter;
-    if ((quest.num_invites || 0) < 1) return isNotAccepted;
-    const map = getMapByClass(mapClass);
-    if (map) return isNotAccepted;
-    console.log(`auto accept map invite of map class: ${mapClass}`);
-    hg.controllers.TreasureMapController.showCommunity();
-    setTimeout(() => {
-      $('a[data-map-id]').each((i, e) => {
-        console.log(e.className);
-        if (e.className.indexOf('mousehuntActionButton') > -1) {
-          // e.click();
-          const mapId = parseInt(e.getAttribute('data-map-id'));
-          console.log(`map request id: ${mapId}`);
-          if (!Number.isNaN(mapId)) {
-            console.log('auto accept map invite of map id', mapId);
-            hg.utils.TreasureMapUtil.acceptInvite(mapId, () => {
-              // MhUtils.closeAnyJsDialog();
-              const X = document.querySelector('#jsDialogClose');
-              if (X) X.click();
-              if (callback)
-                setTimeout(() => {
-                  callback();
-                }, 2000);
-            });
-            // 只自動接受一個邀請,在 RR-mapping可能比較不會出錯
-            // 因為有時會同時存在前一組跟後一組的邀請(後開的 map先完成)
-            return false; // jquery each use return false to break looping
-          }
-        }
-      });
-    }, parseInt(3500 + Math.random() * 1500));
-    return isAccepted;
-  }
-  function getMapByClass(mapClass) {
-    const maps = user.quests.QuestRelicHunter.maps;
-    for (let i = 0; i < maps.length; i++) {
-      const element = maps[i];
-      if (element.map_class == mapClass) {
-        return element;
-      }
-    }
-    return null;
-  }
-})();
-
-// mapInfo單元測試
-(() => {
-  const MapClasses = { treasuer: 'treasure', poster: 'poster', event: 'event' };
-  const gwhAreas = {
-    hill: 'winter_hunt_grove',
-    workshop: 'winter_hunt_workshop',
-    fortress: 'winter_hunt_fortress'
-  };
-  const all = 'all';
-  const isProd = false;
-  let map = getMapByClass(MapClasses.event);
-  let mapInfo = null;
-  hg.utils.TreasureMapUtil.getMapInfo(map.map_id, (data) => {
-    const info = data; // MapInfo;
-    mapInfo = parseMapInfo(info);
-    console.log(mapInfo);
-    map = MhUtils.getMapByClass(MapClasses.event);
-  });
-  function parseMapInfo(mapInfo) {
-    const version = 'parseMapInfo(';
-    isProd ? logging(version, mapInfo) : console.log(version, mapInfo);
-    if (!mapInfo) {
-      // map = null;
-      // mapInfo = null;
-      return null;
-    }
-    const myMap = mapInfo.treasure_map;
-    if (!myMap) {
-      // map = null;
-      // mapInfo = null;
-      return null;
-    }
-    const rtn = {};
-    rtn.mapId = myMap.map_id;
-    if (myMap.can_claim_reward) rtn.isCompleted = true;
-    if (!myMap.can_send_invites) rtn.isFull = true;
-    if (!myMap.can_upgrade) rtn.isDusted = true;
-    const hunters = myMap.hunters;
-    let completed = [];
-    for (let i = 0; i < hunters.length; i++) {
-      const hunter = hunters[i];
-      if (hunter.captain) rtn.maptain = (hunter.sn_user_id + '').trim();
-      const completedIds = hunter.completed_goal_ids.mouse;
-      if (completedIds && completedIds.length > 0)
-        completed = completed.concat(completedIds);
-    }
-    console.log('completed mouse ids', completed);
-    const mouses = myMap.goals.mouse;
-    for (let i = 0; i < mouses.length; i++) {
-      const mouse = mouses[i];
-      if (completed.indexOf(mouse.unique_id) > -1) continue;
-      const type = mouse.type;
-      if (['joy', 'glazed'].indexOf(type) > -1) rtn.isGpp = true;
-      const areaIds = mouse.environment_ids;
-      if (areaIds && areaIds.length === 1) {
-        let area = null;
-        switch (areaIds[0]) {
-          case 68:
-            area = gwhAreas.fortress;
-            break;
-          case 69:
-            area = gwhAreas.hill;
-            break;
-          case 70:
-            area = gwhAreas.workshop;
-            break;
-          default:
-            break;
-        }
-        if (!rtn[area]) rtn[area] = [];
-        rtn[area].push(type);
-      } else {
-        if (!rtn[all]) rtn[all] = [];
-        rtn[all].push(type);
-      }
-    }
-    console.log('parsed mapInfo:', rtn);
-    return rtn;
-  }
-  function getMapByClass(mapClass) {
-    const maps = user.quests.QuestRelicHunter.maps;
-    for (let i = 0; i < maps.length; i++) {
-      const element = maps[i];
-      if (element.map_class == mapClass) {
-        return element;
-      }
-    }
-    return null;
-  }
-})();
-
-// claim map reward單元測試
-(() => {
-  claimReward(2);
-  function claimReward(slot, callback) {
-    // 點下 claim button後 claim reward請求就送出了, popup只是顯示結果而已,不需確認
-    // const claimClass =
-    //   '.headsUpDisplayWinterHuntRegionView__golemClaimRewardButton';
-    // $(claimClass)[slot].click();
-    // setTimeout(() => {
-    //   const continueButtonClass =
-    //     '.greatWinterHuntDialogView__bigButton.greatWinterHuntClaimRewardDialogView__continueButton';
-    //   $(continueButtonClass).click();
-    //   if (callback)
-    //     setTimeout(() => {
-    //       callback();
-    //     }, 2000);
-    // }, 2000);
-    // const element = $(
-    //   '.greatWinterHuntDialogView__bigButton.greatWinterHuntClaimRewardDialogView__continueButton'
-    // )[0];
-    const element = null; // document.querySelector('.headsUpDisplayWinterHuntRegionView__golemClaimRewardButton');
-    const params = {
-      action: 'claim_reward',
-      slot: slot
-    };
-    ajax(element, params, 'managers/ajax/events/winter_hunt_region.php').then(
-      () => {
-        const X = document.querySelector('#jsDialogClose');
-        if (X) X.click();
-        if (callback)
-          setTimeout(() => {
-            callback();
-          }, 2000);
-      }
-    );
-    /* const target = $(element);
-    const slot = target.data('slot');
-    const params = {
-      action: 'claim_reward',
-      slot: slot
-    };
-    ajax(element, params).then((data) => {
-      hg.views.GreatWinterHuntClaimRewardDialogView.setRewards(
-        data.golem_rewards
-      );
-      hg.views.GreatWinterHuntClaimRewardDialogView.setDataHandler(getData);
-      hg.views.GreatWinterHuntClaimRewardDialogView.setSlot(slot);
-      hg.views.GreatWinterHuntClaimRewardDialogView.show();
-    }); */
-  }
-  function ajax(element, params, uri) {
-    console.log('GWH ajax');
-    const callbackurl = 'https://www.mousehuntgame.com/';
-    return new Promise((resolve, reject) => {
-      const lastReadJournalEntryId = parseInt(
-        document
-          .querySelector('div[data-entry-id]')
-          .getAttribute('data-entry-id')
-      );
-      params['last_read_journal_entry_id'] = lastReadJournalEntryId;
-      params['uh'] = user.unique_hash;
-      $.ajax({
-        data: params,
-        dataType: 'json',
-        type: 'post',
-        url: callbackurl + uri, // 'managers/ajax/events/winter_hunt_region.php',
-        success: function (data) {
-          eventRegistry.doEvent('ajax_response', data);
-          if (data.success) {
-            resolve(data);
-          } else {
-            reject(data);
-          }
-        },
-        error: function () {
-          // eslint-disable-next-line new-cap
-          const popup = new jsDialog();
-          popup.setTemplate('error');
-          popup.addToken('{*title*}', 'An error has occurred.');
-          popup.addToken('{*content*}', 'An error occurred. Please try again!');
-          popup.show();
-          // target.removeClass('busy');
-          // eslint-disable-next-line prefer-promise-reject-errors
-          reject();
-        }
-      });
-    });
   }
 })();
 
@@ -13237,6 +13706,19 @@ function logging(...any) {
 }
 function getStorageToObject(key, obj) {
   return obj;
+}
+/**
+ * Save message to localStorage.
+ *
+ * @param {String} msg
+ */
+function storeError(msg, isOverwrite) {
+  const storingMessageKey = '';
+  console.plog(msg);
+  const now = new Date().toLocaleString();
+  const mssg = now + '-' + msg;
+  if (isOverwrite) localStorage[storingMessageKey] = mssg;
+  else localStorage[storingMessageKey] += mssg;
 }
 /* function travel(environmentType, milliseconds, callback) {
   console.log(
