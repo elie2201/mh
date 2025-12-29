@@ -68,8 +68,12 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.54.13.55';
+  const version = 'gwh_1.2.55.13.55';
   isProd ? logging(version) : console.log(version);
+  $('#homeButton').on('contextmenu', (e) => {
+    gwh();
+    e.preventDefault();
+  });
   const all = 'all';
   const maptainTypeKey = 'maptainType';
   const dusterCycleKey = 'dusterCycle';
