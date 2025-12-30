@@ -68,13 +68,15 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.55.13.55';
+  const version = 'gwh_1.2.56.13.56';
   isProd ? logging(version) : console.log(version);
+  $('#homeButton').off('contextmenu');
   $('#homeButton').on('contextmenu', (e) => {
     gwh();
     e.preventDefault();
   });
   const all = 'all';
+  const workingMapKey = 'workingMap';
   const maptainTypeKey = 'maptainType';
   const dusterCycleKey = 'dusterCycle';
   const scrollChests = {
@@ -266,11 +268,12 @@ function gwh() {
     //   settings.startCinnamonQty = Math.round(settings.startCinnamonQty / 2);
     //   settings.goHailstoneQty = Math.round(settings.goHailstoneQty / 2);
     // } // 不需要了. isMapping時無視 startCinnamonQty/goHailstoneQty
-    if (!settings.isAutoMapping) {
+    const workingMap = localStorage[workingMapKey];
+    if (!settings.isAutoMapping || !workingMap || workingMap === '') {
       checkArea(settings);
       return;
     }
-    autoMapping('naughtyList', () => {
+    autoMapping(workingMap, () => {
       // map = getMapByClass(MapClasses.event);
       // if (!map) {
       //   checkArea(settings);
