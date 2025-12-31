@@ -68,7 +68,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.56.13.59';
+  const version = 'gwh_1.2.56.14.59';
   isProd ? logging(version) : console.log(version);
   $('#homeButton').off('contextmenu');
   $('#homeButton').on('contextmenu', (e) => {
@@ -1093,7 +1093,7 @@ function gwh() {
         'wreath_thief'
       ],
       winter_hunt_workshop: ['christmas_tree', 'present', 'toy_builder'],
-      winter_hunt_fortress: ['glacia_ice_fist']
+      winter_hunt_fortress: ['glacia_ice_fist', 'squeaker_claws']
     };
     const environmentType = MhUtils.getEnvironmentType();
     if (containOnly(mapInfo[environmentType], ppMice[environmentType]))
