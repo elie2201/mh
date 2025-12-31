@@ -68,7 +68,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.56.13.56';
+  const version = 'gwh_1.2.56.13.58';
   isProd ? logging(version) : console.log(version);
   $('#homeButton').off('contextmenu');
   $('#homeButton').on('contextmenu', (e) => {
@@ -966,17 +966,15 @@ function gwh() {
     }
     if (checkDropMap(setup)) return;
     if (isMapTravelling(setup)) return;
-    // auto mapping要兼顧 forge
+    // mapping時要兼顧 forge
     if (isEndWorkshop) {
       console.log('isEndWorkshop, travel to Cinnamon Hill');
-      travel(gwhAreas.hill, 2000, () => {
-        checkArea(setup);
-      });
+      goHill(setup);
       return;
     }
-    // autoMapping時,沒 map mice還留在 workshop只有農 PP
+    // Mapping時,沒 map mice還留在 workshop只有農 PP
     if (
-      setup.isAutoMapping &&
+      setup.isMapping &&
       myItems.pp <= setup.startPpQty &&
       !mapInfo[gwhAreas.workshop] &&
       !mapInfo[all]
@@ -996,7 +994,8 @@ function gwh() {
     if (checkDropMap(setup)) return;
     if (isMapTravelling(setup)) return;
     // Hill是 mapping起點,特別處理
-    if (setup.isAutoMapping) {
+    // 要看 isMapping(做 map優先),不是 isAutoMapping(要不要跑 autoMapping)
+    if (setup.isMapping) {
       if (!map) {
         handleTrap(getNormalTrap(setup), quest, setup);
         return;
@@ -1005,6 +1004,7 @@ function gwh() {
       // 還有個 all在 hill可以 PP抓.還有 workshop的 cinnamon也要 PP收集
       // 所以只剩 fortress時才強制 normal bait
       if (
+        mapInfo &&
         !mapInfo[gwhAreas.hill] &&
         !mapInfo[gwhAreas.workshop] &&
         !mapInfo[all] &&
@@ -1017,20 +1017,29 @@ function gwh() {
       checkTrap(setup);
       return;
     }
+    // is not mapping時,
+    // 優先 breaking
+    if (checkHailstone(setup)) return;
+    // 其次 forge
     if (checkCinnamon(setup)) return;
+    // 最後原地農資源
     checkTrap(setup);
+  }
+  function checkHailstone(setup) {
+    const version = 'checkHailstone(';
+    isProd ? logging(version, setup) : console.log(version, setup);
+    if (isStartFortress) {
+      return goFortress(setup);
+    }
+    return isNotLeaving;
   }
   function checkCinnamon(setup) {
     const version = 'checkCinnamon(';
     isProd ? logging(version, setup) : console.log(version, setup);
     if (isStartWorkshop) {
-      console.log('travel to Golem Workshop');
-      travel(gwhAreas.workshop, 2000, () => {
-        checkArea(setup);
-      });
-      return true;
+      return goWorkshop(setup);
     }
-    return false;
+    return isNotLeaving;
   }
   function checkTrap(setup) {
     const version = 'checkTrap(';
@@ -1071,7 +1080,7 @@ function gwh() {
   function checkPPMiceBait(trap, setup) {
     const version = 'checkPPMiceBait(';
     isProd ? logging(version, trap, setup) : console.log(version, trap, setup);
-    const environmentType = MhUtils.getEnvironmentType();
+    if (!mapInfo) return;
     // if (MhUtils.getEnvironmentType() !== gwhAreas.hill) return;
     if (mapInfo[all]) return;
     // if (!mapInfo[gwhAreas.hill]) return;
@@ -1084,6 +1093,7 @@ function gwh() {
       winter_hunt_workshop: ['christmas_tree', 'present', 'toy_builder'],
       winter_hunt_fortress: ['glacia_ice_fist']
     };
+    const environmentType = MhUtils.getEnvironmentType();
     if (containOnly(mapInfo[environmentType], ppMice[environmentType]))
       trap[0] = setup.areaBaits.pp.name;
   }
