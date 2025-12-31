@@ -68,7 +68,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.56.13.58';
+  const version = 'gwh_1.2.56.13.59';
   isProd ? logging(version) : console.log(version);
   $('#homeButton').off('contextmenu');
   $('#homeButton').on('contextmenu', (e) => {
@@ -1061,6 +1061,8 @@ function gwh() {
     }
     const isAutoGpp =
       setup.isAutoMapping &&
+      setup.isMapping &&
+      mapInfo &&
       mapInfo.isGpp &&
       myItems.gpp > setup.gppEndQty &&
       // 在 Hill用 GPP效率比較高,可以預設
