@@ -68,7 +68,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.57.15.59';
+  const version = 'gwh_1.2.58.15.59';
   isProd ? logging(version) : console.log(version);
   $('#homeButton').off('contextmenu');
   $('#homeButton').on('contextmenu', (e) => {
@@ -248,10 +248,15 @@ function gwh() {
   let map = null;
   let mapInfo = null;
   const myItems = { pp: 0, gpp: 0, cinnamon: 0, hailstone: 0, fs: 0 }; // ;null;
-  let isDangerHailstoneQty = false;
+  let isLowPP = false;
+  let isEnoughPP = false;
+  let isLowHailstone = false;
+  let isEnoughHailstone = false;
+  let isLowCinnamon = false;
+  let isEnoughCinnamon = false;
+  let isTooManyCinnamon = false;
   let isStartFortress = false;
   let isEndFortress = false;
-  let isTooManyCinnamon = false;
   let isStartWorkshop = false;
   let isEndWorkshop = false;
   run();
@@ -468,7 +473,7 @@ function gwh() {
     // 用 mapSize而非 mapGroup.length - 1,就可以避掉 solo的情況
     const nextMaptainIndex = mapSize; // (mapSize - (attendance % mapSize)) % mapSize;
     const isNextMaptain = MhUtils.getSnUserId() === mapGroup[nextMaptainIndex];
-    console.log(`I am ${isNextMaptain ? '' : 'not '} next maptain`);
+    console.log(`I am${isNextMaptain ? '' : ' not'} next maptain`);
     if (!isNextMaptain) return;
     // 判斷不是 once只是為了減少寫入 localStorage,沒有業務邏輯
     // 判斷不是 never才是新功能: 停止 loop-mapping
@@ -750,7 +755,7 @@ function gwh() {
         if (setup.isMapping) {
           trap =
             setup.winter_hunt_fortress.ppTrap[setup.isGoodGoTd ? gotd : normal];
-          if (isDangerHailstoneQty) trap[5] = [false, false, false];
+          if (isLowHailstone) trap[5] = [false, false, false];
           handleTrap(trap, quest, setup);
           return;
         }
@@ -822,8 +827,8 @@ function gwh() {
     if (!setup.isAutoMapping) return isNotLeaving;
     if (!setup.isMapping) return isNotLeaving;
     const environmentType = MhUtils.getEnvironmentType();
-    // 這裡已經是 isAutoMapping了,沒 map/mapInfo一律先回 Hill
-    // 可以觀察看看要一律先回 Hill還是視同 !setup.isAutoMapping
+    // 這裡已經是 isMapping了,沒 map/mapInfo一律先回 Hill
+    // 可以觀察看看要一律先回 Hill還是視同 !setup.isMapping
     if (!map || !mapInfo) return goHill(setup);
     // 不強制 mapping區域順序且區域還有專屬老鼠
     if (!setup.isForcedMapClearOrder && mapInfo[environmentType])
@@ -865,7 +870,12 @@ function gwh() {
       // 預設回 hill農資源
       return goHill(setup);
     }
-    // 只剩 all area mice,在 hill狩獵
+    // 只剩 all area mice
+    // Fortress資源過多去 Fortress把資源用掉(shutdown後 breaking非常浪費)
+    if (isStartFortress && isEnoughHailstone) return goFortress(setup);
+    // Workshop資源(Cinnamon)過多去 Workshop把資源用掉
+    if (isTooManyCinnamon && isEnoughPP) return goWorkshop(setup);
+    // 農資源在 hill狩獵
     return goHill(setup);
   }
   function goHill(setup) {
@@ -914,38 +924,42 @@ function gwh() {
       items.hailstone_stat_item.quantity
     );
     myItems.fs = MyUtils.parseQuantity(items.festive_spirit_stat_item.quantity);
-    isDangerHailstoneQty = myItems.hailstone < setup.hailstoneKeptQty;
-    isStartFortress =
-      myItems.pp > setup.startPpQty &&
-      myItems.fs > setup.fsKeptQty &&
-      (setup.isMapping || myItems.hailstone > setup.goHailstoneQty);
-    // fortress沒 PP回 hill農,不在 fortress農
-    isEndFortress =
-      myItems.pp <= setup.ppKeptQty ||
-      (!setup.isMapping && isDangerHailstoneQty);
-    // cinnamon太多(可以去 workshop用 normal cheese)
+    isLowPP = myItems.pp <= setup.ppKeptQty;
+    isEnoughPP = myItems.pp > setup.startPpQty;
+    isLowHailstone = myItems.hailstone < setup.hailstoneKeptQty;
+    isEnoughHailstone = myItems.hailstone > setup.goHailstoneQty;
+    isLowCinnamon = myItems.cinnamon < setup.cinnamonKeptQty;
+    isEnoughCinnamon = myItems.cinnamon > setup.startCinnamonQty;
     isTooManyCinnamon = myItems.cinnamon > setup.startCinnamonQty * 2;
+    isStartFortress =
+      isEnoughPP &&
+      myItems.fs > setup.fsKeptQty &&
+      (setup.isMapping || isEnoughHailstone);
+    // fortress沒 PP回 hill農,不在 fortress農
+    isEndFortress = isLowPP || (!setup.isMapping && isLowHailstone);
+    // cinnamon太多(可以去 workshop用 normal cheese)
     // mapping時不要去 workshop用 normal cheese浪費收集 cinnamon的機會
     isStartWorkshop =
-      (!setup.isMapping || myItems.pp > setup.startPpQty) &&
-      (setup.isMapping || myItems.cinnamon > setup.startCinnamonQty);
+      (!setup.isMapping || isEnoughPP) && (setup.isMapping || isEnoughCinnamon);
     // || myItems.pp > parseInt(setup.startCinnamonQty / 3) // 不能 1/3,不然 workshop的 checkTrap還是會用 normal bait
     // workshop沒 PP: mapping且沒有 cinnamon過剩時回 hill農,不是 mapping時在 workshop農
     isEndWorkshop =
-      (setup.isMapping &&
-        myItems.pp <= setup.ppKeptQty &&
-        !isTooManyCinnamon) ||
-      (!setup.isMapping && myItems.cinnamon < setup.cinnamonKeptQty);
+      (setup.isMapping && isLowPP && !isTooManyCinnamon) ||
+      (!setup.isMapping && isLowCinnamon);
     console.log('after init myItems:', myItems);
+    console.log(`isLowPP: ${isLowPP}`, `isEnoughPP: ${isEnoughPP}`);
     console.log(
-      `isDangerHailstoneQty: ${isDangerHailstoneQty}`,
+      `isLowHailstone: ${isLowHailstone}`,
+      `isEnoughHailstone: ${isEnoughHailstone}`,
       `isStartFortress: ${isStartFortress}`,
       `isEndFortress: ${isEndFortress}`
     );
     console.log(
-      `isTooManyCinnamon:${isTooManyCinnamon}`,
-      `isStartWorkshop:${isStartWorkshop}`,
-      `isEndWorkshop:${isEndWorkshop}`
+      `isLowCinnamon: ${isLowCinnamon}`,
+      `isEnoughCinnamon: ${isEnoughCinnamon}`,
+      `isTooManyCinnamon: ${isTooManyCinnamon}`,
+      `isStartWorkshop: ${isStartWorkshop}`,
+      `isEndWorkshop: ${isEndWorkshop}`
     );
   }
   function golemWorkshop(setup) {
