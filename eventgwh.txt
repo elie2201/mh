@@ -68,7 +68,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.60.15.60';
+  const version = 'gwh_1.2.60.15.61';
   isProd ? logging(version) : console.log(version);
   $('#homeButton').off('contextmenu');
   $('#homeButton').on('contextmenu', (e) => {
@@ -737,7 +737,7 @@ function gwh() {
     console.log('Boss跟 Break shield都需要 FS,但 Boss不需要 hailstone跟 PP');
     if (myItems.fs > setup.fsKeptQty) {
       // 最低數量 fs,免得連 boss都沒得用
-      if (quest.shield.health == 0) {
+      if (parseInt(quest.shield.health) === 0) {
         console.log('Frost King');
         trap = getNormalTrap(setup);
         trap[0] = 'SUPER';
@@ -750,11 +750,16 @@ function gwh() {
       }
       console.log('Breaking shield, isMapping時用 ppTrap');
       if (!isEndFortress) {
-        // fs不夠時要用 isMapping,用 ppTrap,但是至少要給 Frost King用 fs
+        // isMapping時用 ppTrap.
         if (setup.isMapping) {
           trap =
             setup.winter_hunt_fortress.ppTrap[setup.isGoodGoTd ? gotd : normal];
-          if (isLowHailstone) trap[5] = [false, false, false];
+          // 2 cannon 1 stone,遊戲會把 1 stone消耗給最前面的 cannon
+          // toggleFestiveSpirit時判斷 cannons全停用且非 boss的話強制關閉 FS
+          if (isLowHailstone) {
+            console.log('hailstone不夠,強制停用 cannon');
+            trap[5] = [false, false, false];
+          }
           handleTrap(trap, setup);
           return;
         }
@@ -1197,8 +1202,19 @@ function gwh() {
       ? logging(version, trap, callback)
       : console.log(version, trap, callback);
     const quest = getQuest();
-    const isEnable = trap ? trap[4] : false;
     const isCannonsEnable = trap ? trap[5] : [false, false, false];
+    const isOneMoreCannonsEnabled = isCannonsEnable.reduce((p, n) => (p ||= n));
+    const isFortressBoss =
+      MhUtils.getEnvironmentType() === gwhAreas.fortress &&
+      parseInt(quest.shield.health) === 0;
+    // cannons全停用且非 boss的話強制關閉 FS,避免 ppTrap如果有打開 FS白白浪費.
+    // boss時也會強制停用所有 cannon但不能停用 FS
+    // hailstone不夠時 area check有強制停用所有 cannon
+    const isEnable = trap
+      ? isOneMoreCannonsEnabled || isFortressBoss
+        ? trap[4]
+        : false
+      : false;
     // user.quests.QuestCinnamonTreeGrove.is_fuel_enabled;
     const fsQty = MyUtils.parseQuantity(
       quest.items.festive_spirit_stat_item.quantity
