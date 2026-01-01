@@ -28,18 +28,18 @@ function gwh() {
       [allSnuids.vanne],[allSnuids.angelie],[allSnuids.anthony],[allSnuids.monica],[allSnuids.vivienne],
       [allSnuids.lydia],[allSnuids.kevin],[allSnuids.nina],[allSnuids.rose],
       [allSnuids.vera],[allSnuids.hsilung],[allSnuids.angela],[allSnuids.kitty],[allSnuids.mary],
-      [allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt],
-      [allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn],
-      [allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec],
-      [allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee],
-      [allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru],
-      [allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr],
-      [allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent],
-      [allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein],
-      [allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem],
-      [allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze],
-      [allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky],
-      [allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall]
+      [allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.shall],
+      [allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.furt],
+      [allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.feyn],
+      [allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.rebec],
+      [allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.renee],
+      [allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.haru],
+      [allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.Umr],
+      [allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.scent],
+      [allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.stein],
+      [allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.riem],
+      [allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.kaze],
+      [allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.sky]
     ],
     10: [
       [allSnuids.elie],[allSnuids.raphael],[allSnuids.van],[allSnuids.levi],[allSnuids.pola],
@@ -47,18 +47,18 @@ function gwh() {
       [allSnuids.vanne],[allSnuids.angelie],[allSnuids.anthony],[allSnuids.monica],[allSnuids.vivienne],
       [allSnuids.lydia],[allSnuids.kevin],[allSnuids.nina],[allSnuids.rose],
       [allSnuids.vera],[allSnuids.hsilung],[allSnuids.angela],[allSnuids.kitty],[allSnuids.mary],
-      [allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr],
-      [allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent],
-      [allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein],
-      [allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem],
-      [allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze],
-      [allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky],
-      [allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall],
-      [allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt],
-      [allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn],
-      [allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec],
-      [allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee],
-      [allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru]
+      [allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.haru],
+      [allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.Umr],
+      [allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.stein],
+      [allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.scent],
+      [allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.kaze],
+      [allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.riem],
+      [allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.sky],
+      [allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.shall],
+      [allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.furt],
+      [allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.feyn],
+      [allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.rebec],
+      [allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.renee]
     ]
   };
   const enviromentType = MhUtils.getEnvironmentType();
@@ -68,7 +68,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.56.14.59';
+  const version = 'gwh_1.2.57.14.59';
   isProd ? logging(version) : console.log(version);
   $('#homeButton').off('contextmenu');
   $('#homeButton').on('contextmenu', (e) => {
@@ -461,11 +461,12 @@ function gwh() {
    * maptainType/dusterCycle為 never時不自動 next maptain.
    */
   function autoNextMaptain(attendance, mapSize, mapInfo) {
-    const version = `autoNextMaptain_1.0.1.0.0(${attendance}, ${mapSize},`;
+    const version = `autoNextMaptain_1.0.2.0.0(${attendance}, ${mapSize},`;
     isProd ? logging(version, mapInfo) : console.log(version, mapInfo);
     const mapGroup = findNowGroup(mapSize, mapInfo);
     if (!mapGroup) return;
-    const nextMaptainIndex = (mapSize - (attendance % mapSize)) % mapSize;
+    // 用 mapSize而非 mapGroup.length - 1,就可以避掉 solo的情況
+    const nextMaptainIndex = mapSize; // (mapSize - (attendance % mapSize)) % mapSize;
     if (MhUtils.getSnUserId() !== mapGroup[nextMaptainIndex]) return;
     // 判斷不是 once只是為了減少寫入 localStorage,沒有業務邏輯
     // 判斷不是 never才是新功能: 停止 loop-mapping
@@ -612,7 +613,7 @@ function gwh() {
   }
   // autoMaptain(MapClasses.event, 'lunar_new_year_scroll_case_convertible');
   function autoMaptain(mapSize, mapClass, scrollType, callback) {
-    const version = `autoMaptain(${mapSize}, ${mapClass}, ${scrollType})_1.0.1.0.0`;
+    const version = `autoMaptain(${mapSize}, ${mapClass}, ${scrollType})_1.0.2.0.0`;
     isProd ? logging(version) : console.log(version);
     const maptainType = localStorage[maptainTypeKey];
     if ([maptainTypes.always, maptainTypes.once].indexOf(maptainType) < 0)
@@ -634,9 +635,10 @@ function gwh() {
       storeError('mapGroup not found');
       return;
     }
-    console.log('map group found, open scroll and invite');
-    snuids = snuids.slice();
-    snuids.splice(snuids.indexOf(snuid), 1);
+    console.log('map group found, open scroll and invite', snuids);
+    snuids = snuids
+      .filter((value) => value !== snuid)
+      .filter((value, index, array) => array.indexOf(value) === index);
     console.log('After remove self', snuids, mapGroups);
     MhUtils.completeTransaction(true, scrollType, 1, false, () => {
       hg.utils.UserInventory.useConvertible(
@@ -1601,6 +1603,28 @@ function gwh() {
   }
 }
 // End #gwh
+
+// mapGroup單元測試
+(() => {
+  const snuid = user.sn_user_id;
+  let snuids = [
+    'hg_1602095c6c0a2376b3bbb12e417df9a4',
+    'hg_3207d1fd7e0a8bca4bdef74c378a6a32',
+    'hg_81538b33309a53ae077d5f01f53f6c06',
+    'hg_62a01c775dd2fe8670b6cb46b31c1318',
+    'hg_2d25dd402e32439c658e10b62d1d64bf',
+    'hg_3aee6d83ca43348e580141870193b531',
+    'hg_91cbc542b246f2f8b4f0f3b446915199',
+    'hg_5eeb1174c05069baa7fa40bd82897130',
+    'hg_52952f2bb5ff36565d7936529f156349',
+    'hg_219f8417793705b8bfe8c4a01ecce1fc',
+    'hg_52952f2bb5ff36565d7936529f156349'
+  ];
+  snuids = snuids
+    .filter((value) => value !== snuid)
+    .filter((value, index, array) => array.indexOf(value) === index);
+  console.log('After remove self', snuids);
+})();
 
 // auto mapping單元測試
 (() => {
