@@ -68,7 +68,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.57.14.59';
+  const version = 'gwh_1.2.57.15.59';
   isProd ? logging(version) : console.log(version);
   $('#homeButton').off('contextmenu');
   $('#homeButton').on('contextmenu', (e) => {
@@ -461,13 +461,15 @@ function gwh() {
    * maptainType/dusterCycle為 never時不自動 next maptain.
    */
   function autoNextMaptain(attendance, mapSize, mapInfo) {
-    const version = `autoNextMaptain_1.0.2.0.0(${attendance}, ${mapSize},`;
+    const version = `autoNextMaptain_1.0.2.1.0(${attendance}, ${mapSize},`;
     isProd ? logging(version, mapInfo) : console.log(version, mapInfo);
     const mapGroup = findNowGroup(mapSize, mapInfo);
     if (!mapGroup) return;
     // 用 mapSize而非 mapGroup.length - 1,就可以避掉 solo的情況
     const nextMaptainIndex = mapSize; // (mapSize - (attendance % mapSize)) % mapSize;
-    if (MhUtils.getSnUserId() !== mapGroup[nextMaptainIndex]) return;
+    const isNextMaptain = MhUtils.getSnUserId() === mapGroup[nextMaptainIndex];
+    console.log(`I am ${isNextMaptain ? '' : 'not '} next maptain`);
+    if (!isNextMaptain) return;
     // 判斷不是 once只是為了減少寫入 localStorage,沒有業務邏輯
     // 判斷不是 never才是新功能: 停止 loop-mapping
     const notWriteTypes = [maptainTypes.once, maptainTypes.never];
