@@ -68,7 +68,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.58.15.59';
+  const version = 'gwh_1.2.60.15.59';
   isProd ? logging(version) : console.log(version);
   $('#homeButton').off('contextmenu');
   $('#homeButton').on('contextmenu', (e) => {
@@ -189,14 +189,13 @@ function gwh() {
     autoGolems: 2,
     autoUpgradeGolems: 2,
     golemSetup: { defaultTarget: st.defaultTarget },
-    minGolemDelayTime: 3500,
-    maxGolemDelayTime: 5000,
     isGoodGoTd: true,
     badGotdDates: [],
     isAutoMapping: true,
     isMapping: false,
     isCheckPpMiceBait: true,
     isForcedMapClearOrder: true,
+    mapAreaClearOrder: [gwhAreas.hill, gwhAreas.workshop, gwhAreas.fortress],
     dropMapGppAsGppLessThan: 40, // GPP數量少於此, drop需要 GPP的 map
     dropMapGlazyAsGppLessThan: 80, // GPP數量少於此, drop有 Glazy的 map(做 Joy的 map有機會多抓 Glazy)
     shutdown: {
@@ -746,7 +745,7 @@ function gwh() {
         trap[3] = 'none';
         trap[4] = true;
         trap[5] = [false, false, false];
-        handleTrap(trap, quest, setup);
+        handleTrap(trap, setup);
         return;
       }
       console.log('Breaking shield, isMapping時用 ppTrap');
@@ -756,13 +755,13 @@ function gwh() {
           trap =
             setup.winter_hunt_fortress.ppTrap[setup.isGoodGoTd ? gotd : normal];
           if (isLowHailstone) trap[5] = [false, false, false];
-          handleTrap(trap, quest, setup);
+          handleTrap(trap, setup);
           return;
         }
         // 如果不想做 map又沒有 fs,就得改 fsTrap. !isMapping就是用 fsTrap
         trap =
           setup.winter_hunt_fortress.fsTrap[setup.isGoodGoTd ? gotd : normal];
-        handleTrap(trap, quest, setup);
+        handleTrap(trap, setup);
         return;
       }
     }
@@ -829,81 +828,91 @@ function gwh() {
     const environmentType = MhUtils.getEnvironmentType();
     // 這裡已經是 isMapping了,沒 map/mapInfo一律先回 Hill
     // 可以觀察看看要一律先回 Hill還是視同 !setup.isMapping
-    if (!map || !mapInfo) return goHill(setup);
+    if (!map || !mapInfo) return goArea(gwhAreas.hill, setup);
     // 不強制 mapping區域順序且區域還有專屬老鼠
     if (!setup.isForcedMapClearOrder && mapInfo[environmentType])
       return isNotLeaving;
     // 區域沒專屬老鼠或強制 mapping區域順序
-    // hill有 map mice且不在 hill,去 hill
-    if (mapInfo[gwhAreas.hill]) return goHill(setup);
-    // workshop有 map mice
-    if (mapInfo[gwhAreas.workshop]) {
-      // 在 workshop
-      if (environmentType === gwhAreas.workshop) {
-        if (!isEndWorkshop || isTooManyCinnamon) return isNotLeaving;
-        // 還有 map mice但必須終止就回 hill農資源
-        return goHill(setup);
+    const areaClearOrder = setup.mapAreaClearOrder;
+    for (let i = 0; i < areaClearOrder.length; i++) {
+      const area = areaClearOrder[i];
+      const leftMice = mapInfo[area];
+      if (!leftMice) continue;
+      // workshop有 map mice額外檢查
+      if (area === gwhAreas.workshop) {
+        // 在 workshop
+        if (environmentType === gwhAreas.workshop) {
+          if (!isEndWorkshop || isTooManyCinnamon) return isNotLeaving;
+          // 還有 map mice但必須終止就回 hill農資源
+          return hillFarming(setup);
+        }
+        // 不在 workshop
+        // 能啟動
+        if (isStartWorkshop || isTooManyCinnamon) return goArea(area, setup);
+        // 不能啟動-回 hill農資源
+        return hillFarming(setup);
       }
-      // 不在 workshop
-      // 能啟動
-      if (isStartWorkshop || isTooManyCinnamon) return goWorkshop(setup);
-      // 不能啟動-回 hill農資源
-      return goHill(setup);
-    }
-    // fortress有 map mice
-    if (mapInfo[gwhAreas.fortress]) {
-      // 在 fortress
-      if (environmentType === gwhAreas.fortress) {
-        if (!isEndFortress) return isNotLeaving;
-        // 還有 map mice但必須終止時
+      // fortress有 map mice額外檢查
+      if (area === gwhAreas.fortress) {
+        // 在 fortress
+        if (environmentType === gwhAreas.fortress) {
+          if (!isEndFortress) return isNotLeaving;
+          // 還有 map mice但必須終止時
+          // 如果 cinnamon太多就回 workshop農資源
+          if (isTooManyCinnamon) return workshopFarming(setup);
+          // 預設回 hill農資源
+          return hillFarming(setup);
+        }
+        // 不在 fortress
+        // 能啟動
+        if (isStartFortress) return goArea(area, setup);
+        // 不能啟動
         // 如果 cinnamon太多就回 workshop農資源
-        if (isTooManyCinnamon) return goWorkshop(setup);
+        if (isTooManyCinnamon) return workshopFarming(setup);
         // 預設回 hill農資源
-        return goHill(setup);
+        return hillFarming(setup);
       }
-      // 不在 fortress
-      // 能啟動
-      if (isStartFortress) return goFortress(setup);
-      // 不能啟動
-      // 如果 cinnamon太多就回 workshop農資源
-      if (isTooManyCinnamon) return goWorkshop(setup);
-      // 預設回 hill農資源
-      return goHill(setup);
+      // hill有 map mice直接過去
+      return goArea(area, setup);
     }
     // 只剩 all area mice
     // Fortress資源過多去 Fortress把資源用掉(shutdown後 breaking非常浪費)
-    if (isStartFortress && isEnoughHailstone) return goFortress(setup);
+    if (isStartFortress && isEnoughHailstone)
+      return goArea(gwhAreas.fortress, setup);
     // Workshop資源(Cinnamon)過多去 Workshop把資源用掉
-    if (isTooManyCinnamon && isEnoughPP) return goWorkshop(setup);
+    if (isTooManyCinnamon && isEnoughPP)
+      return goArea(gwhAreas.workshop, setup);
     // 農資源在 hill狩獵
-    return goHill(setup);
+    return hillFarming(setup);
   }
-  function goHill(setup) {
-    const version = 'goHill(';
+  /** travel to hill(if necessary) and hunt with normal trap */
+  function hillFarming(setup) {
+    const version = 'hillFarming(';
     isProd ? logging(version, setup) : console.log(version, setup);
     const environmentType = MhUtils.getEnvironmentType();
     if (environmentType === gwhAreas.hill) return isNotLeaving;
     travel(gwhAreas.hill, 2000, () => {
-      checkArea(setup);
+      handleTrap(getNormalTrap(setup), setup);
     });
     return isLeaving;
   }
-  function goWorkshop(setup) {
-    const version = 'goWorkshop(';
+  /** travel to workshop(if necessary) and hunt with normal trap */
+  function workshopFarming(setup) {
+    const version = 'workshopFarming(';
     isProd ? logging(version, setup) : console.log(version, setup);
     const environmentType = MhUtils.getEnvironmentType();
     if (environmentType === gwhAreas.workshop) return isNotLeaving;
     travel(gwhAreas.workshop, 2000, () => {
-      checkArea(setup);
+      handleTrap(getNormalTrap(setup), setup);
     });
     return isLeaving;
   }
-  function goFortress(setup) {
-    const version = 'goFortress(';
+  function goArea(area, setup) {
+    const version = `goArea(${area},`;
     isProd ? logging(version, setup) : console.log(version, setup);
     const environmentType = MhUtils.getEnvironmentType();
-    if (environmentType === gwhAreas.fortress) return isNotLeaving;
-    travel(gwhAreas.fortress, 2000, () => {
+    if (environmentType === area) return isNotLeaving;
+    travel(area, 2000, () => {
       checkArea(setup);
     });
     return isLeaving;
@@ -987,7 +996,7 @@ function gwh() {
     // mapping時要兼顧 forge
     if (isEndWorkshop) {
       console.log('isEndWorkshop, travel to Cinnamon Hill');
-      goHill(setup);
+      goArea(gwhAreas.hill, setup);
       return;
     }
     // Mapping時,沒 map mice還留在 workshop只有農 PP
@@ -997,7 +1006,7 @@ function gwh() {
       !mapInfo[gwhAreas.workshop] &&
       !mapInfo[all]
     ) {
-      handleTrap(getNormalTrap(setup), quest, setup);
+      handleTrap(getNormalTrap(setup), setup);
       return;
     }
     checkTrap(setup);
@@ -1015,7 +1024,8 @@ function gwh() {
     // 要看 isMapping(做 map優先),不是 isAutoMapping(要不要跑 autoMapping)
     if (setup.isMapping) {
       if (!map) {
-        handleTrap(getNormalTrap(setup), quest, setup);
+        // handleTrap(getNormalTrap(setup), setup);
+        checkTrap(setup);
         return;
       }
       // Hill沒 mice不見得能離開,去另外兩個地方有額外條件
@@ -1028,7 +1038,7 @@ function gwh() {
         !mapInfo[all] &&
         mapInfo[gwhAreas.fortress]
       ) {
-        handleTrap(getNormalTrap(setup), quest, setup);
+        handleTrap(getNormalTrap(setup), setup);
         return;
       }
       // auto mapping時不 checkCinnamon
@@ -1047,7 +1057,7 @@ function gwh() {
     const version = 'checkHailstone(';
     isProd ? logging(version, setup) : console.log(version, setup);
     if (isStartFortress) {
-      return goFortress(setup);
+      return goArea(gwhAreas.fortress, setup);
     }
     return isNotLeaving;
   }
@@ -1055,7 +1065,7 @@ function gwh() {
     const version = 'checkCinnamon(';
     isProd ? logging(version, setup) : console.log(version, setup);
     if (isStartWorkshop) {
-      return goWorkshop(setup);
+      return goArea(gwhAreas.workshop, setup);
     }
     return isNotLeaving;
   }
@@ -1063,7 +1073,6 @@ function gwh() {
     const version = 'checkTrap(';
     isProd ? logging(version, setup) : console.log(version, setup);
     const enviromentType = MhUtils.getEnvironmentType();
-    const quest = getQuest();
     let trap = null;
     if (myItems.pp > setup.startPpQty) {
       trap = setup[enviromentType][ppTrap][setup.isGoodGoTd ? gotd : normal];
@@ -1089,7 +1098,7 @@ function gwh() {
         setup.gppArea === enviromentType);
     if (isAutoGpp)
       trap[0] = setup.areaBaits.gpp.name + ',' + setup.areaBaits.pp.name;
-    handleTrap(trap, quest, setup);
+    handleTrap(trap, setup);
   }
   /**
    * 強制 PP:
@@ -1156,12 +1165,10 @@ function gwh() {
         return null;
     }
   }
-  function handleTrap(trap, quest, setup) {
+  function handleTrap(trap, setup) {
     const version = 'handleTrap(';
-    isProd
-      ? logging(version, trap, quest, setup)
-      : console.log(version, trap, quest, setup);
-    toggleFestiveSpirit(trap, quest, () => {
+    isProd ? logging(version, trap, setup) : console.log(version, trap, setup);
+    toggleFestiveSpirit(trap, () => {
       if (trap) {
         // 裝備 GPP時,如果 isCheckPpMiceBait,checkPPMiceBait
         if (trap[0].indexOf('Glazed') === 0 && settings.isCheckPpMiceBait)
@@ -1180,11 +1187,12 @@ function gwh() {
     return setup['normalTrap'][setup.isGoodGoTd ? gotd : normal];
   }
   // toggleFestiveSpirit([null,null,null,null,true,[true,false,false]], user.quests.QuestIceFortress);
-  function toggleFestiveSpirit(trap, quest, callback) {
+  function toggleFestiveSpirit(trap, callback) {
     const version = 'toggleFestiveSpirit(';
     isProd
-      ? logging(version, trap, quest, callback)
-      : console.log(version, trap, quest, callback);
+      ? logging(version, trap, callback)
+      : console.log(version, trap, callback);
+    const quest = getQuest();
     const isEnable = trap ? trap[4] : false;
     const isCannonsEnable = trap ? trap[5] : [false, false, false];
     // user.quests.QuestCinnamonTreeGrove.is_fuel_enabled;
