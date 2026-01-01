@@ -68,7 +68,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.60.15.59';
+  const version = 'gwh_1.2.60.15.60';
   isProd ? logging(version) : console.log(version);
   $('#homeButton').off('contextmenu');
   $('#homeButton').on('contextmenu', (e) => {
@@ -876,10 +876,14 @@ function gwh() {
       return goArea(area, setup);
     }
     // 只剩 all area mice
-    // Fortress資源過多去 Fortress把資源用掉(shutdown後 breaking非常浪費)
+    // Fortress資源過多,留在/去 Fortress把資源用掉(shutdown後 breaking非常浪費)
+    if (environmentType === gwhAreas.fortress && !isEndFortress)
+      return isNotLeaving;
     if (isStartFortress && isEnoughHailstone)
       return goArea(gwhAreas.fortress, setup);
-    // Workshop資源(Cinnamon)過多去 Workshop把資源用掉
+    // Workshop資源(Cinnamon)過多,留在/去 Workshop把資源用掉
+    if (environmentType === gwhAreas.workshop && !isEndWorkshop)
+      return isNotLeaving;
     if (isTooManyCinnamon && isEnoughPP)
       return goArea(gwhAreas.workshop, setup);
     // 農資源在 hill狩獵
