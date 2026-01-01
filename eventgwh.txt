@@ -49,10 +49,10 @@ function gwh() {
       [allSnuids.vera],[allSnuids.hsilung],[allSnuids.angela],[allSnuids.kitty],[allSnuids.mary],
       [allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.haru],
       [allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.Umr],
-      [allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.stein],
-      [allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.scent],
-      [allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.kaze],
-      [allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.riem],
+      [allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.scent],
+      [allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.riem],
+      [allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.riem],
+      [allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.sky],
       [allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.sky],
       [allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.shall],
       [allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.furt],
@@ -68,7 +68,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.60.15.61';
+  const version = 'gwh_1.2.60.16.61';
   isProd ? logging(version) : console.log(version);
   $('#homeButton').off('contextmenu');
   $('#homeButton').on('contextmenu', (e) => {
