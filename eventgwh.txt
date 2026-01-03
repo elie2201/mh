@@ -68,7 +68,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.62.17.63';
+  const version = 'gwh_1.2.62.17.64';
   isProd ? logging(version) : console.log(version);
   $('#homeButton').off('contextmenu');
   $('#homeButton').on('contextmenu', (e) => {
@@ -813,14 +813,14 @@ function gwh() {
       console.plog(
         `map isGlazy:${mapInfo.isGlazy} && GPP ${myItems.gpp} < ${setup.dropMapGlazyAsGppLessThan}`
       );
-      // If dropped map, arm normal trap
       hg.utils.TreasureMapUtil.leave(
         mapInfo.mapId,
         () => {
           map = null;
           mapInfo = null;
+          console.log('After dropped map, go hill farming');
           setTimeout(() => {
-            handleTrap(getNormalTrap(setup), setup);
+            hillFarming(setup);
           }, 1000);
         },
         () => {
