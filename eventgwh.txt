@@ -68,7 +68,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.62.17.65';
+  const version = 'gwh_1.2.63.18.65';
   isProd ? logging(version) : console.log(version);
   $('#homeButton').off('contextmenu');
   $('#homeButton').on('contextmenu', (e) => {
@@ -285,24 +285,6 @@ function gwh() {
         gwhAreas.fortress
       ];
     autoMapping(workingMap, () => {
-      // map = getMapByClass(MapClasses.event);
-      // if (!map) {
-      //   checkArea(settings);
-      //   return;
-      // }
-      // hg.utils.TreasureMapUtil.getMapInfo(map.map_id, (data) => {
-      //   const info = isProd ? data : MapInfo;
-      //   mapInfo = parseMapInfo(info);
-      //   console.log('parsed mapInfo:', mapInfo);
-      //   // game data有時會沒 sync
-      //   if (mapInfo && mapInfo.isCompleted) {
-      //     setTimeout(() => {
-      //       run();
-      //     }, 1000);
-      //     return;
-      //   }
-      //   checkArea(settings);
-      // });
       checkArea(settings);
     });
   }
@@ -1035,7 +1017,7 @@ function gwh() {
     // Mapping時,沒 map mice還留在 workshop只有農 PP
     if (
       setup.isMapping &&
-      myItems.pp <= setup.startPpQty &&
+      !isEnoughPP &&
       !mapInfo[gwhAreas.workshop] &&
       !mapInfo[all]
     ) {
@@ -1107,10 +1089,10 @@ function gwh() {
     isProd ? logging(version, setup) : console.log(version, setup);
     const enviromentType = MhUtils.getEnvironmentType();
     let trap = null;
-    if (myItems.pp > setup.startPpQty) {
+    if (isEnoughPP) {
       trap = setup[enviromentType][ppTrap][setup.isGoodGoTd ? gotd : normal];
       // checkPPMiceBait(trap, setup);
-    } else if (myItems.pp <= setup.ppKeptQty) {
+    } else if (isLowPP) {
       trap = getNormalTrap(setup);
     } else {
       const areaBaitIds = getAreaBaitIds(setup);
@@ -1119,6 +1101,7 @@ function gwh() {
         // checkPPMiceBait(trap, setup);
       } else trap = getNormalTrap(setup);
     }
+    console.log('trap found:', trap);
     const isAutoGpp =
       setup.isAutoMapping &&
       setup.isMapping &&
@@ -1131,6 +1114,7 @@ function gwh() {
         setup.gppArea === enviromentType);
     if (isAutoGpp)
       trap[0] = setup.areaBaits.gpp.name + ',' + setup.areaBaits.pp.name;
+    console.log('after auto GPP check:', trap);
     handleTrap(trap, setup);
   }
   /**
