@@ -50,10 +50,10 @@ function gwh() {
       [allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.haru],
       [allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.Umr],
       [allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.scent],
-      [allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.riem],
-      [allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.riem],
-      [allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.sky],
-      [allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.sky],
+      [allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.stein],
+      [allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.kaze],
+      [allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.kaze],
+      [allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.shall],
       [allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.shall],
       [allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.furt],
       [allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.feyn],
@@ -68,7 +68,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.61.16.61';
+  const version = 'gwh_1.2.62.17.61';
   isProd ? logging(version) : console.log(version);
   $('#homeButton').off('contextmenu');
   $('#homeButton').on('contextmenu', (e) => {
@@ -1209,19 +1209,20 @@ function gwh() {
       ? logging(version, trap, callback)
       : console.log(version, trap, callback);
     const quest = getQuest();
+    const health = parseInt(quest.shield.health);
     const isCannonsEnable = trap ? trap[5] : [false, false, false];
-    const isOneMoreCannonsEnabled = isCannonsEnable.reduce((p, n) => (p ||= n));
+    const damage = isCannonsEnable.reduce((p, n) => (p += n ? 1 : 0), 0);
     const isFortressBoss =
-      MhUtils.getEnvironmentType() === gwhAreas.fortress &&
-      parseInt(quest.shield.health) === 0;
+      MhUtils.getEnvironmentType() === gwhAreas.fortress && health === 0;
     // cannons全停用且非 boss的話強制關閉 FS,避免 ppTrap如果有打開 FS白白浪費.
     // boss時也會強制停用所有 cannon但不能停用 FS
-    // hailstone不夠時 area check有強制停用所有 cannon
-    const isEnable = trap
-      ? isOneMoreCannonsEnabled || isFortressBoss
-        ? trap[4]
-        : false
-      : false;
+    // hailstone不夠時, area check有強制停用所有 cannon
+    // 考慮處理如果啟用 FS會讓 damage除不盡 health時停用 FS
+    // const isOkEnable =
+    //   (damage > 0 || isFortressBoss) &&
+    //   health % (damage + (trap && trap[4]) ? 1 : 0) === 0;
+    const isOkEnable = damage > 0 || isFortressBoss;
+    const isEnable = trap ? (isOkEnable ? trap[4] : false) : false;
     // user.quests.QuestCinnamonTreeGrove.is_fuel_enabled;
     const fsQty = MyUtils.parseQuantity(
       quest.items.festive_spirit_stat_item.quantity
