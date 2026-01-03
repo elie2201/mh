@@ -68,7 +68,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.62.17.64';
+  const version = 'gwh_1.2.62.17.65';
   isProd ? logging(version) : console.log(version);
   $('#homeButton').off('contextmenu');
   $('#homeButton').on('contextmenu', (e) => {
@@ -902,23 +902,39 @@ function gwh() {
     // 農資源在 hill狩獵
     return hillFarming(setup);
   }
-  /** travel to hill(if necessary) and hunt with normal trap */
+  /**
+   * travel to hill(if necessary) and forced hunting with normal trap.
+   * anyone who invoke this should not handle trap.
+   * @returns true always(even not traveling)
+   */
   function hillFarming(setup) {
     const version = 'hillFarming(';
     isProd ? logging(version, setup) : console.log(version, setup);
     const environmentType = MhUtils.getEnvironmentType();
-    if (environmentType === gwhAreas.hill) return isNotLeaving;
+    if (environmentType === gwhAreas.hill) {
+      handleTrap(getNormalTrap(setup), setup);
+      return isLeaving;
+    }
+    // if (environmentType === gwhAreas.hill) return isNotLeaving;
     travel(gwhAreas.hill, 2000, () => {
       handleTrap(getNormalTrap(setup), setup);
     });
     return isLeaving;
   }
-  /** travel to workshop(if necessary) and hunt with normal trap */
+  /**
+   * travel to workshop(if necessary) and forced hunting with normal trap.
+   * anyone who invoke this should not handle trap.
+   * @returns true always(even not traveling)
+   */
   function workshopFarming(setup) {
     const version = 'workshopFarming(';
     isProd ? logging(version, setup) : console.log(version, setup);
     const environmentType = MhUtils.getEnvironmentType();
-    if (environmentType === gwhAreas.workshop) return isNotLeaving;
+    if (environmentType === gwhAreas.workshop) {
+      handleTrap(getNormalTrap(setup), setup);
+      return isLeaving;
+    }
+    // if (environmentType === gwhAreas.workshop) return isNotLeaving;
     travel(gwhAreas.workshop, 2000, () => {
       handleTrap(getNormalTrap(setup), setup);
     });
