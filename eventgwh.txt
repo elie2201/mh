@@ -51,10 +51,10 @@ function gwh() {
       [allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.Umr],
       [allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.scent],
       [allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.stein],
-      [allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.kaze],
-      [allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.kaze],
-      [allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.shall],
-      [allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.shall],
+      [allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.riem],
+      [allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.sky],
+      [allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.sky],
+      [allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.furt],
       [allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.furt],
       [allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.feyn],
       [allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.rebec],
@@ -68,7 +68,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.63.18.65';
+  const version = 'gwh_1.2.64.19.65';
   isProd ? logging(version) : console.log(version);
   $('#homeButton').off('contextmenu');
   $('#homeButton').on('contextmenu', (e) => {
@@ -1095,7 +1095,7 @@ function gwh() {
     } else if (isLowPP) {
       trap = getNormalTrap(setup);
     } else {
-      const areaBaitIds = getAreaBaitIds(setup);
+      const areaBaitIds = Object.values(setup.areaBaits).map((v) => v.id); // getAreaBaitIds(setup);
       if (areaBaitIds.indexOf(MhUtils.getBaitItemId()) > -1) {
         trap = setup[enviromentType][ppTrap][setup.isGoodGoTd ? gotd : normal];
         // checkPPMiceBait(trap, setup);
@@ -1108,7 +1108,7 @@ function gwh() {
       mapInfo &&
       mapInfo.isGpp &&
       myItems.gpp > setup.gppEndQty &&
-      // 在 Hill用 GPP效率比較高,可以預設
+      // 在 Hill用 GPP效率比較好,可以預設
       (!setup.gppArea ||
         setup.gppArea === '' ||
         setup.gppArea === enviromentType);
@@ -1155,18 +1155,18 @@ function gwh() {
     }
     return true;
   }
-  function getAreaBaitIds(setup) {
-    const version = 'getAreaBaitIds(';
-    isProd ? logging(version, setup) : console.log(version, setup);
-    const rtn = [];
-    const areaBaits = setup.areaBaits;
-    for (const key in areaBaits) {
-      if (!Object.hasOwn(areaBaits, key)) continue;
-      const areaBait = areaBaits[key];
-      rtn.push(areaBait.id);
-    }
-    return rtn;
-  }
+  // function getAreaBaitIds(setup) {
+  //   const version = 'getAreaBaitIds(';
+  //   isProd ? logging(version, setup) : console.log(version, setup);
+  //   const rtn = [];
+  //   const areaBaits = setup.areaBaits;
+  //   for (const key in areaBaits) {
+  //     if (!Object.hasOwn(areaBaits, key)) continue;
+  //     const areaBait = areaBaits[key];
+  //     rtn.push(areaBait.id);
+  //   }
+  //   return rtn;
+  // }
   function getQuest() {
     const version = 'getQuest';
     isProd ? logging(version) : console.log(version);
