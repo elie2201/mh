@@ -68,7 +68,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.64.19.65';
+  const version = 'gwh_1.2.66.20.65';
   isProd ? logging(version) : console.log(version);
   $('#homeButton').off('contextmenu');
   $('#homeButton').on('contextmenu', (e) => {
@@ -188,6 +188,7 @@ function gwh() {
     isAutoUpgrade: true,
     autoGolems: 2,
     autoUpgradeGolems: 2,
+    isScarfUnusedGolem: true, // 有 scarf時,如果有閒置的 golem就送掉
     golemSetup: { defaultTarget: st.defaultTarget },
     isGoodGoTd: true,
     badGotdDates: [],
@@ -195,7 +196,7 @@ function gwh() {
     isMapping: false,
     isCheckPpMiceBait: true,
     isForcedMapClearOrder: true,
-    mapAreaClearOrder: [gwhAreas.hill, gwhAreas.workshop, gwhAreas.fortress],
+    mapAreaClearOrder: [gwhAreas.fortress, gwhAreas.hill, gwhAreas.workshop],
     dropMapGppAsGppLessThan: 40, // GPP數量少於此, drop需要 GPP的 map
     dropMapGlazyAsGppLessThan: 80, // GPP數量少於此, drop有 Glazy的 map(做 Joy的 map有機會多抓 Glazy)
     shutdown: {
@@ -246,7 +247,15 @@ function gwh() {
     : defaultSettings;
   let map = null;
   let mapInfo = null;
-  const myItems = { pp: 0, gpp: 0, cinnamon: 0, hailstone: 0, fs: 0 }; // ;null;
+  const myItems = {
+    pp: 0,
+    gpp: 0,
+    cinnamon: 0,
+    hailstone: 0,
+    fs: 0,
+    scarf: 0,
+    hat: 0
+  }; // ;null;
   let isLowPP = false;
   let isEnoughPP = false;
   let isLowHailstone = false;
@@ -258,6 +267,8 @@ function gwh() {
   let isEndFortress = false;
   let isStartWorkshop = false;
   let isEndWorkshop = false;
+  let hasScarf = false;
+  let hasHat = false;
   run();
   function run() {
     isProd ? logging('run') : console.log('run');
@@ -948,6 +959,14 @@ function gwh() {
       items.hailstone_stat_item.quantity
     );
     myItems.fs = MyUtils.parseQuantity(items.festive_spirit_stat_item.quantity);
+    myItems.scarf = MyUtils.parseQuantity(
+      items.golden_scarf_stat_item.quantity
+    );
+    myItems.hat = MyUtils.parseQuantity(
+      items.golem_magical_hat_stat_item.quantity
+    );
+    hasScarf = myItems.scarf > 0;
+    hasHat = myItems.hat > 0;
     isLowPP = myItems.pp <= setup.ppKeptQty;
     isEnoughPP = myItems.pp > setup.startPpQty;
     isLowHailstone = myItems.hailstone < setup.hailstoneKeptQty;
@@ -1396,7 +1415,8 @@ function gwh() {
           return;
         }
       }
-    for (let i = 0; i < setup.autoGolems; i++) {
+    // 有 reward就 claim,不用管 autoGolems.
+    for (let i = 0; i < golems.length; i++) {
       const golem = golems[i];
       if (golem.can_claim) {
         console.log('claim golem');
@@ -1414,6 +1434,19 @@ function gwh() {
       if (golem.can_build) {
         console.log('build golem');
         buildGolem(golem.slot, setup.golemSetup.defaultTarget[i], () => {
+          golem.can_build = false;
+          setTimeout(() => {
+            checkGolem(setup);
+          }, 1000);
+        });
+        return;
+      }
+    }
+    if (setup.autoGolems < 3 && hasScarf && setup.isScarfUnusedGolem) {
+      const golem = golems[2];
+      if (golem.can_build) {
+        console.log('build unused golem with scarf');
+        buildGolem(golem.slot, setup.golemSetup.defaultTarget[2], () => {
           golem.can_build = false;
           setTimeout(() => {
             checkGolem(setup);
@@ -1533,13 +1566,6 @@ function gwh() {
     const version = `buildGolem(${slot}, ${environmentType}, callback)`;
     isProd ? logging(version) : console.log(version);
     const storageKey = 'scarfingDestinations';
-    const hasScarf =
-      MyUtils.parseQuantity(getQuest().items.golden_scarf_stat_item.quantity) >
-      0;
-    const hasHat =
-      MyUtils.parseQuantity(
-        getQuest().items.golem_magical_hat_stat_item.quantity
-      ) > 0;
     const scarfingDestinations =
       (hasScarf || hasHat) && localStorage[storageKey]
         ? JSON.parse(localStorage[storageKey])
