@@ -68,8 +68,9 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.66.20.65';
+  const version = 'gwh_1.2.66.20.66';
   isProd ? logging(version) : console.log(version);
+  // TODO 週六整天用 SB,存 PP給週日 stuck snowball用
   $('#homeButton').off('contextmenu');
   $('#homeButton').on('contextmenu', (e) => {
     gwh();
@@ -1433,6 +1434,8 @@ function gwh() {
       const golem = golems[i];
       if (golem.can_build) {
         console.log('build golem');
+        // hasScarf/hasHat改成 property後, buildGolem前要更新狀態
+        initMyItems(quest.items, setup);
         buildGolem(golem.slot, setup.golemSetup.defaultTarget[i], () => {
           golem.can_build = false;
           setTimeout(() => {
@@ -1442,6 +1445,8 @@ function gwh() {
         return;
       }
     }
+    // hasScarf/hasHat改成 property後, buildGolem前要更新狀態
+    initMyItems(quest.items, setup);
     if (setup.autoGolems < 3 && hasScarf && setup.isScarfUnusedGolem) {
       const golem = golems[2];
       if (golem.can_build) {
