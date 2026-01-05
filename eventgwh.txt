@@ -52,10 +52,10 @@ function gwh() {
       [allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.scent],
       [allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.stein],
       [allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.riem],
-      [allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.sky],
-      [allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.sky],
+      [allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.kaze],
+      [allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.shall],
       [allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.furt],
-      [allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.furt],
+      [allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.feyn],
       [allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.feyn],
       [allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.rebec],
       [allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.renee]
@@ -68,9 +68,11 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.66.20.66';
+  const version = 'gwh_1.2.67.21.66';
   isProd ? logging(version) : console.log(version);
+  // TODO Animated Snow Storm全程 FS
   // TODO 週六整天用 SB,存 PP給週日 stuck snowball用
+  // TODO 週日整天用 FS,double stuck snowball loot(至少最後一兩次,loot數量夠高值得 double)
   $('#homeButton').off('contextmenu');
   $('#homeButton').on('contextmenu', (e) => {
     gwh();
@@ -134,7 +136,7 @@ function gwh() {
   // const qq = 'queso_quarry';
   const pp = 'Pecan Pecorino';
   const gouda = 'Gouda Cheese';
-  // const sb = 'SUPER';
+  const sb = 'SUPER';
   // const bestArcane = 'best.weapon.arcane';
   // const bestPhysical = 'best.weapon.physical';
   const bestTactical = 'best.weapon.tactical';
@@ -176,14 +178,15 @@ function gwh() {
     ngC: gotdC
   };
   const defaultSettings = {
-    startPpQty: 14,
+    isShutdown: false,
+    startPpQty: 25,
     ppKeptQty: 2,
     gppEndQty: 2,
     gppArea: 'winter_hunt_grove',
     startCinnamonQty: 37,
     cinnamonKeptQty: 3,
     fsKeptQty: 3,
-    goHailstoneQty: 27,
+    goHailstoneQty: 35,
     hailstoneKeptQty: 2,
     isAutoGolem: true,
     isAutoUpgrade: true,
@@ -246,6 +249,7 @@ function gwh() {
   const settings = isProd
     ? getStorageToObject(targetEnvironmentType, defaultSettings)
     : defaultSettings;
+  const isShutdown = getQuest().is_shutdown_enabled || settings.isShutdown;
   let map = null;
   let mapInfo = null;
   const myItems = {
@@ -285,6 +289,11 @@ function gwh() {
     //   settings.startCinnamonQty = Math.round(settings.startCinnamonQty / 2);
     //   settings.goHailstoneQty = Math.round(settings.goHailstoneQty / 2);
     // } // 不需要了. isMapping時無視 startCinnamonQty/goHailstoneQty
+    if (isShutdown) {
+      settings.isAutoMapping = false;
+      settings.isMapping = false;
+      settings.goHailstoneQty = 35;
+    }
     const workingMap = localStorage[workingMapKey];
     if (!settings.isAutoMapping || !workingMap || workingMap === '') {
       checkArea(settings);
@@ -712,14 +721,14 @@ function gwh() {
     isProd ? logging(version, setup) : console.log(version, setup);
     const quest = isProd ? user.quests.QuestIceFortress : QuestIceFortress;
     const items = quest.items;
+    const health = parseInt(quest.shield.health);
     initMyItems(items, setup);
-    const isShutdown = quest.is_shutdown_enabled;
     if (isShutdown) {
       if (
         !setup.isMapping &&
         setup.shutdown.isLeaveFortressIf36 &&
-        quest.shield.health == 36 &&
-        myItems.hailstone < setup.goHailstoneQty
+        health === 36 &&
+        !isEnoughHailstone
       ) {
         travel(gwhAreas.workshop, 2000, () => {
           checkTrap(setup);
@@ -738,7 +747,7 @@ function gwh() {
     console.log('Boss跟 Break shield都需要 FS,但 Boss不需要 hailstone跟 PP');
     if (myItems.fs > setup.fsKeptQty) {
       // 最低數量 fs,免得連 boss都沒得用
-      if (parseInt(quest.shield.health) === 0) {
+      if (health === 0) {
         console.log('Frost King');
         trap = getNormalTrap(setup);
         trap[0] = 'SUPER';
@@ -1011,7 +1020,6 @@ function gwh() {
     const quest = user.quests.QuestGolemWorkshop;
     const items = quest.items;
     initMyItems(items, setup);
-    const isShutdown = quest.is_shutdown_enabled;
     if (isShutdown) {
       if (setup.shutdown.isForgeOffIf12) {
         setTimeout(() => {
@@ -1207,9 +1215,19 @@ function gwh() {
     isProd ? logging(version, trap, setup) : console.log(version, trap, setup);
     toggleFestiveSpirit(trap, () => {
       if (trap) {
-        // 裝備 GPP時,如果 isCheckPpMiceBait,checkPPMiceBait
-        if (trap[0].indexOf('Glazed') === 0 && settings.isCheckPpMiceBait)
-          checkPPMiceBait(trap, setup);
+        if (isShutdown) {
+          trap = getNormalTrap(setup);
+          trap[0] = gouda;
+          trap[4] = false;
+          if (MhUtils.getEnvironmentType() === gwhAreas.fortress) {
+            trap[0] = sb;
+            trap[5] = [true, true, false];
+          }
+        } else {
+          // 裝備 GPP時,如果 isCheckPpMiceBait,checkPPMiceBait
+          if (trap[0].indexOf('Glazed') === 0 && settings.isCheckPpMiceBait)
+            checkPPMiceBait(trap, setup);
+        }
         armAllTraps(...trap);
       }
       if (setup.isAutoGolem)
