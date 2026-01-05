@@ -68,7 +68,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.68.21.66';
+  const version = 'gwh_1.2.68.21.67';
   isProd ? logging(version) : console.log(version);
   // TODO Animated Snow Storm全程 FS
   // TODO 週六整天用 SB,存 PP給週日 stuck snowball用
@@ -867,6 +867,8 @@ function gwh() {
       if (area === gwhAreas.workshop) {
         // 在 workshop
         if (environmentType === gwhAreas.workshop) {
+          if (!isEndFortress || isTooManyHailstone)
+            return fortressFarming(setup);
           if (!isEndWorkshop || isTooManyCinnamon) return isNotLeaving;
           // 還有 map mice但必須終止就回 hill農資源
           return hillFarming(setup);
@@ -954,6 +956,27 @@ function gwh() {
     });
     return isLeaving;
   }
+  /**
+   * travel to fortress(if necessary) and forced hunting with normal trap.
+   * anyone who invoke this should not handle trap.
+   * @returns true always(even not traveling)
+   */
+  function fortressFarming(setup) {
+    const version = 'fortressFarming(';
+    isProd ? logging(version, setup) : console.log(version, setup);
+    const environmentType = MhUtils.getEnvironmentType();
+    const trap = getNormalTrap(setup);
+    if (myItems.fs > 110) trap[4] = true;
+    trap[5] = [true, true, false];
+    if (environmentType === gwhAreas.fortress) {
+      handleTrap(trap, setup);
+      return isLeaving;
+    }
+    travel(gwhAreas.fortress, 2000, () => {
+      handleTrap(trap, setup);
+    });
+    return isLeaving;
+  }
   function goArea(area, setup) {
     const version = `goArea(${area},`;
     isProd ? logging(version, setup) : console.log(version, setup);
@@ -1018,6 +1041,7 @@ function gwh() {
     console.log(
       `isLowHailstone: ${isLowHailstone}`,
       `isEnoughHailstone: ${isEnoughHailstone}`,
+      `isTooManyHailstone: ${isTooManyHailstone}`,
       `isStartFortress: ${isStartFortress}`,
       `isEndFortress: ${isEndFortress}`
     );
