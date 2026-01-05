@@ -68,7 +68,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.67.21.66';
+  const version = 'gwh_1.2.68.21.66';
   isProd ? logging(version) : console.log(version);
   // TODO Animated Snow Storm全程 FS
   // TODO 週六整天用 SB,存 PP給週日 stuck snowball用
@@ -265,6 +265,7 @@ function gwh() {
   let isEnoughPP = false;
   let isLowHailstone = false;
   let isEnoughHailstone = false;
+  let isTooManyHailstone = false;
   let isLowCinnamon = false;
   let isEnoughCinnamon = false;
   let isTooManyCinnamon = false;
@@ -760,8 +761,16 @@ function gwh() {
       }
       console.log('Breaking shield, isMapping時用 ppTrap');
       if (!isEndFortress) {
-        // isMapping時用 ppTrap.
         if (setup.isMapping) {
+          // Mapping時,沒 PP但 hailstone太多就農 PP兼 breaking
+          if (isLowPP && isTooManyHailstone) {
+            trap = getNormalTrap(setup);
+            if (myItems.fs > 110) trap[4] = true;
+            trap[5] = [true, true, false];
+            handleTrap(trap, setup);
+            return;
+          }
+          // isMapping時基本上用 ppTrap.
           trap =
             setup.winter_hunt_fortress.ppTrap[setup.isGoodGoTd ? gotd : normal];
           // 2 cannon 1 stone,遊戲會把 1 stone消耗給最前面的 cannon
@@ -872,7 +881,7 @@ function gwh() {
       if (area === gwhAreas.fortress) {
         // 在 fortress
         if (environmentType === gwhAreas.fortress) {
-          if (!isEndFortress) return isNotLeaving;
+          if (!isEndFortress || isTooManyHailstone) return isNotLeaving;
           // 還有 map mice但必須終止時
           // 如果 cinnamon太多就回 workshop農資源
           if (isTooManyCinnamon) return workshopFarming(setup);
@@ -881,7 +890,7 @@ function gwh() {
         }
         // 不在 fortress
         // 能啟動
-        if (isStartFortress) return goArea(area, setup);
+        if (isStartFortress || isTooManyHailstone) return goArea(area, setup);
         // 不能啟動
         // 如果 cinnamon太多就回 workshop農資源
         if (isTooManyCinnamon) return workshopFarming(setup);
@@ -895,6 +904,8 @@ function gwh() {
     // Fortress資源過多,留在/去 Fortress把資源用掉(shutdown後 breaking非常浪費)
     if (environmentType === gwhAreas.fortress && !isEndFortress)
       return isNotLeaving;
+    if (isTooManyHailstone && isEnoughPP)
+      return goArea(gwhAreas.fortress, setup);
     if (isStartFortress && isEnoughHailstone)
       return goArea(gwhAreas.fortress, setup);
     // Workshop資源(Cinnamon)過多,留在/去 Workshop把資源用掉
@@ -981,6 +992,7 @@ function gwh() {
     isEnoughPP = myItems.pp > setup.startPpQty;
     isLowHailstone = myItems.hailstone < setup.hailstoneKeptQty;
     isEnoughHailstone = myItems.hailstone > setup.goHailstoneQty;
+    isTooManyHailstone = myItems.hailstone > setup.goHailstoneQty * 2;
     isLowCinnamon = myItems.cinnamon < setup.cinnamonKeptQty;
     isEnoughCinnamon = myItems.cinnamon > setup.startCinnamonQty;
     isTooManyCinnamon = myItems.cinnamon > setup.startCinnamonQty * 2;
@@ -988,8 +1000,10 @@ function gwh() {
       isEnoughPP &&
       myItems.fs > setup.fsKeptQty &&
       (setup.isMapping || isEnoughHailstone);
-    // fortress沒 PP回 hill農,不在 fortress農
-    isEndFortress = isLowPP || (!setup.isMapping && isLowHailstone);
+    // fortress沒 PP回 hill農,不在 fortress農,除非 hailstone太多
+    isEndFortress =
+      (setup.isMapping && isLowPP && !isTooManyHailstone) ||
+      (!setup.isMapping && isLowHailstone);
     // cinnamon太多(可以去 workshop用 normal cheese)
     // mapping時不要去 workshop用 normal cheese浪費收集 cinnamon的機會
     isStartWorkshop =
