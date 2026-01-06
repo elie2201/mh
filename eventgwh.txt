@@ -68,7 +68,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.69.21.74';
+  const version = 'gwh_1.2.69.21.75';
   isProd ? logging(version) : console.log(version);
   // TODO Animated Snow Storm全程 FS
   // TODO 週六整天用 SB,存 PP給週日 stuck snowball用
@@ -878,22 +878,37 @@ function gwh() {
       // if (!leftMice) continue;
       // fortress有 map mice額外檢查
       if (area === gwhAreas.fortress) {
-        // 在 fortress
-        if (environmentType === area)
+        console.log('檢查 fortress');
+        if (environmentType === area) {
+          console.log('在 fortress');
           if ((!isEndFortress && !isEnoughPP) || leftMice) return isNotLeaving;
-        // 不在 fortress
+        }
+        console.log('不在 fortress');
         if (isStartFortress && leftMice) return goArea(area, setup);
+        continue;
       }
       // workshop有 map mice額外檢查
       if (area === gwhAreas.workshop) {
-        // 在 workshop
-        if (environmentType === area)
+        console.log('檢查 workshop');
+        if (environmentType === area) {
+          console.log('在 workshop');
           if ((!isEndWorkshop && !isEnoughPP) || leftMice) return isNotLeaving;
-        // 不在 workshop
+        }
+        console.log('不在 workshop');
         if (isStartWorkshop && leftMice) return goArea(area, setup);
+        continue;
       }
       // hill有 map mice直接過去
-      return goArea(area, setup);
+      if (area === gwhAreas.hill) {
+        console.log('檢查 hill');
+        if (environmentType === area) {
+          console.log('在 hill');
+          if ((!isLowPP && !isEnoughPP) || leftMice) return isNotLeaving;
+        }
+        console.log('不在 hill');
+        if (isStartWorkshop && leftMice) return goArea(area, setup);
+        continue;
+      }
     }
     // 只剩 all area mice
     // 先考慮去 Fortress把資源用掉(shutdown後 breaking非常浪費)
