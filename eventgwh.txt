@@ -68,7 +68,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.69.21.71';
+  const version = 'gwh_1.2.69.21.73';
   isProd ? logging(version) : console.log(version);
   // TODO Animated Snow Storm全程 FS
   // TODO 週六整天用 SB,存 PP給週日 stuck snowball用
@@ -762,41 +762,42 @@ function gwh() {
         return;
       }
       console.log('Breaking shield, isMapping時用 ppTrap');
-      if (!isEndFortress) {
-        if (setup.isMapping) {
-          // Mapping時,沒 PP但 hailstone太多就農 PP兼 breaking
-          if (isLowPP && isTooManyHailstone) {
-            trap = getNormalTrap(setup);
-            if (myItems.fs > 110) trap[4] = true;
-            trap[5] = [true, true, false];
-            handleTrap(trap, setup);
-            return;
-          }
-          // isMapping時基本上用 ppTrap.
-          trap =
-            setup.winter_hunt_fortress.ppTrap[setup.isGoodGoTd ? gotd : normal];
-          // 2 cannon 1 stone,遊戲會把 1 stone消耗給最前面的 cannon
-          // toggleFestiveSpirit時判斷 cannons全停用且非 boss的話強制關閉 FS
-          if (isLowHailstone) {
-            console.log('hailstone不夠,強制停用 cannon');
-            trap[5] = [false, false, false];
-          }
-          handleTrap(trap, setup);
-          return;
-        }
-        // 如果不想做 map又沒有 fs,就得改 fsTrap. !isMapping就是用 fsTrap
-        trap =
-          setup.winter_hunt_fortress.fsTrap[setup.isGoodGoTd ? gotd : normal];
-        handleTrap(trap, setup);
-        return;
+      if (isEndFortress) {
+        // 到這邊就是沒 event cheese, FS(至少Boss)或 hailstone,離開
+        // 因為FS只在破壁(有多的話)/Boss時用.有 FS在 Fortess用 normal cheese是損失
+        // 除了 boss外,不在 Fortess用 pp/gpp以外的 cheese
+        travel(gwhAreas.workshop, 2000, () => {
+          checkArea(setup);
+        });
       }
+      checkTrap(setup);
+      // if (setup.isMapping) {
+      //   // Mapping時,沒 PP但 hailstone太多就農 PP兼 breaking
+      //   if (!isEnoughPP && isTooManyHailstone) {
+      //     trap = getNormalTrap(setup);
+      //     if (myItems.fs > 110) trap[4] = true;
+      //     trap[5] = [true, true, false];
+      //     handleTrap(trap, setup);
+      //     return;
+      //   }
+      //   // isMapping時基本上用 ppTrap.
+      //   trap =
+      //     setup.winter_hunt_fortress.ppTrap[setup.isGoodGoTd ? gotd : normal];
+      //   // 2 cannon 1 stone,遊戲會把 1 stone消耗給最前面的 cannon
+      //   // toggleFestiveSpirit時判斷 cannons全停用且非 boss的話強制關閉 FS
+      //   if (isLowHailstone) {
+      //     console.log('hailstone不夠,強制停用 cannon');
+      //     trap[5] = [false, false, false];
+      //   }
+      //   handleTrap(trap, setup);
+      //   return;
+      // }
+      // // 如果不想做 map又沒有 fs,就得改 fsTrap. !isMapping就是用 fsTrap
+      // trap =
+      //   setup.winter_hunt_fortress.fsTrap[setup.isGoodGoTd ? gotd : normal];
+      // handleTrap(trap, setup);
+      // return;
     }
-    // 到這邊就是沒 event cheese, FS(至少Boss)或 hailstone,離開
-    // 因為FS只在破壁(有多的話)/Boss時用.有 FS在 Fortess用 normal cheese是損失
-    // 除了 boss外,不在 Fortess用 pp/gpp以外的 cheese
-    travel(gwhAreas.workshop, 2000, () => {
-      checkArea(setup);
-    });
   }
   function checkDropMap(setup) {
     const version = 'checkDropMap(';
@@ -1140,18 +1141,30 @@ function gwh() {
     const version = 'checkTrap(';
     isProd ? logging(version, setup) : console.log(version, setup);
     const enviromentType = MhUtils.getEnvironmentType();
+    const isFortress = enviromentType === gwhAreas.fortress;
+    const isFsTrap = isFortress && !setup.isMapping;
     let trap = null;
     if (isEnoughPP) {
-      trap = setup[enviromentType][ppTrap][setup.isGoodGoTd ? gotd : normal];
+      trap =
+        setup[enviromentType][isFsTrap ? 'fsTrap' : ppTrap][
+          setup.isGoodGoTd ? gotd : normal
+        ];
       // checkPPMiceBait(trap, setup);
     } else if (isLowPP) {
       trap = getNormalTrap(setup);
+      if (isFortress) toFortressNormalTrap(trap);
     } else {
       const areaBaitIds = Object.values(setup.areaBaits).map((v) => v.id); // getAreaBaitIds(setup);
       if (areaBaitIds.indexOf(MhUtils.getBaitItemId()) > -1) {
-        trap = setup[enviromentType][ppTrap][setup.isGoodGoTd ? gotd : normal];
+        trap =
+          setup[enviromentType][isFsTrap ? 'fsTrap' : ppTrap][
+            setup.isGoodGoTd ? gotd : normal
+          ];
         // checkPPMiceBait(trap, setup);
-      } else trap = getNormalTrap(setup);
+      } else {
+        trap = getNormalTrap(setup);
+        if (isFortress) toFortressNormalTrap(trap);
+      }
     }
     console.log('trap found:', trap);
     const isAutoGpp =
@@ -1168,6 +1181,10 @@ function gwh() {
       trap[0] = setup.areaBaits.gpp.name + ',' + setup.areaBaits.pp.name;
     console.log('after auto GPP check:', trap);
     handleTrap(trap, setup);
+  }
+  function toFortressNormalTrap(trap) {
+    if (myItems.fs > 110) trap[4] = true;
+    trap[5] = [true, true, false];
   }
   /**
    * 強制 PP:
