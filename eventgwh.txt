@@ -68,7 +68,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.68.21.68';
+  const version = 'gwh_1.2.68.21.69';
   isProd ? logging(version) : console.log(version);
   // TODO Animated Snow Storm全程 FS
   // TODO 週六整天用 SB,存 PP給週日 stuck snowball用
@@ -854,11 +854,21 @@ function gwh() {
     // 這裡已經是 isMapping了,沒 map/mapInfo一律先回 Hill
     // 可以觀察看看要一律先回 Hill還是視同 !setup.isMapping
     if (!map || !mapInfo) return goArea(gwhAreas.hill, setup);
+    // farm PP
+    if (isLowPP) {
+      if (isTooManyHailstone) return fortressFarming(setup);
+      if (isTooManyCinnamon) return workshopFarming(setup);
+      return hillFarming(setup);
+    }
     // 不強制 mapping區域順序且區域還有專屬老鼠
     if (!setup.isForcedMapClearOrder && mapInfo[environmentType])
       return isNotLeaving;
     // 區域沒專屬老鼠或強制 mapping區域順序
-    const areaClearOrder = setup.mapAreaClearOrder;
+    let areaClearOrder = setup.mapAreaClearOrder;
+    // 必須是 3區域
+    const areas = Object.values(gwhAreas);
+    if (areaClearOrder.reduce((p, v) => (p ||= areas.indexOf(v) < 0), false))
+      areaClearOrder = [gwhAreas.hill, gwhAreas.workshop, gwhAreas.fortress];
     for (let i = 0; i < areaClearOrder.length; i++) {
       const area = areaClearOrder[i];
       const leftMice = mapInfo[area];
@@ -866,59 +876,29 @@ function gwh() {
       // fortress有 map mice額外檢查
       if (area === gwhAreas.fortress) {
         // 在 fortress
-        if (environmentType === gwhAreas.fortress) {
-          if (!isEndFortress || isTooManyHailstone) return isNotLeaving;
-          // 還有 map mice但必須終止時
-          // 如果 cinnamon太多就回 workshop農資源
-          if (isEndWorkshop && isTooManyCinnamon) return workshopFarming(setup);
-          // 預設回 hill農資源
-          return hillFarming(setup);
-        }
+        if (environmentType === area && !isEndFortress) return isNotLeaving;
         // 不在 fortress
-        // 能啟動
-        if (isStartFortress || isTooManyHailstone) return goArea(area, setup);
-        // 不能啟動
-        // 如果 cinnamon太多就回 workshop農資源
-        if (isTooManyCinnamon) return workshopFarming(setup);
-        // 預設回 hill農資源
-        return hillFarming(setup);
+        if (isStartFortress) return goArea(area, setup);
       }
       // workshop有 map mice額外檢查
       if (area === gwhAreas.workshop) {
         // 在 workshop
-        if (environmentType === gwhAreas.workshop) {
-          if (isEndFortress && isTooManyHailstone)
-            return fortressFarming(setup);
-          if (!isEndWorkshop || isTooManyCinnamon) return isNotLeaving;
-          // 還有 map mice但必須終止就回 hill農資源
-          return hillFarming(setup);
-        }
+        if (environmentType === area && !isEndWorkshop) return isNotLeaving;
         // 不在 workshop
-        // 能啟動
-        if (isStartWorkshop || isTooManyCinnamon) return goArea(area, setup);
-        // 不能啟動-回 hill農資源
-        return hillFarming(setup);
+        if (isStartWorkshop) return goArea(area, setup);
       }
-      if (isEndFortress && isTooManyHailstone) return fortressFarming(setup);
-      if (isEndWorkshop && isTooManyCinnamon) return workshopFarming(setup);
       // hill有 map mice直接過去
       return goArea(area, setup);
     }
     // 只剩 all area mice
-    // Fortress資源過多,留在/去 Fortress把資源用掉(shutdown後 breaking非常浪費)
-    if (environmentType === gwhAreas.fortress && !isEndFortress)
-      return isNotLeaving;
-    if (isTooManyHailstone && isEnoughPP)
+    // 先考慮去 Fortress把資源用掉(shutdown後 breaking非常浪費)
+    if (!isEndFortress && isTooManyHailstone)
       return goArea(gwhAreas.fortress, setup);
-    if (isStartFortress && isEnoughHailstone)
-      return goArea(gwhAreas.fortress, setup);
-    // Workshop資源(Cinnamon)過多,留在/去 Workshop把資源用掉
-    if (environmentType === gwhAreas.workshop && !isEndWorkshop)
-      return isNotLeaving;
-    if (isTooManyCinnamon && isEnoughPP)
+    // 其次考慮去 Workshop把資源用掉
+    if (!isEndWorkshop && isTooManyCinnamon)
       return goArea(gwhAreas.workshop, setup);
-    // 農資源在 hill狩獵
-    return hillFarming(setup);
+    // 最後才是留在 Hill抓 all area mice兼農資源
+    return goArea(gwhAreas.hill, setup);
   }
   /**
    * travel to hill(if necessary) and forced hunting with normal trap.
