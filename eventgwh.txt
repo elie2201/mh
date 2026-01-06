@@ -879,7 +879,7 @@ function gwh() {
       if (area === gwhAreas.fortress) {
         // 在 fortress
         if (environmentType === area)
-          if (!isEndFortress || leftMice) return isNotLeaving;
+          if ((!isEndFortress && !isEnoughPP) || leftMice) return isNotLeaving;
         // 不在 fortress
         if (isStartFortress) return goArea(area, setup);
       }
@@ -887,7 +887,7 @@ function gwh() {
       if (area === gwhAreas.workshop) {
         // 在 workshop
         if (environmentType === area)
-          if (!isEndWorkshop || leftMice) return isNotLeaving;
+          if ((!isEndWorkshop && !isEnoughPP) || leftMice) return isNotLeaving;
         // 不在 workshop
         if (isStartWorkshop) return goArea(area, setup);
       }
