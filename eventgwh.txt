@@ -68,7 +68,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.69.21.75';
+  const version = 'gwh_1.2.69.21.76';
   isProd ? logging(version) : console.log(version);
   // TODO Animated Snow Storm全程 FS
   // TODO 週六整天用 SB,存 PP給週日 stuck snowball用
@@ -302,11 +302,11 @@ function gwh() {
       checkArea(settings);
       return;
     }
-    if (myItems.hailstone < 36)
+    if (myItems.hailstone > settings.isTooManyHailstone)
       settings.mapAreaClearOrder = [
+        gwhAreas.fortress,
         gwhAreas.hill,
-        gwhAreas.workshop,
-        gwhAreas.fortress
+        gwhAreas.workshop
       ];
     autoMapping(workingMap, () => {
       checkArea(settings);
