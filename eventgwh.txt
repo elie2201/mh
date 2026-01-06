@@ -68,7 +68,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.68.21.67';
+  const version = 'gwh_1.2.68.21.68';
   isProd ? logging(version) : console.log(version);
   // TODO Animated Snow Storm全程 FS
   // TODO 週六整天用 SB,存 PP給週日 stuck snowball用
@@ -863,22 +863,6 @@ function gwh() {
       const area = areaClearOrder[i];
       const leftMice = mapInfo[area];
       if (!leftMice) continue;
-      // workshop有 map mice額外檢查
-      if (area === gwhAreas.workshop) {
-        // 在 workshop
-        if (environmentType === gwhAreas.workshop) {
-          if (!isEndFortress || isTooManyHailstone)
-            return fortressFarming(setup);
-          if (!isEndWorkshop || isTooManyCinnamon) return isNotLeaving;
-          // 還有 map mice但必須終止就回 hill農資源
-          return hillFarming(setup);
-        }
-        // 不在 workshop
-        // 能啟動
-        if (isStartWorkshop || isTooManyCinnamon) return goArea(area, setup);
-        // 不能啟動-回 hill農資源
-        return hillFarming(setup);
-      }
       // fortress有 map mice額外檢查
       if (area === gwhAreas.fortress) {
         // 在 fortress
@@ -886,7 +870,7 @@ function gwh() {
           if (!isEndFortress || isTooManyHailstone) return isNotLeaving;
           // 還有 map mice但必須終止時
           // 如果 cinnamon太多就回 workshop農資源
-          if (isTooManyCinnamon) return workshopFarming(setup);
+          if (isEndWorkshop && isTooManyCinnamon) return workshopFarming(setup);
           // 預設回 hill農資源
           return hillFarming(setup);
         }
@@ -899,6 +883,24 @@ function gwh() {
         // 預設回 hill農資源
         return hillFarming(setup);
       }
+      // workshop有 map mice額外檢查
+      if (area === gwhAreas.workshop) {
+        // 在 workshop
+        if (environmentType === gwhAreas.workshop) {
+          if (isEndFortress && isTooManyHailstone)
+            return fortressFarming(setup);
+          if (!isEndWorkshop || isTooManyCinnamon) return isNotLeaving;
+          // 還有 map mice但必須終止就回 hill農資源
+          return hillFarming(setup);
+        }
+        // 不在 workshop
+        // 能啟動
+        if (isStartWorkshop || isTooManyCinnamon) return goArea(area, setup);
+        // 不能啟動-回 hill農資源
+        return hillFarming(setup);
+      }
+      if (isEndFortress && isTooManyHailstone) return fortressFarming(setup);
+      if (isEndWorkshop && isTooManyCinnamon) return workshopFarming(setup);
       // hill有 map mice直接過去
       return goArea(area, setup);
     }
