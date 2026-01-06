@@ -68,7 +68,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.68.21.69';
+  const version = 'gwh_1.2.69.21.69';
   isProd ? logging(version) : console.log(version);
   // TODO Animated Snow Storm全程 FS
   // TODO 週六整天用 SB,存 PP給週日 stuck snowball用
@@ -185,9 +185,11 @@ function gwh() {
     gppArea: 'winter_hunt_grove',
     startCinnamonQty: 37,
     cinnamonKeptQty: 3,
+    tooManyCinnamon: 73,
     fsKeptQty: 3,
     goHailstoneQty: 35,
     hailstoneKeptQty: 2,
+    tooManyHailstone: 35,
     isAutoGolem: true,
     isAutoUpgrade: true,
     autoGolems: 2,
@@ -997,10 +999,10 @@ function gwh() {
     isEnoughPP = myItems.pp > setup.startPpQty;
     isLowHailstone = myItems.hailstone < setup.hailstoneKeptQty;
     isEnoughHailstone = myItems.hailstone > setup.goHailstoneQty;
-    isTooManyHailstone = myItems.hailstone > setup.goHailstoneQty * 2;
+    isTooManyHailstone = myItems.hailstone > setup.tooManyHailstone;
     isLowCinnamon = myItems.cinnamon < setup.cinnamonKeptQty;
     isEnoughCinnamon = myItems.cinnamon > setup.startCinnamonQty;
-    isTooManyCinnamon = myItems.cinnamon > setup.startCinnamonQty * 2;
+    isTooManyCinnamon = myItems.cinnamon > setup.tooManyCinnamon;
     isStartFortress =
       isEnoughPP &&
       myItems.fs > setup.fsKeptQty &&
