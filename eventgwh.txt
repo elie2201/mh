@@ -68,7 +68,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.70.21.76';
+  const version = 'gwh_1.2.71.22.77';
   isProd ? logging(version) : console.log(version);
   // TODO Animated Snow Storm全程 FS
   // TODO 週六整天用 SB,存 PP給週日 stuck snowball用
@@ -137,6 +137,7 @@ function gwh() {
   const pp = 'Pecan Pecorino';
   const gouda = 'Gouda Cheese';
   const sb = 'SUPER';
+  // const brie = 'Brie Cheese';
   // const bestArcane = 'best.weapon.arcane';
   // const bestPhysical = 'best.weapon.physical';
   const bestTactical = 'best.weapon.tactical';
@@ -175,7 +176,9 @@ function gwh() {
     nT: bct,
     nnB: aeib,
     nnC: enerchi,
-    ngC: gotdC
+    ngC: gotdC,
+    // shutdown
+    s0: gouda
   };
   const defaultSettings = {
     isShutdown: false,
@@ -215,25 +218,49 @@ function gwh() {
       gotd: [st.n0, st.nT, gotdB, st.ngC, false, [false, false, false]]
     },
     winter_hunt_grove: {
+      normalTrap: {
+        normal: [st.n0, st.nT, st.nnB, st.nnC, false, [false, false, false]],
+        gotd: [st.n0, st.nT, gotdB, st.ngC, false, [false, false, false]]
+      },
       ppTrap: {
         normal: [pp, st.gT, st.gnB, st.gnC, false, [false, false, false]],
         gotd: [pp, st.gT, gotdB, st.ggC, false, [false, false, false]]
+      },
+      shutdown: {
+        normal: [st.s0, st.nT, st.nnB, st.nnC, false, [false, false, false]],
+        gotd: [st.s0, st.nT, gotdB, st.ngC, false, [false, false, false]]
       }
     },
     winter_hunt_workshop: {
+      normalTrap: {
+        normal: [st.n0, st.nT, st.nnB, st.nnC, false, [false, false, false]],
+        gotd: [st.n0, st.nT, gotdB, st.ngC, false, [false, false, false]]
+      },
       ppTrap: {
         normal: [pp, st.wn1, st.wnB, st.wnC, false, [false, false, false]],
         gotd: [pp, st.wg1, gotdB, st.wgC, false, [false, false, false]]
+      },
+      shutdown: {
+        normal: [st.s0, st.nT, st.nnB, st.nnC, false, [false, false, false]],
+        gotd: [st.s0, st.nT, gotdB, st.ngC, false, [false, false, false]]
       }
     },
     winter_hunt_fortress: {
+      normalTrap: {
+        normal: [st.n0, st.nT, st.nnB, st.nnC, true, [true, true, false]],
+        gotd: [st.n0, st.nT, gotdB, st.ngC, true, [true, true, false]]
+      },
       ppTrap: {
-        normal: [pp, st.fT, st.fnB, st.fnC, false, [false, false, false]],
-        gotd: [pp, st.fT, gotdB, st.fgC, false, [false, false, false]]
+        normal: [pp, st.fT, st.fnB, st.fnC, true, [true, true, false]],
+        gotd: [pp, st.fT, gotdB, st.fgC, true, [true, true, false]]
       },
       fsTrap: {
-        normal: [pp, st.fT, st.fsnB, st.fsnC, true, [true, false, false]],
-        gotd: [pp, st.fT, gotdB, st.fsgC, true, [true, false, false]]
+        normal: [pp, st.fT, st.fsnB, st.fsnC, true, [true, true, false]],
+        gotd: [pp, st.fT, gotdB, st.fsgC, true, [true, true, false]]
+      },
+      shutdown: {
+        normal: [sb, st.nT, st.nnB, st.nnC, false, [true, true, false]],
+        gotd: [sb, st.nT, gotdB, st.ngC, false, [true, true, false]]
       }
     },
     areaBaits: {
@@ -288,11 +315,12 @@ function gwh() {
     initMyItems(getQuest().items, settings);
     if (settings.badGotdDates && settings.badGotdDates.indexOf(todayUTC) > -1)
       settings.isGoodGoTd = false;
-    // auto mapping時啟動 forge/breaking的數量減半,增加 mapping的效率
-    // if (settings.isAutoMapping) {
-    //   settings.startCinnamonQty = Math.round(settings.startCinnamonQty / 2);
-    //   settings.goHailstoneQty = Math.round(settings.goHailstoneQty / 2);
-    // } // 不需要了. isMapping時無視 startCinnamonQty/goHailstoneQty
+    if (myItems.hailstone > settings.isTooManyHailstone)
+      settings.mapAreaClearOrder = [
+        gwhAreas.fortress,
+        gwhAreas.hill,
+        gwhAreas.workshop
+      ];
     if (isShutdown) {
       settings.isAutoMapping = false;
       settings.isMapping = false;
@@ -303,12 +331,6 @@ function gwh() {
       checkArea(settings);
       return;
     }
-    if (myItems.hailstone > settings.isTooManyHailstone)
-      settings.mapAreaClearOrder = [
-        gwhAreas.fortress,
-        gwhAreas.hill,
-        gwhAreas.workshop
-      ];
     autoMapping(workingMap, () => {
       checkArea(settings);
     });
@@ -718,8 +740,8 @@ function gwh() {
         break;
     }
   }
-  // Get item information from location-specific quest in location-specific algorithm.
-  // check trap by item information and run location-specific algorithm.
+  /** Get item information from location-specific quest in location-specific algorithm.
+  check trap by item information and run location-specific algorithm. */
   function iceFortress(setup) {
     const version = 'iceFortress(';
     isProd ? logging(version, setup) : console.log(version, setup);
@@ -1240,18 +1262,6 @@ function gwh() {
     }
     return true;
   }
-  // function getAreaBaitIds(setup) {
-  //   const version = 'getAreaBaitIds(';
-  //   isProd ? logging(version, setup) : console.log(version, setup);
-  //   const rtn = [];
-  //   const areaBaits = setup.areaBaits;
-  //   for (const key in areaBaits) {
-  //     if (!Object.hasOwn(areaBaits, key)) continue;
-  //     const areaBait = areaBaits[key];
-  //     rtn.push(areaBait.id);
-  //   }
-  //   return rtn;
-  // }
   function getQuest() {
     const version = 'getQuest';
     isProd ? logging(version) : console.log(version);
@@ -1273,13 +1283,7 @@ function gwh() {
     toggleFestiveSpirit(trap, () => {
       if (trap) {
         if (isShutdown) {
-          trap = getNormalTrap(setup);
-          trap[0] = gouda;
-          trap[4] = false;
-          if (MhUtils.getEnvironmentType() === gwhAreas.fortress) {
-            trap[0] = sb;
-            trap[5] = [true, true, false];
-          }
+          trap = getShutdownTrap(MhUtils.getEnvironmentType(), setup);
         } else {
           // 裝備 GPP時,如果 isCheckPpMiceBait,checkPPMiceBait
           if (trap[0].indexOf('Glazed') === 0 && settings.isCheckPpMiceBait)
@@ -1292,6 +1296,11 @@ function gwh() {
           checkGolem(setup);
         }, Math.floor(12000 + Math.random() * 3000));
     });
+  }
+  function getShutdownTrap(environmentType, setup) {
+    const version = `getNormalTrap(${environmentType},`;
+    isProd ? logging(version, setup) : console.log(version, setup);
+    return setup[environmentType]['shutdown'][setup.isGoodGoTd ? gotd : normal];
   }
   function getNormalTrap(setup) {
     const version = 'getNormalTrap(';
@@ -1566,14 +1575,7 @@ function gwh() {
   function upgradeGolem(slot, callback) {
     const version = `upgradeGolem(${slot},`;
     isProd ? logging(version, callback) : console.log(version, callback);
-    /* $('.headsUpDisplayWinterHuntRegionView__golemUpgradeButton')[0].click();
-    $(
-      '.greatWinterHuntGolemManagerUpgradeTabView__upgradeButton.greatWinterHuntDialogView__bigButton'
-    ).click(); */
     $('.headsUpDisplayWinterHuntRegionView__golemUpgradeButton')[slot].click();
-    // setTimeout(() => {
-    //   document.getElementById('jsDialogClose').click();
-    // }, 2000);
     const element = $(
       '.greatWinterHuntGolemManagerUpgradeTabView__upgradeButton.greatWinterHuntDialogView__bigButton'
     )[0];
@@ -1626,20 +1628,6 @@ function gwh() {
           }, 2000);
       }
     );
-    /* const target = $(element);
-    const slot = target.data('slot');
-    const params = {
-      action: 'claim_reward',
-      slot: slot
-    };
-    ajax(element, params).then((data) => {
-      hg.views.GreatWinterHuntClaimRewardDialogView.setRewards(
-        data.golem_rewards
-      );
-      hg.views.GreatWinterHuntClaimRewardDialogView.setDataHandler(getData);
-      hg.views.GreatWinterHuntClaimRewardDialogView.setSlot(slot);
-      hg.views.GreatWinterHuntClaimRewardDialogView.show();
-    }); */
   }
   // buildGolem(golem.slot, 'queso_river', () => { console.log('Finished'); }); // floating_islands
   function buildGolem(slot, environmentType, callback) {
