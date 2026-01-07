@@ -68,7 +68,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.76.23.77';
+  const version = 'gwh_1.2.77.23.78';
   isProd ? logging(version) : console.log(version);
   // TODO Animated Snow Storm全程 FS
   // TODO 週六整天用 SB,存 PP給週日 stuck snowball用
@@ -1120,6 +1120,12 @@ function gwh() {
       handleTrap(getNormalTrap(setup), setup);
       return;
     }
+    // is not mapping時,
+    // 在 workshop也要檢查 hailstone
+    // 正常 breaking會先 fortress再 workshop,所以不會在 workshop時能 isStartFortress,
+    // 但 shutdown後就不一樣了.
+    // 且一定要綁 !isMapping. isMapping時會有 hailstone過剩但是得待在 workshop的情形
+    if (!setup.isMapping) if (checkHailstone(setup)) return;
     checkTrap(setup);
     return;
   }
@@ -1285,15 +1291,13 @@ function gwh() {
   function handleTrap(trap, setup) {
     const version = 'handleTrap(';
     isProd ? logging(version, trap, setup) : console.log(version, trap, setup);
+    // toggle FS前就得換成 shutdown trap,不然 FS會吃到錯誤的設定
+    if (isShutdown) trap = getShutdownTrap(MhUtils.getEnvironmentType(), setup);
     toggleFestiveSpirit(trap, () => {
       if (trap) {
-        if (isShutdown) {
-          trap = getShutdownTrap(MhUtils.getEnvironmentType(), setup);
-        } else {
-          // 裝備 GPP時,如果 isCheckPpMiceBait,checkPPMiceBait
-          if (trap[0].indexOf('Glazed') === 0 && settings.isCheckPpMiceBait)
-            checkPPMiceBait(trap, setup);
-        }
+        // 裝備 GPP時,如果 isCheckPpMiceBait,checkPPMiceBait
+        if (trap[0].indexOf('Glazed') === 0 && settings.isCheckPpMiceBait)
+          checkPPMiceBait(trap, setup);
         armAllTraps(...trap);
       }
       if (setup.isAutoGolem)
