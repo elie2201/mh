@@ -68,7 +68,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.77.23.78';
+  const version = 'gwh_1.2.77.23.79';
   isProd ? logging(version) : console.log(version);
   // TODO Animated Snow Storm全程 FS
   // TODO 週六整天用 SB,存 PP給週日 stuck snowball用
@@ -1092,6 +1092,9 @@ function gwh() {
       if (setup.shutdown.isForgeOffIf12) {
         setTimeout(() => {
           const quest = user.quests.QuestGolemWorkshop;
+          console.log('shutdown後還是會 travel. travel後不可 toggle forge');
+          if (!quest) return;
+          console.log('shutdown了, toggle forge');
           // prettier-ignore
           const a = [
             quest.workshop.head.num_hunts_remaining != setup.stopForgeAt[0] && quest.workshop.head.is_active,
