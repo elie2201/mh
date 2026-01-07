@@ -68,7 +68,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.71.22.77';
+  const version = 'gwh_1.2.72.22.77';
   isProd ? logging(version) : console.log(version);
   // TODO Animated Snow Storm全程 FS
   // TODO 週六整天用 SB,存 PP給週日 stuck snowball用
@@ -315,6 +315,7 @@ function gwh() {
     initMyItems(getQuest().items, settings);
     if (settings.badGotdDates && settings.badGotdDates.indexOf(todayUTC) > -1)
       settings.isGoodGoTd = false;
+    // mapping時 hailstone太多就優先 fortress
     if (myItems.hailstone > settings.isTooManyHailstone)
       settings.mapAreaClearOrder = [
         gwhAreas.fortress,
@@ -325,6 +326,9 @@ function gwh() {
       settings.isAutoMapping = false;
       settings.isMapping = false;
       settings.goHailstoneQty = 35;
+      // shutdown時, cinnamon少於 startCinnamonQty就無視設定, forge完停止
+      if (myItems.cinnamon < settings.startCinnamonQty)
+        settings.stopForgeAt = [12, 12, 6];
     }
     const workingMap = localStorage[workingMapKey];
     if (!settings.isAutoMapping || !workingMap || workingMap === '') {
