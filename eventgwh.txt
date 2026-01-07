@@ -61,14 +61,14 @@ function gwh() {
       [allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.renee]
     ]
   };
-  const enviromentType = MhUtils.getEnvironmentType();
+  const environmentType = MhUtils.getEnvironmentType();
   if (
     [gwhAreas.hill, gwhAreas.workshop, gwhAreas.fortress].indexOf(
-      enviromentType
+      environmentType
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.72.22.77';
+  const version = 'gwh_1.2.74.22.77';
   isProd ? logging(version) : console.log(version);
   // TODO Animated Snow Storm全程 FS
   // TODO 週六整天用 SB,存 PP給週日 stuck snowball用
@@ -195,8 +195,9 @@ function gwh() {
     tooManyHailstone: 35,
     isAutoGolem: true,
     isAutoUpgrade: true,
-    autoGolems: 2,
-    autoUpgradeGolems: 2,
+    golemsAutoBuild: 2,
+    golemsAutoUpgrade: 2,
+    golemsAutoClaim: 3,
     isScarfUnusedGolem: true, // 有 scarf時,如果有閒置的 golem就送掉
     golemSetup: { defaultTarget: st.defaultTarget },
     isGoodGoTd: true,
@@ -728,9 +729,9 @@ function gwh() {
   function checkArea(setup) {
     const version = 'checkArea(';
     isProd ? logging(version, setup) : console.log(version, setup);
-    const enviromentType = MhUtils.getEnvironmentType();
-    console.log('checkArea:', enviromentType, setup);
-    switch (enviromentType) {
+    const environmentType = MhUtils.getEnvironmentType();
+    console.log('checkArea:', environmentType, setup);
+    switch (environmentType) {
       case gwhAreas.hill:
         cinnamonHill(setup);
         break;
@@ -1182,13 +1183,13 @@ function gwh() {
   function checkTrap(setup) {
     const version = 'checkTrap(';
     isProd ? logging(version, setup) : console.log(version, setup);
-    const enviromentType = MhUtils.getEnvironmentType();
-    const isFortress = enviromentType === gwhAreas.fortress;
+    const environmentType = MhUtils.getEnvironmentType();
+    const isFortress = environmentType === gwhAreas.fortress;
     const isFsTrap = isFortress && !setup.isMapping;
     let trap = null;
     if (isEnoughPP) {
       trap =
-        setup[enviromentType][isFsTrap ? 'fsTrap' : ppTrap][
+        setup[environmentType][isFsTrap ? 'fsTrap' : ppTrap][
           setup.isGoodGoTd ? gotd : normal
         ];
       // checkPPMiceBait(trap, setup);
@@ -1199,7 +1200,7 @@ function gwh() {
       const areaBaitIds = Object.values(setup.areaBaits).map((v) => v.id); // getAreaBaitIds(setup);
       if (areaBaitIds.indexOf(MhUtils.getBaitItemId()) > -1) {
         trap =
-          setup[enviromentType][isFsTrap ? 'fsTrap' : ppTrap][
+          setup[environmentType][isFsTrap ? 'fsTrap' : ppTrap][
             setup.isGoodGoTd ? gotd : normal
           ];
         // checkPPMiceBait(trap, setup);
@@ -1218,7 +1219,7 @@ function gwh() {
       // 在 Hill用 GPP效率比較好,可以預設
       (!setup.gppArea ||
         setup.gppArea === '' ||
-        setup.gppArea === enviromentType);
+        setup.gppArea === environmentType);
     if (isAutoGpp)
       trap[0] = setup.areaBaits.gpp.name + ',' + setup.areaBaits.pp.name;
     console.log('after auto GPP check:', trap);
@@ -1269,8 +1270,8 @@ function gwh() {
   function getQuest() {
     const version = 'getQuest';
     isProd ? logging(version) : console.log(version);
-    const enviromentType = MhUtils.getEnvironmentType();
-    switch (enviromentType) {
+    const environmentType = MhUtils.getEnvironmentType();
+    switch (environmentType) {
       case gwhAreas.hill:
         return user.quests.QuestCinnamonTreeGrove;
       case gwhAreas.workshop:
@@ -1393,9 +1394,9 @@ function gwh() {
   function toggleCannons(booleanArray, from, to) {
     const version = `toggleCannons(${booleanArray}, ${from}, ${to})`;
     isProd ? logging(version) : console.log(version);
-    const enviromentType = MhUtils.getEnvironmentType();
-    console.log('currently in', enviromentType);
-    if (enviromentType != 'winter_hunt_fortress') return;
+    const environmentType = MhUtils.getEnvironmentType();
+    console.log('currently in', environmentType);
+    if (environmentType !== gwhAreas.fortress) return;
     console.log(booleanArray, from, to);
     // const begin = from || 0;
     // const end = to || 2;
@@ -1415,9 +1416,9 @@ function gwh() {
   function toggleCannon(index, isEnable) {
     const version = `toggleCannon(${index}, ${isEnable})`;
     isProd ? logging(version) : console.log(version);
-    const enviromentType = user.environment_type;
-    console.log('currently in', enviromentType);
-    if (enviromentType != 'winter_hunt_fortress') return;
+    const environmentType = user.environment_type;
+    console.log('currently in', environmentType);
+    if (environmentType !== gwhAreas.fortress) return;
     console.log('right location, try toggling');
     const quest = user.quests.QuestIceFortress;
     const cannonsState = [
@@ -1437,9 +1438,9 @@ function gwh() {
   function toggleForges(booleanArray, from, to) {
     const version = `toggleForges(${booleanArray}, ${from}, ${to})`;
     isProd ? logging(version) : console.log(version);
-    const enviromentType = MhUtils.getEnvironmentType();
-    console.log('currently in', enviromentType);
-    if (enviromentType != 'winter_hunt_workshop') return;
+    const environmentType = MhUtils.getEnvironmentType();
+    console.log('currently in', environmentType);
+    if (environmentType !== gwhAreas.workshop) return;
     console.log(booleanArray, from, to);
     // const begin = from || 0;
     // const end = to || 2;
@@ -1459,9 +1460,9 @@ function gwh() {
   function toggleForge(index, isEnable) {
     const version = `toggleForge(${index}, ${isEnable})`;
     isProd ? logging(version) : console.log(version);
-    const enviromentType = MhUtils.getEnvironmentType();
-    console.log('currently in', enviromentType);
-    if (enviromentType != 'winter_hunt_workshop') return;
+    const environmentType = MhUtils.getEnvironmentType();
+    console.log('currently in', environmentType);
+    if (environmentType !== gwhAreas.workshop) return;
     console.log('right location, try toggling');
     const quest = user.quests.QuestGolemWorkshop;
     const forgesState = [
@@ -1486,7 +1487,7 @@ function gwh() {
     const golems = quest.golems;
     const track = quest.reward_track;
     if (setup.isAutoUpgrade)
-      for (let i = 0; i < setup.autoUpgradeGolems; i++) {
+      for (let i = 0; i < setup.golemsAutoUpgrade; i++) {
         const golem = golems[i];
         // 優先升級使用中(待 claim算使用中).
         // can_return不能用來判斷使用中,因為牽涉到有沒有 bell
@@ -1504,8 +1505,7 @@ function gwh() {
           return;
         }
       }
-    // 有 reward就 claim,不用管 autoGolems.
-    for (let i = 0; i < golems.length; i++) {
+    for (let i = 0; i < setup.golemsAutoClaim; i++) {
       const golem = golems[i];
       if (golem.can_claim) {
         console.log('claim golem');
@@ -1518,7 +1518,7 @@ function gwh() {
         return;
       }
     }
-    for (let i = 0; i < setup.autoGolems; i++) {
+    for (let i = 0; i < setup.golemsAutoBuild; i++) {
       const golem = golems[i];
       if (golem.can_build) {
         console.log('build golem');
@@ -1535,7 +1535,7 @@ function gwh() {
     }
     // hasScarf/hasHat改成 property後, buildGolem前要更新狀態
     initMyItems(quest.items, setup);
-    if (setup.autoGolems < 3 && hasScarf && setup.isScarfUnusedGolem) {
+    if (setup.golemsAutoBuild < 3 && hasScarf && setup.isScarfUnusedGolem) {
       const golem = golems[2];
       if (golem.can_build) {
         console.log('build unused golem with scarf');
@@ -2863,8 +2863,8 @@ function gwh() {
     );
   }
   function getQuest() {
-    const enviromentType = MhUtils.getEnvironmentType();
-    switch (enviromentType) {
+    const environmentType = MhUtils.getEnvironmentType();
+    switch (environmentType) {
       case gwhAreas.hill:
         return user.quests.QuestCinnamonTreeGrove;
       case gwhAreas.workshop:
