@@ -68,7 +68,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.75.23.77';
+  const version = 'gwh_1.2.76.23.77';
   isProd ? logging(version) : console.log(version);
   // TODO Animated Snow Storm全程 FS
   // TODO 週六整天用 SB,存 PP給週日 stuck snowball用
@@ -1484,7 +1484,7 @@ function gwh() {
     if (!setup.isAutoGolem) return;
     const quest = getQuest();
     console.log('Run checkGolem', quest);
-    const golems = orderGolems(quest.golems);
+    const golems = quest.golems.map((v) => v).sort((a, b) => b.level - a.level);
     const track = quest.reward_track;
     if (setup.isAutoUpgrade)
       for (let i = 0; i < setup.golemsAutoUpgrade; i++) {
@@ -1557,12 +1557,6 @@ function gwh() {
       // return;
       claimTrackReward();
     }
-  }
-  // orderGolems(user.quests.QuestGolemWorkshop.golems);
-  function orderGolems(golems) {
-    const levels = golems.map((v) => v);
-    levels.sort((a, b) => b.level - a.level);
-    return levels;
   }
   function claimTrackReward(callback) {
     const version = 'claimTrackReward(';
