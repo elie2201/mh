@@ -68,7 +68,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.77.23.79';
+  const version = 'gwh_1.2.77.23.80';
   isProd ? logging(version) : console.log(version);
   // TODO Animated Snow Storm全程 FS
   // TODO 週六整天用 SB,存 PP給週日 stuck snowball用
@@ -144,6 +144,7 @@ function gwh() {
   const bct = 'Boiling Cauldron';
   const aeib = 'Attuned Enerchi Induction';
   const gotdB = 'Seasonal Gift';
+  const acb = "Alchemist's Cookbook";
   const gotdC = 'Tarnished Charm,Unstable Charm,None';
   const enerchi = 'Enerchi Charm';
   const lk2C =
@@ -1295,7 +1296,7 @@ function gwh() {
     const version = 'handleTrap(';
     isProd ? logging(version, trap, setup) : console.log(version, trap, setup);
     // toggle FS前就得換成 shutdown trap,不然 FS會吃到錯誤的設定
-    if (isShutdown) trap = getShutdownTrap(MhUtils.getEnvironmentType(), setup);
+    if (isShutdown) trap = getShutdownTrap(setup);
     toggleFestiveSpirit(trap, () => {
       if (trap) {
         // 裝備 GPP時,如果 isCheckPpMiceBait,checkPPMiceBait
@@ -1309,10 +1310,17 @@ function gwh() {
         }, Math.floor(12000 + Math.random() * 3000));
     });
   }
-  function getShutdownTrap(environmentType, setup) {
-    const version = `getShutdownTrap(${environmentType},`;
+  function getShutdownTrap(setup) {
+    const version = `getShutdownTrap(`;
     isProd ? logging(version, setup) : console.log(version, setup);
-    return setup[environmentType]['shutdown'][setup.isGoodGoTd ? gotd : normal];
+    const environmentType = MhUtils.getEnvironmentType();
+    const isFortress = MhUtils.getEnvironmentType() === gwhAreas.fortress;
+    const health = isFortress ? parseInt(getQuest().shield.health) : -1;
+    const isFortressBoss = isFortress && health === 0;
+    const trap = isFortressBoss
+      ? ['SUPER', bct, acb, 'None', true, [false, false, false]]
+      : setup[environmentType]['shutdown'][setup.isGoodGoTd ? gotd : normal];
+    return trap;
   }
   function getNormalTrap(setup) {
     const version = 'getNormalTrap(';
