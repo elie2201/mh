@@ -68,7 +68,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.78.23.81';
+  const version = 'gwh_1.2.78.23.82';
   isProd ? logging(version) : console.log(version);
   // TODO Animated Snow Storm全程 FS
   // TODO 週六整天用 SB,存 PP給週日 stuck snowball用
@@ -354,7 +354,12 @@ function gwh() {
     const diff = partsSet.map((v) => v - max);
     const balanced = diff.reduce((p, v) => (p += v === 0 ? 1 : 0), 0);
     const isAll = balanced > 1;
-    const rtn = diff.map((v) => v !== 0 || isAll);
+    const enableds = diff.map((v) => v !== 0 || isAll);
+    const rtn = [
+      enableds[0] ? 0 : 12,
+      enableds[1] ? 0 : 12,
+      enableds[2] ? 0 : 6
+    ];
     console.log('to balance parts:', rtn);
     return rtn;
   }
@@ -1122,7 +1127,13 @@ function gwh() {
           console.log('shutdown後還是會 travel. travel後不可 toggle forge');
           if (!quest) return;
           console.log('shutdown了, toggle forge');
-          toggleForges(setup.stopForgeAt);
+          // prettier-ignore
+          const a = [
+            quest.workshop.head.num_hunts_remaining != setup.stopForgeAt[0] && quest.workshop.head.is_active,
+            quest.workshop.torso.num_hunts_remaining != setup.stopForgeAt[1] && quest.workshop.torso.is_active,
+            quest.workshop.limb.num_hunts_remaining != setup.stopForgeAt[2] && quest.workshop.limb.is_active
+          ];
+          toggleForges(a);
         }, Math.floor(12000 + Math.random() * 3000));
       }
     }
