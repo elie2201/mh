@@ -68,7 +68,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.77.23.80';
+  const version = 'gwh_1.2.78.23.80';
   isProd ? logging(version) : console.log(version);
   // TODO Animated Snow Storm全程 FS
   // TODO 週六整天用 SB,存 PP給週日 stuck snowball用
@@ -331,6 +331,7 @@ function gwh() {
       // shutdown時, cinnamon少於 startCinnamonQty就無視設定, forge完停止
       if (myItems.cinnamon < settings.startCinnamonQty)
         settings.stopForgeAt = [12, 12, 6];
+      else balanceParts();
     }
     const workingMap = localStorage[workingMapKey];
     if (!settings.isAutoMapping || !workingMap || workingMap === '') {
@@ -340,6 +341,21 @@ function gwh() {
     autoMapping(workingMap, () => {
       checkArea(settings);
     });
+  }
+  // balanceParts();
+  function balanceParts() {
+    const version = 'balanceParts()';
+    isProd ? logging(version) : console.log(version);
+    // const myItems = { head: 2, torso: 2, limb: 2 };
+    const parts = [myItems.head, myItems.torso, myItems.limb];
+    const partsSet = parts.map((v, i) => (i === 2 ? parseInt(v / 4) : v));
+    const max = Math.max(...partsSet);
+    const diff = partsSet.map((v) => v - max);
+    const balanced = diff.reduce((p, v) => (p += v === 0 ? 1 : 0), 0);
+    const isAll = balanced > 1;
+    const rtn = diff.map((v) => v !== 0 || isAll);
+    console.log('to balance parts:', rtn);
+    return rtn;
   }
   // autoMapping('naughtyList', () => { console.log('Finished'); });
   function autoMapping(mapTypeKey, callback) {
@@ -1034,6 +1050,15 @@ function gwh() {
       items.hailstone_stat_item.quantity
     );
     myItems.fs = MyUtils.parseQuantity(items.festive_spirit_stat_item.quantity);
+    myItems.head = MyUtils.parseQuantity(
+      items.golem_part_head_stat_item.quantity
+    );
+    myItems.torso = MyUtils.parseQuantity(
+      items.golem_part_torso_stat_item.quantity
+    );
+    myItems.limb = MyUtils.parseQuantity(
+      items.golem_part_limb_stat_item.quantity
+    );
     myItems.scarf = MyUtils.parseQuantity(
       items.golden_scarf_stat_item.quantity
     );
