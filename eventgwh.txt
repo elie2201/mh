@@ -68,7 +68,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.78.23.83';
+  const version = 'gwh_1.2.79.23.84';
   isProd ? logging(version) : console.log(version);
   // TODO Animated Snow Storm全程 FS
   // TODO 週六整天用 SB,存 PP給週日 stuck snowball用
@@ -290,6 +290,10 @@ function gwh() {
     cinnamon: 0,
     hailstone: 0,
     fs: 0,
+    head: 0,
+    torso: 0,
+    limb: 0,
+    as: 0,
     scarf: 0,
     hat: 0
   }; // ;null;
@@ -307,6 +311,8 @@ function gwh() {
   let isEndWorkshop = false;
   let hasScarf = false;
   let hasHat = false;
+  let isLastForgeSet = false;
+  let isLowAnimatedSnow = false;
   run();
   function run() {
     isProd ? logging('run') : console.log('run');
@@ -329,10 +335,7 @@ function gwh() {
       settings.isMapping = false;
       settings.goHailstoneQty = 35;
       // shutdown時, cinnamon少於 startCinnamonQty就無視設定, forge完停止
-      settings.stopForgeAt =
-        myItems.cinnamon < settings.startCinnamonQty
-          ? [12, 12, 6]
-          : balanceParts();
+      settings.stopForgeAt = isLastForgeSet ? [12, 12, 6] : balanceParts();
     }
     const workingMap = localStorage[workingMapKey];
     if (!settings.isAutoMapping || !workingMap || workingMap === '') {
@@ -1082,10 +1085,13 @@ function gwh() {
     isLowCinnamon = myItems.cinnamon < setup.cinnamonKeptQty;
     isEnoughCinnamon = myItems.cinnamon > setup.startCinnamonQty;
     isTooManyCinnamon = myItems.cinnamon > setup.tooManyCinnamon;
+    isLastForgeSet = myItems.cinnamon < 36;
+    isLowAnimatedSnow = myItems.as < 80;
     isStartFortress =
       isEnoughPP &&
       myItems.fs > setup.fsKeptQty &&
-      (setup.isMapping || isEnoughHailstone);
+      (setup.isMapping || isEnoughHailstone) &&
+      (!isShutdown || !isLowAnimatedSnow); // shutdown後最後一組 AS時手動前往 fortress
     // fortress沒 PP回 hill農,不在 fortress農,除非 hailstone太多
     isEndFortress =
       (setup.isMapping && isLowPP && !isTooManyHailstone) ||
@@ -1093,16 +1099,18 @@ function gwh() {
     // cinnamon太多(可以去 workshop用 normal cheese)
     // mapping時不要去 workshop用 normal cheese浪費收集 cinnamon的機會
     isStartWorkshop =
-      (!setup.isMapping || isEnoughPP) &&
-      (setup.isMapping || isEnoughCinnamon) &&
-      (!isShutdown || myItems.as > 79);
+      (!setup.isMapping || isEnoughPP) && (setup.isMapping || isEnoughCinnamon);
     // || myItems.pp > parseInt(setup.startCinnamonQty / 3) // 不能 1/3,不然 workshop的 checkTrap還是會用 normal bait
     // workshop沒 PP: mapping且沒有 cinnamon過剩時回 hill農,不是 mapping時在 workshop農
     isEndWorkshop =
       (setup.isMapping && isLowPP && !isTooManyCinnamon) ||
       (!setup.isMapping && isLowCinnamon);
     console.log('after init myItems:', myItems);
-    console.log(`isLowPP: ${isLowPP}`, `isEnoughPP: ${isEnoughPP}`);
+    console.log(
+      `isLowPP: ${isLowPP}`,
+      `isEnoughPP: ${isEnoughPP}`,
+      `isLowAnimatedSnowSet: ${isLowAnimatedSnow}`
+    );
     console.log(
       `isLowHailstone: ${isLowHailstone}`,
       `isEnoughHailstone: ${isEnoughHailstone}`,
@@ -1115,7 +1123,8 @@ function gwh() {
       `isEnoughCinnamon: ${isEnoughCinnamon}`,
       `isTooManyCinnamon: ${isTooManyCinnamon}`,
       `isStartWorkshop: ${isStartWorkshop}`,
-      `isEndWorkshop: ${isEndWorkshop}`
+      `isEndWorkshop: ${isEndWorkshop}`,
+      `isLastForgeSet: ${isLastForgeSet}`
     );
   }
   function golemWorkshop(setup) {
@@ -1130,12 +1139,24 @@ function gwh() {
           console.log('shutdown後還是會 travel. travel後不可 toggle forge');
           if (!quest) return;
           console.log('shutdown了, toggle forge');
-          // prettier-ignore
-          const a = [
-            quest.workshop.head.num_hunts_remaining != setup.stopForgeAt[0] && quest.workshop.head.is_active,
-            quest.workshop.torso.num_hunts_remaining != setup.stopForgeAt[1] && quest.workshop.torso.is_active,
-            quest.workshop.limb.num_hunts_remaining != setup.stopForgeAt[2] && quest.workshop.limb.is_active
-          ];
+          const headHunts = parseInt(quest.workshop.head.num_hunts_remaining);
+          const torsoHunts = parseInt(quest.workshop.torso.num_hunts_remaining);
+          const limbHunts = parseInt(quest.workshop.limb.num_hunts_remaining);
+          // shutdown後最後一組 forge set手動啟用,其他就全自動
+          const a = isLastForgeSet
+            ? [
+                headHunts !== setup.stopForgeAt[0] &&
+                  quest.workshop.head.is_active,
+                torsoHunts !== setup.stopForgeAt[1] &&
+                  quest.workshop.torso.is_active,
+                limbHunts !== setup.stopForgeAt[2] &&
+                  quest.workshop.limb.is_active
+              ]
+            : [
+                headHunts !== setup.stopForgeAt[0],
+                torsoHunts !== setup.stopForgeAt[1],
+                limbHunts !== setup.stopForgeAt[2]
+              ];
           toggleForges(a);
         }, Math.floor(12000 + Math.random() * 3000));
       }
