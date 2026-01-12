@@ -68,7 +68,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.80.23.85';
+  const version = 'gwh_1.2.81.23.86';
   isProd ? logging(version) : console.log(version);
   // TODO Animated Snow Storm全程 FS
   // TODO 週六整天用 SB,存 PP給週日 stuck snowball用
@@ -213,14 +213,15 @@ function gwh() {
     dropMapGppAsGppLessThan: 40, // GPP數量少於此, drop需要 GPP的 map
     dropMapGlazyAsGppLessThan: 80, // GPP數量少於此, drop有 Glazy的 map(做 Joy的 map有機會多抓 Glazy)
     shutdown: {
-      isLeaveFortressIf36: true,
+      // isLeaveFortressIf36: true,
+      isAutoFortress: true,
       stopAnimatedSnowCannonAt: -1, // Animated Snow數量大於等於此,停用 Animated Snow Cannon
       stopCinnamonCannonAt: -1, // Cinnamon數量大於等於此,停用 Cinnamon Cannon
       isOffForge1At12: true,
       isOffForge2At12: true,
       isOffForge3At6: true
     },
-    stopForgeAt: [12, 12, 6],
+    stopForgeAt: [0, 0, 0],
     normalTrap: {
       normal: [st.n0, st.nT, st.nnB, st.nnC, false, [false, false, false]],
       gotd: [st.n0, st.nT, gotdB, st.ngC, false, [false, false, false]]
@@ -801,16 +802,21 @@ function gwh() {
             health === 36 &&
             !isEnoughHailstone) ||
           (isCinnamonDone && isASDone);
+        console.log(
+          `isASDone: ${isASDone}, isCinnamonDone: ${isCinnamonDone}, isLeave: ${isLeave}`
+        );
         if (isLeave) {
           travel(gwhAreas.workshop, 2000, () => {
             checkTrap(setup);
           });
           return;
         }
+        // 這邊只能設定,不能直接中斷,不然就算 isEndFortress也不會離開 Fortress
         if (isASDone) getShutdownTrap(setup)[5][0] = false;
         if (isCinnamonDone) getShutdownTrap(setup)[5][1] = false;
-        checkTrap(setup);
-        return;
+        console.log('After check AS/Cinnamon:', setup);
+        // checkTrap(setup);
+        // return;
       }
     }
     if (checkDropMap(setup)) return;
@@ -1153,6 +1159,19 @@ function gwh() {
     const items = quest.items;
     initMyItems(items, setup);
     if (isShutdown) {
+      if (
+        setup.shutdown.isAutoFortress &&
+        myItems.as > 79 &&
+        isEndWorkshop &&
+        !isEndFortress
+      ) {
+        setup.shutdown.stopAnimatedSnowCannonAt = undefined;
+        setup.shutdown.stopCinnamonCannonAt = undefined;
+        travel(gwhAreas.fortress, 2000, () => {
+          iceFortress(setup);
+        });
+        return;
+      }
       setTimeout(() => {
         const quest = user.quests.QuestGolemWorkshop;
         console.log('shutdown後還是會 travel. travel後不可 toggle forge');
