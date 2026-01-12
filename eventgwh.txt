@@ -68,7 +68,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.81.23.86';
+  const version = 'gwh_1.2.81.23.87';
   isProd ? logging(version) : console.log(version);
   // TODO Animated Snow Storm全程 FS
   // TODO 週六整天用 SB,存 PP給週日 stuck snowball用
@@ -1159,10 +1159,28 @@ function gwh() {
     const items = quest.items;
     initMyItems(items, setup);
     if (isShutdown) {
+      const headHunts = parseInt(quest.workshop.head.num_hunts_remaining);
+      const torsoHunts = parseInt(quest.workshop.torso.num_hunts_remaining);
+      const limbHunts = parseInt(quest.workshop.limb.num_hunts_remaining);
+      // shutdown後最後一組 forge set手動啟用,其他就全自動
+      const a = isLastForgeSet
+        ? [
+            headHunts !== setup.stopForgeAt[0] && quest.workshop.head.is_active,
+            torsoHunts !== setup.stopForgeAt[1] &&
+              quest.workshop.torso.is_active,
+            limbHunts !== setup.stopForgeAt[2] && quest.workshop.limb.is_active
+          ]
+        : [
+            headHunts !== setup.stopForgeAt[0],
+            torsoHunts !== setup.stopForgeAt[1],
+            limbHunts !== setup.stopForgeAt[2]
+          ];
+      const isWorking = a.reduce((p, v) => (p ||= v), false);
+      // 去 Fortress是在沒有 forge working時,不是看 cinnamon數量
       if (
         setup.shutdown.isAutoFortress &&
         myItems.as > 79 &&
-        isEndWorkshop &&
+        !isWorking &&
         !isEndFortress
       ) {
         setup.shutdown.stopAnimatedSnowCannonAt = undefined;
@@ -1177,24 +1195,6 @@ function gwh() {
         console.log('shutdown後還是會 travel. travel後不可 toggle forge');
         if (!quest) return;
         console.log('shutdown了, toggle forge');
-        const headHunts = parseInt(quest.workshop.head.num_hunts_remaining);
-        const torsoHunts = parseInt(quest.workshop.torso.num_hunts_remaining);
-        const limbHunts = parseInt(quest.workshop.limb.num_hunts_remaining);
-        // shutdown後最後一組 forge set手動啟用,其他就全自動
-        const a = isLastForgeSet
-          ? [
-              headHunts !== setup.stopForgeAt[0] &&
-                quest.workshop.head.is_active,
-              torsoHunts !== setup.stopForgeAt[1] &&
-                quest.workshop.torso.is_active,
-              limbHunts !== setup.stopForgeAt[2] &&
-                quest.workshop.limb.is_active
-            ]
-          : [
-              headHunts !== setup.stopForgeAt[0],
-              torsoHunts !== setup.stopForgeAt[1],
-              limbHunts !== setup.stopForgeAt[2]
-            ];
         toggleForges(a);
       }, Math.floor(12000 + Math.random() * 3000));
     }
