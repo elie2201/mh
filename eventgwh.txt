@@ -68,7 +68,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.80.23.84';
+  const version = 'gwh_1.2.80.23.85';
   isProd ? logging(version) : console.log(version);
   // TODO Animated Snow Storm全程 FS
   // TODO 週六整天用 SB,存 PP給週日 stuck snowball用
@@ -807,8 +807,8 @@ function gwh() {
           });
           return;
         }
-        if (isASDone) setup[gwhAreas.fortress][shutdown][5][0] = false;
-        if (isCinnamonDone) setup[gwhAreas.fortress][shutdown][5][1] = false;
+        if (isASDone) getShutdownTrap(setup)[5][0] = false;
+        if (isCinnamonDone) getShutdownTrap(setup)[5][1] = false;
         checkTrap(setup);
         return;
       }
