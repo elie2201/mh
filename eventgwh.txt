@@ -68,7 +68,7 @@ function gwh() {
     ) < 0
   )
     return;
-  const version = 'gwh_1.2.81.23.87';
+  const version = 'gwh_1.2.81.23.88';
   isProd ? logging(version) : console.log(version);
   // TODO Animated Snow Storm全程 FS
   // TODO 週六整天用 SB,存 PP給週日 stuck snowball用
@@ -1175,12 +1175,23 @@ function gwh() {
             torsoHunts !== setup.stopForgeAt[1],
             limbHunts !== setup.stopForgeAt[2]
           ];
-      const isWorking = a.reduce((p, v) => (p ||= v), false);
-      // 去 Fortress是在沒有 forge working時,不是看 cinnamon數量
+      const speed = a.reduce((p, v) => (p += v ? 1 : 0), 0);
+      // isWorking應該要看實際有沒有 active,而不是有沒有打算 active(a)
+      // 不過這樣會 delay 1 hunt,除非把 travel丟給 toggleForges當 callback執行
+      // const speed = [
+      //   quest.workshop.head.is_active,
+      //   quest.workshop.torso.is_active,
+      //   quest.workshop.limb.is_active
+      // ].reduce((p, v) => (p += v ? 1 : 0), 0);
+      // 去 Fortress是在沒有 forge working時,不是只看 cinnamon數量
+      // 沒有 forge working包括 forge speed等於 0或 cinnamon不足 speed
+      // TODO 用沒有 forge working判斷有無限 travel風險.
+      // 現在是因為從 fortress回來直接 checkTrap,沒有重跑 golemWorkshop(重跑 golemWorkshop才是王道),
+      // 而且去 fortress有改設定讓 health 36又 hailstone不足時也能待在 fortress所以沒有觸發
       if (
         setup.shutdown.isAutoFortress &&
         myItems.as > 79 &&
-        !isWorking &&
+        (speed === 0 || myItems.cinnamon < speed) &&
         !isEndFortress
       ) {
         setup.shutdown.stopAnimatedSnowCannonAt = undefined;
