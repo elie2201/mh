@@ -1,0 +1,671 @@
+/** Utilities */
+const MyUtils = (function () {
+  const utils = {
+    /**
+     * logging function.
+     * Invoke console.log with customization.
+     * @param  {...any} logs
+     */
+    logging(...any) {
+      if (isDebug) {
+        console.groupCollapsed(new Date(), ...any);
+        // console.log(Error().stack);
+        console.trace(...any);
+        console.groupEnd();
+      }
+    },
+    /**
+     * Format date to ISO date string format yyyy-MM-dd.
+     * Return today's date string if no argument
+     */
+    toISODateString(date) {
+      const d = date ? date : new Date();
+      return d.toLocaleDateString('en-CA');
+    },
+    /** Remove any comma in number expression and then parse to integer
+     * return 0 if argument is null or isNaN(after remove comma)
+     */
+    parseQuantity(qty) {
+      const strQty = ((qty || 0) + '').trim();
+      const rtn = parseInt(strQty.replaceAll(',', ''));
+      return Number.isNaN(rtn) ? 0 : rtn;
+    },
+    /** trim string or number, to empty if null or undefined */
+    trimToEmpty(str) {
+      return this.trimToDefault(str);
+    },
+    /** trim string or number, to default if null or undefined */
+    trimToDefault(str, deflt) {
+      return str === 0 ? '0' : ((str || (deflt ? deflt : '')) + '').trim();
+    },
+    /** get a integer between min and max */
+    getRandomInteger(min, max) {
+      return parseInt(min + Math.random() * (max - min));
+    },
+    /** create new array containing distinct element of original array */
+    distinctArray(array) {
+      const rtn = [];
+      for (let i = 0; i < array.length; i++) {
+        const element = array[i];
+        if (rtn.indexOf(element) < 0) rtn.push(element);
+      }
+      return rtn;
+    },
+    /**
+     * Check if argument is null or undefined
+     * or string of both.
+     * Not including empty string.
+     * @param {*} obj
+     * @return true if argument is null
+     * or undefined or string of both.
+     */
+    isNullOrUndefined(obj) {
+      return (
+        obj === null ||
+        obj === undefined ||
+        obj === 'null' ||
+        obj === 'undefined'
+      );
+    },
+    /**
+     * 用 keyName從 localStorage getItem.
+     * 如果取出來的字串 isNullOrUndefined,
+     * 將 objDefault stringify存回 localStorage.
+     * json parse取出的字串成物件 obj.
+     * 將 obj與 objDefault比對屬性,
+     * obj如果有缺少 objDefault的屬性,
+     * 將缺少的屬性從 objDefault copy給obj後回寫 localStorage.
+     * @param {String} keyName
+     * @param {*} objDefault
+     * @return {*} json parse後的物件
+     */
+    getStorageToObject(keyName, objDefault) {
+      let obj = this.getStorage(keyName);
+      let bCheckNewProp = true;
+      if (this.isNullOrUndefined(obj)) {
+        obj = JSON.stringify(objDefault);
+        this.setStorage(keyName, obj);
+        bCheckNewProp = false;
+      }
+      obj = JSON.parse(obj);
+      if (bCheckNewProp) {
+        if (this.assignMissingDefault(obj, objDefault)) {
+          this.setStorage(keyName, JSON.stringify(obj));
+        }
+      }
+      return obj;
+    },
+    /**
+     * if the web browser support HTML5 storage,
+     * 用 name作為 key從 localStorage中 getItem.
+     * @param {String} name key name
+     * @return
+     */
+    getStorage(name) {
+      if (
+        'localStorage' in window &&
+        !this.isNullOrUndefined(window.localStorage)
+      ) {
+        return window.localStorage.getItem(name);
+      }
+    },
+    /** if the web browser support HTML5 storage, store it */
+    setStorage(name, value) {
+      if (
+        'localStorage' in window &&
+        !this.isNullOrUndefined(window.localStorage)
+      ) {
+        window.localStorage.setItem(name, value);
+      }
+    },
+    /**
+     * 將 objDefault中有但 obj沒有的屬性 copy給 obj
+     * @param {*} obj
+     * @param {*} defaultObj
+     * @return {Boolean} if any property copied
+     */
+    assignMissingDefault(obj, defaultObj) {
+      let isResave = false;
+      for (const key in defaultObj) {
+        if (
+          Object.prototype.hasOwnProperty.call(defaultObj, key) &&
+          !Object.prototype.hasOwnProperty.call(obj, key)
+        ) {
+          const element = defaultObj[key];
+          obj[key] = element;
+          isResave = true;
+        }
+      }
+      return isResave;
+    },
+    /**
+     * Parse datetime or time str to datetime in milliseconds.
+     * Prepend today's Date if str is time expression(without T or start with T).
+     * Express UTC time with Z at end.
+     */
+    parseDateTime(str) {
+      if (this.trimToEmpty(str) === '') return null;
+      if (str.indexOf('T') === 0)
+        return Date.parse(this.toISODateString() + str);
+      if (str.indexOf('T') > 0) return Date.parse(str);
+      return Date.parse(this.toISODateString() + 'T' + str);
+    }
+  };
+  return utils;
+})();
+/** Mousehunt Utils */
+const MhUtils = (function () {
+  const mhUtils = {
+    /** Cheese names for arming */
+    cheeseNames: {
+      brie: 'Brie Cheese',
+      gouda: 'Gouda Cheese',
+      brieString: 'Brie String',
+      ancient: 'Ancient Cheese',
+      radio: 'Radioactive Blue',
+      rancid: 'Rancid Radioactive Blue'
+    },
+    /** whether stagger horn and check */
+    isStaggerHornCheck: localStorage['isStaggerHornCheck'] === 'true',
+    /**
+     * Get current enviroment type(location key).
+     * @return {String} current enviroment type
+     */
+    getEnvironmentType() {
+      const rtn = MyUtils.trimToEmpty(user.environment_type);
+      // console.plog(`Current location environment_type: ${rtn}`);
+      return rtn;
+    },
+    /** Request, parse, and cache gold/points/wisdom values */
+    updateGPWStats(isUpdateWisdom) {
+      const storageKey = 'MyMhGPWStats';
+      if (!isUpdateWisdom) {
+        this.updateGPStats(true);
+        return;
+      }
+      const xhr = new XMLHttpRequest();
+      xhr.open(
+        'GET',
+        'https://www.mousehuntgame.com/item.php?item_type=wisdom_stat_item'
+      );
+      xhr.onload = function () {
+        const data = xhr.responseText;
+        const parser = new DOMParser();
+        const dom = parser.parseFromString(data, 'text/html');
+        const wisdomItem = dom.querySelector('.itemView-sidebar-quantity');
+        if (wisdomItem) {
+          const wisdomText = wisdomItem.textContent
+            .split('Own: ')[1]
+            .replace(/,/g, '');
+          const wisdom = parseInt(wisdomText);
+          const gpwValues = mhUtils.updateGPStats(false);
+          const wisdoms = gpwValues.wisdom;
+          const oldWisdom = wisdoms[0]; // updateGPStats use last wisdom as latest
+          if (oldWisdom === parseInt(wisdom)) return;
+          wisdoms[0] = wisdom;
+          if (wisdoms.length > 5) wisdoms.splice(5);
+          const checkAt = gpwValues.checkAt;
+          checkAt[0] = Date.now();
+          if (checkAt.length > 5) checkAt.splice(5);
+          localStorage.setItem(storageKey, JSON.stringify(gpwValues));
+          // render(false);
+        }
+      };
+      xhr.onerror = function () {
+        console.error(xhr.statusText);
+      };
+      xhr.send();
+    },
+    /** Request, parse, and cache gold/points/wisdom values, use last wisdom as latest */
+    updateGPStats(isSave) {
+      const storageKey = 'MyMhGPWStats';
+      const defaultValues = {
+        gold: [-1, -1],
+        points: [-1, -1],
+        wisdom: [-1, -1],
+        checkAt: [null, null]
+      };
+      const usr = user;
+      const gpwStats = localStorage.getItem(storageKey);
+      const tmpGpw = gpwStats ? JSON.parse(gpwStats) : defaultValues;
+      // 如果是舊的資料型態就覆蓋掉
+      const gpwValues = tmpGpw.previousGold ? defaultValues : tmpGpw;
+      const gold = gpwValues.gold;
+      gold.unshift(parseInt(usr.gold));
+      if (gold.length > 5) gold.splice(5);
+      const points = gpwValues.points;
+      points.unshift(parseInt(usr.points));
+      if (points.length > 5) points.splice(5);
+      const wisdoms = gpwValues.wisdom;
+      wisdoms.unshift(wisdoms[0]);
+      if (wisdoms.length > 5) wisdoms.splice(5);
+      const checkAt = gpwValues.checkAt;
+      checkAt.unshift(Date.now());
+      if (checkAt.length > 5) checkAt.splice(5);
+      if (isSave) {
+        localStorage.setItem(storageKey, JSON.stringify(gpwValues));
+        // render(false);
+      }
+      return gpwValues;
+    },
+    /**
+     * Parse trap string.
+     * Resolve trapName with leading 'best.' from objBestTrap.
+     * Otherwise split trapName by ','.
+     *
+     * @param {String} trapName
+     * @return {Array<String>} Resolved trap array.
+     */
+    parseTrapName(trapName) {
+      // TODO best.weapon.arcane的best段改成用來放 arming sort
+      MyUtils.logging('trap name before parse: ', trapName);
+      let rtn;
+      if (MyUtils.isNullOrUndefined(trapName) || trapName == '') {
+        rtn = [''];
+        MyUtils.logging('empty trap name after parse: ', rtn);
+        return rtn;
+      }
+      if (Array.isArray(trapName)) return trapName;
+      if (trapName.indexOf('best.') == 0) {
+        const temp = trapName.split('.');
+        rtn = objBestTrap[temp[1]][temp[2]];
+        MyUtils.logging('best trap after parse: ', rtn);
+        return rtn;
+      }
+      rtn = trapName.split(',');
+      // 避免逗號前後有空白
+      for (let index = 0; index < rtn.length; index++) {
+        rtn[index] = rtn[index].trim();
+      }
+      MyUtils.logging('trap name split by comma after parse: ', rtn);
+      return rtn; // return arr.length > 1 ? arr : arr[0];
+    },
+    /**
+     * 處理訊息顯示並延遲 1秒後執行 reloadPage(soundHorn)
+     * @param {String} msg msg displayed on title.
+     * @param {Boolean} soundHorn is soundHorn or not
+     */
+    reloadWithMessage(msg, soundHorn) {
+      console.plog('reloadWithMessage: ', msg, ',', soundHorn);
+      // display the message
+      this.displayTimer(msg, msg, msg);
+      // reload the page
+      setTimeout(function () {
+        mhUtils.reloadPage(soundHorn);
+      }, 1000);
+    },
+    /**
+     * 根據是否顯示於標題列及是否顯示 timer,
+     * 處理要顯示的訊息.
+     * @param {*} title 標題列要顯示的訊息
+     * @param {*} nextHornTime 下次 soundHorn還有多久
+     * @param {*} checkTime 下次 trap check還有多久
+     */
+    displayTimer(title, nextHornTime, checkTime) {
+      if (showTimerInTitle) {
+        document.title = title;
+      }
+      if (showTimerInPage) {
+        nextHornTimeElement.innerHTML =
+          '<b>Next Hunter Horn Time:</b> ' + nextHornTime;
+        checkTimeElement.innerHTML =
+          '<b>Next Trap Check Time:</b> ' + checkTime;
+      }
+    },
+    /**
+     * 應該是很舊的程式碼了,用 location.href sound horn.
+     * 如果 soundHorn為 true,連 turn.php sound horn.
+     * 如果 soundHorn為 false,連遊戲首頁
+     * 註解掉用 turn.php sound horn的部分(太老舊了),
+     * 此方法只剩 soundHorn == false的功能.
+     * @param {Boolean} soundHorn
+     */
+    reloadPage(soundHorn) {
+      // reload the page
+      if (fbPlatform) {
+        // for Facebook only
+        if (secureConnection) {
+          if (soundHorn) {
+            // window.location.href = 'https://www.mousehuntgame.com/canvas/turn.php';
+          } else {
+            window.location.href = 'https://www.mousehuntgame.com/canvas/';
+          }
+        } else {
+          if (soundHorn) {
+            // window.location.href = 'http://www.mousehuntgame.com/canvas/turn.php';
+          } else {
+            window.location.href = 'http://www.mousehuntgame.com/canvas/';
+          }
+        }
+      } else if (hiFivePlatform) {
+        // for Hi5 only
+        if (secureConnection) {
+          if (soundHorn) {
+            // window.location.href = 'https://mousehunt.hi5.hitgrab.com/turn.php';
+          } else {
+            window.location.href = 'https://mousehunt.hi5.hitgrab.com/';
+          }
+        } else {
+          if (soundHorn) {
+            // window.location.href = 'http://mousehunt.hi5.hitgrab.com/turn.php';
+          } else {
+            window.location.href = 'http://mousehunt.hi5.hitgrab.com/';
+          }
+        }
+      } else if (mhPlatform) {
+        // for mousehunt game only
+        window.location.href =
+          'http' + (secureConnection ? 's' : '') + '://www.mousehuntgame.com/';
+        /* window.location.href =
+      'http' +
+      (secureConnection ? 's' : '') +
+      '://www.mousehuntgame.com/camp.php'; */
+        /* if (secureConnection) {
+      if (soundHorn) {
+        // window.location.href = 'https://www.mousehuntgame.com/turn.php';
+      } else {
+        window.location.href = 'https://www.mousehuntgame.com/';
+      }
+    } else {
+      if (soundHorn) {
+        // window.location.href = 'http://www.mousehuntgame.com/turn.php';
+      } else {
+        window.location.href = 'http://www.mousehuntgame.com/';
+      }
+    } */
+      }
+    },
+    /** get sn_user_id */
+    getSnUserId() {
+      return MyUtils.trimToEmpty(user.sn_user_id);
+    },
+    /**
+     * Get current bait name.
+     * @return {String} current bait name
+     */
+    getBaitName() {
+      return MyUtils.trimToEmpty(user.bait_name);
+    },
+    /**
+     * Get current bait item id.
+     * @return {BigInt} current bait item id
+     */
+    getBaitItemId() {
+      return MyUtils.parseQuantity(user.bait_item_id);
+    },
+    /**
+     * Get current bait quantity.
+     * @return {BigInt} current bait quantity
+     */
+    getBaitQuantity() {
+      return MyUtils.parseQuantity(user.bait_quantity);
+    },
+    /**
+     * Get current charm name.
+     * @return {String} current charm name
+     */
+    getCharmName() {
+      return MyUtils.trimToEmpty(user.trinket_name);
+    },
+    /**
+     * Get current charm item id.
+     * @return {BigInt} current charm item id
+     */
+    getCharmItemId() {
+      return MyUtils.parseQuantity(user.trinket_item_id);
+    },
+    /**
+     * Get current charm quantity.
+     * @return {BigInt} current charm quantity
+     */
+    getCharmQuantity() {
+      return MyUtils.parseQuantity(user.trinket_quantity);
+    },
+    /** close any js dialog */
+    closeAnyJsDialog() {
+      $(
+        'input.jsDialogClose,a.jsDialogClose,#jsDialogClose,a.closeButton,a.messengerUINotificationClose,a.giftSelectorView-inboxHeader-closeButton'
+      ).click();
+    },
+    /**
+     * Query item quantity by http get and then execute callback
+     * @param {string} itemType
+     * @param {Function} callback
+     * @param {Boolean} isAlwaysCallback true if run callback even when qty is NaN or 0
+     */
+    getQuantityByUrlThen(itemType, callback, isAlwaysCallback) {
+      const url = MOUSEHUNT_BASE_URL + 'item.php?item_type=' + itemType;
+      $.get(url, (data) => {
+        const key = 'You Own: ';
+        const text = data.split(key)[1];
+        const key2 = '</div>';
+        const endIndex = text.indexOf(key2);
+        const qtyText = text.substring(0, endIndex).trim();
+        MyUtils.logging(qtyText);
+        const qty = MyUtils.parseQuantity(qtyText.split('/')[0]);
+        if (!isAlwaysCallback && (Number.isNaN(qty) || qty < 1)) return;
+        if (callback) callback(qty);
+      });
+    },
+    /**
+     * Find a working map by map_class
+     * @param {String} mapClass
+     * @returns
+     */
+    getMapByClass(mapClass) {
+      const maps = user.quests.QuestRelicHunter.maps;
+      for (let i = 0; i < maps.length; i++) {
+        const element = maps[i];
+        if (element.map_class == mapClass) {
+          return element;
+        }
+      }
+      return null;
+    },
+    /**
+     * Reduced native completeTransaction
+     * @param {Boolean} isPurchase
+     * @param {String} itemType
+     * @param {BigInt} itemQuantity
+     * @param {Boolean} isKingsCartItem
+     * @param {Function} success
+     */
+    completeTransaction(
+      isPurchase,
+      itemType,
+      itemQuantity,
+      isKingsCartItem,
+      success
+    ) {
+      if (itemQuantity < 1) {
+        console.plog('Cannot buy 0 item');
+        return;
+      }
+      const uniqueHash = user.unique_hash;
+      $.ajax({
+        data: {
+          type: itemType,
+          quantity: itemQuantity,
+          buy: isPurchase ? 1 : 0,
+          is_kings_cart_item: isKingsCartItem ? 1 : 0,
+          uh: uniqueHash
+        },
+        dataType: 'json',
+        type: 'post',
+        url: MOUSEHUNT_BASE_URL + 'managers/ajax/purchases/itempurchase.php',
+        success: function (data) {
+          console.log(data.success, data);
+          eventRegistry.doEvent('ajax_response', data);
+          if (success) success();
+        },
+        error: function (data) {
+          const message = `completeTransaction for ${itemType} error`;
+          popupMessage(message);
+          localStorage.setItem(storingMessageKey, message);
+          console.plog(data);
+        }
+      });
+    },
+    /**
+     * Wrapping complete transaction codes in promise
+     * @param {Boolean} isBuy
+     * @param {String} itemType
+     * @param {BigInt} itemQty
+     * @param {Boolean} isKCItem
+     */
+    completeTransactionPromise(isBuy, itemType, itemQty, isKCItem) {
+      return new Promise((resolve, reject) => {
+        const uniqueHash = user.unique_hash;
+        if (itemQty > 0)
+          $.ajax({
+            data: {
+              type: itemType,
+              quantity: itemQty,
+              buy: isBuy ? 1 : 0,
+              is_kings_cart_item: isKCItem ? 1 : 0,
+              uh: uniqueHash
+            },
+            dataType: 'json',
+            type: 'post',
+            url: callbackurl + 'managers/ajax/purchases/itempurchase.php',
+            success: function (data) {
+              console.log('success', data.success, data);
+              eventRegistry.doEvent('ajax_response', data);
+              if (resolve) resolve(data);
+            },
+            error: reject
+          });
+        else {
+          console.log('Ignore 0 quantity');
+          if (resolve) resolve({ success: 0 });
+        }
+      });
+    },
+    /** Buy Scroll in Treasure Map Shop */
+    purchaseItem(itemType, environmentType, successCallback) {
+      $.ajax({
+        data: {
+          type: itemType,
+          quantity: 1,
+          buy: 1,
+          is_kings_cart_item: environmentType == 'kings_arms' ? 1 : 0,
+          environment_type: environmentType,
+          uh: user.unique_hash
+        },
+        dataType: 'json',
+        type: 'post',
+        url: MOUSEHUNT_BASE_URL + 'managers/ajax/purchases/itempurchase.php',
+        success: function (data) {
+          eventRegistry.doEvent('ajax_response', data);
+          if (data.success) {
+            // var itemData = arrayFindValueByKey(data.inventory, 'type', itemType);
+            // if (successCallback) {
+            //   successCallback(itemData);
+            // }
+            if (successCallback) successCallback(data);
+          } else if (data.error_title) {
+            const popup = new jsDialog();
+            popup.setTemplate('error');
+            popup.addToken('{*title*}', data.error_title);
+            popup.addToken('{*content*}', data.error_message);
+            popup.show();
+          } else {
+            this.error();
+          }
+        },
+        error: function () {
+          const popup = new jsDialog();
+          popup.setTemplate('error');
+          popup.addToken('{*title*}', 'Uh oh.');
+          popup.addToken(
+            '{*content*}',
+            'Something went wrong! Please try again.'
+          );
+          popup.show();
+        }
+      });
+    }
+  };
+  return mhUtils;
+})();
+const user = {};
+const hg = {};
+// function hasCaughtTargetByDataMouseType(dataMouseType) {}
+// function hasCaughtTargetByMouseName(keyword) {}
+function travel(environmentType, milliseconds, callback) {}
+function checkThenArm(sort, category, name, isForce) {}
+
+// #checkAndAct
+(() => {
+  console.log('run checkAndAct');
+  setTimeout(() => {
+    let checks = [];
+    // buy Overgrown base and then arm it and Super Regal Charm at queso_quarry
+    checks = [
+      {
+        atEnvironmentType: 'queso_quarry',
+        check() {
+          const baseId = parseInt(user.base_item_id || 0);
+          console.log(`base item id: ${baseId}`);
+          if (baseId === 2620) {
+            console.log('Overgrown base armed');
+            return false;
+          }
+          const finalItemQty = MyUtils.parseQuantity(
+            user.quests.QuestQuesoCanyon.items.nachore_stat_item.quantity
+          );
+          if (finalItemQty < 1000) {
+            console.log(`Not enough final crafting item: ${finalItemQty}`);
+            return false;
+          }
+          const itemType = 'queso_canyon_base';
+          MhUtils.completeTransaction(true, itemType, 1, false, () => {
+            hg.utils.TrapControl.armItem(itemType, 'base').go();
+          });
+          return true;
+        },
+        act() {}
+      },
+      {
+        atEnvironmentType: 'elub_shore',
+        check() {
+          console.log(MhUtils.getBaitItemId());
+          if (MhUtils.getBaitItemId() === 98) {
+            travel('derr_dunes', 3000, () => {
+              checkThenArm(null, 'bait', 'Gouda Cheese');
+              checkThenArm(
+                null,
+                'weapon',
+                MhUtils.parseTrapName('best.weapon.physical')
+              );
+              // checkThenArm(null, 'base', parseTrapName('best.base.combo'));
+              checkThenArm(null, 'trinket', 'Power Charm');
+            });
+            return true;
+          }
+          return false;
+        },
+        act() {}
+      }
+    ];
+    checkAndAct(checks);
+  }, 60000);
+  /** simply run check() and then run act() if check() return true */
+  function checkAndAct(checks) {
+    const isProd = false;
+    const version = 'checkAndAct_0.0.1.0.2';
+    isProd ? MyUtils.logging(version, checks) : console.log(version, checks);
+    for (let i = 0; i < checks.length; i++) {
+      const check = checks[i];
+      if (MhUtils.getEnvironmentType() !== check.atEnvironmentType) continue;
+      console.log(`run check in ${check.atEnvironmentType}`);
+      if (check.check()) {
+        if (check.act) {
+          check.act();
+          return;
+        }
+      }
+    }
+  }
+})();
+// End #checkAndAct
