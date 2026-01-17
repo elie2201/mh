@@ -77,11 +77,12 @@ const MOUSEHUNT_BASE_URL = 'https://www.mousehuntgame.com/';
  */
 const user = {};
 const app = {};
+const hg = {};
 
 /** get sn_user_id */
-function getSnUserId(params) {
-  return (user.sn_user_id + '').trim();
-}
+// function getSnUserId(params) {
+//   return (user.sn_user_id + '').trim();
+// }
 function logging(...any) {
   console.log(...any);
 }
@@ -109,9 +110,11 @@ function travel(environmentType, milliseconds, callback) {
 }
 
 // #scheduledTravel
-// scheduledTravel('2024-09-27T04:50:00','2024-09-27T05:10:00','ancient_city');
+// scheduledTravel('2025-02-06T08:01:00', '2025-02-06T08:30:00', 'laboratory');
+// scheduledTravel('2024-10-17T06:35:00','2024-10-17T06:59:00','claw_shot_city');
+// scheduledTravel('2024-10-14T06:35:00','2024-10-14T06:59:00','train_station');
 // 每天往返 CSC跟 GES
-const snuid = getSnUserId();
+/* const snuid = getSnUserId();
 if (
   [
     'hg_d783ff747d3b60073ef541d335ff901d',
@@ -142,23 +145,24 @@ if (
 ) {
   scheduledTravel('16:35:00', '16:59:00', 'train_station');
   scheduledTravel('08:50:00', '09:14:00', 'claw_shot_city');
-}
-// scheduledTravel('2024-10-14T06:35:00','2024-10-14T06:59:00','train_station');
-// scheduledTravel('2024-10-17T06:35:00','2024-10-17T06:59:00','claw_shot_city');
-// scheduledTravel('2025-08-26T08:01:00', '2025-08-26T08:30:00', 'rift_furoma');
+} */
 // scheduledTravel('2025-02-06T08:01:00','2025-02-06T08:30:00','fort_rox');
-// scheduledTravel('2025-02-06T08:01:00', '2025-02-06T08:30:00', 'laboratory');
+// prettier-ignore
+scheduledTravel('2026-01-20T16:01:00', '2026-01-20T16:30:00', 'seasonal_garden');
+// scheduledTravel('2024-09-27T04:50:00','2024-09-27T05:10:00','ancient_city');
+// scheduledTravel('2025-08-26T08:01:00', '2025-08-26T08:30:00', 'rift_furoma');
 // prettier-ignore
 function scheduledTravel( beginTime, endTime, environmentType, timeout, callback) {
   const isProd = false;
-  logging('scheduledTravel_1.0.1.0.0');
+  const version = `scheduledTravel_1.0.2.0.0(${beginTime}, ${endTime}, ${environmentType})`;
+  isProd ? logging(version) : console.log(version);
   const isoDate = new Date().toLocaleDateString('en-CA');
   if (beginTime.indexOf('T') < 0) beginTime = isoDate + 'T' + beginTime;
   if (endTime.indexOf('T') < 0) endTime = isoDate + 'T' + endTime;
   isProd ? console.plog(beginTime, endTime) : console.log(beginTime, endTime);
-  if (user.environment_type === environmentType) return;
   if (Date.now() < Date.parse(beginTime)) return;
   if (Date.now() > Date.parse(endTime)) return;
+  if (user.environment_type === environmentType) return;
   isProd
     ? console.plog(environmentType, beginTime, endTime, callback)
     : console.log(environmentType, beginTime, endTime, callback);
@@ -169,15 +173,14 @@ function scheduledTravel( beginTime, endTime, environmentType, timeout, callback
 function travelMock(environmentType, milliseconds, callback) {
   if (user.environment_type == environmentType) return;
   const timeout = milliseconds ? milliseconds : 2000;
-  user.environment_type = environmentType;
-  user.environment_id = environmentTypeIdDictionary[environmentType];
-  app.pages.TravelPage.travel(environmentType);
-  if (timeout >= 0) {
-    window.setTimeout(function () {
-      console.log(callback);
-      if (callback) callback();
-      else window.location.href = MOUSEHUNT_BASE_URL;
-    }, timeout);
-  }
+  hg.utils.User.travel(environmentType, () => {
+    if (timeout >= 0) {
+      window.setTimeout(function () {
+        console.log(callback);
+        if (callback) callback();
+        else window.location.href = MOUSEHUNT_BASE_URL;
+      }, timeout);
+    }
+  });
 }
 // End #scheduledTravel
