@@ -1091,7 +1091,7 @@ function floatingIslands() {
   const targetEnvironmentType = 'floating_islands';
   const environmentType = getEnvironmentType();
   if (environmentType != targetEnvironmentType) return;
-  logging('floatingIslands_1.4.20.6.8');
+  logging('floatingIslands_1.4.21.6.8');
   // prettier-ignore
   const AllPowerTypes = ['arcn', 'frgttn', 'hdr', 'shdw', 'drcnc', 'law', 'phscl', 'tctcl'];
   // prettier-ignore
@@ -1125,6 +1125,7 @@ function floatingIslands() {
   // prettier-ignore
   const defaultSetting = {
     travelTo: '', // not empty if never hunt in launch
+    travelIf: '',
     isLowCC: true,
     isAutoCjs: false,
     isSleepInCJS: false,
@@ -1276,11 +1277,17 @@ function floatingIslands() {
     }
   }
   const isLaunch = powerType == 'launch';
+  const travelTo = settings.travelTo || '';
+  if (settings.travelTo != '' && isLaunch && settings.travelIf === 'launch') {
+    pauseByTraveling(travelTo);
+    return;
+  }
   const isLai = atts.is_low_tier_island || !atts.enemy;
   const isHai = atts.is_high_tier_island;
   const isSp = atts.is_vault_island;
   const isCjsOn = quest.jet_stream_active;
-  const islandProgress = atts.island_progress;
+  const bossProgress = parseInt(atts.enemy_progress);
+  const islandProgress = parseInt(atts.island_progress);
   const isFirst3Block = islandProgress < 30;
   const speed =
     (isLaunch ? 0 : 1) +
@@ -1411,9 +1418,13 @@ function floatingIslands() {
     autoSkyMap(settings);
     return;
   }
-  const travelTo = settings.travelTo || '';
-  if (isLaunch && settings.travelTo !== '') {
-    pauseByTraveling(travelTo);
+  if (settings.travelTo !== '') {
+    if (
+      (settings.travelIf === 'NotSkyMap' && isLaunch) ||
+      (settings.travelIf === 'closeToBoss' &&
+        (islandProgress + bossProgress + speed > 39 || isBossHunt))
+    )
+      pauseByTraveling(travelTo);
     return;
   }
   console.plog(`Not autoSkyMap,treat trap/BW.Cyclone quantity: ${cycloneQty}`);
