@@ -1091,7 +1091,7 @@ function floatingIslands() {
   const targetEnvironmentType = 'floating_islands';
   const environmentType = getEnvironmentType();
   if (environmentType != targetEnvironmentType) return;
-  logging('floatingIslands_1.4.22.8.10');
+  logging('floatingIslands_1.4.22.8.11');
   const travelIfTypes = {
     launch: 'launch',
     noSkyMap: 'noSkyMap',
@@ -1438,9 +1438,10 @@ function floatingIslands() {
       (travelIf === travelIfTypes.warden && isLai && isCloseToBoss) ||
       (travelIf === travelIfTypes.paragon && isHai && isCloseToBoss) ||
       (travelIf === travelIfTypes.empress && isSp && isCloseToBoss)
-    )
+    ) {
       pauseByTraveling(travelTo);
-    return;
+      return;
+    }
   }
   console.plog(`Not autoSkyMap,treat trap/BW.Cyclone quantity: ${cycloneQty}`);
   let trap = null;
