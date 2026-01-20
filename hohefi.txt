@@ -1091,11 +1091,13 @@ function floatingIslands() {
   const targetEnvironmentType = 'floating_islands';
   const environmentType = getEnvironmentType();
   if (environmentType != targetEnvironmentType) return;
-  logging('floatingIslands_1.4.22.8.9');
+  logging('floatingIslands_1.4.22.8.10');
   const travelIfTypes = {
     launch: 'launch',
     noSkyMap: 'noSkyMap',
-    closeToBoss: 'closeToBoss'
+    warden: 'warden',
+    paragon: 'paragon',
+    empress: 'empress'
   };
   // prettier-ignore
   const AllPowerTypes = ['arcn', 'frgttn', 'hdr', 'shdw', 'drcnc', 'law', 'phscl', 'tctcl'];
@@ -1429,10 +1431,13 @@ function floatingIslands() {
     return;
   }
   if (travelTo !== '') {
+    const isCloseToBoss =
+      islandProgress + bossProgress + speed > 39 || isBossHunt;
     if (
       (travelIf === travelIfTypes.noSkyMap && isLaunch) ||
-      (travelIf === travelIfTypes.closeToBoss &&
-        (islandProgress + bossProgress + speed > 39 || isBossHunt))
+      (travelIf === travelIfTypes.warden && isLai && isCloseToBoss) ||
+      (travelIf === travelIfTypes.paragon && isHai && isCloseToBoss) ||
+      (travelIf === travelIfTypes.empress && isSp && isCloseToBoss)
     )
       pauseByTraveling(travelTo);
     return;
