@@ -1091,7 +1091,7 @@ function floatingIslands() {
   const targetEnvironmentType = 'floating_islands';
   const environmentType = getEnvironmentType();
   if (environmentType != targetEnvironmentType) return;
-  logging('floatingIslands_1.4.21.6.8');
+  logging('floatingIslands_1.4.21.7.9');
   // prettier-ignore
   const AllPowerTypes = ['arcn', 'frgttn', 'hdr', 'shdw', 'drcnc', 'law', 'phscl', 'tctcl'];
   // prettier-ignore
@@ -1124,7 +1124,7 @@ function floatingIslands() {
   // trap: [<weapon>, <base>, <bait>, <trinket>, <bottleWindEnabled>, litCandle, doubleEgg]
   // prettier-ignore
   const defaultSetting = {
-    travelTo: '', // not empty if never hunt in launch
+    travelTo: '', // set to launch if never hunt in launch
     travelIf: '',
     isLowCC: true,
     isAutoCjs: false,
@@ -1278,7 +1278,16 @@ function floatingIslands() {
   }
   const isLaunch = powerType == 'launch';
   const travelTo = settings.travelTo || '';
-  if (settings.travelTo != '' && isLaunch && settings.travelIf === 'launch') {
+  const travelIfTypes = {
+    launch: 'launch',
+    noSkyMap: 'noSkyMap',
+    closeToBoss: 'closeToBoss'
+  };
+  if (
+    settings.travelTo != '' &&
+    isLaunch &&
+    settings.travelIf === travelIfTypes.launch
+  ) {
     pauseByTraveling(travelTo);
     return;
   }
@@ -1420,8 +1429,8 @@ function floatingIslands() {
   }
   if (settings.travelTo !== '') {
     if (
-      (settings.travelIf === 'NotSkyMap' && isLaunch) ||
-      (settings.travelIf === 'closeToBoss' &&
+      (settings.travelIf === travelIfTypes.noSkyMap && isLaunch) ||
+      (settings.travelIf === travelIfTypes.closeToBoss &&
         (islandProgress + bossProgress + speed > 39 || isBossHunt))
     )
       pauseByTraveling(travelTo);
