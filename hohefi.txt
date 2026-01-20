@@ -1091,7 +1091,12 @@ function floatingIslands() {
   const targetEnvironmentType = 'floating_islands';
   const environmentType = getEnvironmentType();
   if (environmentType != targetEnvironmentType) return;
-  logging('floatingIslands_1.4.21.7.9');
+  logging('floatingIslands_1.4.22.8.9');
+  const travelIfTypes = {
+    launch: 'launch',
+    noSkyMap: 'noSkyMap',
+    closeToBoss: 'closeToBoss'
+  };
   // prettier-ignore
   const AllPowerTypes = ['arcn', 'frgttn', 'hdr', 'shdw', 'drcnc', 'law', 'phscl', 'tctcl'];
   // prettier-ignore
@@ -1124,8 +1129,9 @@ function floatingIslands() {
   // trap: [<weapon>, <base>, <bait>, <trinket>, <bottleWindEnabled>, litCandle, doubleEgg]
   // prettier-ignore
   const defaultSetting = {
-    travelTo: '', // set to launch if never hunt in launch
-    travelIf: '',
+    // not empty travelTo and set travelIf to launch if never hunt in launch
+    travelTo: '',
+    travelIf: travelIfTypes.noSkyMap, // no empty value
     isLowCC: true,
     isAutoCjs: false,
     isSleepInCJS: false,
@@ -1264,7 +1270,7 @@ function floatingIslands() {
   const meQty = parseQuantity(magicEssence.quantity);
   const islandType = atts.island_type || '';
   const powerType = islandType.split('_')[0];
-  if (powerType == '') return;
+  if (powerType === '') return;
   const modTypes = atts.island_mod_types;
   const modsActivated = atts.activated_island_mod_types;
   const isPirate = modsActivated.indexOf('sky_pirates') > -1;
@@ -1276,18 +1282,13 @@ function floatingIslands() {
       break;
     }
   }
-  const isLaunch = powerType == 'launch';
+  const isLaunch = powerType === 'launch';
   const travelTo = settings.travelTo || '';
-  const travelIfTypes = {
-    launch: 'launch',
-    noSkyMap: 'noSkyMap',
-    closeToBoss: 'closeToBoss'
-  };
-  if (
-    settings.travelTo != '' &&
-    isLaunch &&
-    settings.travelIf === travelIfTypes.launch
-  ) {
+  const travelIf =
+    settings.travelIf && settings.travelIf !== ''
+      ? settings.travelIf
+      : travelIfTypes.noSkyMap;
+  if (travelTo !== '' && travelIf === travelIfTypes.launch && isLaunch) {
     pauseByTraveling(travelTo);
     return;
   }
@@ -1427,10 +1428,10 @@ function floatingIslands() {
     autoSkyMap(settings);
     return;
   }
-  if (settings.travelTo !== '') {
+  if (travelTo !== '') {
     if (
-      (settings.travelIf === travelIfTypes.noSkyMap && isLaunch) ||
-      (settings.travelIf === travelIfTypes.closeToBoss &&
+      (travelIf === travelIfTypes.noSkyMap && isLaunch) ||
+      (travelIf === travelIfTypes.closeToBoss &&
         (islandProgress + bossProgress + speed > 39 || isBossHunt))
     )
       pauseByTraveling(travelTo);
