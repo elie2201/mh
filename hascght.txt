@@ -103,7 +103,7 @@ checks = [
     atEnvironmentType: 'seasonal_garden',
     target: 'winter_mage',
     successCallback() {
-      travel('fort_rox');
+      // travel('fort_rox');
     }
   },
   {
@@ -111,7 +111,7 @@ checks = [
     atEnvironmentType: 'seasonal_garden',
     target: 'vinetail',
     successCallback() {
-      travel('fort_rox');
+      // travel('fort_rox');
     }
   },
   {
@@ -119,7 +119,7 @@ checks = [
     atEnvironmentType: 'seasonal_garden',
     target: 'summer_mage',
     successCallback() {
-      travel('fort_rox');
+      // travel('fort_rox');
     }
   },
   {
@@ -128,7 +128,7 @@ checks = [
     target: 'harvester',
     successCallback() {
       // travel('fort_rox');
-      const itemType = 'spring_key_shard_crafting_item';
+      /* const itemType = 'spring_key_shard_crafting_item';
       try {
         hg.utils.UserInventory.getItem(
           itemType,
@@ -156,7 +156,37 @@ checks = [
         );
       } catch (error) {
         console.log(error);
-      }
+      } */
+    }
+  },
+  {
+    isByMouseType: checkedProperty.isByMouseType,
+    atEnvironmentType: 'zugzwang_tower',
+    target: 'mystic_king',
+    successCallback() {
+      const storageKey = 'ZTower';
+      const a = localStorage[storageKey]
+        ? JSON.parse(localStorage[storageKey])
+        : null;
+      if (!a) console.log('Error!! No settings exist!!');
+      a.focus = 'TECHNIC';
+      localStorage[storageKey] = JSON.stringify(a);
+      console.log(JSON.parse(localStorage[storageKey]));
+    }
+  },
+  {
+    isByMouseType: checkedProperty.isByMouseType,
+    atEnvironmentType: 'zugzwang_tower',
+    target: 'tech_king',
+    successCallback() {
+      const storageKey = 'ZTower';
+      const a = localStorage[storageKey]
+        ? JSON.parse(localStorage[storageKey])
+        : null;
+      if (!a) console.log('Error!! No settings exist!!');
+      a.focus = 'MYSTIC';
+      localStorage[storageKey] = JSON.stringify(a);
+      console.log(JSON.parse(localStorage[storageKey]));
     }
   }
 ];
