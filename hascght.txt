@@ -127,7 +127,36 @@ checks = [
     atEnvironmentType: 'seasonal_garden',
     target: 'harvester',
     successCallback() {
-      travel('fort_rox');
+      // travel('fort_rox');
+      const itemType = 'spring_key_shard_crafting_item';
+      try {
+        hg.utils.UserInventory.getItem(
+          itemType,
+          (data) => {
+            console.log(data.quantity, data);
+            if (data.quantity > 0) {
+              const recipe = {
+                spring_key_shard_crafting_item: 1,
+                summer_key_shard_crafting_item: 1,
+                fall_key_shard_crafting_item: 1,
+                winter_key_shard_crafting_item: 1
+              };
+              setTimeout(() => {
+                hg.utils.UserInventory.craftItem(recipe, 1);
+                setTimeout(() => {
+                  travel('zugzwang_tower');
+                }, 10000);
+              }, 10000);
+            }
+          },
+          () => {
+            console.log('Something wrong!!');
+          },
+          true
+        );
+      } catch (error) {
+        console.log(error);
+      }
     }
   }
 ];
