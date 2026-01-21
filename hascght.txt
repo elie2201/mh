@@ -161,7 +161,7 @@ checks = [
   },
   {
     isByMouseType: checkedProperty.isByMouseType,
-    atEnvironmentType: 'zugzwang_tower',
+    atEnvironmentType: 'seasonal_garden',
     target: 'mystic_king',
     successCallback() {
       const storageKey = 'ZTower';
@@ -169,6 +169,7 @@ checks = [
         ? JSON.parse(localStorage[storageKey])
         : null;
       if (!a) console.log('Error!! No settings exist!!');
+      if (a.focus === 'TECHNIC') return;
       a.focus = 'TECHNIC';
       localStorage[storageKey] = JSON.stringify(a);
       console.log(JSON.parse(localStorage[storageKey]));
@@ -176,7 +177,7 @@ checks = [
   },
   {
     isByMouseType: checkedProperty.isByMouseType,
-    atEnvironmentType: 'zugzwang_tower',
+    atEnvironmentType: 'seasonal_garden',
     target: 'tech_king',
     successCallback() {
       const storageKey = 'ZTower';
@@ -184,6 +185,7 @@ checks = [
         ? JSON.parse(localStorage[storageKey])
         : null;
       if (!a) console.log('Error!! No settings exist!!');
+      if (a.focus === 'MYSTIC') return;
       a.focus = 'MYSTIC';
       localStorage[storageKey] = JSON.stringify(a);
       console.log(JSON.parse(localStorage[storageKey]));
