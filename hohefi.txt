@@ -1043,6 +1043,7 @@ user.quests = {};
 user.quests.QuestFloatingIslands = QuestFloatingIslands;
 user.environment_type = 'floating_islands';
 user.enviroment_atts = enviromentAtts;
+const MhUtils = {};
 function $() {}
 function getStorageToObject(key, obj) {}
 function armAllTraps(bait, weapon, base, charm) {
@@ -1091,7 +1092,13 @@ function floatingIslands() {
   const targetEnvironmentType = 'floating_islands';
   const environmentType = getEnvironmentType();
   if (environmentType != targetEnvironmentType) return;
-  logging('floatingIslands_1.4.22.8.11');
+  logging('floatingIslands_1.4.23.8.12');
+  const trapKey = 'trap';
+  const pirate = 'pirate';
+  const lai = 'lai';
+  const hai = 'hai';
+  const sp = 'sp';
+  const launch = 'launch';
   const travelIfTypes = {
     launch: 'launch',
     noSkyMap: 'noSkyMap',
@@ -1103,33 +1110,39 @@ function floatingIslands() {
   const AllPowerTypes = ['arcn', 'frgttn', 'hdr', 'shdw', 'drcnc', 'law', 'phscl', 'tctcl'];
   // prettier-ignore
   const AllPowerNames = ['arcane', 'forgotten', 'hydro', 'shadow', 'draconic', 'law', 'physical', 'tactical'];
+  // static
+  const modLC = 'loot_cache';
   const none = 'none';
-  const allFICheese =
-    'Cloud Cheesecake,Extra Rich Cloud Cheesecake,Sky Pirate Swiss Cheese';
+  const white = 'white';
+  const red = 'red';
+  // const allFICheese =
+  //   'Cloud Cheesecake,Extra Rich Cloud Cheesecake,Sky Pirate Swiss Cheese';
   const CC = 'Cloud Cheesecake';
   const ERCC = 'Extra Rich Cloud Cheesecake';
   const SPSC = 'Sky Pirate Swiss Cheese';
   const ESB = 'Empowered SUPER';
-  const bestWeaponLaunch = 'best.weapon.physical';
-  const bestWeaponAuto = 'best.weapon.';
-  const bestWeaponPower = 'best.weapon.forgotten';
-  const bestBaseCombo = 'best.base.combo';
+  const gouda = 'Gouda';
+  const bestLaunch = 'best.weapon.physical';
+  const auto = 'best.weapon.';
+  const bestPower = 'best.weapon.forgotten';
+  const bestCombo = 'best.base.combo';
+  const l3c = 'Luck Charm';
   const ULPC = 'Ultimate Lucky Power Charm,Festive Ultimate Lucky Power Charm';
   const UPaC = 'Ultimate Party Charm';
-  const ULC = 'Ultimate Luck Charm,Festive Ultimate Luck Charm';
+  // const ULC = 'Ultimate Luck Charm,Festive Ultimate Luck Charm';
   const laiCharm = 'Super Spooky Charm,Super Snowball Charm';
   const haiCharm =
     'Extreme Spooky Charm,Extreme Snowball Charm,Super Regal Charm,Extreme Regal Charm,Super Snowball Charm';
-  const haiFirst3BlockCharm = haiCharm;
-  const haiBlock4Charm = haiCharm;
+  // const haiF3BCharm = haiCharm;
+  // const haiB4Charm = haiCharm;
   const laiPirateCharm = '2024 Charm,2025 Charm';
   const haiPirateCharm = '2024 Charm,2025 Charm';
   const spPirateCharm = ULPC;
   const wardenCharm = '2024 Charm,2025 Charm';
-  const paragonCharm = 'Ultimate Spooky Charm,Ultimate Snowball Charm';
+  // const paragonCharm = 'Ultimate Spooky Charm,Ultimate Snowball Charm';
+  const paragonCharm = '2024 Charm,2025 Charm';
   const empressCharm = ULPC;
   // trap: [<weapon>, <base>, <bait>, <trinket>, <bottleWindEnabled>, litCandle, doubleEgg]
-  // prettier-ignore
   const defaultSetting = {
     // not empty travelTo and set travelIf to launch if never hunt in launch
     travelTo: '',
@@ -1137,14 +1150,25 @@ function floatingIslands() {
     isLowCC: true,
     isAutoCjs: false,
     isSleepInCJS: false,
+    isBottledWind: false,
+    isAutoHuntAfterTrove: false,
+    // SP pirate可以任選 power type,前 30 progress用來做 map
+    // progress 30開始沒有一級海盜且開始最高 Peggy AR
+    startPirateProgressSp: 30,
+    isAutoBuy: true,
+    shrineMaxIndex: 4,
     isAutoLai: true,
     isAutoHai: false,
     isAutoSp: false,
     includedHaiShrine: [], // null or empty if not filter
+    // myLaiPowerTypes: ['law', 'phscl', 'hdr', 'drcnc', 'frgttn', 'arcn', 'tctcl', 'shdw'],
+    // myLaiPowerTypes: ['law', 'phscl', 'frgttn', 'arcn', 'drcnc', 'tctcl', 'hdr', 'shdw'],
+    myLaiPowerTypes: [],
+    myHaiPowerTypes: [],
+    spWheelPattern: ['tctcl', modLC, modLC, modLC, modLC],
     isCycleLai: false,
     isCycleHai: false,
     isCycleSp: true,
-    isBottledWind: false,
     isBwLaiLastBlock: false,
     isBwHaiLastBlock: false,
     isBwSpLastBlock: false,
@@ -1154,7 +1178,7 @@ function floatingIslands() {
     isBwAfterLaiTrove: false,
     isBwAfterHaiTrove: false,
     isBwAfterSpTrove: false,
-    isBwAutoOffLai: false,
+    isBwAutoOffLai: true,
     isBwAutoOffHai: true,
     isBwAutoOffSP: false,
     isHuntAfterBossLai: false,
@@ -1163,90 +1187,126 @@ function floatingIslands() {
     isHuntAfterLaiTrove: false,
     isHuntAfterHaiTrove: true,
     isHuntAfterSpTrove: true,
-    isAutoHuntAfterTrove: false,
     isPirateHuntingLai: false,
     isPirateHuntingHai: false,
     isPirateHuntingSp: true,
-    // SP pirate可以任選 power type,前 30 progress用來做 map
-    // progress 30開始沒有一級海盜且開始最高 Peggy AR
-    startPirateProgressSp: 30,
-    isAutoBuy: true,
-    // ['law', 'phscl', 'drcnc', 'shdw', 'arcn', 'tctcl', 'hdr', 'frgttn'],
-    // myLaiPowerTypes: ['law', 'phscl', 'hdr', 'drcnc', 'frgttn', 'arcn', 'tctcl', 'shdw'],
-    myLaiPowerTypes: ['phscl', 'frgttn', 'arcn', 'tctcl', 'hdr', 'law', 'drcnc', 'shdw'],
-    myHaiPowerTypes: [],
     mySpPowerTypes: ['law'],
-    shrineMaxIndex: 4,
     wantedModifier: [],
-    spWheelPattern: ['tctcl', 'loot_cache', 'loot_cache', 'loot_cache', 'loot_cache'],
     trap: {
-      launch: ['Gouda', bestWeaponLaunch, bestBaseCombo, 'Luck Charm', false, none, false],
-      lastShotTroveLaiTrap: ['', '', '', '', false, none, false],
-      lastShotTroveHaiTrap: ['', '', '', '', false, none, false],
-      lastShotTroveSpTrap: ['', '', '', '', false, none, false],
-      defaultLai: [allFICheese, bestWeaponAuto, bestBaseCombo, ULPC, false, none, false],
-      lai: {
-        arcane: [CC, bestWeaponAuto, bestBaseCombo, laiCharm, false, none, false],
-        draconic: [CC, bestWeaponAuto, bestBaseCombo, laiCharm, false, none, false],
-        forgotten: [CC, bestWeaponAuto, bestBaseCombo, laiCharm, false, none, false],
-        hydro: [CC, bestWeaponAuto, bestBaseCombo, laiCharm, false, none, false],
-        law: [CC, bestWeaponAuto, bestBaseCombo, laiCharm, false, none, false],
-        physical: [CC, bestWeaponAuto, bestBaseCombo, laiCharm, false, none, false],
-        shadow: [CC, bestWeaponAuto, bestBaseCombo, laiCharm, false, none, false],
-        tactical: [CC, bestWeaponAuto, bestBaseCombo, laiCharm, false, none, false]
+      launch: [gouda, bestLaunch, bestCombo, l3c, false, none, false],
+      // LNY只攻 LAI/HAI, SEH主攻 SP
+      forcedLai: [CC, auto, bestCombo, laiCharm, false, white, false],
+      forcedHai: [CC, auto, bestCombo, haiCharm, false, white, false],
+      forcedSp: [ERCC, auto, bestCombo, UPaC, false, none, true],
+      // LNY在 LAI/HAI刷 Cell(CJS+Luck bonus). SEH LAI/HAI只有 paragon double egg
+      warden: [CC, bestPower, bestCombo, wardenCharm, false, white, false],
+      paragon: [CC, auto, bestCombo, paragonCharm, false, red, true],
+      // LNY不刷 SP,在 LAI/HAI刷 Cell(CJS). SEH主要在 SP刷 lootX4全程 double egg
+      empress: [ESB, bestPower, bestCombo, empressCharm, false, none, true],
+      lastShotTroveLaiTrap: new Array(7).fill(''),
+      lastShotTroveHaiTrap: new Array(7).fill(''),
+      lastShotTroveSpTrap: new Array(7).fill(''),
+      pirate: {
+        lai: [SPSC, bestPower, bestCombo, laiPirateCharm, false, none, false],
+        hai: [SPSC, bestPower, bestCombo, haiPirateCharm, false, none, false],
+        sp: [SPSC, bestPower, bestCombo, spPirateCharm, false, none, true]
       },
-      defaultHai: [allFICheese, bestWeaponAuto, bestBaseCombo, ULPC, false, none, false],
-      hai: {
+      lai: {
         before: {
-          arcane: [CC, bestWeaponAuto, bestBaseCombo, haiFirst3BlockCharm, false, none, false],
-          draconic: [CC, bestWeaponAuto, bestBaseCombo, haiFirst3BlockCharm, false, none, false],
-          forgotten: [CC, bestWeaponAuto, bestBaseCombo, haiFirst3BlockCharm, false, none, false],
-          hydro: [CC, bestWeaponAuto, bestBaseCombo, haiFirst3BlockCharm, false, none, false],
-          law: [CC, bestWeaponAuto, bestBaseCombo, haiFirst3BlockCharm, false, none, false],
-          physical: [CC, bestWeaponAuto, bestBaseCombo, haiFirst3BlockCharm, false, none, false],
-          shadow: [CC, bestWeaponAuto, bestBaseCombo, haiFirst3BlockCharm, false, none, false],
-          tactical: [CC, bestWeaponAuto, bestBaseCombo, haiFirst3BlockCharm, false, none, false]
+          arcane: new Array(7).fill(''),
+          draconic: new Array(7).fill(''),
+          forgotten: new Array(7).fill(''),
+          hydro: new Array(7).fill(''),
+          law: new Array(7).fill(''),
+          physical: new Array(7).fill(''),
+          shadow: new Array(7).fill(''),
+          tactical: new Array(7).fill('')
         },
         after: {
-          arcane: [CC, bestWeaponAuto, bestBaseCombo, haiBlock4Charm, false, none, false],
-          draconic: [CC, bestWeaponAuto, bestBaseCombo, haiBlock4Charm, false, none, false],
-          forgotten: [CC, bestWeaponAuto, bestBaseCombo, haiBlock4Charm, false, none, false],
-          hydro: [CC, bestWeaponAuto, bestBaseCombo, haiBlock4Charm, false, none, false],
-          law: [CC, bestWeaponAuto, bestBaseCombo, haiBlock4Charm, false, none, false],
-          physical: [CC, bestWeaponAuto, bestBaseCombo, haiBlock4Charm, false, none, false],
-          shadow: [CC, bestWeaponAuto, bestBaseCombo, haiBlock4Charm, false, none, false],
-          tactical: [CC, bestWeaponAuto, bestBaseCombo, haiBlock4Charm, false, none, false]
+          arcane: new Array(7).fill(''),
+          draconic: new Array(7).fill(''),
+          forgotten: new Array(7).fill(''),
+          hydro: new Array(7).fill(''),
+          law: new Array(7).fill(''),
+          physical: new Array(7).fill(''),
+          shadow: new Array(7).fill(''),
+          tactical: new Array(7).fill('')
         },
         afterTrove: {
-          arcane: [CC, bestWeaponAuto, bestBaseCombo, haiCharm, false, none, false],
-          draconic: [CC, bestWeaponAuto, bestBaseCombo, haiCharm, false, none, false],
-          forgotten: [CC, bestWeaponAuto, bestBaseCombo, haiCharm, false, none, false],
-          hydro: [CC, bestWeaponAuto, bestBaseCombo, haiCharm, false, none, false],
-          law: [CC, bestWeaponAuto, bestBaseCombo, haiCharm, false, none, false],
-          physical: [CC, bestWeaponAuto, bestBaseCombo, haiCharm, false, none, false],
-          shadow: [CC, bestWeaponAuto, bestBaseCombo, haiCharm, false, none, false],
-          tactical: [CC, bestWeaponAuto, bestBaseCombo, haiCharm, false, none, false]
+          arcane: new Array(7).fill(''),
+          draconic: new Array(7).fill(''),
+          forgotten: new Array(7).fill(''),
+          hydro: new Array(7).fill(''),
+          law: new Array(7).fill(''),
+          physical: new Array(7).fill(''),
+          shadow: new Array(7).fill(''),
+          tactical: new Array(7).fill('')
         }
       },
-      defaultSp: [ERCC, bestWeaponAuto, bestBaseCombo, UPaC, false, none, true],
+      hai: {
+        before: {
+          arcane: new Array(7).fill(''),
+          draconic: new Array(7).fill(''),
+          forgotten: new Array(7).fill(''),
+          hydro: new Array(7).fill(''),
+          law: new Array(7).fill(''),
+          physical: new Array(7).fill(''),
+          shadow: new Array(7).fill(''),
+          tactical: new Array(7).fill('')
+        },
+        after: {
+          arcane: new Array(7).fill(''),
+          draconic: new Array(7).fill(''),
+          forgotten: new Array(7).fill(''),
+          hydro: new Array(7).fill(''),
+          law: new Array(7).fill(''),
+          physical: new Array(7).fill(''),
+          shadow: new Array(7).fill(''),
+          tactical: new Array(7).fill('')
+        },
+        afterTrove: {
+          arcane: new Array(7).fill(''),
+          draconic: new Array(7).fill(''),
+          forgotten: new Array(7).fill(''),
+          hydro: new Array(7).fill(''),
+          law: new Array(7).fill(''),
+          physical: new Array(7).fill(''),
+          shadow: new Array(7).fill(''),
+          tactical: new Array(7).fill('')
+        }
+      },
       sp: {
-        arcane: [ERCC, bestWeaponAuto, bestBaseCombo, UPaC, false, none, true],
-        draconic: [ERCC, bestWeaponAuto, bestBaseCombo, UPaC, false, none, true],
-        forgotten: [ERCC, bestWeaponAuto, bestBaseCombo, UPaC, false, none, true],
-        hydro: [ERCC, bestWeaponAuto, bestBaseCombo, UPaC, false, none, true],
-        law: [ERCC, bestWeaponAuto, bestBaseCombo, ULC, false, none, true],
-        physical: [ERCC, bestWeaponAuto, bestBaseCombo, UPaC, false, none, true],
-        shadow: [ERCC, bestWeaponAuto, bestBaseCombo, UPaC, false, none, true],
-        tactical: [ERCC, bestWeaponAuto, bestBaseCombo, UPaC, false, none, true]
-      },
-      pirate: {
-        lai: [SPSC, bestWeaponPower, bestBaseCombo, laiPirateCharm, false, none, true],
-        hai: [SPSC, bestWeaponPower, bestBaseCombo, haiPirateCharm, false, none, true],
-        sp: [SPSC, bestWeaponPower, bestBaseCombo, spPirateCharm, false, none, true]
-      },
-      warden: [CC, bestWeaponPower, bestBaseCombo, wardenCharm, false, none, false],
-      paragon: [CC, bestWeaponAuto, bestBaseCombo, paragonCharm, false, 'red', true],
-      empress: [ESB, bestWeaponPower, bestBaseCombo, empressCharm, false, 'red', true]
+        before: {
+          arcane: new Array(7).fill(''),
+          draconic: new Array(7).fill(''),
+          forgotten: new Array(7).fill(''),
+          hydro: new Array(7).fill(''),
+          law: new Array(7).fill(''),
+          physical: new Array(7).fill(''),
+          shadow: new Array(7).fill(''),
+          tactical: new Array(7).fill('')
+        },
+        after: {
+          arcane: new Array(7).fill(''),
+          draconic: new Array(7).fill(''),
+          forgotten: new Array(7).fill(''),
+          hydro: new Array(7).fill(''),
+          law: new Array(7).fill(''),
+          physical: new Array(7).fill(''),
+          shadow: new Array(7).fill(''),
+          tactical: new Array(7).fill('')
+        },
+        afterTrove: {
+          arcane: new Array(7).fill(''),
+          draconic: new Array(7).fill(''),
+          forgotten: new Array(7).fill(''),
+          hydro: new Array(7).fill(''),
+          law: new Array(7).fill(''),
+          physical: new Array(7).fill(''),
+          shadow: new Array(7).fill(''),
+          tactical: new Array(7).fill('')
+        }
+      }
     }
   };
   const settings = isProd
@@ -1284,7 +1344,7 @@ function floatingIslands() {
       break;
     }
   }
-  const isLaunch = powerType === 'launch';
+  const isLaunch = powerType === launch;
   const travelTo = settings.travelTo || '';
   const travelIf =
     settings.travelIf && settings.travelIf !== ''
@@ -1297,6 +1357,7 @@ function floatingIslands() {
   const isLai = atts.is_low_tier_island || !atts.enemy;
   const isHai = atts.is_high_tier_island;
   const isSp = atts.is_vault_island;
+  const altitude = isLai ? lai : isHai ? hai : isSp ? sp : launch;
   const isCjsOn = quest.jet_stream_active;
   const bossProgress = parseInt(atts.enemy_progress);
   const islandProgress = parseInt(atts.island_progress);
@@ -1432,7 +1493,8 @@ function floatingIslands() {
   }
   if (travelTo !== '') {
     const isCloseToBoss =
-      islandProgress + bossProgress + speed > 39 || isBossHunt;
+      !hasDefeatedEnemy &&
+      (islandProgress + bossProgress + speed > 39 || isBossHunt);
     if (
       (travelIf === travelIfTypes.noSkyMap && isLaunch) ||
       (travelIf === travelIfTypes.warden && isLai && isCloseToBoss) ||
@@ -1445,56 +1507,51 @@ function floatingIslands() {
   }
   console.plog(`Not autoSkyMap,treat trap/BW.Cyclone quantity: ${cycloneQty}`);
   let trap = null;
-  // LAI
-  if (isLai) trap = settings.trap.lai[powerType];
-  // HAI-after是指 after get all modifier,而非 after boss/get trove.
-  // isHuntAfterHaiTrove == false代表快刷,也不使用 after
-  if (isHai) {
-    if (hasTreasureTrove && settings.isHuntAfterHaiTrove)
-      trap = settings.trap.hai['afterTrove'][powerType];
-    else if (!isFirst3Block)
-      // else if (!isFirst3Block && hasDefeatedEnemy && settings.isHuntAfterHaiTrove)
-      // else if (!isFirst3Block && settings.isHuntAfterHaiTrove)
-      trap = settings.trap.hai['after'][powerType];
-    else trap = settings.trap.hai['before'][powerType];
+  // after是指 after get all modifier,而非 after boss/get trove.
+  if (isLaunch) trap = settings[trapKey][powerType];
+  else if (isFirst3Block)
+    trap = settings[trapKey][altitude]['before'][powerType];
+  else if (hasTreasureTrove)
+    trap = settings[trapKey][altitude]['afterTrove'][powerType];
+  else trap = settings[trapKey][altitude]['after'][powerType];
+  if (!trap) {
+    MhUtils.popupMessage('No trap found!!');
+    return;
   }
+  let forcedTrap = null;
+  // LAI
+  if (isLai) forcedTrap = settings[trapKey]['forcedLai'];
+  // HAI
+  else if (isHai) forcedTrap = settings[trapKey]['forcedHai'];
   // SP
-  if (isSp) trap = settings.trap.sp[powerType];
+  else if (isSp) forcedTrap = settings[trapKey]['forcedSp'];
+  if (forcedTrap)
+    forcedTrap.forEach((v, i) => {
+      if (v !== '') trap[i] = v;
+    });
   // pirates
   if (isPirate)
     if (isLai && settings.isPirateHuntingLai)
-      trap = settings.trap.pirate['lai'];
+      trap = settings[trapKey][pirate][lai];
     else if (isHai && settings.isPirateHuntingHai)
-      trap = settings.trap.pirate['hai'];
+      trap = settings[trapKey][pirate][hai];
     else if (
       isSp &&
       settings.isPirateHuntingSp &&
       islandProgress >= settings.startPirateProgressSp
     )
-      trap = settings.trap.pirate['sp'];
-  /* if (
-    isPirate &&
-    ((isLai && settings.isPirateHuntingLai) ||
-      (isHai && settings.isPirateHuntingHai) ||
-      (isSp &&
-        settings.isPirateHuntingSp &&
-        islandProgress >= settings.startPirateProgressSp))
-  )
-    trap = settings.trap.pirate; */
+      trap = settings[trapKey][pirate][sp];
   // warden
   const isWarden = isLai && isBossHunt;
-  if (isWarden) trap = settings.trap.warden;
+  if (isWarden) trap = settings[trapKey]['warden'];
   // paragon
   const isParagon = isHai && isBossHunt;
-  if (isParagon) trap = settings.trap.paragon;
+  if (isParagon) trap = settings[trapKey]['paragon'];
   // empress
   const isEmpress = isSp && isBossHunt;
-  if (isEmpress) trap = settings.trap.empress;
-  // trap by setting
-  const settingTrap = settings.trap[powerType];
-  if (settingTrap) trap = settingTrap;
+  if (isEmpress) trap = settings[trapKey]['empress'];
   // weapon by power type
-  if (trap[1] == bestWeaponAuto) trap[1] += powerType;
+  if (trap[1] === auto) trap[1] += powerType;
   // trap for last shot to trove.排除 pirate因為 CR提升有限
   if (!isPirate && isLastShotTrove) {
     const setLastShotTroveTrap = (lastShotTroveTrap, trap) => {
@@ -1504,11 +1561,11 @@ function floatingIslands() {
       if (lastShotTroveTrap[3] !== '') trap[3] = lastShotTroveTrap[3];
     };
     const lastShotTroveTrap = isLai
-      ? settings.trap.lastShotTroveLaiTrap
+      ? settings[trapKey]['lastShotTroveLaiTrap']
       : isHai
-        ? settings.trap.lastShotTroveHaiTrap
+        ? settings[trapKey]['lastShotTroveHaiTrap']
         : isSp
-          ? settings.trap.lastShotTroveSpTrap
+          ? settings[trapKey]['lastShotTroveSpTrap']
           : null;
     if (lastShotTroveTrap) setLastShotTroveTrap(lastShotTroveTrap, trap);
   }
@@ -1525,7 +1582,7 @@ function floatingIslands() {
       (isSp && settings.isBwSpLastBlock)) &&
     !isLaunch &&
     !hasTreasureTrove &&
-    (!isBossHunt || (isBottledWindBoss && atts.enemy_progress > 2))
+    (!isBossHunt || (isBottledWindBoss && atts.enemy_progress > speed))
   )
     toggleBottledWind(true);
   else toggleBottledWind(false);
