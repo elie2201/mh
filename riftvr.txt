@@ -2066,7 +2066,7 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = MhUtils.getEnvironmentType();
   if (environmentType !== targetEnvironmentType) return;
-  logging('valourRift_0.6.50.31.26');
+  logging('valourRift_0.6.50.31.27');
   // move loot stat to better position and make it draggable
   try {
     $('.valourRiftHUD-towerLootContainer')
@@ -2994,7 +2994,7 @@ function valourRift() {
             ? isAtEclipse ? 'ppe' : 'pp'
             : isAtEclipse ? 'uue' : 'uu'
         : isAtEclipse ? 'shade' : state // shade:tower
-      : state; // farming
+      : null;
   const floorSegments = [
     160, 152, 144, 136, 128, 120, 112, 104, 96, 88, 80, 72, 64, 56, 48, 40, 32,
     24, 16, 8
@@ -3008,7 +3008,7 @@ function valourRift() {
         break;
       }
     }
-  const trap = traps[trapKey][floorKey];
+  const trap = trapKey ? traps[trapKey][floorKey] : new Array(7).fill('');
   // prettier-ignore
   const templateKey =
     state === vriftStates.tower
@@ -3019,8 +3019,8 @@ function valourRift() {
             ? isAtEclipse ? 'ppEclipse' : 'pp25up'
             : isAtEclipse ? 'uuEclipse' : 'uu25up'
         : isAtEclipse ? 'shadeEclipse' : 'tower25up'
-      : null;
-  const templateTrap = templateKey ? traps[templateKey] : null;
+      : state; // farming
+  const templateTrap = traps[templateKey];
   if (templateTrap)
     if (floorKey > 24)
       // floor 25 up,如果 template setting非空,強制套用 template
