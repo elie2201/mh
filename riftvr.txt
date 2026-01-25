@@ -1953,7 +1953,7 @@ QuestRiftValour = {
     }
   }
 };
-
+const $ = {};
 const MOUSEHUNT_BASE_URL = 'https://www.mousehuntgame.com/';
 const hg = {};
 const user = {};
@@ -1962,72 +1962,83 @@ user.quests = {};
 user.quests.QuestRiftValour = QuestRiftValour;
 // const activejsDialog = {};
 // function $() {}
-const MyUtils = {};
-const MhUtils = {};
-function getEnvironmentType() {
-  const rtn = trimToEmpty(user.environment_type);
-  // console.plog(`Current location environment_type: ${rtn}`);
-  return rtn;
-}
-function trimToEmpty(str) {
-  return trimToDefault(str);
-}
-function trimToDefault(str, deflt) {
-  return str === 0 ? '0' : ((str || (deflt ? deflt : '')) + '').trim();
-}
+const MyUtils = {
+  trimToEmpty(str) {
+    return this.trimToDefault(str);
+  },
+  trimToDefault(str, deflt) {
+    return str === 0 ? '0' : ((str || (deflt ? deflt : '')) + '').trim();
+  },
+  parseQuantity(qty) {
+    const strQty = (qty || 0) + '';
+    const rtn = parseInt(strQty.replaceAll(',', ''));
+    return Number.isNaN(rtn) ? 0 : rtn;
+  },
+  getStorageToObject(keyName, objDefault) {
+    let obj = getStorage(keyName);
+    let bCheckNewProp = true;
+    if (isNullOrUndefined(obj)) {
+      obj = JSON.stringify(objDefault);
+      setStorage(keyName, obj);
+      bCheckNewProp = false;
+    }
+    obj = JSON.parse(obj);
+    if (bCheckNewProp) {
+      if (assignMissingDefault(obj, objDefault)) {
+        setStorage(keyName, JSON.stringify(obj));
+      }
+    }
+    return obj;
+    function getStorage(name) {
+      // check if the web browser support HTML5 storage
+      if ('localStorage' in window && !isNullOrUndefined(window.localStorage)) {
+        return window.localStorage.getItem(name);
+      }
+    }
+    function setStorage(name, value) {
+      // check if the web browser support HTML5 storage
+      if ('localStorage' in window && !isNullOrUndefined(window.localStorage)) {
+        window.localStorage.setItem(name, value);
+      }
+    }
+    function isNullOrUndefined(obj) {
+      return (
+        obj === null ||
+        obj === undefined ||
+        obj === 'null' ||
+        obj === 'undefined'
+      );
+    }
+    function assignMissingDefault(target, source) {
+      let isResave = false;
+      for (const key in source) {
+        if (
+          Object.prototype.hasOwnProperty.call(source, key) &&
+          !Object.prototype.hasOwnProperty.call(target, key)
+        ) {
+          const element = source[key];
+          target[key] = element;
+          isResave = true;
+        }
+      }
+      return isResave;
+    }
+  }
+};
+const MhUtils = {
+  getEnvironmentType() {
+    const rtn = MyUtils.trimToEmpty(user.environment_type);
+    // console.plog(`Current location environment_type: ${rtn}`);
+    return rtn;
+  },
+  storeError() {}
+};
 function logging(...any) {
   const debug = true;
   if (debug) {
     console.groupCollapsed(new Date(), ...any);
     console.log(Error().stack);
     console.groupEnd();
-  }
-}
-function getStorageToObject(keyName, objDefault) {
-  let obj = getStorage(keyName);
-  let bCheckNewProp = true;
-  if (isNullOrUndefined(obj)) {
-    obj = JSON.stringify(objDefault);
-    setStorage(keyName, obj);
-    bCheckNewProp = false;
-  }
-  obj = JSON.parse(obj);
-  if (bCheckNewProp) {
-    if (assignMissingDefault(obj, objDefault)) {
-      setStorage(keyName, JSON.stringify(obj));
-    }
-  }
-  return obj;
-  function getStorage(name) {
-    // check if the web browser support HTML5 storage
-    if ('localStorage' in window && !isNullOrUndefined(window.localStorage)) {
-      return window.localStorage.getItem(name);
-    }
-  }
-  function setStorage(name, value) {
-    // check if the web browser support HTML5 storage
-    if ('localStorage' in window && !isNullOrUndefined(window.localStorage)) {
-      window.localStorage.setItem(name, value);
-    }
-  }
-  function isNullOrUndefined(obj) {
-    return (
-      obj === null || obj === undefined || obj === 'null' || obj === 'undefined'
-    );
-  }
-  function assignMissingDefault(target, source) {
-    let isResave = false;
-    for (const key in source) {
-      if (
-        Object.prototype.hasOwnProperty.call(source, key) &&
-        !Object.prototype.hasOwnProperty.call(target, key)
-      ) {
-        const element = source[key];
-        target[key] = element;
-        isResave = true;
-      }
-    }
-    return isResave;
   }
 }
 function getRandomInteger(min, max) {
@@ -2037,11 +2048,6 @@ function armAllTraps(bait, weapon, base, charm) {
   console.log(bait, weapon, base, charm);
 }
 // function travel(environmentType, milliseconds, callback) {}
-function parseQuantity(qty) {
-  const strQty = (qty || 0) + '';
-  const rtn = parseInt(strQty.replaceAll(',', ''));
-  return Number.isNaN(rtn) ? 0 : rtn;
-}
 function completeTransaction(
   isPurchase,
   itemType,
@@ -2051,25 +2057,35 @@ function completeTransaction(
 ) {}
 function doubleEgg(isToEnable) {}
 function litCandle(actionType) {}
-function storeError() {}
 function getBaitItemId() {}
 
 // #valourRift
-if (getEnvironmentType() === 'rift_valour') valourRift();
+if (MhUtils.getEnvironmentType() === 'rift_valour') valourRift();
 function valourRift() {
   const isProd = false;
   const targetEnvironmentType = 'rift_valour';
-  const environmentType = getEnvironmentType();
+  const environmentType = MhUtils.getEnvironmentType();
   if (environmentType !== targetEnvironmentType) return;
-  logging('valourRift_0.6.49.31.26');
+  logging('valourRift_0.6.50.31.26');
+  // move loot stat to better position and make it draggable
+  try {
+    $('.valourRiftHUD-towerLootContainer')
+      .css({ position: 'absolute', top: 80 })
+      .draggable();
+  } catch (error) {
+    console.log(error);
+  }
   // my own hard-coded constants
-  const gString = 'Gauntlet String';
-  const bgString = 'Brie String,' + gString;
-  const bestWeapon = 'best.weapon.rift';
-  const bestBase = 'best.base.rift';
-  const signatureSeries = 'Signature Series Denture';
+  const gStr = 'Gauntlet String';
+  const bgStr = 'Brie String,' + gStr;
+  const bwr = 'best.weapon.rift';
+  const bc = 'Boiling Cauldron';
+  const bbr = 'best.base.rift';
+  const ssdb = 'Signature Series Denture';
   // const pb = 'Prestige Base';
   // const pbaerb = pb + ',Adorned Empyrean';
+  const rhsb = 'Rift Hailstone Singularity';
+  const sgotd = 'Seasonal Gift';
   const rtrv = 'Rift Tarnished Charm,Rift Vacuum Charm';
   const rupr254 = 'Rift Ultimate Power Charm,Rift 2025 Charm,Rift 2024 Charm';
   const r254 = 'Rift 2025 Charm,Rift 2024 Charm';
@@ -2077,6 +2093,7 @@ function valourRift() {
   const uc = 'Ultimate Charm';
   const none = 'none';
   const white = 'white';
+  const red = 'red';
   const vriftStates = { farming: 'farming', tower: 'tower' };
   const upgradeTypes = [
     'upgrade_long_stride',
@@ -2121,263 +2138,393 @@ function valourRift() {
     400, 400, 650, 900, 900
   ];
   // trap: [<bait>, <weapon>, <base>, <trinket>, <championFireEnabled>, litCandle, doubleEgg]
-  // prettier-ignore
   const defaultSetting = {
     isAutoEnter: true,
     minGscToEnter: 0,
     enterAfterTime: '',
     enterBeforeTime: '',
+    logTimeFrom: '',
+    logTimeTill: '',
+    uuRunExtraFrags: 0,
+    uuRunExtraSecret: 1000,
     isPrestigePush: false,
+    isUUU: false,
     ppRunNeedCf: 800,
     ppRunNeedBait: 900,
     isAutoAugment: true,
-    uuRunExtraFrags: 0,
-    uuRunExtraSecret: 1000,
-    isSigilHunter: null,
-    isSecretResearch: null,
-    isSuperSiphon: null,
-    isUltimateUmbra: null,
-    isStringStepping: null,
-    isAutoRetreat: true,
+    isSigilHunter: '',
+    isSecretResearch: '',
+    isSuperSiphon: '',
+    isUltimateUmbra: '',
+    isStringStepping: '',
+    isAutoRetreat: false,
     minRetreatFloor: 3,
     forceRetreatFloor: 0,
+    dangerousHunts: 11,
     eclipseNeedHunts: 8,
     eclipseUUNeedHunts: 10,
     isAutoUpgrade: true,
     isAutoBuyItem: true,
     minCheeseQty: 20,
     buyCheeseQty: 55,
-    dangerousHunts: 11,
     upgradePlans: [
-      [1, 40, 5], [2, 40, 5], [2, 50, 5], [3, 50, 5], [3, 60, 5],
-      [3, 60, 10], [4, 60, 10], [5, 60, 10], [5, 70, 10], [5, 70, 15],
-      [5, 80, 15], [6, 80, 15], [6, 80, 20], [6, 90, 20], [7, 90, 20],
-      [8, 90, 20], [8, 90, 25], [9, 90, 25], [10, 90, 25], [10, 100, 25]
+      [1, 40, 5],
+      [2, 40, 5],
+      [2, 50, 5],
+      [3, 50, 5],
+      [3, 60, 5],
+      [3, 60, 10],
+      [4, 60, 10],
+      [5, 60, 10],
+      [5, 70, 10],
+      [5, 70, 15],
+      [6, 70, 15],
+      [6, 80, 15],
+      [6, 80, 20],
+      [6, 90, 20],
+      [7, 90, 20],
+      [8, 90, 20],
+      [8, 90, 25],
+      [9, 90, 25],
+      [10, 90, 25],
+      [10, 100, 25]
     ],
     trap: {
-      farming: {
-        0: [bgString, bestWeapon, bestBase, rtrv, false, none, false]
-      },
+      farming: [bgStr, bwr, bbr, rtrv, false, none, false],
+      tower25up: [gStr, bwr, bbr, rtrv, false, none, false],
+      shadeEclipse: [gStr, bwr, bbr, r254, '', none, false],
+      uu25up: [gStr, bwr, rhsb, rupr254, false, none, false],
+      uuEclipse: [gStr, bwr, ssdb, rupr254, '', none, false],
+      pp25up: [gStr, bwr, rhsb, rulp, true, white, false],
+      ppEclipse: [gStr, bc, sgotd, uc, true, red, false],
+      uuu25up: [gStr, bc, sgotd, uc, true, none, false],
+      uuuEclipse: [gStr, bc, sgotd, uc, true, none, false],
       tower: {
-        0: [gString, bestWeapon, bestBase, rtrv, false, none, false],
-        8: [gString, bestWeapon, bestBase, rtrv, false, none, false],
-        16: [gString, bestWeapon, bestBase, rtrv, false, none, false],
-        24: [gString, bestWeapon, bestBase, rtrv, false, none, false],
-        32: [gString, bestWeapon, bestBase, rtrv, false, none, false],
-        40: [gString, bestWeapon, bestBase, rtrv, false, none, false],
-        48: [gString, bestWeapon, bestBase, rtrv, false, none, false],
-        56: [gString, bestWeapon, bestBase, rtrv, false, none, false],
-        64: [gString, bestWeapon, bestBase, rtrv, false, none, false],
-        72: [gString, bestWeapon, bestBase, rtrv, false, none, false],
-        80: [gString, bestWeapon, bestBase, rtrv, false, none, false],
-        88: [gString, bestWeapon, bestBase, rtrv, false, none, false],
-        96: [gString, bestWeapon, bestBase, rtrv, false, none, false],
-        104: [gString, bestWeapon, bestBase, rtrv, false, none, false],
-        112: [gString, bestWeapon, bestBase, rtrv, false, none, false],
-        120: [gString, bestWeapon, bestBase, rtrv, false, none, false],
-        128: [gString, bestWeapon, bestBase, rtrv, false, none, false],
-        136: [gString, bestWeapon, bestBase, rtrv, false, none, false],
-        144: [gString, bestWeapon, bestBase, rtrv, false, none, false],
-        152: [gString, bestWeapon, bestBase, rtrv, false, none, false],
-        160: [gString, bestWeapon, bestBase, rtrv, false, none, false],
-        eclipse: [gString, bestWeapon, bestBase, r254, true, none, false]
+        0: new Array(7).fill(''),
+        8: new Array(7).fill(''),
+        16: new Array(7).fill(''),
+        24: new Array(7).fill(''),
+        32: new Array(7).fill(''),
+        40: new Array(7).fill(''),
+        48: new Array(7).fill(''),
+        56: new Array(7).fill(''),
+        64: new Array(7).fill(''),
+        72: new Array(7).fill(''),
+        80: new Array(7).fill(''),
+        88: new Array(7).fill(''),
+        96: new Array(7).fill(''),
+        104: new Array(7).fill(''),
+        112: new Array(7).fill(''),
+        120: new Array(7).fill(''),
+        128: new Array(7).fill(''),
+        136: new Array(7).fill(''),
+        144: new Array(7).fill(''),
+        152: new Array(7).fill(''),
+        160: new Array(7).fill('')
+      },
+      shade: {
+        0: new Array(7).fill(''),
+        8: new Array(7).fill(''),
+        16: new Array(7).fill(''),
+        24: new Array(7).fill(''),
+        32: new Array(7).fill(''),
+        40: new Array(7).fill(''),
+        48: new Array(7).fill(''),
+        56: new Array(7).fill(''),
+        64: new Array(7).fill(''),
+        72: new Array(7).fill(''),
+        80: new Array(7).fill(''),
+        88: new Array(7).fill(''),
+        96: new Array(7).fill(''),
+        104: new Array(7).fill(''),
+        112: new Array(7).fill(''),
+        120: new Array(7).fill(''),
+        128: new Array(7).fill(''),
+        136: new Array(7).fill(''),
+        144: new Array(7).fill(''),
+        152: new Array(7).fill(''),
+        160: new Array(7).fill('')
       },
       uu: {
-        0: [gString, bestWeapon, bestBase, rupr254, false, none, false],
-        8: [gString, bestWeapon, bestBase, rupr254, false, none, false],
-        16: [gString, bestWeapon, bestBase, rupr254, false, none, false],
-        24: [gString, bestWeapon, bestBase, rupr254, false, none, false],
-        32: [gString, bestWeapon, bestBase, rupr254, false, none, false],
-        40: [gString, bestWeapon, bestBase, rupr254, false, none, false],
-        48: [gString, bestWeapon, bestBase, rupr254, false, none, false],
-        56: [gString, bestWeapon, bestBase, rupr254, false, none, false],
-        64: [gString, bestWeapon, bestBase, rupr254, false, none, false],
-        72: [gString, bestWeapon, bestBase, rupr254, false, none, false],
-        80: [gString, bestWeapon, bestBase, rupr254, false, none, false],
-        88: [gString, bestWeapon, bestBase, rupr254, false, none, false],
-        96: [gString, bestWeapon, bestBase, rupr254, false, none, false],
-        104: [gString, bestWeapon, bestBase, rupr254, false, none, false],
-        112: [gString, bestWeapon, bestBase, rupr254, false, none, false],
-        120: [gString, bestWeapon, bestBase, rupr254, false, none, false],
-        128: [gString, bestWeapon, bestBase, rupr254, false, none, false],
-        136: [gString, bestWeapon, bestBase, rupr254, false, none, false],
-        144: [gString, bestWeapon, bestBase, rupr254, false, none, false],
-        152: [gString, bestWeapon, bestBase, rupr254, false, none, false],
-        160: [gString, bestWeapon, bestBase, rupr254, false, none, false],
-        eclipse: [gString, bestWeapon, bestBase, rupr254, true, none, false]
+        0: new Array(7).fill(''),
+        8: new Array(7).fill(''),
+        16: new Array(7).fill(''),
+        24: new Array(7).fill(''),
+        32: new Array(7).fill(''),
+        40: new Array(7).fill(''),
+        48: new Array(7).fill(''),
+        56: new Array(7).fill(''),
+        64: new Array(7).fill(''),
+        72: new Array(7).fill(''),
+        80: new Array(7).fill(''),
+        88: new Array(7).fill(''),
+        96: new Array(7).fill(''),
+        104: new Array(7).fill(''),
+        112: new Array(7).fill(''),
+        120: new Array(7).fill(''),
+        128: new Array(7).fill(''),
+        136: new Array(7).fill(''),
+        144: new Array(7).fill(''),
+        152: new Array(7).fill(''),
+        160: new Array(7).fill('')
+      },
+      uue: {
+        0: new Array(7).fill(''),
+        8: new Array(7).fill(''),
+        16: new Array(7).fill(''),
+        24: new Array(7).fill(''),
+        32: new Array(7).fill(''),
+        40: new Array(7).fill(''),
+        48: new Array(7).fill(''),
+        56: new Array(7).fill(''),
+        64: new Array(7).fill(''),
+        72: new Array(7).fill(''),
+        80: new Array(7).fill(''),
+        88: new Array(7).fill(''),
+        96: new Array(7).fill(''),
+        104: new Array(7).fill(''),
+        112: new Array(7).fill(''),
+        120: new Array(7).fill(''),
+        128: new Array(7).fill(''),
+        136: new Array(7).fill(''),
+        144: new Array(7).fill(''),
+        152: new Array(7).fill(''),
+        160: new Array(7).fill('')
       },
       pp: {
-        0: [gString, bestWeapon, signatureSeries, rulp, true, white, false],
-        8: [gString, bestWeapon, signatureSeries, rulp, true, white, false],
-        16: [gString, bestWeapon, signatureSeries, rulp, true, white, false],
-        24: [gString, bestWeapon, signatureSeries, rulp, true, white, false],
-        32: [gString, bestWeapon, signatureSeries, rulp, true, white, false],
-        40: [gString, bestWeapon, signatureSeries, rulp, true, white, false],
-        48: [gString, bestWeapon, signatureSeries, rulp, true, white, false],
-        56: [gString, bestWeapon, signatureSeries, rulp, true, white, false],
-        64: [gString, bestWeapon, signatureSeries, rulp, true, white, false],
-        72: [gString, bestWeapon, signatureSeries, rulp, true, white, false],
-        80: [gString, bestWeapon, signatureSeries, rulp, true, white, false],
-        88: [gString, bestWeapon, signatureSeries, rulp, true, white, false],
-        96: [gString, bestWeapon, signatureSeries, rulp, true, white, false],
-        104: [gString, bestWeapon, signatureSeries, rulp, true, white, false],
-        112: [gString, bestWeapon, signatureSeries, rulp, true, white, false],
-        120: [gString, bestWeapon, signatureSeries, rulp, true, white, false],
-        128: [gString, bestWeapon, signatureSeries, rulp, true, white, false],
-        136: [gString, bestWeapon, signatureSeries, rulp, true, white, false],
-        144: [gString, bestWeapon, signatureSeries, rulp, true, white, false],
-        152: [gString, bestWeapon, signatureSeries, rulp, true, white, false],
-        160: [gString, bestWeapon, signatureSeries, rulp, true, white, false],
-        eclipse: [gString, bestWeapon, 'Seasonal Gift', uc, true, white, false]
+        0: new Array(7).fill(''),
+        8: new Array(7).fill(''),
+        16: new Array(7).fill(''),
+        24: new Array(7).fill(''),
+        32: new Array(7).fill(''),
+        40: new Array(7).fill(''),
+        48: new Array(7).fill(''),
+        56: new Array(7).fill(''),
+        64: new Array(7).fill(''),
+        72: new Array(7).fill(''),
+        80: new Array(7).fill(''),
+        88: new Array(7).fill(''),
+        96: new Array(7).fill(''),
+        104: new Array(7).fill(''),
+        112: new Array(7).fill(''),
+        120: new Array(7).fill(''),
+        128: new Array(7).fill(''),
+        136: new Array(7).fill(''),
+        144: new Array(7).fill(''),
+        152: new Array(7).fill(''),
+        160: new Array(7).fill('')
+      },
+      ppe: {
+        0: new Array(7).fill(''),
+        8: new Array(7).fill(''),
+        16: new Array(7).fill(''),
+        24: new Array(7).fill(''),
+        32: new Array(7).fill(''),
+        40: new Array(7).fill(''),
+        48: new Array(7).fill(''),
+        56: new Array(7).fill(''),
+        64: new Array(7).fill(''),
+        72: new Array(7).fill(''),
+        80: new Array(7).fill(''),
+        88: new Array(7).fill(''),
+        96: new Array(7).fill(''),
+        104: new Array(7).fill(''),
+        112: new Array(7).fill(''),
+        120: new Array(7).fill(''),
+        128: new Array(7).fill(''),
+        136: new Array(7).fill(''),
+        144: new Array(7).fill(''),
+        152: new Array(7).fill(''),
+        160: new Array(7).fill('')
+      },
+      uuu: {
+        0: new Array(7).fill(''),
+        8: new Array(7).fill(''),
+        16: new Array(7).fill(''),
+        24: new Array(7).fill(''),
+        32: new Array(7).fill(''),
+        40: new Array(7).fill(''),
+        48: new Array(7).fill(''),
+        56: new Array(7).fill(''),
+        64: new Array(7).fill(''),
+        72: new Array(7).fill(''),
+        80: new Array(7).fill(''),
+        88: new Array(7).fill(''),
+        96: new Array(7).fill(''),
+        104: new Array(7).fill(''),
+        112: new Array(7).fill(''),
+        120: new Array(7).fill(''),
+        128: new Array(7).fill(''),
+        136: new Array(7).fill(''),
+        144: new Array(7).fill(''),
+        152: new Array(7).fill(''),
+        160: new Array(7).fill('')
+      },
+      uuue: {
+        0: new Array(7).fill(''),
+        8: new Array(7).fill(''),
+        16: new Array(7).fill(''),
+        24: new Array(7).fill(''),
+        32: new Array(7).fill(''),
+        40: new Array(7).fill(''),
+        48: new Array(7).fill(''),
+        56: new Array(7).fill(''),
+        64: new Array(7).fill(''),
+        72: new Array(7).fill(''),
+        80: new Array(7).fill(''),
+        88: new Array(7).fill(''),
+        96: new Array(7).fill(''),
+        104: new Array(7).fill(''),
+        112: new Array(7).fill(''),
+        120: new Array(7).fill(''),
+        128: new Array(7).fill(''),
+        136: new Array(7).fill(''),
+        144: new Array(7).fill(''),
+        152: new Array(7).fill(''),
+        160: new Array(7).fill('')
       },
       rescueTrap: {
-        0: ['', '', '', ''],
-        8: ['', '', '', ''],
-        16: ['', '', '', ''],
-        24: ['', '', '', ''],
-        32: ['', '', '', ''],
-        40: ['', '', '', ''],
-        48: ['', '', '', ''],
-        56: ['', '', '', ''],
-        64: ['', '', '', ''],
-        72: ['', '', '', ''],
-        80: ['', '', '', ''],
-        88: ['', '', '', ''],
-        96: ['', '', '', ''],
-        104: ['', '', '', ''],
-        112: ['', '', '', ''],
-        120: ['', '', '', ''],
-        128: ['', '', '', ''],
-        136: ['', '', '', ''],
-        144: ['', '', '', ''],
-        152: ['', '', '', ''],
-        160: ['', '', '', ''],
-        eclipse: ['', '', '', '']
+        0: new Array(7).fill(''),
+        8: new Array(7).fill(''),
+        16: new Array(7).fill(''),
+        24: new Array(7).fill(''),
+        32: new Array(7).fill(''),
+        40: new Array(7).fill(''),
+        48: new Array(7).fill(''),
+        56: new Array(7).fill(''),
+        64: new Array(7).fill(''),
+        72: new Array(7).fill(''),
+        80: new Array(7).fill(''),
+        88: new Array(7).fill(''),
+        96: new Array(7).fill(''),
+        104: new Array(7).fill(''),
+        112: new Array(7).fill(''),
+        120: new Array(7).fill(''),
+        128: new Array(7).fill(''),
+        136: new Array(7).fill(''),
+        144: new Array(7).fill(''),
+        152: new Array(7).fill(''),
+        160: new Array(7).fill('')
       },
       rescueTrapUU: {
-        0: ['', '', '', ''],
-        8: ['', '', '', ''],
-        16: ['', '', '', ''],
-        24: ['', '', '', ''],
-        32: ['', '', '', ''],
-        40: ['', '', '', ''],
-        48: ['', '', '', ''],
-        56: ['', '', '', ''],
-        64: ['', '', '', ''],
-        72: ['', '', '', ''],
-        80: ['', '', '', ''],
-        88: ['', '', '', ''],
-        96: ['', '', '', ''],
-        104: ['', '', '', ''],
-        112: ['', '', '', ''],
-        120: ['', '', '', ''],
-        128: ['', '', '', ''],
-        136: ['', '', '', ''],
-        144: ['', '', '', ''],
-        152: ['', '', '', ''],
-        160: ['', '', '', ''],
-        eclipse: ['', '', '', '']
+        0: new Array(7).fill(''),
+        8: new Array(7).fill(''),
+        16: new Array(7).fill(''),
+        24: new Array(7).fill(''),
+        32: new Array(7).fill(''),
+        40: new Array(7).fill(''),
+        48: new Array(7).fill(''),
+        56: new Array(7).fill(''),
+        64: new Array(7).fill(''),
+        72: new Array(7).fill(''),
+        80: new Array(7).fill(''),
+        88: new Array(7).fill(''),
+        96: new Array(7).fill(''),
+        104: new Array(7).fill(''),
+        112: new Array(7).fill(''),
+        120: new Array(7).fill(''),
+        128: new Array(7).fill(''),
+        136: new Array(7).fill(''),
+        144: new Array(7).fill(''),
+        152: new Array(7).fill(''),
+        160: new Array(7).fill('')
       },
       catchToNextFloorTrap: {
-        0: ['', '', '', ''],
-        8: ['', '', '', ''],
-        16: ['', '', '', ''],
-        24: ['', '', '', ''],
-        32: ['', '', '', ''],
-        40: ['', '', '', ''],
-        48: ['', '', '', ''],
-        56: ['', '', '', ''],
-        64: ['', '', '', ''],
-        72: ['', '', '', ''],
-        80: ['', '', '', ''],
-        88: ['', '', '', ''],
-        96: ['', '', '', ''],
-        104: ['', '', '', ''],
-        112: ['', '', '', ''],
-        120: ['', '', '', ''],
-        128: ['', '', '', ''],
-        136: ['', '', '', ''],
-        144: ['', '', '', ''],
-        152: ['', '', '', ''],
-        160: ['', '', '', ''],
-        eclipse: ['', '', '', '']
+        0: new Array(7).fill(''),
+        8: new Array(7).fill(''),
+        16: new Array(7).fill(''),
+        24: new Array(7).fill(''),
+        32: new Array(7).fill(''),
+        40: new Array(7).fill(''),
+        48: new Array(7).fill(''),
+        56: new Array(7).fill(''),
+        64: new Array(7).fill(''),
+        72: new Array(7).fill(''),
+        80: new Array(7).fill(''),
+        88: new Array(7).fill(''),
+        96: new Array(7).fill(''),
+        104: new Array(7).fill(''),
+        112: new Array(7).fill(''),
+        120: new Array(7).fill(''),
+        128: new Array(7).fill(''),
+        136: new Array(7).fill(''),
+        144: new Array(7).fill(''),
+        152: new Array(7).fill(''),
+        160: new Array(7).fill('')
       },
       catchToNextFloorTrapUU: {
-        0: ['', '', '', ''],
-        8: ['', '', '', ''],
-        16: ['', '', '', ''],
-        24: ['', '', '', ''],
-        32: ['', '', '', ''],
-        40: ['', '', '', ''],
-        48: ['', '', '', ''],
-        56: ['', '', '', ''],
-        64: ['', '', '', ''],
-        72: ['', '', '', ''],
-        80: ['', '', '', ''],
-        88: ['', '', '', ''],
-        96: ['', '', '', ''],
-        104: ['', '', '', ''],
-        112: ['', '', '', ''],
-        120: ['', '', '', ''],
-        128: ['', '', '', ''],
-        136: ['', '', '', ''],
-        144: ['', '', '', ''],
-        152: ['', '', '', ''],
-        160: ['', '', '', ''],
-        eclipse: ['', '', '', '']
+        0: new Array(7).fill(''),
+        8: new Array(7).fill(''),
+        16: new Array(7).fill(''),
+        24: new Array(7).fill(''),
+        32: new Array(7).fill(''),
+        40: new Array(7).fill(''),
+        48: new Array(7).fill(''),
+        56: new Array(7).fill(''),
+        64: new Array(7).fill(''),
+        72: new Array(7).fill(''),
+        80: new Array(7).fill(''),
+        88: new Array(7).fill(''),
+        96: new Array(7).fill(''),
+        104: new Array(7).fill(''),
+        112: new Array(7).fill(''),
+        120: new Array(7).fill(''),
+        128: new Array(7).fill(''),
+        136: new Array(7).fill(''),
+        144: new Array(7).fill(''),
+        152: new Array(7).fill(''),
+        160: new Array(7).fill('')
       },
       catchToEclipseTrap: {
-        0: ['', '', '', ''],
-        8: ['', '', '', ''],
-        16: ['', '', '', ''],
-        24: ['', '', '', ''],
-        32: ['', '', '', ''],
-        40: ['', '', '', ''],
-        48: ['', '', '', ''],
-        56: ['', '', '', ''],
-        64: ['', '', '', ''],
-        72: ['', '', '', ''],
-        80: ['', '', '', ''],
-        88: ['', '', '', ''],
-        96: ['', '', '', ''],
-        104: ['', '', '', ''],
-        112: ['', '', '', ''],
-        120: ['', '', '', ''],
-        128: ['', '', '', ''],
-        136: ['', '', '', ''],
-        144: ['', '', '', ''],
-        152: ['', '', '', ''],
-        160: ['', '', '', ''],
-        eclipse: ['', '', '', '']
+        0: new Array(7).fill(''),
+        8: new Array(7).fill(''),
+        16: new Array(7).fill(''),
+        24: new Array(7).fill(''),
+        32: new Array(7).fill(''),
+        40: new Array(7).fill(''),
+        48: new Array(7).fill(''),
+        56: new Array(7).fill(''),
+        64: new Array(7).fill(''),
+        72: new Array(7).fill(''),
+        80: new Array(7).fill(''),
+        88: new Array(7).fill(''),
+        96: new Array(7).fill(''),
+        104: new Array(7).fill(''),
+        112: new Array(7).fill(''),
+        120: new Array(7).fill(''),
+        128: new Array(7).fill(''),
+        136: new Array(7).fill(''),
+        144: new Array(7).fill(''),
+        152: new Array(7).fill(''),
+        160: new Array(7).fill('')
       },
       catchToEclipseTrapUU: {
-        0: ['', '', '', ''],
-        8: ['', '', '', ''],
-        16: ['', '', '', ''],
-        24: ['', '', '', ''],
-        32: ['', '', '', ''],
-        40: ['', '', '', ''],
-        48: ['', '', '', ''],
-        56: ['', '', '', ''],
-        64: ['', '', '', ''],
-        72: ['', '', '', ''],
-        80: ['', '', '', ''],
-        88: ['', '', '', ''],
-        96: ['', '', '', ''],
-        104: ['', '', '', ''],
-        112: ['', '', '', ''],
-        120: ['', '', '', ''],
-        128: ['', '', '', ''],
-        136: ['', '', '', ''],
-        144: ['', '', '', ''],
-        152: ['', '', '', ''],
-        160: ['', '', '', ''],
-        eclipse: ['', '', '', '']
+        0: new Array(7).fill(''),
+        8: new Array(7).fill(''),
+        16: new Array(7).fill(''),
+        24: new Array(7).fill(''),
+        32: new Array(7).fill(''),
+        40: new Array(7).fill(''),
+        48: new Array(7).fill(''),
+        56: new Array(7).fill(''),
+        64: new Array(7).fill(''),
+        72: new Array(7).fill(''),
+        80: new Array(7).fill(''),
+        88: new Array(7).fill(''),
+        96: new Array(7).fill(''),
+        104: new Array(7).fill(''),
+        112: new Array(7).fill(''),
+        120: new Array(7).fill(''),
+        128: new Array(7).fill(''),
+        136: new Array(7).fill(''),
+        144: new Array(7).fill(''),
+        152: new Array(7).fill(''),
+        160: new Array(7).fill('')
       }
     }
   };
   const settings = isProd
-    ? getStorageToObject(targetEnvironmentType, defaultSetting)
+    ? MyUtils.getStorageToObject(targetEnvironmentType, defaultSetting)
     : defaultSetting;
   const upgradePlans = settings.upgradePlans;
   // prettier-ignore
@@ -2388,14 +2535,17 @@ function valourRift() {
   }
   const enterAfter = MyUtils.parseDateTime(settings.enterAfterTime);
   const enterBefore = MyUtils.parseDateTime(settings.enterBeforeTime);
+  const logFrom = MyUtils.parseDateTime(settings.logTimeFrom);
+  const logTill = MyUtils.parseDateTime(settings.logTimeTill);
+  const traps = settings['trap'];
   const quest = isProd ? user.quests.QuestRiftValour : QuestRiftValour;
-  const state = trimToEmpty(quest.state.toLowerCase());
-  const floor = parseQuantity(quest.floor);
-  const nowStep = parseQuantity(quest.current_step);
-  const huntsLeft = parseQuantity(quest.hunts_remaining);
+  const state = MyUtils.trimToEmpty(quest.state.toLowerCase());
+  const floor = MyUtils.parseQuantity(quest.floor);
+  const nowStep = MyUtils.parseQuantity(quest.current_step);
+  const huntsLeft = MyUtils.parseQuantity(quest.hunts_remaining);
   const stepsToEclipse =
-    parseQuantity(quest.prestige_total_step) -
-    parseQuantity(quest.prestige_current_step) -
+    MyUtils.parseQuantity(quest.prestige_total_step) -
+    MyUtils.parseQuantity(quest.prestige_current_step) -
     1;
   console.log(
     `Steps to Eclipse: ${quest.prestige_total_step} - ${quest.prestige_current_step} - 1 = ${stepsToEclipse}`
@@ -2459,15 +2609,16 @@ function valourRift() {
       /** toggle champion's fire */
       toggleChampionFire(isToEnable) {
         logging(`toggleChampionFire to ${isToEnable}`);
+        isToEnable = isToEnable === true;
         const quest = user.quests.QuestRiftValour;
-        const itemQuantity = parseQuantity(
+        const itemQuantity = MyUtils.parseQuantity(
           document.querySelector(
             'div[data-item-type="rift_gauntlet_fuel_stat_item"]'
           ).innerText
         );
         if (itemQuantity < 1) return;
         const isFuelEnabled = quest.is_fuel_enabled || false;
-        if ((isFuelEnabled === true) != isToEnable)
+        if ((isFuelEnabled === true) !== isToEnable)
           hg.views.HeadsUpDisplayRiftValourView.toggleFuel();
       },
       /**
@@ -2479,7 +2630,7 @@ function valourRift() {
         if (currentLevelIndex < 8) return;
         // Since 5-3-3,未達 6-6-4, enable Sigil Hunter
         if (
-          settings.isSigilHunter === null &&
+          settings.isSigilHunter === '' &&
           this.items.gold.quantity >= this.augmentations.sigilHunter.howMuchNeed
         ) {
           msg = `enable sigilHunter: ${currentLevelsJSON}, ${this.items.gold.quantity}>${this.augmentations.sigilHunter.howMuchNeed}`;
@@ -2529,27 +2680,25 @@ function valourRift() {
           console.log('Not PP ready, keep farming in normal tower');
           return;
         }
-        // 其次 SSteUU(augmentation只有 null時才自動設定)
+        // 其次 SSteUU(augmentation只有 empty(好像只需要!== false)時才自動設定.)
         if (this.isOkSsteUU) {
-          if (settings.isUltimateUmbra === null)
-            settings.isUltimateUmbra = true;
-          if (settings.isSigilHunter === null) settings.isSigilHunter = true;
-          if (settings.isSuperSiphon === null) settings.isSuperSiphon = true;
-          if (settings.isSecretResearch === null)
+          if (settings.isUltimateUmbra === '') settings.isUltimateUmbra = true;
+          if (settings.isSigilHunter === '') settings.isSigilHunter = true;
+          if (settings.isSuperSiphon === '') settings.isSuperSiphon = true;
+          if (settings.isSecretResearch === '')
             settings.isSecretResearch = true;
-          if (settings.isStringStepping === null)
+          if (settings.isStringStepping === '')
             settings.isStringStepping = true;
           return;
         }
-        // 再其次 UU(augmentation只有 null時才自動設定)
+        // 再其次 UU,augmentation只有 empty(好像只需要!== false)時才自動設定
         if (this.isOkUU) {
-          if (settings.isUltimateUmbra === null)
-            settings.isUltimateUmbra = true;
-          if (settings.isSigilHunter === null) settings.isSigilHunter = true;
-          if (settings.isSuperSiphon === null) settings.isSuperSiphon = true;
+          if (settings.isUltimateUmbra === '') settings.isUltimateUmbra = true;
+          if (settings.isSigilHunter === '') settings.isSigilHunter = true;
+          if (settings.isSuperSiphon === '') settings.isSuperSiphon = true;
           // 循環刷時, UU可以放棄 SR,省下 sigil給 SSteUU用
           if (
-            settings.isSecretResearch === null &&
+            settings.isSecretResearch === '' &&
             this.items.sigil.quantity >=
               this.augmentations.superSiphon.howMuchNeed +
                 this.augmentations.secretResearch.howMuchNeed
@@ -2557,9 +2706,9 @@ function valourRift() {
             settings.isSecretResearch = true;
           return;
         }
-        // 最後 normal tower時, settings.isSecretResearch == null才自動設定 isSecretResearch
+        // 最後 tower, settings.isSecretResearch === ''(好像只需要!== false)才自動設定
         if (
-          settings.isSecretResearch === null &&
+          settings.isSecretResearch === '' &&
           this.items.sigil.quantity >=
             this.augmentations.secretResearch.howMuchNeed
         ) {
@@ -2621,6 +2770,34 @@ function valourRift() {
         if (stepsToNextFloor > currentLevels[0]) return false;
         console.log('距離下個樓層的步數小於等於 speed');
         return true;
+      },
+      logTA() {
+        MyUtils.logging('log Terrified Adventurer Mouse');
+        const key = 'vriftTaLog';
+        const log = localStorage[key] ? JSON.parse(localStorage[key]) : {};
+        const latestEntryId = log['latestEntryId'] || 0;
+        $.each($('[data-entry-id]').get().reverse(), (i, v) => {
+          const latestEntryId = log['latestEntryId'] || 0;
+          // console.log(i, v);
+          const entryId = parseInt(v.getAttribute('data-entry-id'));
+          if (entryId <= latestEntryId) return true;
+          console.log(entryId);
+          log['latestEntryId'] = entryId;
+          const mouseType = v.getAttribute('data-mouse-type');
+          if (mouseType !== 'rift_gaunt_rare') return true;
+          console.log(entryId, mouseType);
+          const journaldate = v.querySelector('.journaldate').textContent;
+          let hour = parseInt(journaldate.split(':')[0]);
+          if (journaldate.indexOf('pm') > -1) hour += 12;
+          if (!log[hour] && log[hour] !== 0) log[hour] = 1;
+          else log[hour] += 1;
+        });
+        console.log(log);
+        if (log['latestEntryId'] === latestEntryId) {
+          console.log('No new entry');
+          return;
+        }
+        localStorage[key] = JSON.stringify(log);
       }
     };
     function init(quest) {
@@ -2638,7 +2815,7 @@ function valourRift() {
         if (key === 'gold') continue;
         if (Object.prototype.hasOwnProperty.call(utils.items, key)) {
           const item = utils.items[key];
-          item.quantity = parseQuantity(
+          item.quantity = MyUtils.parseQuantity(
             document.querySelector('div[data-item-type="' + item.type + '"]')
               .innerText
           );
@@ -2652,18 +2829,22 @@ function valourRift() {
     isProd ? console.plog(utils) : console.log(utils);
     return utils;
   })();
+  if (Date.now() <= logTill && Date.now() >= logFrom) valourRiftUtility.logTA();
   // Auto enter cheese required by upgrade
   if (!settings.minGscToEnter)
     settings.minGscToEnter = cheeseQuantityByUpgrade[currentLevelIndex];
   // Auto stop toggle CF and auto-retreat by upgrade
-  if (currentLevelIndex === upgradePlans.length - 1) {
-    settings.trap.tower.eclipse[4] = false;
-    if (settings.trap.uu.eclipse[4] === null)
-      settings.trap.uu.eclipse[4] = false;
-    settings.isAutoRetreat = false;
-  } else if (currentLevelIndex > 9) {
-    settings.trap.tower.eclipse[4] = false;
+  if (currentLevelIndex > 9) {
+    if (traps['shadeEclipse'][4] !== true) traps['shadeEclipse'][4] = false;
     if (!isUU) settings.isAutoRetreat = false;
+  } else {
+    if (traps['shadeEclipse'][4] !== false) traps['shadeEclipse'][4] = true;
+  }
+  if (currentLevelIndex < upgradePlans.length - 1) {
+    if (traps['uuEclipse'][4] !== false) traps['uuEclipse'][4] = true;
+  } else {
+    if (traps['uuEclipse'][4] !== true) traps['uuEclipse'][4] = false;
+    settings.isAutoRetreat = false;
   }
   const autoRetreat = () => {
     let msg = '';
@@ -2680,30 +2861,31 @@ function valourRift() {
     msg = `CF: ${items.cf.quantity}`;
     isProd ? console.plog(msg) : console.log(msg);
     if (isUU) {
+      let msg = '';
       if (huntsLeft < settings.eclipseUUNeedHunts) {
         if (localStorage.displayedMessage.indexOf(noRetreatHead) < 0) {
-          storeError(
-            `${yesRetreatHead} ${huntsLeft} < ${settings.eclipseUUNeedHunts}`
-          );
+          msg = `${yesRetreatHead} ${huntsLeft} < ${settings.eclipseUUNeedHunts}`;
+          MhUtils.storeError(msg);
+          MhUtils.displayError(msg);
           settings.forceRetreatFloor = floor;
         }
       } else {
-        storeError(
-          `${noRetreatHead} ${huntsLeft} >= ${settings.eclipseUUNeedHunts}`
-        );
+        msg = `${noRetreatHead} ${huntsLeft} >= ${settings.eclipseUUNeedHunts}`;
+        MhUtils.storeError(msg);
+        MhUtils.displayError(msg);
       }
     } else {
       if (huntsLeft < settings.eclipseNeedHunts) {
         if (localStorage.displayedMessage.indexOf(noRetreatHead) < 0) {
-          storeError(
-            `${yesRetreatHead} ${huntsLeft} < ${settings.eclipseNeedHunts}`
-          );
+          msg = `${yesRetreatHead} ${huntsLeft} < ${settings.eclipseNeedHunts}`;
+          MhUtils.storeError(msg);
+          MhUtils.displayError(msg);
           settings.forceRetreatFloor = floor;
         }
       } else {
-        storeError(
-          `${noRetreatHead} ${huntsLeft} >= ${settings.eclipseNeedHunts}`
-        );
+        msg = `${noRetreatHead} ${huntsLeft} >= ${settings.eclipseNeedHunts}`;
+        MhUtils.storeError(msg);
+        MhUtils.displayError(msg);
       }
     }
   };
@@ -2763,11 +2945,16 @@ function valourRift() {
       if (!augs) augs = [];
       if (settings.isAutoAugment && augs.length === 0) {
         const allAugs = valourRiftUtility.augmentations;
-        if (settings.isSigilHunter) augs.push(allAugs.sigilHunter.type);
-        if (settings.isSecretResearch) augs.push(allAugs.secretResearch.type);
-        if (settings.isSuperSiphon) augs.push(allAugs.superSiphon.type);
-        if (settings.isUltimateUmbra) augs.push(allAugs.ultimateUmbra.type);
-        if (settings.isStringStepping) augs.push(allAugs.stringStepping.type);
+        if (settings.isSigilHunter === true)
+          augs.push(allAugs.sigilHunter.type);
+        if (settings.isSecretResearch === true)
+          augs.push(allAugs.secretResearch.type);
+        if (settings.isSuperSiphon === true)
+          augs.push(allAugs.superSiphon.type);
+        if (settings.isUltimateUmbra === true)
+          augs.push(allAugs.ultimateUmbra.type);
+        if (settings.isStringStepping === true)
+          augs.push(allAugs.stringStepping.type);
       }
       hg.views.HeadsUpDisplayRiftValourView.riftValourAjax(
         element,
@@ -2780,7 +2967,6 @@ function valourRift() {
         valourRiftUtility.items.elixir.quantity >
       settings.minGscToEnter
     ) {
-      // valourRiftUtility.autoAugmentation();
       enterTower([], () => {
         const a = document.querySelector('a.jsDialogClose, a#jsDialogClose');
         if (a) a.click();
@@ -2798,15 +2984,17 @@ function valourRift() {
     }
   }
   // UU run結束後,塔外的 is_eclipse_mode還是 true
+  // prettier-ignore
   const trapKey =
     state === vriftStates.tower
       ? isUU
-        ? settings.isPrestigePush
-          ? 'pp'
-          : 'uu'
-        : state
-      : state;
-  // const trapKey = isUU ? 'uu' : state;
+        ? settings.isUUU
+          ? isAtEclipse ? 'uuue' : 'uuu'
+          : settings.isPrestigePush
+            ? isAtEclipse ? 'ppe' : 'pp'
+            : isAtEclipse ? 'uue' : 'uu'
+        : isAtEclipse ? 'shade' : state // shade:tower
+      : state; // farming
   const floorSegments = [
     160, 152, 144, 136, 128, 120, 112, 104, 96, 88, 80, 72, 64, 56, 48, 40, 32,
     24, 16, 8
@@ -2815,19 +3003,37 @@ function valourRift() {
   if (state !== vriftStates.farming)
     for (let i = 0; i < floorSegments.length; i++) {
       const floorSegment = floorSegments[i];
-      if (floor > floorSegment) {
+      if (floor >= floorSegment) {
         floorKey = floorSegment;
         break;
       }
     }
-  let trap = settings.trap[trapKey][floorKey];
-  if (isAtEclipse) trap = settings.trap[trapKey].eclipse;
+  const trap = traps[trapKey][floorKey];
+  // prettier-ignore
+  const templateKey =
+    state === vriftStates.tower
+      ? isUU
+        ? settings.isUUU
+          ? isAtEclipse ? 'uuuEclipse' : 'uuu25up'
+          : settings.isPrestigePush
+            ? isAtEclipse ? 'ppEclipse' : 'pp25up'
+            : isAtEclipse ? 'uuEclipse' : 'uu25up'
+        : isAtEclipse ? 'shadeEclipse' : 'tower25up'
+      : null;
+  const templateTrap = templateKey ? traps[templateKey] : null;
+  if (templateTrap)
+    if (floorKey > 24)
+      // floor 25 up,如果 template setting非空,強制套用 template
+      templateTrap.forEach((v, i) => (v === '' ? null : (trap[i] = v)));
+    // floor 25 less,如果 trap setting為空,使用 template setting
+    else
+      templateTrap.forEach((v, i) => (trap[i] === '' ? (trap[i] = v) : null));
   if (floor % 8 === 7 && huntsLeft < settings.dangerousHunts) {
     const rescueTraps =
       trapKey === vriftStates.tower
-        ? settings.trap['rescueTrap'][floorKey]
+        ? traps['rescueTrap'][floorKey]
         : trapKey === 'uu'
-          ? settings.trap['rescueTrapUU'][floorKey]
+          ? traps['rescueTrapUU'][floorKey]
           : null;
     if (rescueTraps) {
       for (let i = 0; i < rescueTraps.length; i++) {
@@ -2839,9 +3045,9 @@ function valourRift() {
   if (valourRiftUtility.is1CatchToNextFloor()) {
     const rescueTraps =
       trapKey === vriftStates.tower
-        ? settings.trap['catchToNextFloorTrap'][floorKey]
+        ? traps['catchToNextFloorTrap'][floorKey]
         : trapKey === 'uu'
-          ? settings.trap['catchToNextFloorTrapUU'][floorKey]
+          ? traps['catchToNextFloorTrapUU'][floorKey]
           : null;
     if (rescueTraps) {
       for (let i = 0; i < rescueTraps.length; i++) {
@@ -2852,9 +3058,9 @@ function valourRift() {
   } else if (valourRiftUtility.is1CatchToTE()) {
     const rescueTraps =
       trapKey === vriftStates.tower
-        ? settings.trap['catchToEclipseTrap'][floorKey]
+        ? traps['catchToEclipseTrap'][floorKey]
         : trapKey === 'uu'
-          ? settings.trap['catchToEclipseTrapUU'][floorKey]
+          ? traps['catchToEclipseTrapUU'][floorKey]
           : null;
     if (rescueTraps) {
       for (let i = 0; i < rescueTraps.length; i++) {
@@ -2926,15 +3132,14 @@ function valourRift() {
     logging(`Before auto off: ${isToEnable}`);
     // 停用. CF我只在 PP時用,但 step變化並不是規律的,停用時少的 1 step可能因為 TA造成多 1 hunt
     // 可能在 UUU run適用,因為沒有被擊退的問題
-    return isToEnable;
     /* if (!isToEnable) return isToEnable;
     if (isAtEclipse) return isToEnable;
     if (offChampionFireSteps.indexOf(stepsToEclipse) > -1) {
       logging('Turn off CF');
       return false;
     }
-    logging('Saving CF');
-    return isToEnable; */
+    logging('Saving CF'); */
+    return isToEnable;
   }
 }
 // End #valourRift
