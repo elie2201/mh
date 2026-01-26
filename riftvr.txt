@@ -2066,7 +2066,7 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = MhUtils.getEnvironmentType();
   if (environmentType !== targetEnvironmentType) return;
-  logging('valourRift_0.6.52.33.31');
+  logging('valourRift_0.6.52.33.32');
   // move loot stat to better position and make it draggable
   try {
     $('.valourRiftHUD-towerLootContainer')
@@ -2672,6 +2672,7 @@ function valourRift() {
           }
           // 不滿足時後面的 UU auto不跑,在 normal tower農資源
           console.log('Not PP ready, keep farming in normal tower');
+          this.checkSecretResearch();
           return;
         }
         // 其次 SSteUU(augmentation只有 empty(好像只需要!== false)時才自動設定.)
@@ -2700,13 +2701,16 @@ function valourRift() {
             settings.isSecretResearch = true;
           return;
         }
+        this.checkSecretResearch();
+      },
+      checkSecretResearch() {
         // 最後 tower, settings.isSecretResearch === ''(好像只需要!== false)才自動設定
         if (
           settings.isSecretResearch === '' &&
           this.items.sigil.quantity >=
             this.augmentations.secretResearch.howMuchNeed
         ) {
-          msg = `enable secretResearch: ${currentLevelsJSON}, ${this.items.sigil.quantity}>${this.augmentations.secretResearch.howMuchNeed}`;
+          const msg = `enable secretResearch: ${currentLevelsJSON}, ${this.items.sigil.quantity}>${this.augmentations.secretResearch.howMuchNeed}`;
           isProd ? console.plog(msg) : console.log(msg);
           settings.isSecretResearch = true;
         }
@@ -2845,7 +2849,8 @@ function valourRift() {
   })();
   const now = Date.now();
   console.log(`now: ${now}, logFrom: ${logFrom}, logTill: ${logTill}`);
-  if (now <= logTill && now >= logFrom) valourRiftUtility.logTA();
+  if (logFrom && now >= logFrom && logTill && now <= logTill)
+    valourRiftUtility.logTA();
   // Auto enter cheese required by upgrade
   if (!settings.minGscToEnter)
     settings.minGscToEnter = cheeseQuantityByUpgrade[currentLevelIndex];
