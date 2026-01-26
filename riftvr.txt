@@ -2066,7 +2066,7 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = MhUtils.getEnvironmentType();
   if (environmentType !== targetEnvironmentType) return;
-  logging('valourRift_0.6.51.31.29');
+  logging('valourRift_0.6.51.32.29');
   // move loot stat to better position and make it draggable
   try {
     $('.valourRiftHUD-towerLootContainer')
@@ -2136,7 +2136,7 @@ function valourRift() {
     50, 50, 60, 60, 70,
     75, 75, 100, 110, 120,
     130, 160, 160, 300, 400,
-    400, 400, 650, 900, 900
+    450, 500, 650, 900, 900
   ];
   // trap: [<bait>, <weapon>, <base>, <trinket>, <championFireEnabled>, litCandle, doubleEgg]
   const defaultSetting = {
