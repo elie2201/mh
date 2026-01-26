@@ -1092,7 +1092,7 @@ function floatingIslands() {
   const targetEnvironmentType = 'floating_islands';
   const environmentType = getEnvironmentType();
   if (environmentType != targetEnvironmentType) return;
-  logging('floatingIslands_1.4.24.8.13');
+  logging('floatingIslands_1.4.25.8.13');
   // move item stat to better position and make it draggable
   try {
     $('.floatingIslandsHUD-statItemContainer')
@@ -1523,7 +1523,9 @@ function floatingIslands() {
     trap = settings[trapKey][altitude]['afterTrove'][powerType];
   else trap = settings[trapKey][altitude]['after'][powerType];
   if (!trap) {
-    MhUtils.popupMessage('No trap found!!');
+    const msg = 'No trap found!!';
+    MhUtils.storeError(msg);
+    MhUtils.displayError(msg);
     return;
   }
   let forcedTrap = null;
@@ -1577,17 +1579,19 @@ function floatingIslands() {
           : null;
     if (lastShotTroveTrap) setLastShotTroveTrap(lastShotTroveTrap, trap);
   }
+  // 新版設定可能有 true/false以外的值,只有 true才是真的 enable.
+  // 不過 trap的 Bottled Wind設定沒被使用,要注意的是 isBottledWindXXX
   const isBottledWindBoss =
-    (isWarden && settings.isBottledWindWarden) ||
-    (isParagon && settings.isBottledWindParagon) ||
-    (isEmpress && settings.isBottledWindEmpress);
+    (isWarden && settings.isBottledWindWarden === true) ||
+    (isParagon && settings.isBottledWindParagon === true) ||
+    (isEmpress && settings.isBottledWindEmpress === true);
   if (
     settings.isBottledWind &&
     islandProgress < 38 &&
     (isFirst3Block ||
-      (isLai && settings.isBwLaiLastBlock) ||
-      (isHai && settings.isBwHaiLastBlock) ||
-      (isSp && settings.isBwSpLastBlock)) &&
+      (isLai && settings.isBwLaiLastBlock === true) ||
+      (isHai && settings.isBwHaiLastBlock === true) ||
+      (isSp && settings.isBwSpLastBlock === true)) &&
     !isLaunch &&
     !hasTreasureTrove &&
     (!isBossHunt || (isBottledWindBoss && atts.enemy_progress > speed))
@@ -1673,10 +1677,11 @@ function floatingIslands() {
   }
   // toggleBottledWind(false);
   function toggleBottledWind(isEnabled) {
+    // 不需要檢查 isEnabled===true.沒看 trap的設定,而是綜合判斷後直接給 true/flase
     const quest = user.quests.QuestFloatingIslands;
     // if ((quest.items.tiki_fuel_stat_item.quantity || 0) == 0) return;
     const isFuelEnabled = quest.hunting_site_atts.is_fuel_enabled || false;
-    if ((isFuelEnabled == true) != isEnabled)
+    if ((isFuelEnabled == true) !== isEnabled)
       hg.views.HeadsUpDisplayFloatingIslandsView.toggleFuel();
   }
   // End toggleCyclone(false);
