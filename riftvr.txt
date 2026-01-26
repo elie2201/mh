@@ -2066,7 +2066,7 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = MhUtils.getEnvironmentType();
   if (environmentType !== targetEnvironmentType) return;
-  logging('valourRift_0.6.50.31.27');
+  logging('valourRift_0.6.51.31.27');
   // move loot stat to better position and make it draggable
   try {
     $('.valourRiftHUD-towerLootContainer')
@@ -2076,6 +2076,7 @@ function valourRift() {
     console.log(error);
   }
   // my own hard-coded constants
+  const vriftEnterTime = 'vriftEnterTime';
   const gStr = 'Gauntlet String';
   const bgStr = 'Brie String,' + gStr;
   const bwr = 'best.weapon.rift';
@@ -2535,8 +2536,6 @@ function valourRift() {
   }
   const enterAfter = MyUtils.parseDateTime(settings.enterAfterTime);
   const enterBefore = MyUtils.parseDateTime(settings.enterBeforeTime);
-  const logFrom = MyUtils.parseDateTime(settings.logTimeFrom);
-  const logTill = MyUtils.parseDateTime(settings.logTimeTill);
   const traps = settings['trap'];
   const quest = isProd ? user.quests.QuestRiftValour : QuestRiftValour;
   const state = MyUtils.trimToEmpty(quest.state.toLowerCase());
@@ -2570,6 +2569,16 @@ function valourRift() {
     upgradeLevelsJSON,
     `current upgrade level ${currentLevelsJSON} index: ${currentLevelIndex}`
   );
+  const logFrom = localStorage[vriftEnterTime]
+    ? localStorage[vriftEnterTime]
+    : MyUtils.parseDateTime(settings.logTimeFrom);
+  const logTill = settings.logTimeTill
+    ? MyUtils.parseDateTime(settings.logTimeFrom)
+    : currentLevelIndex > 18
+      ? logFrom + 48 * 60 * 60 * 1000
+      : currentLevelIndex > 11
+        ? logFrom + 24 * 60 * 60 * 1000
+        : null;
   // auto set uuRunExtraSecret by upgrade
   if (!settings.uuRunExtraSecret)
     if (currentLevelIndex === 13) settings.uuRunExtraSecret = 1000;
@@ -2971,6 +2980,9 @@ function valourRift() {
         const a = document.querySelector('a.jsDialogClose, a#jsDialogClose');
         if (a) a.click();
         MhUtils.updateGPWStats();
+        localStorage[vriftEnterTime] = new Date()
+          .toLocaleString('sv')
+          .replace(' ', 'T');
         setTimeout(() => {
           user.quests.QuestRiftValour.state = 'tower';
           user.quests.QuestRiftValour.floor = 1;
