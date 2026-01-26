@@ -2066,7 +2066,7 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = MhUtils.getEnvironmentType();
   if (environmentType !== targetEnvironmentType) return;
-  logging('valourRift_0.6.51.33.30');
+  logging('valourRift_0.6.52.33.30');
   // move loot stat to better position and make it draggable
   try {
     $('.valourRiftHUD-towerLootContainer')
@@ -2767,7 +2767,10 @@ function valourRift() {
       },
       logTA() {
         MyUtils.logging('log Terrified Adventurer Mouse');
+        // const mouseTypes = ['rift_gaunt_rare', 'rift_gaunt_monster'];
         const key = 'vriftTaLog';
+        const failKey = 'failLog';
+        const failKeyword = 'catchfailure';
         const log = localStorage[key] ? JSON.parse(localStorage[key]) : {};
         const latestEntryId = log['latestEntryId'] || 0;
         $.each($('[data-entry-id]').get().reverse(), (i, v) => {
@@ -2777,12 +2780,20 @@ function valourRift() {
           if (entryId <= latestEntryId) return true;
           console.log(entryId);
           log['latestEntryId'] = entryId;
-          const mouseType = v.getAttribute('data-mouse-type');
-          if (mouseType !== 'rift_gaunt_rare') return true;
-          console.log(entryId, mouseType);
           const journaldate = v.querySelector('.journaldate').textContent;
           let hour = parseInt(journaldate.split(':')[0]);
           if (journaldate.indexOf('pm') > -1) hour += 12;
+          const className = v.className;
+          if (className.indexOf(failKeyword) > -1) {
+            console.log(failKeyword, entryId, className);
+            // if (!log[failKey]) log[failKey] = {};
+            const failLog = log[failKey] ? log[failKey] : (log[failKey] = {});
+            if (!failLog[hour]) failLog[hour] = 1;
+            else failLog[hour] += 1;
+          }
+          const mouseType = v.getAttribute('data-mouse-type');
+          if (mouseType !== 'rift_gaunt_rare') return true;
+          console.log(entryId, mouseType);
           if (!log[hour] && log[hour] !== 0) log[hour] = 1;
           else log[hour] += 1;
         });
