@@ -2066,7 +2066,7 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = MhUtils.getEnvironmentType();
   if (environmentType !== targetEnvironmentType) return;
-  logging('valourRift_0.6.51.31.27');
+  logging('valourRift_0.6.51.31.28');
   // move loot stat to better position and make it draggable
   try {
     $('.valourRiftHUD-towerLootContainer')
@@ -2838,7 +2838,9 @@ function valourRift() {
     isProd ? console.plog(utils) : console.log(utils);
     return utils;
   })();
-  if (Date.now() <= logTill && Date.now() >= logFrom) valourRiftUtility.logTA();
+  const now = Date.now();
+  console.log(`now: ${now}, logFrom: ${logFrom}, logTill: ${logTill}`);
+  if (now <= logTill && now >= logFrom) valourRiftUtility.logTA();
   // Auto enter cheese required by upgrade
   if (!settings.minGscToEnter)
     settings.minGscToEnter = cheeseQuantityByUpgrade[currentLevelIndex];
@@ -2939,7 +2941,6 @@ function valourRift() {
       return;
     }
   }
-  const now = Date.now();
   console.log(
     `now: ${now}, enterAfter: ${enterAfter}, enterBefore: ${enterBefore}`
   );
