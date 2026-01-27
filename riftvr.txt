@@ -2066,7 +2066,7 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = MhUtils.getEnvironmentType();
   if (environmentType !== targetEnvironmentType) return;
-  logging('valourRift_0.6.52.33.32');
+  logging('valourRift_0.6.52.33.33');
   // move loot stat to better position and make it draggable
   try {
     $('.valourRiftHUD-towerLootContainer')
@@ -2559,11 +2559,13 @@ function valourRift() {
     : MyUtils.parseDateTime(settings.logTimeFrom);
   const logTill = settings.logTimeTill
     ? MyUtils.parseDateTime(settings.logTimeTill)
-    : currentLevelIndex > 18
-      ? logFrom + 48 * 60 * 60 * 1000
-      : currentLevelIndex > 11
-        ? logFrom + 24 * 60 * 60 * 1000
-        : null;
+    : logFrom
+      ? currentLevelIndex > 18
+        ? logFrom + 48 * 60 * 60 * 1000
+        : currentLevelIndex > 11
+          ? logFrom + 24 * 60 * 60 * 1000
+          : null
+      : null;
   // auto set uuRunExtraSecret by upgrade
   if (!settings.uuRunExtraSecret)
     if (currentLevelIndex === 13) settings.uuRunExtraSecret = 1000;
