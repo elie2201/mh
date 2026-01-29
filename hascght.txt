@@ -192,6 +192,22 @@ checks = [
     }
   }
 ];
+// Pinnacle Chamber check Bosses
+checks = [
+  {
+    isByMouseType: checkedProperty.isByMouseType,
+    atEnvironmentType: 'pinnacle_chamber',
+    target: 'master_of_the_dojo',
+    successCallback() {
+      if (localStorage['eventLocation'] === 'library_assignment')
+        travel('dojo', 2000, () => {
+          hg.utils.TrapControl.armItem('gouda_cheese', 'bait')
+            .disarmTrinket()
+            .go();
+        });
+    }
+  }
+];
 // run hasCaughtAction
 hasCaughtAction(checks);
 /** check journal to find if caught target mouse(by data-mouse-type/mouse name) */
