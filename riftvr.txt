@@ -2066,7 +2066,7 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = MhUtils.getEnvironmentType();
   if (environmentType !== targetEnvironmentType) return;
-  logging('valourRift_0.6.53.33.33');
+  logging('valourRift_0.6.53.33.34');
   // move loot stat to better position and make it draggable
   try {
     $('.valourRiftHUD-towerLootContainer')
@@ -2820,12 +2820,13 @@ function valourRift() {
         localStorage[key] = JSON.stringify(log);
       },
       logClimbing() {
-        const log = MyUtils.getStorageToObject('vriftClimingStat', {});
+        const storageKey = 'vriftClimingStat';
+        const log = MyUtils.getStorageToObject(storageKey, {});
         if (state !== vriftStates.tower || huntsLeft > 2) return;
         const enterAt = localStorage[vriftEnterTime];
         if (enterAt) {
           log[enterAt] = nowStep;
-          MyUtils.setStorage(enterAt, JSON.stringify(log));
+          MyUtils.setStorage(storageKey, JSON.stringify(log));
         }
       }
     };
