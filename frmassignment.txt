@@ -1,0 +1,940 @@
+import { MhUtils } from './my-mh-aid';
+// MH constants
+const quests = {
+  asset_package_hash: '80a611d307d',
+  server_info: '10.209.36.123 - web-xmas-asf7584fcf',
+  user: {
+    user_id: 8638696,
+    sn_user_id: 'hg_1602095c6c0a2376b3bbb12e417df9a4',
+    firstname: 'kazeno',
+    lastname: 'machie',
+    username: 'kazeno machie',
+    gender: 'female',
+    unique_hash: 'S1HS11c4',
+    base_item_id: 18,
+    base_name: 'Bamboozler Base',
+    weapon_item_id: 3956,
+    weapon_name: 'Polar Vortex Trap',
+    weapon_thumb:
+      'https://www.mousehuntgame.com/images/items/weapons/63ed8bbae283944bba2268a8444f65c6.jpg?cv=8',
+    trinket_item_id: null,
+    trinket_name: null,
+    trinket_thumb: null,
+    gold: 58875766,
+    points: 273483720,
+    title_id: 5,
+    title_icon:
+      'https://www.mousehuntgame.com/images/titles/9f930616f82f2ff0fb57a38aaa511f16.gif?cv=8',
+    title_name: 'Duchess',
+    title_percent: 26,
+    title_wisdom: 34375370,
+    title_order: 0,
+    num_active_turns: 16486,
+    last_active_turn_timestamp: 1769674989,
+    is_online: true,
+    environment_id: 29,
+    environment_name: 'Training Grounds',
+    environment_type: 'training_grounds',
+    environment_header:
+      'https://www.mousehuntgame.com/images/environments/64d17c40b34901ca2dacadb110d451c4.jpg?cv=8',
+    environment_icon:
+      'https://www.mousehuntgame.com/images/environments/18887ba8302071809158a87ac51082ff.jpg?cv=8',
+    has_shield: true,
+    shield_expiry: '2026-01-31 17:42:28',
+    trinket_slot_level: 1,
+    access_granted: true,
+    bait_item_id: 98,
+    bait_name: 'Gouda Cheese',
+    bait_pedestal_image:
+      'https://www.mousehuntgame.com/images/items/bait/562dc40d378ed283259096f6c504a625.png?cv=8',
+    bait_quantity: 44,
+    bait_disarmed: false,
+    bait_thumb:
+      'https://www.mousehuntgame.com/images/items/bait/7e0daa548364166c46c0804e6cb122c6.gif?cv=8',
+    base_thumb:
+      'https://www.mousehuntgame.com/images/items/bases/27bf26368ecc39f0d9535395cb6a6769.jpg?cv=8',
+    trinket_quantity: 0,
+    skin_item_id: null,
+    skin_name: null,
+    skin_thumb: null,
+    trap_power_type_name: 'Tactical',
+    trap_power: 11273,
+    trap_power_bonus: 0.35,
+    trap_luck: 47,
+    trap_attraction_bonus: 0.05,
+    trap_cheese_effect: 'Fresh',
+    title_percent_accurate: 26.62,
+    activeturn_wait_seconds: 900,
+    next_activeturn_seconds: 538,
+    has_puzzle: false,
+    last_active: '6 minutes 2 seconds',
+    shield_seconds: 205997,
+    ab_tests: {
+      checkout_superbrie_splash_april_2021: 'new'
+    },
+    quests: {
+      QuestFuromaResearch: {
+        is_assignment: true,
+        type: 'furoma_research_quest_item'
+      },
+      QuestAdventureBook: {
+        hash: 'd03a92f3aa8f04ba1aa45f6a110938c0',
+        adventure: {
+          name: 'Explore the Fungal Cavern',
+          can_claim: null,
+          is_claimed: null,
+          type: 'catch_crystal_behemoth_adv',
+          header_image:
+            'https://www.mousehuntgame.com/images/environments/2f102c9a838767f48d4966e6ea1a91fc.jpg?cv=8',
+          header_type: false,
+          goal: [
+            {
+              name: 'Purchase a <b>Fungal Cavern Map Piece</b> from either the Muridae Market or Queso Geyser Cartographer',
+              category: 'item',
+              thumb:
+                'https://www.mousehuntgame.com/images/items/maps/99f8f06ad1e3dd66118cab9e790fc90b.jpg?cv=8',
+              environment: null,
+              status: 'incomplete',
+              goal_css_class: ''
+            }
+          ],
+          has_goal: true
+        }
+      },
+      QuestCodexLibrary: {
+        has_any_codex: true,
+        all_codex_page_types: [
+          'rift_luck_codex_stat_item',
+          'empyrean_codex_stat_item',
+          'chrome_codex_stat_item',
+          'codex_of_valour_stat_item',
+          'codex_of_valor_puppetry_page_stat_item',
+          'codex_of_valor_thievery_page_stat_item',
+          'codex_of_valor_bard_page_stat_item',
+          'codex_of_valor_melee_page_stat_item',
+          'codex_of_valor_magic_page_stat_item',
+          'codex_of_valor_nobility_page_stat_item',
+          'codex_of_valor_dust_page_stat_item',
+          'codex_of_valor_eclipse_page_stat_item',
+          '2026_lucky_codex_stat_item',
+          'folklore_motif_index_arcane_power_stat_item',
+          'folklore_motif_index_arcane_luck_stat_item',
+          'folklore_motif_index_shadow_power_stat_item',
+          'folklore_motif_index_shadow_luck_stat_item',
+          'folklore_motif_index_forgotten_power_stat_item',
+          'folklore_motif_index_forgotten_luck_stat_item',
+          'folklore_motif_index_draconic_power_stat_item',
+          'folklore_motif_index_draconic_luck_stat_item',
+          'folklore_motif_index_physical_power_stat_item',
+          'folklore_motif_index_physical_luck_stat_item',
+          'folklore_motif_index_hydro_power_stat_item',
+          'folklore_motif_index_hydro_luck_stat_item',
+          'folklore_motif_index_tactical_power_stat_item',
+          'folklore_motif_index_tactical_luck_stat_item',
+          'folklore_motif_index_law_power_stat_item',
+          'folklore_motif_index_law_luck_stat_item',
+          'regal_charm_codex_stat_item'
+        ],
+        active_codex_page_types: ['2026_lucky_codex_stat_item'],
+        num_active_pages: 1,
+        codex_page_data: [
+          {
+            type: 'rift_luck_codex_stat_item',
+            name: 'Riftstalker Codex',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/189e696457f9562b4f815d7bd84fa60e.gif?cv=8',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/5aac08c099e23916f710c99f7817c89a.png?cv=8',
+            is_owned: false,
+            is_active: false
+          },
+          {
+            type: 'empyrean_codex_stat_item',
+            name: 'Empyrean Codex',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/6922da0f74060ef01823fd2b51c2b107.gif?cv=8',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/5392f862aaed731800d8bee0c8094395.png?cv=8',
+            is_owned: false,
+            is_active: false
+          },
+          {
+            type: 'chrome_codex_stat_item',
+            name: 'Chrome Codex',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/a0a540b4ede0ea8a56b00708ac7cc8f3.gif?cv=8',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/9e93cfb618d3bfd87661d8ff8f099052.png?cv=8',
+            is_owned: true,
+            is_active: false
+          },
+          {
+            type: 'codex_of_valour_stat_item',
+            name: 'Codex of Valour',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/3921289867374e47fe8e19e7c64d26fc.gif?cv=8',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/7d7802944aefbf026afbb243d92fb4f6.png?cv=8',
+            is_owned: false,
+            is_active: false
+          },
+          {
+            type: 'codex_of_valor_puppetry_page_stat_item',
+            name: 'Codex of Valour: Puppetry Page',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/f5088a6d69d942f9d65166a909de80c8.gif?cv=8',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/cff33d01270826ccd4e619b6e969184e.png?cv=8',
+            is_owned: false,
+            is_active: false
+          },
+          {
+            type: 'codex_of_valor_thievery_page_stat_item',
+            name: 'Codex of Valour: Thievery Page',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/39d8abd8ed3c60ccc6c69e248c942fbb.gif?cv=8',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/5acc2cc5a1594204bf91fda1b2e416cb.png?cv=8',
+            is_owned: false,
+            is_active: false
+          },
+          {
+            type: 'codex_of_valor_bard_page_stat_item',
+            name: 'Codex of Valour: Bard Page',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/175dca2c9b0a44218483ad1030ce048e.gif?cv=8',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/3c483f6680a30026e7107df802d1f4ce.png?cv=8',
+            is_owned: false,
+            is_active: false
+          },
+          {
+            type: 'codex_of_valor_melee_page_stat_item',
+            name: 'Codex of Valour: Melee Page',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/03f68d072388c1816c09141ba370958c.gif?cv=8',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/648da7cd68ec4cdebaa4244df0716c7f.png?cv=8',
+            is_owned: false,
+            is_active: false
+          },
+          {
+            type: 'codex_of_valor_magic_page_stat_item',
+            name: 'Codex of Valour: Magic Page',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/91a19175332eaec5ca17e2c1c9b28fd2.gif?cv=8',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/79f69339aa1bca5c678ea754424052fe.png?cv=8',
+            is_owned: false,
+            is_active: false
+          },
+          {
+            type: 'codex_of_valor_nobility_page_stat_item',
+            name: 'Codex of Valour: Noble Page',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/5f9f1ad52117460f3f9e94db700a6d19.gif?cv=8',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/8d0b3fe7261c8d121c302992ebe8ebae.png?cv=8',
+            is_owned: false,
+            is_active: false
+          },
+          {
+            type: 'codex_of_valor_dust_page_stat_item',
+            name: 'Codex of Valour: Dusty Page',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/3d1e5b01fd86da2ea08337d45a3f38b2.gif?cv=8',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/c983a0437e2409b0a2296cb5f9809ef3.png?cv=8',
+            is_owned: false,
+            is_active: false
+          },
+          {
+            type: 'codex_of_valor_eclipse_page_stat_item',
+            name: 'Codex of Valour: Eclipse Page',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/a00f18bff0cf53a1f36b8f126d9e78a1.gif?cv=8',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/5dde79954a905480572d954a3bff3208.png?cv=8',
+            is_owned: false,
+            is_active: false
+          },
+          {
+            type: '2026_lucky_codex_stat_item',
+            name: '2026 Lucky Codex',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/1d6d6b4d69409a0dd1917c728430d574.gif?cv=8',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/2e0314f06ad56f60ded2448c3ebf08d2.png?cv=8',
+            is_owned: true,
+            is_active: true
+          },
+          {
+            type: 'folklore_motif_index_arcane_power_stat_item',
+            name: 'Folklore Motif-Index: Arcane Power',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/7c417448ffdcfd31b1b5da48b3c560a4.gif?cv=8',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/3884054150145795815fbc91b3633aae.png?cv=8',
+            is_owned: false,
+            is_active: false
+          },
+          {
+            type: 'folklore_motif_index_arcane_luck_stat_item',
+            name: 'Folklore Motif-Index: Arcane Luck',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/aed3101b52c3f6d728d74948a90ff403.gif?cv=8',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/3444fc40e8f63a9d6d9c97f6fb09005e.png?cv=8',
+            is_owned: false,
+            is_active: false
+          },
+          {
+            type: 'folklore_motif_index_shadow_power_stat_item',
+            name: 'Folklore Motif-Index: Shadow Power',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/efc2f1922362e5cbaf6f0d3fd993238c.gif?cv=8',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/187bf2a3e73fca573867d5ec23f00de6.png?cv=8',
+            is_owned: false,
+            is_active: false
+          },
+          {
+            type: 'folklore_motif_index_shadow_luck_stat_item',
+            name: 'Folklore Motif-Index: Shadow Luck',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/b034e5500b3700b61dc7b324cb80ce7d.gif?cv=8',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/06b07962b9e3d1dfe9c6c3231bf875a7.png?cv=8',
+            is_owned: false,
+            is_active: false
+          },
+          {
+            type: 'folklore_motif_index_forgotten_power_stat_item',
+            name: 'Folklore Motif-Index: Forgotten Power',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/670204fb5c58b1945def02062e880b70.gif?cv=8',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/b00d8098e70d988df574d2908b62d63a.png?cv=8',
+            is_owned: false,
+            is_active: false
+          },
+          {
+            type: 'folklore_motif_index_forgotten_luck_stat_item',
+            name: 'Folklore Motif-Index: Forgotten Luck',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/b3ea0e96fd8669dcadf380d797c78a42.gif?cv=8',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/7b28be16199e5392dc764b15ce18447d.png?cv=8',
+            is_owned: false,
+            is_active: false
+          },
+          {
+            type: 'folklore_motif_index_draconic_power_stat_item',
+            name: 'Folklore Motif-Index: Draconic Power',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/86ba3815d71cf76b71cb687846b635bd.gif?cv=8',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/479a5615ca446556f731988cab98777f.png?cv=8',
+            is_owned: false,
+            is_active: false
+          },
+          {
+            type: 'folklore_motif_index_draconic_luck_stat_item',
+            name: 'Folklore Motif-Index: Draconic Luck',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/79a23ed664b84499473c88d29c96f5bc.gif?cv=8',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/6f72a5504e7e7fa529046dedf15b3a53.png?cv=8',
+            is_owned: false,
+            is_active: false
+          },
+          {
+            type: 'folklore_motif_index_physical_power_stat_item',
+            name: 'Folklore Motif-Index: Physical Power',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/4584b08c7cbad3884aac7a9d62fe6102.gif?cv=8',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/ebbe6ec7bdf79718d51545ab0e64ee65.png?cv=8',
+            is_owned: false,
+            is_active: false
+          },
+          {
+            type: 'folklore_motif_index_physical_luck_stat_item',
+            name: 'Folklore Motif-Index: Physical Luck',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/2a096a7e3d73d1ef37cce86761257972.gif?cv=8',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/79535582d1fa2d5cad65a54c2a12e600.png?cv=8',
+            is_owned: false,
+            is_active: false
+          },
+          {
+            type: 'folklore_motif_index_hydro_power_stat_item',
+            name: 'Folklore Motif-Index: Hydro Power',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/7192a638b9a828148c0d65c8a3155c78.gif?cv=8',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/df6fcb988f20f3f1936f132e2f496fa0.png?cv=8',
+            is_owned: false,
+            is_active: false
+          },
+          {
+            type: 'folklore_motif_index_hydro_luck_stat_item',
+            name: 'Folklore Motif-Index: Hydro Luck',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/eb2cb14f241aea421cd1521e19df5140.gif?cv=8',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/64a2171fd9b247877ed93e1c6c0f1cb0.png?cv=8',
+            is_owned: false,
+            is_active: false
+          },
+          {
+            type: 'folklore_motif_index_tactical_power_stat_item',
+            name: 'Folklore Motif-Index: Tactical Power',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/a6a3cb6a7efae84dafdc30ddaed5fdbe.gif?cv=8',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/dacf46c3bfc632e488bdb3b3469ec2b0.png?cv=8',
+            is_owned: false,
+            is_active: false
+          },
+          {
+            type: 'folklore_motif_index_tactical_luck_stat_item',
+            name: 'Folklore Motif-Index: Tactical Luck',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/1176a3e1d5319525c52ad5665960e5c3.gif?cv=8',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/49027499d440159cb0e6d9caa7552505.png?cv=8',
+            is_owned: false,
+            is_active: false
+          },
+          {
+            type: 'folklore_motif_index_law_power_stat_item',
+            name: 'Folklore Motif-Index: Law Power',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/f74b3939adc7f9318b7f0ab3df9fa50d.gif?cv=8',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/1a73b9638d4e89f4df672ca5b43efce7.png?cv=8',
+            is_owned: false,
+            is_active: false
+          },
+          {
+            type: 'folklore_motif_index_law_luck_stat_item',
+            name: 'Folklore Motif-Index: Law Luck',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/4c9ccc87d243050aac0beb77621fbb93.gif?cv=8',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/ea87b8d09b983346455daea9cdea2a82.png?cv=8',
+            is_owned: false,
+            is_active: false
+          },
+          {
+            type: 'regal_charm_codex_stat_item',
+            name: 'Regal Codex',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/stats/e5e099f7c9370aab001b317570425411.gif?cv=8',
+            thumb_transparent:
+              'https://www.mousehuntgame.com/images/items/stats/transparent_thumb/3c2438eedc9d8ca7df4acea4bc162a68.png?cv=8',
+            is_owned: false,
+            is_active: false
+          }
+        ]
+      },
+      QuestRelicHunter: {
+        invites_hash: '37e4e39f540a943e234555c25ff160b7',
+        inventory_hash: 'b999b4d3a383e31bbdb093c4e12e991b',
+        notifications: 0,
+        num_invites: 0,
+        new_chat: false,
+        mice_warning: true,
+        label: 'Warpath Treasure Map',
+        value: '1 Remaining',
+        image:
+          'https://www.mousehuntgame.com/images/items/convertibles/8f3702e1c3e771deb13cd0ad13e903fb.gif?cv=8',
+        maps: [
+          {
+            map_id: 6967855,
+            name: 'Dirt Dealers Wanted Poster',
+            hash: '04dec7d6f3486a69bdaf3e27c5c15d16',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/convertibles/1875694ff9e0f3284400e3f725d3f21c.gif?cv=8',
+            num_found: 3,
+            num_total: 5,
+            is_rare: null,
+            is_complete: null,
+            is_favourite: null,
+            has_message: null,
+            map_class: 'poster'
+          },
+          {
+            map_id: 7242040,
+            name: 'Warpath Treasure Map',
+            hash: '4a7e61985c5032e2a5928892f1965656',
+            thumb:
+              'https://www.mousehuntgame.com/images/items/convertibles/8f3702e1c3e771deb13cd0ad13e903fb.gif?cv=8',
+            num_found: 14,
+            num_total: 15,
+            is_rare: null,
+            is_complete: null,
+            is_favourite: null,
+            has_message: null,
+            map_class: 'treasure'
+          }
+        ],
+        favourite_map_sn_user_ids: [],
+        num_maps_dusted: 24,
+        default_map_id: 7242040,
+        items: {
+          rare_map_dust_stat_item: 56,
+          map_clue_stat_item: 496,
+          ancient_relic_collectible: 102
+        }
+      }
+    },
+    viewing_atts: {
+      trap_effectiveness: 'Strong',
+      reset_effectiveness: false
+    }
+  },
+  messageData: {
+    page: {
+      newMessageCount: 0,
+      messageCount: 0,
+      messages: []
+    },
+    notification: {
+      newMessageCount: 0,
+      messageCount: 20
+    },
+    popup: {
+      newMessageCount: 0,
+      messageCount: 0,
+      messages: []
+    },
+    arrow: {
+      newMessageCount: 0,
+      messageCount: 0,
+      messages: []
+    },
+    custom: {
+      newMessageCount: 0,
+      messageCount: 0,
+      messages: []
+    },
+    game_request: {
+      newMessageCount: 0,
+      messageCount: 0
+    },
+    message_model: {
+      newMessageCount: 0,
+      messageCount: 0,
+      messages: []
+    },
+    corkboard_map: {
+      newMessageCount: 0,
+      messageCount: 0
+    },
+    corkboard_team: {
+      newMessageCount: 0,
+      messageCount: 0
+    },
+    social_gift_counter: {
+      newMessageCount: 0,
+      messageCount: 0
+    },
+    egg_carton: {
+      newMessageCount: 0,
+      messageCount: 0
+    }
+  },
+  progress: {
+    furoma_research_quest_item: {
+      name: 'Furoma Research Assignment',
+      sequential: false,
+      string: '0 / 5 tasks complete. Click for details!',
+      progress: [
+        {
+          obj_type: 'c',
+          string: 'Catch 40 mice in the Training Grounds using Bamboozler Base',
+          progress: 6,
+          repetitions: 40,
+          percentage: 15,
+          thumb:
+            'https://www.mousehuntgame.com/images/environments/18887ba8302071809158a87ac51082ff.jpg?cv=8',
+          thumbType: 'environment',
+          complete: false,
+          css_class: '',
+          hash: '9d6136a4268fd1b16a982a2b35b85e7e'
+        },
+        {
+          obj_type: 'c',
+          string: 'Catch 3 Ninja Mice in the Dojo',
+          progress: 0,
+          repetitions: 3,
+          percentage: 0,
+          thumb:
+            'https://www.mousehuntgame.com/images/mice/thumb/a763ee1f213b3eac5f9c38d291452742.gif?cv=8',
+          thumbType: 'mouse',
+          complete: false,
+          css_class: '',
+          hash: '193f7c4126acc1953d49404cf8828538'
+        },
+        {
+          obj_type: 'c',
+          string: 'Catch 10 Hapless Mice using Bamboozler Base',
+          progress: 0,
+          repetitions: 10,
+          percentage: 0,
+          thumb:
+            'https://www.mousehuntgame.com/images/mice/thumb/a04ecbeecd374c58aff155dd4dd3233b.gif?cv=8',
+          thumbType: 'mouse',
+          complete: false,
+          css_class: '',
+          hash: 'cbd7e5f24f355c53059d34788f1681ad'
+        },
+        {
+          obj_type: 'c',
+          string: 'Catch 3 Students of the Cheese Fang Mouse',
+          progress: 0,
+          repetitions: 3,
+          percentage: 0,
+          thumb:
+            'https://www.mousehuntgame.com/images/mice/thumb/afe056af5a97a858b8322c580fc2cb3f.gif?cv=8',
+          thumbType: 'mouse',
+          complete: false,
+          css_class: '',
+          hash: '9bf4ae419280e24118980f7965d81abb'
+        },
+        {
+          obj_type: 'c',
+          string: 'Catch 1 Master of the Dojo',
+          progress: 0,
+          repetitions: 1,
+          percentage: 0,
+          thumb:
+            'https://www.mousehuntgame.com/images/mice/thumb/61dc523802013db548523ffc8b324883.gif?cv=8',
+          thumbType: 'mouse',
+          complete: false,
+          css_class: '',
+          hash: 'bbec5b166aadaa518cb761ec7fe9418a'
+        }
+      ],
+      is_lunar_new_year: false
+    }
+  },
+  success: 1,
+  inventory: [],
+  trap_image: {
+    is_large: false,
+    show_zoom_button: false,
+    user_id: 8638696,
+    layers: {
+      base: {
+        type: 'bamboo_base',
+        url: 'https://www.mousehuntgame.com/images/items/bases/trap_small/259412be9578cda8e4fc6d320706daee.png?cv=8',
+        left: 0,
+        top: 0,
+        width: null
+      },
+      weapon: {
+        type: 'polar_vortex_weapon',
+        url: 'https://www.mousehuntgame.com/images/items/weapons/trap_small/13bd7a2583ae1233becda5e37b42c534.png?cv=8',
+        skin: 'no_skin'
+      },
+      bait: {
+        type: 'gouda_cheese',
+        url: 'https://www.mousehuntgame.com/images/items/bait/trap_small/e3ba0edf2bb49b6811a75262787339df.png?cv=8',
+        left: 0,
+        top: 0,
+        width: null
+      }
+    },
+    limited_edition: true,
+    auras: {
+      MiniEventLabyrinthLostChest: {
+        status: 'hidden',
+        expiry: 'January 29, 2026 @ 4:29pm (Local Time)'
+      },
+      MiniEventFestiveAura: {
+        status: 'active',
+        expiry: 'March 10, 2026 @ 3:00am (Local Time)'
+      },
+      QuestRelicHunter: {
+        status: 'hidden',
+        expiry: 'January 29, 2026 @ 4:29pm (Local Time)'
+      },
+      MiniEventPillowcase: {
+        status: 'hidden',
+        expiry: 'Jan 29 2026 @ 4:29pm'
+      },
+      QuestChromeAura: {
+        status: 'hidden',
+        expiry: 'January 29, 2026 @ 4:29pm (Local Time)'
+      },
+      QuestSpookyAura: {
+        status: 'hidden',
+        expiry: 'January 29, 2026 @ 4:29pm (Local Time)'
+      },
+      QuestLightningAura: {
+        status: 'hidden',
+        expiry: 'January 29, 2026 @ 4:29pm (Local Time)'
+      },
+      QuestAnniversaryAura: {
+        status: 'hidden',
+        expiry: 'January 29, 2026 @ 4:29pm (Local Time)'
+      },
+      QuestJetStreamAura: {
+        status: 'hidden',
+        expiry: 'January 29, 2026 @ 4:29pm (Local Time)'
+      },
+      QuestMillenniaura: {
+        status: 'hidden',
+        expiry: 'January 29, 2026 @ 4:29pm (Local Time)'
+      },
+      QuestDragonsMightAura: {
+        status: 'hidden',
+        expiry: 'January 29, 2026 @ 4:29pm (Local Time)'
+      }
+    },
+    num_visible_auras: 1
+  }
+};
+const eventRegistry = {};
+const jsDialog = {};
+const hg = {};
+const user = {};
+user.environment_type = 'environment_type';
+user.quests = {};
+// MH functions
+function $() {}
+// MH & my-mh-aid functions
+const MOUSEHUNT_BASE_URL = 'https://www.mousehuntgame.com/';
+const eventLocation = 'library_assignment';
+function logging(...any) {
+  const debug = true;
+  if (debug) {
+    console.groupCollapsed(new Date(), ...any);
+    console.log(Error().stack);
+    console.groupEnd();
+  }
+}
+function armAllTraps(bait, weapon, base, charm) {
+  console.log(bait, weapon, base, charm);
+}
+
+// #furomaAssignment
+if (eventLocation === 'library_assignment') furomaAssignment();
+function furomaAssignment() {
+  const isProd = false;
+  if (eventLocation !== 'library_assignment') return;
+  logging('furomaAssignment_0.0.0.0.1');
+  // my own hard-coded constants
+  /** localStorage settings */
+  const defaultSettings = {
+    traps: {
+      default: ['Gouda Cheese', 'best.weapon.tactical', 'Seasonal Gift', 'None']
+    }
+  };
+  const settings = defaultSettings;
+  // MH constants
+  const quest =
+    user.quests.QuestFuromaResearch ||
+    user.quests.QuestPagodaResearch ||
+    user.quests.QuestAdvancedPagodaResearch;
+  const furomaAssignmentUtility = (() => {
+    const utils = {
+      // values
+      /** ajax URI */
+      URI: 'managers/ajax/users/questsprogress.php',
+      /** Set immutable fields */
+      setImmutable() {
+        const immutableFields = ['URI'];
+        for (let i = 0; i < immutableFields.length; i++) {
+          const immutableField = immutableFields[i];
+          Object.defineProperty(utils, immutableField, {
+            // value: 'This cannot be changed',
+            writable: false, // Makes the field immutable
+            configurable: false, // Prevents deletion or re-configuration of the field
+            enumerable: true // Makes the field visible during enumeration (e.g., in a for...in loop)
+          });
+        }
+      },
+      /** trapState, default: xxx */
+      trapState: 'default',
+      environmentType: 'dojo',
+      bait: '',
+      weapon: '',
+      base: '',
+      trinket: '',
+      /** start running */
+      run() {
+        logging('start furomaAssignment');
+        this.autoSettingsPromise()
+          .then(this.checkAssignmentPromise)
+          .then(this.handleTrapPromise);
+      },
+      /** auto settings */
+      autoSettingsPromise() {
+        logging('start autoSettingsPromise');
+        return new Promise((resolve, reject) => {
+          // auto settings for running if necessary and then invoke next promise
+          resolve();
+        });
+      },
+      /**
+       * Check library assignment.
+       * Smash research quest item if assignment contains following keywords:
+       * Zugzwang, Onyx Mallet, Maki Cheese.
+       */
+      checkAssignmentPromise() {
+        logging(`start checkAssignmentPromise`);
+        return new Promise((resolve, reject) => {
+          console.log(`eventLocation: ${eventLocation}, quest:`, quest);
+          if (eventLocation !== 'library_assignment' || !quest) {
+            console.log('Have no assignment,', resolve);
+            if (resolve) resolve();
+            return;
+          }
+          console.log('fetch assignment data and parse progress', resolve);
+          utils
+            .fetchLibraryAssignmentDataPromise()
+            .then(utils.parseProgress)
+            .then(() => {
+              if (resolve) resolve();
+            });
+        });
+      },
+      /**
+       * A promise wrap of ajax query assignment progress.
+       * Utility-like, without any logic inside.
+       */
+      fetchLibraryAssignmentDataPromise() {
+        logging(`start fetchLibraryAssignmentDataPromise`);
+        return new Promise((resolve, reject) => {
+          this.ajax(null, {}, resolve);
+        });
+      },
+      parseProgress(assignmentData) {
+        logging(`start parseProgress(`, assignmentData);
+        return new Promise((resolve, reject) => {
+          const progress = assignmentData['progress'];
+          let assignment = null;
+          for (const key in progress) {
+            if (!Object.hasOwn(progress, key)) continue;
+            assignment = progress[key];
+          }
+          const tasks = assignment['progress'];
+          for (let i = 0; i < tasks.length; i++) {
+            const task = tasks[i];
+            const percentage = parseInt(task['percentage']);
+            if (percentage === 100) continue;
+            const content = task['string'];
+            utils.parseContent(content);
+            break;
+          }
+          if (resolve) resolve();
+        });
+      },
+      parseContent(string) {
+        if (string.indexOf('Hapless') > -1)
+          this.environmentType = 'meditation_room';
+        else if (string.indexOf('Master of the Dojo') > -1) {
+          this.environmentType = 'pinnacle_chamber';
+          this.bait = 'Rumble Cheese';
+        } else if (string.indexOf('Masters of the Cheese Belt') > -1) {
+          this.environmentType = 'meditation_room';
+          this.bait = 'Glutter Cheese';
+        } else if (string.indexOf('Masters of the Cheese Fang') > -1) {
+          this.environmentType = 'meditation_room';
+          this.bait = 'Combat Cheese';
+        } else if (string.indexOf('Masters of the Cheese Claw') > -1) {
+          this.environmentType = 'meditation_room';
+          this.bait = 'Susheese Cheese';
+        }
+        if (string.indexOf('Training Grounds') > -1)
+          this.environmentType = 'training_grounds';
+        if (string.indexOf('in the Dojo') > -1) this.environmentType = 'dojo';
+        if (string.indexOf('Bamboozler Base') > -1)
+          this.base = 'Bamboozler Base';
+        if (string.indexOf('Power Charm') > -1) this.trinket = 'Power Charm';
+        if (string.indexOf('Luck Charm') > -1) this.trinket = 'Luck Charm';
+      },
+      /** handle trap promise */
+      handleTrapPromise() {
+        logging('start handleTrapPromise');
+        console.log('environmentType:', utils.environmentType);
+        return new Promise((resolve, reject) => {
+          travel(utils.environmentType, 2000, () => {
+            const trap = settings.traps[utils.trapState];
+            if (utils.bait !== '') trap[0] = utils.bait;
+            if (utils.weapon !== '') trap[1] = utils.weapon;
+            if (utils.base !== '') trap[2] = utils.base;
+            if (utils.trinket !== '') trap[3] = utils.trinket;
+            if (isProd) armAllTraps(...trap);
+            else console.log(...trap);
+            if (resolve) resolve();
+          });
+        });
+      },
+      /** location ajax */
+      ajax(element, params, successCallback, errorCallback) {
+        params['last_read_journal_entry_id'] = $('#journallatestentry').data(
+          'entry-id'
+        );
+        params['uh'] = user.unique_hash;
+        $.ajax({
+          data: params,
+          dataType: 'json',
+          type: 'post',
+          url: MOUSEHUNT_BASE_URL + this.URI,
+          success: function (data) {
+            eventRegistry.doEvent('ajax_response', data);
+            if (successCallback) {
+              successCallback(data);
+            }
+          },
+          // prettier-ignore
+          error: function (data) {
+            // eslint-disable-next-line new-cap
+            const popup = new jsDialog();
+            popup.setTemplate('error');
+            popup.addToken('{*title*}', 'An error has occurred.');
+            popup.addToken('{*content*}', 'An error occurred. Please try again!');
+            popup.show();
+            if (errorCallback) errorCallback(data);
+          }
+        });
+      }
+    };
+    // initial utils
+    function init() {
+      // make fields immutable
+      utils.setImmutable();
+      // initialize values in utils if necessary
+    }
+    init();
+    return utils;
+  })();
+  furomaAssignmentUtility.run();
+  function travel(environmentType, milliseconds, callback) {
+    if (
+      isProd
+        ? MhUtils.getEnvironmentType() === environmentType
+        : user.environment_type === environmentType
+    ) {
+      if (callback) callback();
+      return;
+    }
+    const timeout = milliseconds ? milliseconds : 2000;
+    hg.utils.User.travel(environmentType, () => {
+      if (timeout >= 0) {
+        window.setTimeout(function () {
+          // console.log(callback);
+          if (callback) callback();
+          else MhUtils.reloadWithMessage('After travel. Reloading...', false);
+        }, timeout);
+      }
+    });
+  }
+}
+// End #furomaAssignment
