@@ -709,7 +709,6 @@ user.quests = {};
 function $() {}
 // MH & my-mh-aid functions
 const MOUSEHUNT_BASE_URL = 'https://www.mousehuntgame.com/';
-const eventLocation = 'library_assignment';
 function logging(...any) {
   const debug = true;
   if (debug) {
@@ -726,8 +725,9 @@ function armAllTraps(bait, weapon, base, charm) {
 if (localStorage['eventLocation'] === 'library_assignment') furomaAssignment();
 function furomaAssignment() {
   const isProd = false;
-  if (localStorage['eventLocation'] !== 'library_assignment') return;
-  logging('furomaAssignment_0.0.0.0.2');
+  const eventLocation = localStorage['eventLocation'];
+  if (eventLocation !== 'library_assignment') return;
+  logging('furomaAssignment_0.0.0.0.3');
   // my own hard-coded constants
   /** localStorage settings */
   const defaultSettings = {
