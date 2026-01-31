@@ -723,11 +723,11 @@ function armAllTraps(bait, weapon, base, charm) {
 }
 
 // #furomaAssignment
-if (eventLocation === 'library_assignment') furomaAssignment();
+if (localStorage['eventLocation'] === 'library_assignment') furomaAssignment();
 function furomaAssignment() {
   const isProd = false;
-  if (eventLocation !== 'library_assignment') return;
-  logging('furomaAssignment_0.0.0.0.1');
+  if (localStorage['eventLocation'] !== 'library_assignment') return;
+  logging('furomaAssignment_0.0.0.0.2');
   // my own hard-coded constants
   /** localStorage settings */
   const defaultSettings = {
