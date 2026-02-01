@@ -2066,7 +2066,7 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = MhUtils.getEnvironmentType();
   if (environmentType !== targetEnvironmentType) return;
-  logging('valourRift_0.6.54.34.37');
+  logging('valourRift_0.6.54.34.38');
   // move loot stat to better position and make it draggable
   try {
     $('.valourRiftHUD-towerLootContainer')
@@ -2865,7 +2865,7 @@ function valourRift() {
     console.log(`now: ${now}, logFrom: ${logFrom}, logTill: ${logTill}`);
     if (logFrom && now >= logFrom && logTill && now <= logTill)
       valourRiftUtility.logTA();
-    if (huntsLeft < 2) valourRiftUtility.logClimbing();
+    if (huntsLeft < 3) valourRiftUtility.logClimbing();
   }
   // Auto enter cheese required by upgrade
   if (!settings.minGscToEnter)
