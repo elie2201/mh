@@ -1,5 +1,6 @@
 import { MhUtils } from './my-mh-aid';
 // MH constants
+// eslint-disable-next-line no-unused-vars
 const quests = {
   asset_package_hash: '80a611d307d',
   server_info: '10.209.36.123 - web-xmas-asf7584fcf',
@@ -727,7 +728,7 @@ function furomaAssignment() {
   const isProd = false;
   const eventLocation = localStorage['eventLocation'];
   if (eventLocation !== 'library_assignment') return;
-  logging('furomaAssignment_0.0.0.0.3');
+  logging('furomaAssignment_0.0.0.0.4');
   // my own hard-coded constants
   /** localStorage settings */
   const defaultSettings = {
@@ -798,14 +799,14 @@ function furomaAssignment() {
           console.log('fetch assignment data and parse progress', resolve);
           utils
             .fetchLibraryAssignmentDataPromise()
-            .then(utils.parseProgress)
+            .then(utils.parseProgressPromise)
             .then(() => {
               if (resolve) resolve();
             });
         });
       },
       /**
-       * A promise wrap of ajax query assignment progress.
+       * A Promise wrap of ajax query assignment progress.
        * Utility-like, without any logic inside.
        */
       fetchLibraryAssignmentDataPromise() {
@@ -814,8 +815,8 @@ function furomaAssignment() {
           this.ajax(null, {}, resolve);
         });
       },
-      parseProgress(assignmentData) {
-        logging(`start parseProgress(`, assignmentData);
+      parseProgressPromise(assignmentData) {
+        logging(`start parseProgressPromise(`, assignmentData);
         return new Promise((resolve, reject) => {
           const progress = assignmentData['progress'];
           let assignment = null;
@@ -836,11 +837,11 @@ function furomaAssignment() {
         });
       },
       parseContent(string) {
-        if (string.indexOf('Hapless') > -1)
+        if (string.indexOf('Hapless') > -1) {
           this.environmentType = 'meditation_room';
-        else if (string.indexOf('Master of the Dojo') > -1) {
+          this.bait = 'Brie Cheese';
+        } else if (string.indexOf('Master of the Dojo') > -1) {
           this.environmentType = 'pinnacle_chamber';
-          this.bait = 'Rumble Cheese';
         } else if (string.indexOf('Masters of the Cheese Belt') > -1) {
           this.environmentType = 'meditation_room';
           this.bait = 'Glutter Cheese';
@@ -929,7 +930,6 @@ function furomaAssignment() {
     hg.utils.User.travel(environmentType, () => {
       if (timeout >= 0) {
         window.setTimeout(function () {
-          // console.log(callback);
           if (callback) callback();
           else MhUtils.reloadWithMessage('After travel. Reloading...', false);
         }, timeout);
