@@ -2066,7 +2066,7 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = MhUtils.getEnvironmentType();
   if (environmentType !== targetEnvironmentType) return;
-  logging('valourRift_0.6.54.34.36');
+  logging('valourRift_0.6.54.34.37');
   // move loot stat to better position and make it draggable
   try {
     $('.valourRiftHUD-towerLootContainer')
@@ -2825,9 +2825,8 @@ function valourRift() {
         if (state !== vriftStates.tower || huntsLeft > 2) return;
         const enterAt = localStorage[vriftEnterTime];
         if (enterAt) {
-          const nowLevel = log[currentLevelIndex] ? log[currentLevelIndex] : {};
-          nowLevel[enterAt] = nowStep;
-          log[currentLevelIndex] = nowLevel;
+          if (!log[currentLevelIndex]) log[currentLevelIndex] = {};
+          log[currentLevelIndex][enterAt] = nowStep;
           MyUtils.setStorage(storageKey, JSON.stringify(log));
         }
       }
