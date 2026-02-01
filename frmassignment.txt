@@ -728,7 +728,7 @@ function furomaAssignment() {
   const isProd = false;
   const eventLocation = localStorage['eventLocation'];
   if (eventLocation !== 'library_assignment') return;
-  logging('furomaAssignment_0.0.1.0.4');
+  logging('furomaAssignment_0.0.1.0.5');
   // my own hard-coded constants
   /** localStorage settings */
   const defaultSettings = {
@@ -835,9 +835,15 @@ function furomaAssignment() {
           }
           tasks.forEach((v, i) => {
             if (parseInt(v['percentage']) !== 100)
-              if (v['string'].indexOf('Power Charm') > -1)
+              if (
+                v['string'].indexOf('Power Charm') > -1 &&
+                utils.environmentType === 'dojo'
+              )
                 utils.trinket = 'Power Charm';
-              else if (v['string'].indexOf('Luck Charm') > -1)
+              else if (
+                v['string'].indexOf('Luck Charm') > -1 &&
+                utils.environmentType === 'dojo'
+              )
                 utils.trinket = 'Luck Charm';
           });
           console.log(utils);
