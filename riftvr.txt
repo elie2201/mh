@@ -2066,7 +2066,7 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = MhUtils.getEnvironmentType();
   if (environmentType !== targetEnvironmentType) return;
-  logging('valourRift_0.6.53.33.34');
+  logging('valourRift_0.6.54.34.35');
   // move loot stat to better position and make it draggable
   try {
     $('.valourRiftHUD-towerLootContainer')
@@ -2561,7 +2561,7 @@ function valourRift() {
     ? MyUtils.parseDateTime(settings.logTimeTill)
     : logFrom
       ? currentLevelIndex > 18
-        ? logFrom + 48 * 60 * 60 * 1000
+        ? logFrom + (isUU ? 96 : 48) * 60 * 60 * 1000
         : currentLevelIndex > 11
           ? logFrom + 24 * 60 * 60 * 1000
           : null
@@ -2825,7 +2825,8 @@ function valourRift() {
         if (state !== vriftStates.tower || huntsLeft > 2) return;
         const enterAt = localStorage[vriftEnterTime];
         if (enterAt) {
-          log[enterAt] = nowStep;
+          const nowLevel = log[currentLevelIndex] ? log[currentLevelIndex] : {};
+          nowLevel[enterAt] = nowStep;
           MyUtils.setStorage(storageKey, JSON.stringify(log));
         }
       }
@@ -2860,11 +2861,12 @@ function valourRift() {
     return utils;
   })();
   const now = Date.now();
-  console.log(`now: ${now}, logFrom: ${logFrom}, logTill: ${logTill}`);
-  if (logFrom && now >= logFrom && logTill && now <= logTill)
-    valourRiftUtility.logTA();
-  if (state === vriftStates.tower && huntsLeft < 2)
-    valourRiftUtility.logClimbing();
+  if (state === vriftStates.tower) {
+    console.log(`now: ${now}, logFrom: ${logFrom}, logTill: ${logTill}`);
+    if (logFrom && now >= logFrom && logTill && now <= logTill)
+      valourRiftUtility.logTA();
+    if (huntsLeft < 2) valourRiftUtility.logClimbing();
+  }
   // Auto enter cheese required by upgrade
   if (!settings.minGscToEnter)
     settings.minGscToEnter = cheeseQuantityByUpgrade[currentLevelIndex];
