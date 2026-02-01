@@ -728,7 +728,7 @@ function furomaAssignment() {
   const isProd = false;
   const eventLocation = localStorage['eventLocation'];
   if (eventLocation !== 'library_assignment') return;
-  logging('furomaAssignment_0.0.1.0.6');
+  logging('furomaAssignment_0.0.1.0.7');
   // my own hard-coded constants
   /** localStorage settings */
   const defaultSettings = {
@@ -818,6 +818,10 @@ function furomaAssignment() {
       parseProgressPromise(assignmentData) {
         logging(`start parseProgressPromise(`, assignmentData);
         return new Promise((resolve, reject) => {
+          if (!assignmentData) {
+            if (resolve) resolve();
+            return;
+          }
           const progress = assignmentData['progress'];
           let assignment = null;
           for (const key in progress) {
