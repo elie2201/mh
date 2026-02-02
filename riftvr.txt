@@ -2066,11 +2066,14 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = MhUtils.getEnvironmentType();
   if (environmentType !== targetEnvironmentType) return;
-  logging('valourRift_0.6.54.34.38');
+  logging('valourRift_0.6.57.35.38');
   // move loot stat to better position and make it draggable
   try {
     $('.valourRiftHUD-towerLootContainer')
       .css({ position: 'absolute', top: 80 })
+      .draggable();
+    $('.valourRiftHUD-huntsRemaining')
+      .css({ position: 'absolute', top: 55 })
       .draggable();
   } catch (error) {
     console.log(error);
@@ -2150,7 +2153,7 @@ function valourRift() {
     uuRunExtraSecret: 1000,
     isPrestigePush: false,
     isUUU: false,
-    ppRunNeedCf: 800,
+    ppRunNeedCf: 900,
     ppRunNeedBait: 900,
     isAutoAugment: true,
     isSigilHunter: '',
@@ -2622,9 +2625,11 @@ function valourRift() {
        * upgrade 10/100/25後,應該可以 normal/normal/normal/SSteUU/normal/normal/UU循環
        */
       autoAugmentation() {
+        logging(`Start autoAugmentation`);
         let msg = null;
         if (currentLevelIndex < 8) return;
-        // Since 5-3-3,未達 6-6-4, enable Sigil Hunter
+        msg = 'From 5/60/15,未達 6/90/20, try Sigil Hunter';
+        console.log(msg);
         if (
           settings.isSigilHunter === '' &&
           this.items.gold.quantity >= this.augmentations.sigilHunter.howMuchNeed
@@ -2634,7 +2639,9 @@ function valourRift() {
           settings.isSigilHunter = true;
         }
         if (currentLevelIndex < 13) return;
-        // Since 6-6-4, if unlocked UU/SSte and have enough gold/sigil/secret, run UU/SSteUU
+        msg =
+          'From 6/6/4, if unlocked UU/SSte and have enough gold/sigil/secret, try UU/SSteUU';
+        console.log(msg);
         // enable Secret Research when enough sigil in normal tower.
         // UU必要條件: (UU+額外的 frags)+SH+SSi+額外的 secret
         this.isOkUU =
@@ -2661,9 +2668,9 @@ function valourRift() {
               settings.uuRunExtraSecret;
         msg = `Is UU ok? ${this.isOkUU}, Is UU with stringStepping ok? ${this.isOkSsteUU}`;
         isProd ? console.plog(msg) : console.log(msg);
-        // 先檢查 Prestige Push
-        if (settings.isPrestigePush) {
-          // 滿足必要條件才啟動 PP auto,且無視設定,除了 ER外所有 augmentation都必須啟用.
+        // 先檢查 UUU
+        if (settings.isUUU) {
+          // 滿足必要條件才啟動 UUU auto,且無視設定,除了 ER外所有 augmentation都必須啟用.
           if (this.isReadyPP()) {
             settings.isUltimateUmbra = true;
             settings.isSigilHunter = true;
@@ -2672,7 +2679,24 @@ function valourRift() {
             settings.isStringStepping = true;
             return;
           }
-          // 不滿足時後面的 UU auto不跑,在 normal tower農資源
+          // 不滿足時後面的 auto都不跑,在 normal tower農資源
+          console.log('Not UUU ready, keep farming in normal tower');
+          this.checkSecretResearch();
+          return;
+        }
+        // 再來檢查 Prestige Push
+        if (settings.isPrestigePush) {
+          // 滿足必要條件才啟動 PP auto,且無視設定,除了 ER外所有 augmentation都必須啟用.
+          if (this.isReadyPP()) {
+            settings.isUltimateUmbra = true;
+            settings.isSigilHunter = true;
+            settings.isSuperSiphon = true;
+            settings.isSecretResearch = true;
+            settings.isStringStepping = true;
+            settings.isAutoAura = true;
+            return;
+          }
+          // 不滿足時後面的 auto都不跑,在 normal tower農資源
           console.log('Not PP ready, keep farming in normal tower');
           this.checkSecretResearch();
           return;
@@ -3011,6 +3035,16 @@ function valourRift() {
         setTimeout(() => {
           user.quests.QuestRiftValour.state = 'tower';
           user.quests.QuestRiftValour.floor = 1;
+          if (settings.isAutoAura)
+            setTimeout(() => {
+              hg.utils.UserInventory.useConvertible(
+                'cursed_skull_convertible',
+                1,
+                () => {
+                  console.log('Use cursed skull in PP');
+                }
+              );
+            }, 10000);
           valourRift();
         }, 3000);
         /* setTimeout(() => {
