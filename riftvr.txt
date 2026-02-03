@@ -1962,77 +1962,7 @@ user.quests = {};
 user.quests.QuestRiftValour = QuestRiftValour;
 // const activejsDialog = {};
 // function $() {}
-const MyUtils = {
-  trimToEmpty(str) {
-    return this.trimToDefault(str);
-  },
-  trimToDefault(str, deflt) {
-    return str === 0 ? '0' : ((str || (deflt ? deflt : '')) + '').trim();
-  },
-  parseQuantity(qty) {
-    const strQty = (qty || 0) + '';
-    const rtn = parseInt(strQty.replaceAll(',', ''));
-    return Number.isNaN(rtn) ? 0 : rtn;
-  },
-  getStorageToObject(keyName, objDefault) {
-    let obj = getStorage(keyName);
-    let bCheckNewProp = true;
-    if (isNullOrUndefined(obj)) {
-      obj = JSON.stringify(objDefault);
-      setStorage(keyName, obj);
-      bCheckNewProp = false;
-    }
-    obj = JSON.parse(obj);
-    if (bCheckNewProp) {
-      if (assignMissingDefault(obj, objDefault)) {
-        setStorage(keyName, JSON.stringify(obj));
-      }
-    }
-    return obj;
-    function getStorage(name) {
-      // check if the web browser support HTML5 storage
-      if ('localStorage' in window && !isNullOrUndefined(window.localStorage)) {
-        return window.localStorage.getItem(name);
-      }
-    }
-    function setStorage(name, value) {
-      // check if the web browser support HTML5 storage
-      if ('localStorage' in window && !isNullOrUndefined(window.localStorage)) {
-        window.localStorage.setItem(name, value);
-      }
-    }
-    function isNullOrUndefined(obj) {
-      return (
-        obj === null ||
-        obj === undefined ||
-        obj === 'null' ||
-        obj === 'undefined'
-      );
-    }
-    function assignMissingDefault(target, source) {
-      let isResave = false;
-      for (const key in source) {
-        if (
-          Object.prototype.hasOwnProperty.call(source, key) &&
-          !Object.prototype.hasOwnProperty.call(target, key)
-        ) {
-          const element = source[key];
-          target[key] = element;
-          isResave = true;
-        }
-      }
-      return isResave;
-    }
-  }
-};
-const MhUtils = {
-  getEnvironmentType() {
-    const rtn = MyUtils.trimToEmpty(user.environment_type);
-    // console.plog(`Current location environment_type: ${rtn}`);
-    return rtn;
-  },
-  storeError() {}
-};
+import { MyUtils, MhUtils } from './my-mh-aid';
 function logging(...any) {
   const debug = true;
   if (debug) {
@@ -2041,23 +1971,11 @@ function logging(...any) {
     console.groupEnd();
   }
 }
-function getRandomInteger(min, max) {
-  return parseInt(min + Math.random() * (max - min));
-}
 function armAllTraps(bait, weapon, base, charm) {
   console.log(bait, weapon, base, charm);
 }
-// function travel(environmentType, milliseconds, callback) {}
-function completeTransaction(
-  isPurchase,
-  itemType,
-  itemQuantity,
-  isKingsCartItem,
-  successCallback
-) {}
 function doubleEgg(isToEnable) {}
 function litCandle(actionType) {}
-function getBaitItemId() {}
 
 // #valourRift
 if (MhUtils.getEnvironmentType() === 'rift_valour') valourRift();
@@ -2066,13 +1984,16 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = MhUtils.getEnvironmentType();
   if (environmentType !== targetEnvironmentType) return;
-  logging('valourRift_0.6.57.35.38');
+  logging('valourRift_0.6.58.36.38');
   // move loot stat to better position and make it draggable
   try {
     $('.valourRiftHUD-towerLootContainer')
       .css({ position: 'absolute', top: 80 })
       .draggable();
     $('.valourRiftHUD-huntsRemaining')
+      .css({ position: 'absolute', top: 55 })
+      .draggable();
+    $('.valourRiftHUD-powerUpContainer')
       .css({ position: 'absolute', top: 55 })
       .draggable();
   } catch (error) {
@@ -2628,7 +2549,7 @@ function valourRift() {
         logging(`Start autoAugmentation`);
         let msg = null;
         if (currentLevelIndex < 8) return;
-        msg = 'From 5/60/15,未達 6/90/20, try Sigil Hunter';
+        msg = 'From 5/60/15, try Sigil Hunter';
         console.log(msg);
         if (
           settings.isSigilHunter === '' &&
@@ -2640,7 +2561,7 @@ function valourRift() {
         }
         if (currentLevelIndex < 13) return;
         msg =
-          'From 6/6/4, if unlocked UU/SSte and have enough gold/sigil/secret, try UU/SSteUU';
+          'From 6/90/20, try SR/UU/SSteUU if unlocked and enough sigil/secret';
         console.log(msg);
         // enable Secret Research when enough sigil in normal tower.
         // UU必要條件: (UU+額外的 frags)+SH+SSi+額外的 secret
@@ -3182,9 +3103,12 @@ function valourRift() {
   const autoBuy = () => {
     logging(`autoBuy in ${environmentType}`);
     if (
-      getBaitItemId() === 2906 &&
+      MhUtils.getBaitItemId() === 2906 &&
       valourRiftUtility.items.gsc.quantity <
-        getRandomInteger(settings.minCheeseQty - 5, settings.minCheeseQty + 5)
+        MyUtils.getRandomInteger(
+          settings.minCheeseQty - 5,
+          settings.minCheeseQty + 5
+        )
     ) {
       logging('auto buy Gauntlet');
       const itemType = 'gauntlet_string_cheese';
@@ -3192,7 +3116,7 @@ function valourRift() {
         valourRiftUtility.items.elixir.quantity,
         settings.buyCheeseQty
       );
-      completeTransaction(true, itemType, itemQuantity, false);
+      MhUtils.completeTransaction(true, itemType, itemQuantity, false);
     }
   };
   if (settings.isAutoBuyItem)
