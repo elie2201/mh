@@ -1984,7 +1984,7 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = MhUtils.getEnvironmentType();
   if (environmentType !== targetEnvironmentType) return;
-  logging('valourRift_0.6.58.36.38');
+  logging('valourRift_0.6.59.36.38');
   // move loot stat to better position and make it draggable
   try {
     $('.valourRiftHUD-towerLootContainer')
@@ -2072,6 +2072,8 @@ function valourRift() {
     logTimeTill: '',
     uuRunExtraFrags: 0,
     uuRunExtraSecret: 1000,
+    travelTo: '',
+    travelStep: 22222,
     isPrestigePush: false,
     isUUU: false,
     ppRunNeedCf: 900,
@@ -2450,6 +2452,11 @@ function valourRift() {
   const state = MyUtils.trimToEmpty(quest.state.toLowerCase());
   const floor = MyUtils.parseQuantity(quest.floor);
   const nowStep = MyUtils.parseQuantity(quest.current_step);
+  if (state === vriftStates.tower && settings.travelTo !== '') {
+    if (nowStep >= settings.travelStep)
+      MhUtils.pauseByTraveling(settings.travelTo !== '');
+    return;
+  }
   const huntsLeft = MyUtils.parseQuantity(quest.hunts_remaining);
   const stepsToEclipse =
     MyUtils.parseQuantity(quest.prestige_total_step) -
