@@ -1,4 +1,4 @@
-import { MhUtils } from './my-mh-aid';
+import { MhUtils } from './my-mh-aid-dev';
 // MH constants
 // eslint-disable-next-line no-unused-vars
 const quests = {
