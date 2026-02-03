@@ -728,7 +728,7 @@ function furomaAssignment() {
   const isProd = false;
   const eventLocation = localStorage['eventLocation'];
   if (eventLocation !== 'library_assignment') return;
-  logging('furomaAssignment_0.0.1.0.7');
+  logging('furomaAssignment_0.0.1.0.8');
   // my own hard-coded constants
   /** localStorage settings */
   const defaultSettings = {
@@ -818,17 +818,20 @@ function furomaAssignment() {
       parseProgressPromise(assignmentData) {
         logging(`start parseProgressPromise(`, assignmentData);
         return new Promise((resolve, reject) => {
-          if (!assignmentData) {
+          const tryResolve = () => {
             if (resolve) resolve();
-            return;
-          }
+          };
+          if (!assignmentData) return tryResolve();
           const progress = assignmentData['progress'];
+          if (!progress) return tryResolve();
           let assignment = null;
           for (const key in progress) {
             if (!Object.hasOwn(progress, key)) continue;
             assignment = progress[key];
           }
+          if (!assignment) return tryResolve();
           const tasks = assignment['progress'];
+          if (!tasks) return tryResolve();
           for (let i = 0; i < tasks.length; i++) {
             const task = tasks[i];
             const percentage = parseInt(task['percentage']);
@@ -851,7 +854,7 @@ function furomaAssignment() {
                 utils.trinket = 'Luck Charm';
           });
           console.log(utils);
-          if (resolve) resolve();
+          return tryResolve();
         });
       },
       parseContent(string) {
