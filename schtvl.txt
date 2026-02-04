@@ -1,120 +1,28 @@
-const environmentTypeIdDictionary = {
-  acolyte_realm: 1,
-  meadow: 18,
-  town_of_gnawnia: 28,
-  ronzas_traveling_shoppe: 24,
-  windmill: 30,
-  harbour: 13,
-  mountain: 20,
-  winter_hunt_fortress: 68,
-  winter_hunt_workshop: 70,
-  winter_hunt_grove: 69,
-  kings_arms: 38,
-  tournament_hall: 37,
-  kings_gauntlet: 15,
-  calm_clearing: 4,
-  great_gnarled_tree: 12,
-  halloween_event_location: 64,
-  lagoon: 17,
-  laboratory: 16,
-  mousoleum: 21,
-  town_of_digby: 27,
-  bazaar: 3,
-  pollution_outbreak: 45,
-  training_grounds: 29,
-  dojo: 8,
-  meditation_room: 19,
-  pinnacle_chamber: 23,
-  catacombs: 6,
-  forbidden_grove: 11,
-  cape_clawed: 5,
-  elub_shore: 10,
-  nerg_plains: 22,
-  derr_dunes: 7,
-  jungle_of_dread: 14,
-  dracano: 9,
-  balacks_cove: 2,
-  claw_shot_city: 43,
-  train_station: 44,
-  fort_rox: 54,
-  queso_river: 59,
-  queso_plains: 57,
-  queso_quarry: 58,
-  queso_geyser: 61,
-  super_brie_factory: 60,
-  ss_huntington_ii: 26,
-  seasonal_garden: 31,
-  zugzwang_tower: 32,
-  zugzwang_library: 36,
-  slushy_shoreline: 39,
-  iceberg: 40,
-  sunken_city: 47,
-  desert_warpath: 33,
-  desert_city: 34,
-  desert_oasis: 35,
-  lost_city: 41,
-  sand_dunes: 42,
-  fungal_cavern: 50,
-  labyrinth: 52,
-  ancient_city: 51,
-  moussu_picchu: 56,
-  floating_islands: 63,
-  foreword_farm: 65,
-  prologue_pond: 66,
-  table_of_contents: 67,
-  bountiful_beanstalk: 71,
-  school_of_sorcery: 72,
-  draconic_depths: 73,
-  rift_gnawnia: 46,
-  rift_burroughs: 48,
-  rift_whisker_woods: 49,
-  rift_furoma: 53,
-  rift_bristle_woods: 55,
-  rift_valour: 62
-};
-const MOUSEHUNT_BASE_URL = 'https://www.mousehuntgame.com/';
-/*
- */
+import { MhUtils } from './my-mh-aid-dev';
+
 const user = {};
-const app = {};
 const hg = {};
 
-/** get sn_user_id */
-// function getSnUserId(params) {
-//   return (user.sn_user_id + '').trim();
-// }
 function logging(...any) {
   console.log(...any);
 }
-function travel(environmentType, milliseconds, callback) {
-  if (user.environment_type == environmentType) return;
-  const timeout = milliseconds ? milliseconds : 2000;
-  user.environment_type = environmentType;
-  user.environment_id = environmentTypeIdDictionary[environmentType];
-  /* hg.utils.User.travel(
-    environmentType,
-    function (data) {
-      activejsDialog.hide();
-      hg.utils.PageUtil.setPage('Camp');
-    },
-    function () {}
-  ); */
-  app.pages.TravelPage.travel(environmentType);
-  if (timeout >= 0) {
-    window.setTimeout(function () {
-      console.log(callback);
-      if (callback) callback();
-      else window.location.href = MOUSEHUNT_BASE_URL;
-    }, timeout);
-  }
-}
 
 // #scheduledTravel
+scheduledTravel(
+  '2026-02-05T08:01:00',
+  '2026-02-05T08:30:00',
+  'dojo',
+  1000,
+  () => {
+    localStorage.eventLocation = 'library_assignment';
+    MhUtils.reloadWithMessage('After travel, Reloading...', false);
+  }
+);
 // scheduledTravel('2025-02-06T08:01:00', '2025-02-06T08:30:00', 'laboratory');
 // scheduledTravel('2024-10-17T06:35:00','2024-10-17T06:59:00','claw_shot_city');
 // scheduledTravel('2024-10-14T06:35:00','2024-10-14T06:59:00','train_station');
 // 每天往返 CSC跟 GES
-/* const snuid = getSnUserId();
+/* const snuid = MhUtils.getSnUserId();
 if (
   [
     'hg_d783ff747d3b60073ef541d335ff901d',
@@ -147,14 +55,18 @@ if (
   scheduledTravel('08:50:00', '09:14:00', 'claw_shot_city');
 } */
 // scheduledTravel('2025-02-06T08:01:00','2025-02-06T08:30:00','fort_rox');
-// prettier-ignore
-scheduledTravel('2026-01-20T16:01:00', '2026-01-20T16:30:00', 'seasonal_garden');
+// scheduledTravel('2026-01-20T16:01:00', '2026-01-20T16:30:00', 'seasonal_garden');
 // scheduledTravel('2024-09-27T04:50:00','2024-09-27T05:10:00','ancient_city');
-// scheduledTravel('2025-08-26T08:01:00', '2025-08-26T08:30:00', 'rift_furoma');
-// prettier-ignore
-function scheduledTravel( beginTime, endTime, environmentType, timeout, callback) {
+// scheduledTravel('2026-02-05T01:58:00', '2026-02-05T02:30:00', 'rift_furoma');
+function scheduledTravel(
+  beginTime,
+  endTime,
+  environmentType,
+  timeout,
+  callback
+) {
   const isProd = false;
-  const version = `scheduledTravel_1.0.2.0.0(${beginTime}, ${endTime}, ${environmentType})`;
+  const version = `scheduledTravel_1.0.3.0.0(${beginTime}, ${endTime}, ${environmentType})`;
   isProd ? logging(version) : console.log(version);
   const isoDate = new Date().toLocaleDateString('en-CA');
   if (beginTime.indexOf('T') < 0) beginTime = isoDate + 'T' + beginTime;
@@ -162,16 +74,23 @@ function scheduledTravel( beginTime, endTime, environmentType, timeout, callback
   isProd ? console.plog(beginTime, endTime) : console.log(beginTime, endTime);
   if (Date.now() < Date.parse(beginTime)) return;
   if (Date.now() > Date.parse(endTime)) return;
-  if (user.environment_type === environmentType) return;
+  const nowEnvironmentType = isProd
+    ? MhUtils.getEnvironmentType()
+    : user.environment_type;
+  if (nowEnvironmentType === environmentType) return;
   isProd
     ? console.plog(environmentType, beginTime, endTime, callback)
     : console.log(environmentType, beginTime, endTime, callback);
   isProd
-    ? travel(environmentType, timeout, callback)
+    ? MhUtils.travel(environmentType, timeout, callback)
     : travelMock(environmentType, timeout, callback);
 }
 function travelMock(environmentType, milliseconds, callback) {
-  if (user.environment_type == environmentType) return;
+  const MOUSEHUNT_BASE_URL = 'https://www.mousehuntgame.com/';
+  if (user.environment_type === environmentType) {
+    if (callback) callback();
+    return;
+  }
   const timeout = milliseconds ? milliseconds : 2000;
   hg.utils.User.travel(environmentType, () => {
     if (timeout >= 0) {
