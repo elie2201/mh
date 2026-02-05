@@ -9,8 +9,8 @@ function logging(...any) {
 
 // #scheduledTravel
 scheduledTravel(
-  '2026-02-05T08:01:00',
-  '2026-02-05T08:30:00',
+  '2026-02-06T08:01:00',
+  '2026-02-06T08:30:00',
   'dojo',
   1000,
   () => {
