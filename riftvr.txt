@@ -1984,7 +1984,7 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = MhUtils.getEnvironmentType();
   if (environmentType !== targetEnvironmentType) return;
-  logging('valourRift_0.6.60.36.39');
+  logging('valourRift_0.6.60.36.40');
   // move loot stat to better position and make it draggable
   try {
     $('.valourRiftHUD-towerLootContainer')
@@ -2778,12 +2778,11 @@ function valourRift() {
         const log = MyUtils.getStorageToObject(storageKey, {});
         if (state !== vriftStates.tower) return;
         if (!log[currentLevelIndex]) log[currentLevelIndex] = {};
-        if (!log[currentLevelIndex][hourlyStep])
-          log[currentLevelIndex][hourlyStep] = {};
         const date = MyUtils.toISODateString(today);
-        if (!log[currentLevelIndex][hourlyStep][date])
-          log[currentLevelIndex][hourlyStep][date] = {};
-        log[currentLevelIndex][hourlyStep][date][today.getHours()] = nowStep;
+        if (!log[currentLevelIndex][date]) log[currentLevelIndex][date] = {};
+        if (!log[currentLevelIndex][date][hourlyStep])
+          log[currentLevelIndex][date][hourlyStep] = {};
+        log[currentLevelIndex][date][hourlyStep][today.getHours()] = nowStep;
         if (huntsLeft < 3) {
           const enterAt = localStorage[vriftEnterTime];
           if (enterAt) {
