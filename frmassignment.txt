@@ -728,7 +728,7 @@ function furomaAssignment() {
   const isProd = false;
   const eventLocation = localStorage['eventLocation'];
   if (eventLocation !== 'library_assignment') return;
-  logging('furomaAssignment_0.0.1.0.8');
+  logging('furomaAssignment_0.0.1.0.9');
   // my own hard-coded constants
   /** localStorage settings */
   const defaultSettings = {
@@ -860,7 +860,7 @@ function furomaAssignment() {
       parseContent(string) {
         if (string.indexOf('Hapless') > -1) {
           this.environmentType = 'meditation_room';
-          this.bait = 'Brie Cheese';
+          if (string.indexOf('in the Dojo') < 0) this.bait = 'Brie Cheese';
         } else if (string.indexOf('Master of the Dojo') > -1) {
           this.environmentType = 'pinnacle_chamber';
           this.bait = 'Rumble Cheese';
