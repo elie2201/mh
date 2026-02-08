@@ -728,7 +728,7 @@ function furomaAssignment() {
   const isProd = false;
   const eventLocation = localStorage['eventLocation'];
   if (eventLocation !== 'library_assignment') return;
-  logging('furomaAssignment_0.0.1.0.10');
+  logging('furomaAssignment_0.0.1.0.11');
   // my own hard-coded constants
   /** localStorage settings */
   const defaultSettings = {
@@ -772,7 +772,8 @@ function furomaAssignment() {
         logging('start furomaAssignment');
         this.autoSettingsPromise()
           .then(this.checkAssignmentPromise)
-          .then(this.handleTrapPromise);
+          .then(this.handleTrapPromise)
+          .then(() => 1);
       },
       /** auto settings */
       autoSettingsPromise() {
@@ -864,6 +865,10 @@ function furomaAssignment() {
         } else if (string.indexOf('Master of the Dojo') > -1) {
           this.environmentType = 'pinnacle_chamber';
           this.bait = 'Rumble Cheese';
+          if (string.indexOf('Ambush Trap') > -1) {
+            this.weapon = 'Ambush';
+            this.trinket = 'Festive Ultimate Luck';
+          }
         } else if (
           string.indexOf('Master of the Cheese Belt') > -1 ||
           string.indexOf('Masters of the Cheese Belt') > -1
