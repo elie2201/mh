@@ -728,7 +728,7 @@ function furomaAssignment() {
   const isProd = false;
   const eventLocation = localStorage['eventLocation'];
   if (eventLocation !== 'library_assignment') return;
-  logging('furomaAssignment_0.0.1.0.9');
+  logging('furomaAssignment_0.0.1.0.10');
   // my own hard-coded constants
   /** localStorage settings */
   const defaultSettings = {
@@ -864,13 +864,22 @@ function furomaAssignment() {
         } else if (string.indexOf('Master of the Dojo') > -1) {
           this.environmentType = 'pinnacle_chamber';
           this.bait = 'Rumble Cheese';
-        } else if (string.indexOf('Masters of the Cheese Belt') > -1) {
+        } else if (
+          string.indexOf('Master of the Cheese Belt') > -1 ||
+          string.indexOf('Masters of the Cheese Belt') > -1
+        ) {
           this.environmentType = 'meditation_room';
           this.bait = 'Glutter Cheese';
-        } else if (string.indexOf('Masters of the Cheese Fang') > -1) {
+        } else if (
+          string.indexOf('Master of the Cheese Fang') > -1 ||
+          string.indexOf('Masters of the Cheese Fang') > -1
+        ) {
           this.environmentType = 'meditation_room';
           this.bait = 'Combat Cheese';
-        } else if (string.indexOf('Masters of the Cheese Claw') > -1) {
+        } else if (
+          string.indexOf('Master of the Cheese Claw') > -1 ||
+          string.indexOf('Masters of the Cheese Claw') > -1
+        ) {
           this.environmentType = 'meditation_room';
           this.bait = 'Susheese Cheese';
         }
