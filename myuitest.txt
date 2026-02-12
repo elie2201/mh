@@ -1,0 +1,91 @@
+// import { MyUtils, MhUtils } from './my-mh-aid-dev';
+// MH constants
+const user = {};
+user.environment_type = 'environment_type';
+user.quests = {};
+// MH functions
+function $() {}
+// MH & my-mh-aid functions
+function logging(...any) {
+  const debug = true;
+  if (debug) {
+    console.groupCollapsed(new Date(), ...any);
+    console.log(Error().stack);
+    console.groupEnd();
+  }
+}
+
+// #myUITest
+myUITest();
+function myUITest() {
+  const isProd = false;
+  logging('myUITest_0.0.1.0.0');
+  const myUIUtility = (() => {
+    const utils = {
+      // values
+      version: 'myUIUtility_0.0.1.0.0',
+      /** Set immutable fields */
+      setImmutable() {
+        const immutableFields = ['version'];
+        for (let i = 0; i < immutableFields.length; i++) {
+          const immutableField = immutableFields[i];
+          if (!Object.hasOwn(utils, immutableField)) continue;
+          Object.defineProperty(utils, immutableField, {
+            // value: 'This cannot be changed',
+            writable: false, // Makes the field immutable
+            configurable: false, // Prevents deletion or re-configuration of the field
+            enumerable: true // Makes the field visible during enumeration (e.g., in a for...in loop)
+          });
+        }
+      },
+      /** start running */
+      go() {
+        const version = `start ${this.version}`;
+        isProd ? logging(version) : console.log(version);
+        this.autoSettingsPromise().then(this.myUI);
+      },
+      /** auto settings */
+      autoSettingsPromise() {
+        const version = 'start autoSettingsPromise';
+        isProd ? logging(version) : console.log(version);
+        return new Promise((resolve, reject) => {
+          // auto settings if necessary and then invoke next promise
+          if (resolve) resolve();
+        });
+      },
+      /** handle my UI */
+      myUI() {
+        const environmentType = (user.environment_type || '').trim();
+        const version = `start myUI in ${environmentType}`;
+        isProd ? logging(version) : console.log(version);
+        try {
+          // LNY
+          if (user.quests.QuestLunarNewYearLantern) {
+            const settings = {
+              foreword_farm: -260,
+              floating_islands: 0
+            };
+            const setting = settings[environmentType];
+            if (setting === 0) return;
+            const to = setting ? setting : -160;
+            const lnyPanel = $('.campPage-questCampHUDContainer');
+            lnyPanel
+              .css({ position: 'absolute', top: to, zIndex: 10 })
+              .draggable();
+          }
+          // eslint-disable-next-line no-empty, no-unused-vars
+        } catch (e) {}
+      }
+    };
+    // initial utils
+    const init = () => {
+      // make fields immutable
+      utils.setImmutable();
+    };
+    init();
+    console.log(utils);
+    return utils;
+  })();
+  myUIUtility.go();
+}
+// End #myUITest
