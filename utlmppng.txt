@@ -705,7 +705,7 @@ const MhUtils = (function () {
 })();
 
 // #testMappingUtility
-testMappingUtility();
+setTimeout(() => testMappingUtility(), 30000);
 function testMappingUtility() {
   const isProd = false;
   // my own hard-coded constants
@@ -788,7 +788,7 @@ function testMappingUtility() {
   const workingMapKey = 'workingMap';
   const maptainTypeKey = 'maptainType';
   const dusterCycleKey = 'dusterCycle';
-  const version = 'testMappingUtility_1.0.0.0.0';
+  const version = 'testMappingUtility_1.0.0.0.1';
   isProd ? logging(version) : console.log(version);
   /** localStorage settings */
   // const defaultSettings = {};
@@ -825,6 +825,7 @@ function testMappingUtility() {
       run(callback) {
         const version = 'start run mappingUtility';
         isProd ? logging(version) : console.log(version);
+        if (!mapTypeKey) return console.log('No working map');
         this.callback = callback;
         this.autoSettingsPromise().then(() => {
           this.autoMapping(this.mapTypeKey, this.callback);
@@ -1269,9 +1270,10 @@ function testMappingUtility() {
   const mapTypeKey = localStorage[workingMapKey];
   // console.log(`working map: ${mapTypeKey}`);
   // test full auto mapping
-  mappingUtility(mapTypeKey, parseMapInfo).run(() => {
-    console.log('Finished!!');
-  });
+  if (mapTypeKey && mapTypeKey !== '')
+    mappingUtility(mapTypeKey, parseMapInfo).run(() => {
+      console.log('Finished!!');
+    });
   // // test claimAllMapReward
   // mappingUtility('newYearsParty', parseMapInfo).claimAllMapReward(() => {
   //   console.log('Finished');
