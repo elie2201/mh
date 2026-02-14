@@ -19,7 +19,7 @@ function logging(...any) {
 myUITest();
 function myUITest() {
   const isProd = false;
-  logging('myUITest_0.0.1.0.0');
+  logging('myUITest_0.0.1.1.0');
   const myUIUtility = (() => {
     const utils = {
       // values
@@ -63,7 +63,7 @@ function myUITest() {
           if (user.quests.QuestLunarNewYearLantern) {
             const settings = {
               foreword_farm: -260,
-              floating_islands: 0
+              floating_islands: -260
             };
             const setting = settings[environmentType];
             if (setting === 0) return;
