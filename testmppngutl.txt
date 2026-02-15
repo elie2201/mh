@@ -138,7 +138,7 @@ function testMappingUtility() {
   const mappingUtility = (() => {
     const utils = {
       // values
-      version: 'mappingUtility_1.0.0.0.3',
+      version: 'mappingUtility_1.0.0.0.4',
       /** ajax URI */
       URI: 'managers/ajax/environment/foreword_farm.php',
       /** Set immutable fields */
@@ -164,7 +164,6 @@ function testMappingUtility() {
       mapInfo: null,
       /** start running */
       run(callback) {
-        isProd ? logging(version) : console.log(version);
         const version = 'start run mappingUtility';
         isProd ? logging(version) : console.log(version);
         if (!mapTypeKey) return console.log('No working map');
