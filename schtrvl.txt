@@ -8,16 +8,17 @@ function logging(...any) {
 }
 
 // #scheduledTravel
-scheduledTravel(
-  '2026-02-06T08:01:00',
-  '2026-02-06T08:30:00',
-  'dojo',
-  1000,
-  () => {
-    localStorage.eventLocation = 'library_assignment';
-    MhUtils.reloadWithMessage('After travel, Reloading...', false);
-  }
-);
+scheduledTravel('2026-02-16T08:01:00', '2026-02-16T08:30:00', 'queso_quarry');
+// scheduledTravel(
+//   '2026-02-06T08:01:00',
+//   '2026-02-06T08:30:00',
+//   'dojo',
+//   1000,
+//   () => {
+//     localStorage.eventLocation = 'library_assignment';
+//     MhUtils.reloadWithMessage('After travel, Reloading...', false);
+//   }
+// );
 // scheduledTravel('2025-02-06T08:01:00', '2025-02-06T08:30:00', 'laboratory');
 // scheduledTravel('2024-10-17T06:35:00','2024-10-17T06:59:00','claw_shot_city');
 // scheduledTravel('2024-10-14T06:35:00','2024-10-14T06:59:00','train_station');
