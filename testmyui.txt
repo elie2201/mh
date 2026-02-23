@@ -19,7 +19,7 @@ function logging(...any) {
 myUITest();
 function myUITest() {
   const isProd = false;
-  logging('myUITest_0.0.1.2.0');
+  logging('myUITest_0.0.1.3.0');
   const myUIUtility = (() => {
     const utils = {
       // values
@@ -67,7 +67,8 @@ function myUITest() {
               queso_river: -190,
               queso_plains: -190,
               queso_quarry: -190,
-              queso_geyser: -260
+              queso_geyser: -260,
+              desert_city: -100
             };
             const setting = settings[environmentType];
             if (setting === 0) return;
