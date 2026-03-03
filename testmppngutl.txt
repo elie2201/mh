@@ -25,29 +25,29 @@ function logging(...any) {
 }
 
 // #testMappingUtility
-if (
-  [
-    'town_of_gnawnia',
-    'great_gnarled_tree',
-    'laboratory',
-    'dojo',
-    'claw_shot_city',
-    'desert_city',
-    'ss_huntington_ii',
-    'queso_river',
-    'fungal_cavern',
-    'moussu_picchu',
-    'floating_islands',
-    'foreword_farm',
-    'bountiful_beanstalk',
-    'conclusion_cliffs',
-    'rift_gnawnia'
-  ].includes(MhUtils.getEnvironmentType())
-)
-  setTimeout(() => testMappingUtility(), 30000);
+// if (
+//   [
+//     'town_of_gnawnia',
+//     'great_gnarled_tree',
+//     'laboratory',
+//     'dojo',
+//     'claw_shot_city',
+//     'desert_city',
+//     'ss_huntington_ii',
+//     'queso_river',
+//     'fungal_cavern',
+//     'moussu_picchu',
+//     'floating_islands',
+//     'foreword_farm',
+//     'bountiful_beanstalk',
+//     'conclusion_cliffs',
+//     'rift_gnawnia'
+//   ].includes(MhUtils.getEnvironmentType())
+// )
+setTimeout(() => testMappingUtility(), 30000);
 function testMappingUtility() {
   const isProd = false;
-  const version = 'testMappingUtility_1.0.1.0.2';
+  const version = 'testMappingUtility_1.0.2.0.2';
   isProd ? logging(version) : console.log(version);
   // my own hard-coded constants
   const maptainTypes = {
