@@ -83,6 +83,15 @@ function testMappingUtility() {
       chest: 'lny_treasure_chest_2024_convertible',
       chestRare: 'rare_lny_treasure_chest_2024_convertible',
       isAutoOpen: true
+    },
+    birthday: {
+      size: 5,
+      mapClass: MapClasses.event,
+      name: 'Birthday Event',
+      scroll: 'birthday_f_scroll_case_convertible',
+      chest: 'birthday_2021_treasure_chest_convertible',
+      chestRare: 'rare_birthday_2021_treasure_chest_convertible',
+      isAutoOpen: true
     }
   };
   // prettier-ignore
@@ -138,7 +147,7 @@ function testMappingUtility() {
   const mappingUtility = (() => {
     const utils = {
       // values
-      version: 'mappingUtility_1.0.0.0.4',
+      version: 'mappingUtility_1.0.0.1.4',
       /** ajax URI */
       URI: 'managers/ajax/environment/foreword_farm.php',
       /** Set immutable fields */
