@@ -3,7 +3,7 @@
 setTimeout(() => { scheduledSleep(); }, getRandomInteger(60000, 120000));
 function scheduledSleep() {
   const environmentType = getEnvironmentType();
-  logging(`scheduledSleep_1.2.15.7.9 in ${environmentType}`);
+  logging(`scheduledSleep_1.2.16.7.9 in ${environmentType}`);
   const floatingIslandsUtility = {
     getSpeed(quest) {
       if (!quest) quest = user.quests.QuestFloatingIslands;
@@ -259,22 +259,24 @@ function scheduledSleep() {
     },
     super_brie_factory(enviromentSchedules) {
       logging(`SB factory sleep`);
-      const quest = user.quests.QuestSuperBrieFactory;
-      const atts = quest.factory_atts;
-      const items = quest.items;
-      if (atts.hunts_remaining < 5 + enviromentSchedules.friendHunts) {
-        console.log('boss coming, not sleep');
-        return;
-      }
+      // const quest = user.quests.QuestSuperBrieFactory;
+      // const atts = quest.factory_atts;
+      // const items = quest.items;
+      // if (atts.hunts_remaining < 5 + enviromentSchedules.friendHunts) {
+      //   console.log('boss coming, not sleep');
+      //   return;
+      // }
       const schedule = matchSchedules(enviromentSchedules);
       if (!schedule) return;
       const isPreSleep = enviromentSchedules.isPreSleep;
       // if arming Coggy Colby and quantity less than 5 + enviromentSchedules.friendHunts, change to SB
-      if (
-        parseQuantity(items.coggy_colby_cheese.quantity) <
-        5 + enviromentSchedules.friendHunts
-      )
-        hg.utils.TrapControl.setBait('super_brie_cheese').go(() => {});
+      // if (
+      //   parseQuantity(items.coggy_colby_cheese.quantity) <
+      //   5 + enviromentSchedules.friendHunts
+      // )
+      //   hg.utils.TrapControl.setBait('super_brie_cheese').go(() => {});
+      const sleepTrap = enviromentSchedules['sleepTrap'];
+      if (sleepTrap) armAllTraps(...sleepTrap);
       goToBed(schedule, isPreSleep);
     },
     rift_bristle_woods(enviromentSchedules) {
