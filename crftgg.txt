@@ -1,0 +1,148 @@
+const $ = {};
+const hg = {};
+const user = {};
+user.quests = {};
+const eventRegistry = {};
+
+function popupMessage(params) {}
+function logging(...any) {
+  console.log(...any);
+}
+function parseQuantity(any) {
+  console.log(any);
+}
+/* 
+function completeTransaction(
+  isPurchase,
+  itemType,
+  itemQuantity,
+  isKingsCartItem,
+  successCallback
+) {}
+function closeAnyJsDialog() {
+  console.log('closeAnyJsDialog');
+}
+ */
+const MOUSEHUNT_BASE_URL = 'https://www.mousehuntgame.com/';
+const storingMessageKey = 'localStorage.displayedMessage';
+
+// #craftGlowingGruyere
+craftGlowingGruyere();
+function craftGlowingGruyere(craftQuantity) {
+  const version = 'craftGlowingGruyere_2.0.0.0.0';
+  craftQuantity ? console.log(version) : logging(version);
+  let quest = null;
+  let nightShadeQty = 0;
+  let isOkCrafting = false;
+  if (user.environment_type == 'ancient_city') {
+    quest = user.quests.QuestAncientCity;
+    nightShadeQty = parseQuantity(
+      quest.items.cave_nightshade_crafting_item.quantity
+    );
+    isOkCrafting = nightShadeQty > 0;
+  } else if (user.environment_type == 'labyrinth') {
+    quest = user.quests.QuestLabyrinth;
+    nightShadeQty = parseQuantity(quest.items.cave_nightshade_crafting_item);
+    isOkCrafting = nightShadeQty > 0;
+  } else {
+    nightShadeQty = craftQuantity;
+    isOkCrafting = nightShadeQty > 0;
+  }
+  if (!isOkCrafting) return;
+  console.log('Have', nightShadeQty, 'nightshade, crafting GG.');
+  const recipe = {
+    cavern_fungus_crafting_item: 3,
+    cave_nightshade_crafting_item: 1,
+    living_shard_crafting_item: 3,
+    ionized_salt_craft_item: 6,
+    curds_and_whey_craft_item: 30
+  };
+  const craftGlowingGruyereUtility = (() => {
+    const utils = {
+      run() {
+        craftQuantity
+          ? console.log('start craftGlowingGruyereUtility')
+          : logging('start craftGlowingGruyereUtility');
+        this.craftGG(nightShadeQty);
+      },
+      craftGG(nightShadeQty) {
+        setTimeout(() => {
+          completeTransaction(
+            true,
+            'living_shard_crafting_item',
+            nightShadeQty * 3,
+            false,
+            () => {
+              completeTransaction(
+                true,
+                'ionized_salt_craft_item',
+                nightShadeQty * 6,
+                false,
+                () => {
+                  completeTransaction(
+                    true,
+                    'curds_and_whey_craft_item',
+                    nightShadeQty * 30,
+                    false,
+                    () => {
+                      hg.utils.UserInventory.craftItem(recipe, nightShadeQty);
+                      setTimeout(() => {
+                        closeAnyJsDialog();
+                      }, 3000);
+                    }
+                  );
+                }
+              );
+            }
+          );
+        }, 10000);
+      }
+    };
+    return utils;
+  })();
+  craftGlowingGruyereUtility.run();
+}
+// End #craftGlowingGruyere
+
+function completeTransaction(
+  isPurchase,
+  itemType,
+  itemQuantity,
+  isKingsCartItem,
+  success
+) {
+  if (itemQuantity < 1) {
+    console.plog('Cannot buy 0 item');
+    return;
+  }
+  const uniqueHash = user.unique_hash;
+  $.ajax({
+    data: {
+      type: itemType,
+      quantity: itemQuantity,
+      buy: isPurchase ? 1 : 0,
+      is_kings_cart_item: isKingsCartItem ? 1 : 0,
+      uh: uniqueHash
+    },
+    dataType: 'json',
+    type: 'post',
+    url: MOUSEHUNT_BASE_URL + 'managers/ajax/purchases/itempurchase.php',
+    success: function (data) {
+      console.log(data.success, data);
+      eventRegistry.doEvent('ajax_response', data);
+      if (success) success();
+    },
+    error: function (data) {
+      const message = `completeTransaction for ${itemType} error`;
+      popupMessage(message);
+      localStorage.setItem(storingMessageKey, message);
+      console.plog(data);
+    }
+  });
+}
+/** close any js dialog */
+function closeAnyJsDialog() {
+  $(
+    'input.jsDialogClose,a.jsDialogClose,a#jsDialogClose,a.closeButton,a.messengerUINotificationClose,a.giftSelectorView-inboxHeader-closeButton'
+  ).click();
+}
