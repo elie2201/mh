@@ -1984,7 +1984,7 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = MhUtils.getEnvironmentType();
   if (environmentType !== targetEnvironmentType) return;
-  logging('valourRift_0.6.61.36.43');
+  logging('valourRift_0.6.61.36.44');
   // move loot stat to better position and make it draggable
   try {
     $('.valourRiftHUD-towerLootContainer')
@@ -2451,6 +2451,25 @@ function valourRift() {
   const enterBefore = MyUtils.parseDateTime(settings.enterBeforeTime);
   const traps = settings['trap'];
   const quest = isProd ? user.quests.QuestRiftValour : QuestRiftValour;
+  const claimCache = (callback) => {
+    const element = '<a/>';
+    hg.views.HeadsUpDisplayRiftValourView.riftValourAjax(
+      element,
+      { action: 'claim_cache' },
+      () => {
+        // document.querySelector('a.jsDialogClose, a#jsDialogClose').click();
+        MhUtils.updateGPWStats();
+        setTimeout(() => {
+          // if (callback) callback();
+          window.location.href = MOUSEHUNT_BASE_URL;
+        }, 2000);
+      }
+    );
+  };
+  if (quest.can_claim) {
+    claimCache();
+    return;
+  }
   const state = MyUtils.trimToEmpty(quest.state.toLowerCase());
   const floor = MyUtils.parseQuantity(quest.floor);
   const nowStep = MyUtils.parseQuantity(quest.current_step);
@@ -2890,25 +2909,6 @@ function valourRift() {
     }
   };
   if (state === vriftStates.tower && settings.isAutoRetreat) autoRetreat();
-  const claimCache = (callback) => {
-    const element = '<a/>';
-    hg.views.HeadsUpDisplayRiftValourView.riftValourAjax(
-      element,
-      { action: 'claim_cache' },
-      () => {
-        // document.querySelector('a.jsDialogClose, a#jsDialogClose').click();
-        MhUtils.updateGPWStats();
-        setTimeout(() => {
-          // if (callback) callback();
-          window.location.href = MOUSEHUNT_BASE_URL;
-        }, 2000);
-      }
-    );
-  };
-  if (quest.can_claim) {
-    claimCache();
-    return;
-  }
   // retreat();
   const retreat = () => {
     console.log('retreat');
