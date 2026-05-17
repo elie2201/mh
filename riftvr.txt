@@ -1967,7 +1967,7 @@ function logging(...any) {
   const debug = true;
   if (debug) {
     console.groupCollapsed(new Date(), ...any);
-    console.log(Error().stack);
+    console.log(new Error().stack);
     console.groupEnd();
   }
 }
@@ -1984,7 +1984,7 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = MhUtils.getEnvironmentType();
   if (environmentType !== targetEnvironmentType) return;
-  logging('valourRift_0.6.61.36.44');
+  logging('valourRift_0.6.61.37.46');
   // move loot stat to better position and make it draggable
   try {
     $('.valourRiftHUD-towerLootContainer')
@@ -2099,7 +2099,7 @@ function valourRift() {
     upgradePlans: [
       [1, 40, 5], [2, 40, 5], [2, 50, 5], [3, 50, 5], [3, 60, 5],
       [3, 60, 10], [4, 60, 10], [5, 60, 10], [5, 70, 10], [5, 70, 15],
-      [6, 70, 15], [6, 80, 15], [6, 80, 20], [6, 90, 20], [7, 90, 20],
+      [6, 70, 15], [6, 70, 20], [6, 80, 20], [6, 90, 20], [7, 90, 20],
       [8, 90, 20], [8, 90, 25], [9, 90, 25], [10, 90, 25], [10, 100, 25]
     ],
     trap: {
@@ -2703,7 +2703,7 @@ function valourRift() {
         // augmentation
         rtn &&= this.isOkSsteUU;
         this.isOkPP = rtn;
-        /* if (!this.isOkPP) {
+        /** old if (!this.isOkPP) {
           console.log('Not ready for PP, isPrestigePush has to be false');
           settings.isPrestigePush = false;
         } */
@@ -3087,16 +3087,15 @@ function valourRift() {
   setTimeout(() => {
     armAllTraps(...trap);
   }, 1500);
-  // checkUpgrade();
+  // TEST checkUpgrade();
   const checkUpgrade = () => {
     console.log('check upgrade');
-    if (canUpgrade.indexOf(true) < 0) return;
-    if (currentLevelIndex === 18) return; // sync 100手動升級
-    for (let i = 0; i < upgradePlans.length; i++) {
-      const plan = upgradePlans[i];
+    if (!canUpgrade.includes(true)) return;
+    if (currentLevelIndex > 18) return;
+    for (const plan of upgradePlans) {
       for (let j = 0; j < plan.length; j++) {
         const value = plan[j];
-        // console.log(
+        // DEV console.log(
         //   `upgrade ${upgradeTypes[j]} from level ${
         //     currentLevels[j]
         //   } to ${level}? ${canUpgrade[j] === true}`
