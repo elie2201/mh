@@ -1,3 +1,5 @@
+import { MyUtils, MhUtils } from './my-mh-aid-dev';
+
 // MH constants
 const QuestProloguePond = {
   pond_state: 'shallow_water',
@@ -1016,122 +1018,16 @@ user.quests.QuestProloguePond = QuestProloguePond;
 function $() {}
 // my-mh-aid constants
 // MH & my-mh-aid functions
-function getEnvironmentType() {
-  const rtn = trimToEmpty(user.environment_type);
-  // console.plog(`Current location environment_type: ${rtn}`);
-  return rtn;
-}
-function trimToEmpty(str) {
-  return trimToDefault(str);
-}
-function trimToDefault(str, deflt) {
-  return str === 0 ? '0' : ((str || (deflt ? deflt : '')) + '').trim();
-}
 function logging(...any) {
   const debug = true;
   if (debug) {
     console.groupCollapsed(new Date(), ...any);
-    console.log(Error().stack);
+    console.log(new Error().stack);
     console.groupEnd();
   }
 }
-function getStorageToObject(keyName, objDefault) {
-  let obj = getStorage(keyName);
-  let bCheckNewProp = true;
-  if (isNullOrUndefined(obj)) {
-    obj = JSON.stringify(objDefault);
-    setStorage(keyName, obj);
-    bCheckNewProp = false;
-  }
-  obj = JSON.parse(obj);
-  if (bCheckNewProp) {
-    if (assignMissingDefault(obj, objDefault)) {
-      setStorage(keyName, JSON.stringify(obj));
-    }
-  }
-  return obj;
-  function getStorage(name) {
-    // check if the web browser support HTML5 storage
-    if ('localStorage' in window && !isNullOrUndefined(window.localStorage)) {
-      return window.localStorage.getItem(name);
-    }
-  }
-  function setStorage(name, value) {
-    // check if the web browser support HTML5 storage
-    if ('localStorage' in window && !isNullOrUndefined(window.localStorage)) {
-      window.localStorage.setItem(name, value);
-    }
-  }
-  function isNullOrUndefined(obj) {
-    return (
-      obj === null || obj === undefined || obj === 'null' || obj === 'undefined'
-    );
-  }
-  function assignMissingDefault(target, source) {
-    let isResave = false;
-    for (const key in source) {
-      if (
-        Object.prototype.hasOwnProperty.call(source, key) &&
-        !Object.prototype.hasOwnProperty.call(target, key)
-      ) {
-        const element = source[key];
-        target[key] = element;
-        isResave = true;
-      }
-    }
-    return isResave;
-  }
-}
-// function travel(environmentType, milliseconds, callback) {
-//   console.log(`travel to ${environmentType}`);
-// }
-function parseQuantity(qty) {
-  const strQty = (qty || 0) + '';
-  const rtn = parseInt(strQty.replaceAll(',', ''));
-  return Number.isNaN(rtn) ? 0 : rtn;
-}
-/**
- * Get current bait item id.
- * @return {BigInt} current bait item id
- */
-function getBaitItemId() {
-  return parseQuantity(user.bait_item_id);
-}
-/**
- * Get current bait quantity.
- * @return {BigInt} current bait quantity
- */
-function getBaitQuantity() {
-  return parseQuantity(user.bait_quantity);
-}
-// function getRandomInteger(min, max) {
-//   return parseInt(min + Math.random() * (max - min));
-// }
 function armAllTraps(bait, weapon, base, charm) {
   console.log(bait, weapon, base, charm);
-}
-// function reloadWithMessage(msg, soundHorn) {
-//   console.plog('reloadWithMessage: ', msg, ',', soundHorn);
-//   // display the message
-//   // displayTimer(msg, msg, msg);
-
-//   // reload the page
-//   setTimeout(function () {
-//     // reloadPage(soundHorn);
-//   }, 1000);
-// }
-function completeTransaction(
-  isPurchase,
-  itemType,
-  itemQuantity,
-  isKingsCartItem,
-  successCallback
-) {
-  console.log(`bought ${itemQuantity} ${itemType}!!`);
-  if (successCallback)
-    setTimeout(() => {
-      successCallback();
-    }, 2000);
 }
 function doubleEgg(isToEnable) {
   console.log('double egg?', isToEnable);
@@ -1141,13 +1037,13 @@ function litCandle(actionType) {
 }
 
 // #prologuePond
-if (getEnvironmentType() === 'prologue_pond') prologuePond();
+if (MhUtils.getEnvironmentType() === 'prologue_pond') prologuePond();
 function prologuePond() {
   const isProd = false;
   const targetEnvironmentType = 'prologue_pond';
-  const enviromentType = getEnvironmentType();
+  const enviromentType = MhUtils.getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('prologuePond_0.1.6.0.15');
+  logging('prologuePond_0.1.7.0.15');
   // my own hard-coded constants
   const gouda = 'gouda_cheese';
   const grubbeen = 'grubbeen_cheese';
@@ -1175,7 +1071,7 @@ function prologuePond() {
     }
   };
   const settings = isProd
-    ? getStorageToObject(targetEnvironmentType, defaultSettings)
+    ? MyUtils.getStorageToObject(targetEnvironmentType, defaultSettings)
     : defaultSettings;
   // MH constants
   const quest = isProd ? user.quests.QuestProloguePond : QuestProloguePond;
@@ -1183,35 +1079,35 @@ function prologuePond() {
     gold: user.gold,
     grubbeen: {
       type: grubbeen,
-      qty: parseQuantity(quest.items[grubbeen].quantity)
+      qty: MyUtils.parseQuantity(quest.items[grubbeen].quantity)
     },
     clamembert: {
       type: clamembert,
-      qty: parseQuantity(quest.items[clamembert].quantity)
+      qty: MyUtils.parseQuantity(quest.items[clamembert].quantity)
     },
     stormy: {
       type: stormy,
-      qty: parseQuantity(quest.items[stormy].quantity)
+      qty: MyUtils.parseQuantity(quest.items[stormy].quantity)
     },
     grub: {
       type: grub,
-      qty: parseQuantity(quest.items[grub].quantity)
+      qty: MyUtils.parseQuantity(quest.items[grub].quantity)
     },
     clam: {
       type: clam,
-      qty: parseQuantity(quest.items[clam].quantity)
+      qty: MyUtils.parseQuantity(quest.items[clam].quantity)
     },
     penny: {
       type: penny,
-      qty: parseQuantity(quest.items[penny].quantity)
+      qty: MyUtils.parseQuantity(quest.items[penny].quantity)
     },
     chum: {
       type: chum,
-      qty: parseQuantity(quest.items[chum].quantity)
+      qty: MyUtils.parseQuantity(quest.items[chum].quantity)
     },
     CC: {
       type: CC,
-      qty: parseQuantity(quest.items[CC].quantity)
+      qty: MyUtils.parseQuantity(quest.items[CC].quantity)
     }
   };
   console.log('items: ', items);
@@ -1222,8 +1118,7 @@ function prologuePond() {
       /** Set immutable fields */
       setImmutable() {
         const immutableFields = ['URI'];
-        for (let i = 0; i < immutableFields.length; i++) {
-          const immutableField = immutableFields[i];
+        for (const immutableField of immutableFields) {
           Object.defineProperty(utils, immutableField, {
             // value: 'This cannot be changed',
             writable: false, // Makes the field immutable
@@ -1248,7 +1143,7 @@ function prologuePond() {
       },
       autoBuyPromise() {
         logging('run autoBuyPromise');
-        new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
           // clamembert: with chum=>ink, without=>penny
           // 能買多少 clamembert?
           let itemQuantity = Math.min(
@@ -1264,7 +1159,7 @@ function prologuePond() {
             // 該買且夠買了, itemQuantity一定大於 0.因為除非設定錯,不然 useBaitQuantity > changeBaitQuantity
             itemQuantity = settings.useBaitQuantity - items.clamembert.qty;
             console.log(`auto buy ${itemQuantity} ${items.clamembert.type}`);
-            completeTransaction(
+            MhUtils.completeTransaction(
               true,
               items.clamembert.type,
               itemQuantity,
@@ -1296,7 +1191,7 @@ function prologuePond() {
             );
             // 該買且夠買了, itemQuantity一定大於 0.
             console.log(`auto buy ${itemQuantity} ${items.chum.type}`);
-            completeTransaction(
+            MhUtils.completeTransaction(
               true,
               items.chum.type,
               itemQuantity,
@@ -1324,7 +1219,7 @@ function prologuePond() {
             // 該買且夠買了, itemQuantity一定大於 0.因為除非設定錯,不然 useBaitQuantity > changeBaitQuantity
             itemQuantity = settings.useBaitQuantity - items.grubbeen.qty;
             console.log(`auto buy ${itemQuantity} ${items.grubbeen.type}`);
-            completeTransaction(
+            MhUtils.completeTransaction(
               true,
               items.grubbeen.type,
               itemQuantity,
@@ -1359,7 +1254,7 @@ function prologuePond() {
             );
             // 該買且夠買了, itemQuantity一定大於 0.
             console.log(`auto buy ${itemQuantity} ${items.chum.type}`);
-            completeTransaction(
+            MhUtils.completeTransaction(
               true,
               items.chum.type,
               itemQuantity,
@@ -1393,8 +1288,8 @@ function prologuePond() {
           } else if (
             !settings.isOkStormy ||
             items.stormy.qty < settings.changeBaitQuantity ||
-            (getBaitItemId() === 3462 &&
-              getBaitQuantity() < settings.changeBaitQuantity)
+            (MhUtils.getBaitItemId() === 3462 &&
+              MhUtils.getBaitQuantity() < settings.changeBaitQuantity)
           ) {
             if (items.clamembert.qty >= settings.useBaitQuantity) {
               this.trapState = clamembert;
@@ -1403,8 +1298,8 @@ function prologuePond() {
                 if (isEnoughPennies) settings.isOkChum = true;
             } else if (
               items.clamembert.qty < settings.changeBaitQuantity ||
-              (getBaitItemId() === 3457 &&
-                getBaitQuantity() < settings.changeBaitQuantity)
+              (MhUtils.getBaitItemId() === 3457 &&
+                MhUtils.getBaitQuantity() < settings.changeBaitQuantity)
             ) {
               if (items.grubbeen.qty >= settings.useBaitQuantity) {
                 this.trapState = grubbeen;
@@ -1415,8 +1310,8 @@ function prologuePond() {
                   if (isEnoughPennies) settings.isOkChum = true;
               } else if (
                 items.grubbeen.qty < settings.changeBaitQuantity ||
-                (getBaitItemId() === 3460 &&
-                  getBaitQuantity() < settings.changeBaitQuantity)
+                (MhUtils.getBaitItemId() === 3460 &&
+                  MhUtils.getBaitQuantity() < settings.changeBaitQuantity)
               ) {
                 this.trapState = gouda;
                 // trap變動時 isOkChum跟著變
@@ -1425,18 +1320,18 @@ function prologuePond() {
             }
           }
           // trap沒變動時 set isOkChum by cheese & cheese quantity & enough pennies or not
-          if (getBaitItemId() === 3462) {
+          if (MhUtils.getBaitItemId() === 3462) {
             // stormy
-            if (items.chum.qty >= getBaitQuantity())
+            if (items.chum.qty >= MhUtils.getBaitQuantity())
               if (isEnoughPennies) settings.isOkChum = true;
-          } else if (getBaitItemId() === 3457) {
+          } else if (MhUtils.getBaitItemId() === 3457) {
             // clamembert
-            if (items.chum.qty >= getBaitQuantity())
+            if (items.chum.qty >= MhUtils.getBaitQuantity())
               if (isEnoughPennies) settings.isOkChum = true;
-          } else if (getBaitItemId() === 3460) {
+          } else if (MhUtils.getBaitItemId() === 3460) {
             // grubbeen
             if (settings.isGrubbeenAlwaysScatter) settings.isOkChum = true;
-            else if (items.chum.qty >= getBaitQuantity())
+            else if (items.chum.qty >= MhUtils.getBaitQuantity())
               if (isEnoughPennies) settings.isOkChum = true;
           }
           this.handleTrapPromise();
@@ -1528,7 +1423,7 @@ function prologuePond() {
 // End #prologuePond
 
 // adventure
-/* 
+/** 
 (() => {
   if (getEnvironmentType() === 'prologue_pond') {
     const quest = user.quests.QuestProloguePond;
