@@ -1,3 +1,5 @@
+import { MyUtils, MhUtils } from './my-mh-aid-dev.js';
+
 const QuestRonza = {
   num_chrome_bits_found: 20,
   num_chrome_bits: 20,
@@ -16,26 +18,20 @@ const QuestRonza = {
   timer_bar_start_date: '2025-07-02T14:45:00.000Z',
   timer_bar_end_date: '2025-07-16T15:00:00.000Z'
 };
-// const MOUSEHUNT_BASE_URL = 'https://www.mousehuntgame.com/';
+//* const MOUSEHUNT_BASE_URL = 'https://www.mousehuntgame.com/';
 const user = {};
 user.quests = {};
 user.quests.QuestRonza = QuestRonza;
-// const hg = {};
-function getEnvironmentType() {}
-function logging(...any) {}
-function getStorageToObject(key, defaultObject) {}
+//* const hg = {};
+function logging(...any) {
+  console.log(...any);
+}
 function armAllTraps(bait, weapon, base, charm) {
   logging(bait, weapon, base, charm);
 }
-function parseQuantity(qty) {
-  const strQty = (qty || 0) + '';
-  const rtn = parseInt(strQty.replaceAll(',', ''));
-  return Number.isNaN(rtn) ? 0 : rtn;
-}
-function trimToEmpty(str) {}
 // Utility
 function getQuantityByUrlThen(itemType, callback) {
-  /* const url = MOUSEHUNT_BASE_URL + 'item.php?item_type=' + itemType;
+  /** const url = MOUSEHUNT_BASE_URL + 'item.php?item_type=' + itemType;
   $.get(url, (data) => {
     const key = 'You Own: ';
     const text = data.split(key)[1];
@@ -50,10 +46,11 @@ function getQuantityByUrlThen(itemType, callback) {
 // End Utility
 
 // #travelingShoppe
-if (getEnvironmentType() == 'ronzas_traveling_shoppe') travelingShoppe();
+if (MhUtils.getEnvironmentType() == 'ronzas_traveling_shoppe')
+  travelingShoppe();
 function travelingShoppe() {
-  console.log(`travelingShoppe_0.1.4.2.6`);
-  // const quest = user.quests.QuestRonza;
+  console.log(`travelingShoppe_0.1.4.2.7`);
+  //* const quest = user.quests.QuestRonza;
   const goudaType = 'gouda_cheese';
   const rockforthType = 'rockforth_cheese';
   // prettier-ignore
@@ -72,7 +69,7 @@ function travelingShoppe() {
     }
   };
   const storageKey = 'ronzas_traveling_shoppe';
-  const settings = getStorageToObject(storageKey, defaultSettings);
+  const settings = MyUtils.getStorageToObject(storageKey, defaultSettings);
   if (
     Date.now() >
     new Date(user.quests.QuestRonza.timer_bar_end_date).setMinutes(10)
@@ -84,7 +81,7 @@ function travelingShoppe() {
   }
   const today = new Date();
   const todate = today.toISOString().split('T')[0];
-  const isGotd = settings.gotdDates.indexOf(todate) > -1;
+  const isGotd = settings.gotdDates.includes(todate);
   const baitItemId = user.bait_item_id;
   const rockforthItemId = 109;
   if (baitItemId !== rockforthItemId) {
@@ -98,16 +95,16 @@ function travelingShoppe() {
     });
     return;
   }
-  let currentTrapKey = settings.farmingRockforthTrap;
-  const baitQuantity = parseQuantity(user.bait_quantity);
+  let currentTrapKey;
+  const baitQuantity = MyUtils.parseQuantity(user.bait_quantity);
   if (baitQuantity < settings.endRockforthQty)
     currentTrapKey = settings.farmingRockforthTrap;
   else currentTrapKey = rockforthType;
   // check using localStorage.currentTrapKey if not empty and in settings
   const trapKeys = Object.keys(settings.traps);
   const checkUsingLocalTrapKey = (currentKey, effectiveKeys) => {
-    let localTrapKey = trimToEmpty(localStorage.currentTrapKey);
-    if (effectiveKeys.indexOf(localTrapKey) < 0) {
+    let localTrapKey = MyUtils.trimToEmpty(localStorage.currentTrapKey);
+    if (!effectiveKeys.includes(localTrapKey)) {
       localTrapKey = '';
       localStorage.currentTrapKey = localTrapKey;
     }
