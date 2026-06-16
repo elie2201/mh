@@ -49,7 +49,7 @@ function getQuantityByUrlThen(itemType, callback) {
 if (MhUtils.getEnvironmentType() == 'ronzas_traveling_shoppe')
   travelingShoppe();
 function travelingShoppe() {
-  console.log(`travelingShoppe_0.1.4.2.7`);
+  console.log(`travelingShoppe_0.1.4.3.7`);
   //* const quest = user.quests.QuestRonza;
   const goudaType = 'gouda_cheese';
   const rockforthType = 'rockforth_cheese';
@@ -61,11 +61,11 @@ function travelingShoppe() {
     startRockforthQty: 39,
     endRockforthQty: 13,
     traps: {
-      gouda_cheese: ['Gouda Cheese', 'best.weapon.shadow', 'Seasonal Gift', 'Luck Charm,Super Cactus Charm'],
-      super_brie_cheese: ['SUPER', 'best.weapon.physical', 'best.base.combo', 'Luck Charm,Super Cactus Charm'],
-      rockforth_cheese: ['Rockforth Cheese', 'Boiling Cauldron', "Alchemist's Cookbook", 'Cactus Charm,Luck Charm,Super Cactus Charm'],
+      gouda_cheese: ['Gouda Cheese', 'best.weapon.tactical', 'Seasonal Gift', 'Snowball Charm,Cactus Charm,Super Cactus Charm,Luck Charm'],
+      super_brie_cheese: ['SUPER', 'best.weapon.tactical', 'best.base.combo', 'Super Cactus Charm,Luck Charm'],
+      rockforth_cheese: ['Rockforth Cheese', 'best.weapon.tactical', 'Seasonal Gift', 'Snowball Charm,Cactus Charm,Luck Charm,Super Cactus Charm'],
       gotd: ['', '', 'Seasonal Gift', ''],
-      shutdown: ['Gouda Cheese', 'best.weapon.shadow', 'Seasonal Gift', 'None']
+      shutdown: ['Gouda Cheese', 'best.weapon.tactical', 'Seasonal Gift', 'None']
     }
   };
   const storageKey = 'ronzas_traveling_shoppe';
