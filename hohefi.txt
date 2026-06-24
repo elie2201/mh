@@ -1092,11 +1092,14 @@ function floatingIslands() {
   const targetEnvironmentType = 'floating_islands';
   const environmentType = getEnvironmentType();
   if (environmentType != targetEnvironmentType) return;
-  logging('floatingIslands_1.4.25.8.14');
+  logging('floatingIslands_1.4.26.8.15');
   // move item stat to better position and make it draggable
   try {
     $('.floatingIslandsHUD-statItemContainer')
       .css({ position: 'absolute', top: 70, left: 415 })
+      .draggable();
+    $('.floatingIslandsHUD-huntsRemainingContainer')
+      .css({ position: 'absolute', left: 600 })
       .draggable();
   } catch (error) {
     console.log(error);
@@ -1343,11 +1346,10 @@ function floatingIslands() {
   if (powerType === '') return;
   const modTypes = atts.island_mod_types;
   const modsActivated = atts.activated_island_mod_types;
-  const isPirate = modsActivated.indexOf('sky_pirates') > -1;
+  const isPirate = modsActivated.includes('sky_pirates');
   let hasSpeedUp = false;
-  for (let i = 0; i < modsActivated.length; i++) {
-    const mod = modsActivated[i];
-    if (mod.indexOf('paragon_cache') > -1 || mod.indexOf('shrine') > -1) {
+  for (const mod of modsActivated) {
+    if (mod.includes('paragon_cache') || mod.includes('shrine')) {
       hasSpeedUp = true;
       break;
     }
@@ -1367,8 +1369,8 @@ function floatingIslands() {
   const isSp = atts.is_vault_island;
   const altitude = isLai ? lai : isHai ? hai : isSp ? sp : launch;
   const isCjsOn = quest.jet_stream_active;
-  const bossProgress = parseInt(atts.enemy_progress);
-  const islandProgress = parseInt(atts.island_progress);
+  const bossProgress = Number.parseInt(atts.enemy_progress);
+  const islandProgress = Number.parseInt(atts.island_progress);
   const isFirst3Block = islandProgress < 30;
   const speed =
     (isLaunch ? 0 : 1) +
@@ -1388,23 +1390,23 @@ function floatingIslands() {
         if (hasTreasureTrove) settings.isPirateHuntingLai = true;
       } else if (countArrayElement('loot_cache', modTypes) == 2)
         settings.isHuntAfterLaiTrove = true;
-      else if (settings.isLowCC && modTypes.indexOf('sky_cheese') > -1)
+      else if (settings.isLowCC && modTypes.includes('sky_cheese'))
         settings.isHuntAfterLaiTrove = true;
     } else if (isHai) {
-      /* if (hasTreasureTrove)
+      /** if (hasTreasureTrove)
         if (
           distinctArray(modTypes).length === 4 &&
-          modTypes.indexOf('loot_cache') < 0
+          !modTypes.includes('loot_cache')
         )
           settings.isHuntAfterHaiTrove = false;
         else if (
           countArrayElement('gem_bonus', modTypes) == 2 &&
-          modTypes.indexOf('ore_bonus') > -1
+          modTypes.includes('ore_bonus')
         )
           settings.isHuntAfterHaiTrove = false;
         else if (
           countArrayElement('ore_bonus', modTypes) == 2 &&
-          modTypes.indexOf('gem_bonus') > -1
+          modTypes.includes('gem_bonus')
         )
           settings.isHuntAfterHaiTrove = false; */
     }
@@ -1421,7 +1423,7 @@ function floatingIslands() {
     } else if (isHai && settings.isBwAutoOffHai) {
       if (countArrayElement('loot_cache', modTypes) < 2 && hasSpeedUp)
         settings.isBottledWind = false;
-      /* if (modTypes.indexOf('sky_pirates') < 0) {
+      /** if (!modTypes.includes('sky_pirates')) {
         if (countArrayElement('loot_cache', modTypes) < 2)
           settings.isBottledWind = false;
       } else {
@@ -1445,7 +1447,7 @@ function floatingIslands() {
         null,
         // setTimeout(() => {
         () => {
-          // if (autoSkyMap(settings)) return;
+          //* if (autoSkyMap(settings)) return;
           setTimeout(() => {
             location.href = MOUSEHUNT_BASE_URL;
           }, 1000);
@@ -1471,7 +1473,7 @@ function floatingIslands() {
         null,
         // setTimeout(() => {
         () => {
-          // if (autoSkyMap(settings)) return;
+          //* if (autoSkyMap(settings)) return;
           setTimeout(() => {
             location.href = MOUSEHUNT_BASE_URL;
           }, 1000);
@@ -1509,6 +1511,7 @@ function floatingIslands() {
       (travelIf === travelIfTypes.paragon && isHai && isCloseToBoss) ||
       (travelIf === travelIfTypes.empress && isSp && isCloseToBoss)
     ) {
+      //* if (autoSkyMap(settings)) return;
       pauseByTraveling(travelTo);
       return;
     }
@@ -1648,7 +1651,7 @@ function floatingIslands() {
       const itemType = 'sky_cheese';
       const itemQty = Math.min(ccQty, 222);
       if (itemQty > 0) completeTransaction(true, itemType, itemQty, false);
-      // if (ccQty > 222) completeTransaction(true, itemType, 222, false);
+      //* if (ccQty > 222) completeTransaction(true, itemType, 222, false);
     } else if (armedBaitId === 3274 && baitQuantity < lower) {
       logging('buy ERCC pack');
       let itemType = 'sky_cheese';
@@ -1658,14 +1661,14 @@ function floatingIslands() {
           itemType = 'extra_rich_sky_cheese_pack_small_convertible';
           itemQty = Math.min(Math.floor(ccQty / 20), meQty, 33);
           if (itemQty > 0) completeTransaction(true, itemType, itemQty, false);
-          // if (meQty > 33) completeTransaction(true, itemType, 33, false);
+          //* if (meQty > 33) completeTransaction(true, itemType, 33, false);
         });
     } else if (armedBaitId === 3090 && baitQuantity < lower) {
       logging('buy SPS pack');
       const itemType = 'pirate_cheese_pack_small_convertible';
       const itemQty = Math.min(spscQty, meQty, 30);
       if (itemQty > 0) completeTransaction(true, itemType, itemQty, false);
-      // if (spscQty > 30 && meQty > 30) completeTransaction(true, itemType, 30, false);
+      //* if (spscQty > 30 && meQty > 30) completeTransaction(true, itemType, 30, false);
     }
   };
   if (settings.isAutoBuy)
@@ -1675,11 +1678,11 @@ function floatingIslands() {
   function retreat(element, successCallback) {
     ajax(element, { action: 'retreat' }, successCallback);
   }
-  // toggleBottledWind(false);
+  //* toggleBottledWind(false);
   function toggleBottledWind(isEnabled) {
     // 不需要檢查 isEnabled===true.沒看 trap的設定,而是綜合判斷後直接給 true/flase
     const quest = user.quests.QuestFloatingIslands;
-    // if ((quest.items.tiki_fuel_stat_item.quantity || 0) == 0) return;
+    //* if ((quest.items.tiki_fuel_stat_item.quantity || 0) == 0) return;
     const isFuelEnabled = quest.hunting_site_atts.is_fuel_enabled || false;
     if ((isFuelEnabled == true) !== isEnabled)
       hg.views.HeadsUpDisplayFloatingIslandsView.toggleFuel();
@@ -1687,14 +1690,14 @@ function floatingIslands() {
   // End toggleCyclone(false);
   // autoSkyMap
   // if (!autoSkyMap({ isAutoLai: true, isCycleLai: true, myLaiPowerTypes: ['law', 'phscl', 'drcnc', 'arcn', 'tctcl', 'shdw', 'frgttn', 'hdr'], shrineMaxIndex: 2 })) console.log('Not launched');
-  /* autoSkyMap({
+  /** autoSkyMap({
     isAutoHai: true,
     isCycleHai: true,
     myHaiPowerTypes: ['law', 'tctcl', 'phscl', 'hdr'],
     includedHaiShrine: ['paragon_cache_a', 'paragon_cache_b', 'paragon_cache_c'],
     shrineMaxIndex: 2
   }); */
-  // prettier-ignore
+  //* prettier-ignore
   // const AllPowerTypes = ['arcn', 'frgttn', 'hdr', 'shdw', 'drcnc', 'law', 'phscl', 'tctcl'];
   // prettier-ignore
   // const AllPowerNames = ['arcane', 'forgotten', 'hydro', 'shadow', 'draconic', 'law', 'physical', 'tactical'];
@@ -1752,20 +1755,20 @@ function floatingIslands() {
       const powerType = AllPowerTypes[i];
       const j = i * 4;
       islands[powerType] = [
-        tiles[j].getAttribute('data-type'),
-        tiles[j + 1].getAttribute('data-type'),
-        tiles[j + 2].getAttribute('data-type'),
-        tiles[j + 3].getAttribute('data-type')
+        tiles[j].dataset('data-type'),
+        tiles[j + 1].dataset('data-type'),
+        tiles[j + 2].dataset('data-type'),
+        tiles[j + 3].dataset('data-type')
       ];
     }
     for (let i = 4; i < AllPowerTypes.length; i++) {
       const powerType = AllPowerTypes[i];
       const j = i % 4;
       islands[powerType] = [
-        tiles[j + 12].getAttribute('data-type'),
-        tiles[j + 8].getAttribute('data-type'),
-        tiles[j + 4].getAttribute('data-type'),
-        tiles[j].getAttribute('data-type')
+        tiles[j + 12].dataset('data-type'),
+        tiles[j + 8].dataset('data-type'),
+        tiles[j + 4].dataset('data-type'),
+        tiles[j].dataset('data-type')
       ];
     }
     console.log(islands);
@@ -1790,15 +1793,14 @@ function floatingIslands() {
       ? settings.shrineMaxIndex
       : 2;
     for (let i = 0; i < shrineMaxIndex; i++) {
-      for (let j = 0; j < myPowerTypes.length; j++) {
-        const myPowerType = myPowerTypes[j];
+      for (const myPowerType of myPowerTypes) {
         const modifier = islands[myPowerType][i];
-        // if (modifier.indexOf('shrine') > -1) {
-        if (modifier.indexOf(shrineKey) > -1) {
+        //* if (modifier.indexOf('shrine') > -1) {
+        if (modifier?.includes(shrineKey)) {
           const isFilterOk =
             !included ||
             included.length == 0 || // 防呆: included中 4個 shrine都沒有的話會無限 cycle
-            included.indexOf(modifier) > -1;
+            included.includes(modifier);
           console.log(`isHaiOk? ${isFilterOk}`);
           if (!isHai || isFilterOk) choices.push(myPowerType);
         }
@@ -1843,7 +1845,7 @@ function floatingIslands() {
     };
     const tileTypes = getTileTypes();
     const rerollClass = '.floatingIslandsAdventureBoardSkyMap-rerollButton';
-    // document.querySelector(rerollClass).click();
+    //* document.querySelector(rerollClass).click();
     document.querySelector(rerollClass).dispatchEvent(new Event('click'));
     const key = setInterval(() => {
       const newTileTypes = getTileTypes();
@@ -1856,51 +1858,45 @@ function floatingIslands() {
   }
   function bestChoice(islands, choices, wantedModifier) {
     // TODO Using wantedModifier
-    for (let i = 0; i < choices.length; i++) {
-      const choice = choices[i];
+    for (const choice of choices) {
       const island = islands[choice];
       if (island.filter((elem) => elem === 'loot_cache').length === 2)
         return choice;
     }
-    for (let i = 0; i < choices.length; i++) {
-      const choice = choices[i];
+    for (const choice of choices) {
       const island = islands[choice];
       if (island.filter((elem) => elem === 'sky_pirates').length === 2)
         return choice;
     }
     // Lai的話 shrine first優先, Hai的話這個判斷無作用
-    for (let i = 0; i < choices.length; i++) {
-      const choice = choices[i];
+    for (const choice of choices) {
       const island = islands[choice];
-      if (island[0].indexOf('shrine') > -1) return choice;
+      if (island[0].includes('shrine')) return choice;
     }
-    for (let i = 0; i < choices.length; i++) {
-      const choice = choices[i];
+    for (const choice of choices) {
       const island = islands[choice];
-      // const count = island.filter(elem => elem === 'empty_sky').length;
-      if (island.indexOf('loot_cache') > -1 && island.indexOf('empty_sky') < 0)
+      //* const count = island.filter(elem => elem === 'empty_sky').length;
+      if (island.includes('loot_cache') && !island.includes('empty_sky'))
         return choice;
     }
-    for (let i = 0; i < choices.length; i++) {
-      const choice = choices[i];
+    for (const choice of choices) {
       const island = islands[choice];
-      if (island.indexOf('empty_sky') < 0 && distinctArray(island).length === 2)
+      if (!island.includes('empty_sky') && distinctArray(island).length === 2)
         return choice;
     }
-    for (let i = 0; i < choices.length; i++) {
-      const choice = choices[i];
+    for (const choice of choices) {
       const island = islands[choice];
-      // const count = island.filter(elem => elem === 'empty_sky').length;
-      if (island.indexOf('loot_cache') > -1) return choice;
-      if (island.indexOf('sky_pirates') > -1) return choice;
-      if (island.indexOf('empty_sky') < 0) return choice;
+      //* const count = island.filter(elem => elem === 'empty_sky').length;
+      if (island.includes('loot_cache')) return choice;
+      if (island.includes('sky_pirates')) return choice;
+      if (!island.includes('empty_sky')) return choice;
     }
     return choices[0];
-    // return null;
+    //* return null;
   }
-  // launchSkyMap('');
+  //* launchSkyMap('');
   function launchSkyMap(powerType) {
-    if (AllPowerTypes.indexOf(powerType) < 0) return;
+    if (!AllPowerTypes.includes(powerType)) return;
     const params = {
       action: 'launch',
       power_type: powerType,
@@ -2005,7 +2001,7 @@ function floatingIslands() {
         }
         console.log(`${i} over wheel index, stop execution`);
         const sp = boardData.adventure_board.sky_palace;
-        // if (lockNum === 5) {
+        //* if (lockNum === 5) {
         if (sp.can_launch) {
           console.log('all locked, launch and return');
           launchSkyPalace(wheelPattern[0]); // TODO 測試時 comment掉
@@ -2035,13 +2031,13 @@ function floatingIslands() {
         console.log(`value: ${value}, wanted: ${wanted}, locked: ${isLocked}`);
         if (isLocked) {
           lockNum++;
-          // console.log(`wheel locked, total locked wheel num: ${lockNum}`);
+          //* console.log(`wheel locked, total locked wheel num: ${lockNum}`);
           next();
           return;
         }
         // TODO 測試用 const delay = getRandomInteger(4000, 7000);
         const delay = getRandomInteger(300, 700);
-        if (value.indexOf(wanted) > -1) {
+        if (value.includes(wanted)) {
           console.log(`value: ${value}, wanted: ${wanted}, lock wheel ${i}`);
           const params =
             i === 0
@@ -2073,7 +2069,7 @@ function floatingIslands() {
     checkAndLock(boardData, wheelPattern);
     function cycleToLaunch() {
       console.log('cycleToLaunch');
-      /* const extractPowerType = (data) => {
+      /** const extractPowerType = (data) => {
         console.log('extractPowerType');
         const islandType = data.adventure_board.sky_palace.power_type;
         const powerName = islandType.split('_')[0];
@@ -2159,9 +2155,9 @@ function floatingIslands() {
       } */
     }
   }
-  // launchSkyPalace('');
+  //* launchSkyPalace('');
   function launchSkyPalace(powerType) {
-    if (AllPowerTypes.indexOf(powerType) < 0) return;
+    if (!AllPowerTypes.includes(powerType)) return;
     const params = {
       action: 'launch_vault',
       power_type: powerType,
@@ -2173,7 +2169,7 @@ function floatingIslands() {
   }
   // End treatSkyPalace
   function ajax(element, params, successCallback) {
-    /* var target = $(element);
+    /** var target = $(element);
     if (target.hasClass('busy') || target.hasClass('disabled')) {
         return false;
     }
@@ -2188,7 +2184,7 @@ function floatingIslands() {
       url:
         MOUSEHUNT_BASE_URL + 'managers/ajax/environment/floating_islands.php',
       success: function (data) {
-        /* target.removeClass('busy');
+        /** target.removeClass('busy');
       eventRegistry.doEvent('ajax_response', data);
       if (data.adventure_board) {
         _data = data.adventure_board;
@@ -2203,7 +2199,7 @@ function floatingIslands() {
         popup.addToken('{*title*}', 'An error has occurred.');
         popup.addToken('{*content*}', 'An error occurred. Please try again!');
         popup.show();
-        // target.removeClass('busy');
+        //* target.removeClass('busy');
       }
     });
   }
