@@ -1092,7 +1092,7 @@ function floatingIslands() {
   const targetEnvironmentType = 'floating_islands';
   const environmentType = getEnvironmentType();
   if (environmentType != targetEnvironmentType) return;
-  logging('floatingIslands_1.4.26.8.15');
+  logging('floatingIslands_1.4.26.8.16');
   // move item stat to better position and make it draggable
   try {
     $('.floatingIslandsHUD-statItemContainer')
@@ -1755,20 +1755,20 @@ function floatingIslands() {
       const powerType = AllPowerTypes[i];
       const j = i * 4;
       islands[powerType] = [
-        tiles[j].dataset('data-type'),
-        tiles[j + 1].dataset('data-type'),
-        tiles[j + 2].dataset('data-type'),
-        tiles[j + 3].dataset('data-type')
+        tiles[j].dataset.type,
+        tiles[j + 1].dataset.type,
+        tiles[j + 2].dataset.type,
+        tiles[j + 3].dataset.type
       ];
     }
     for (let i = 4; i < AllPowerTypes.length; i++) {
       const powerType = AllPowerTypes[i];
       const j = i % 4;
       islands[powerType] = [
-        tiles[j + 12].dataset('data-type'),
-        tiles[j + 8].dataset('data-type'),
-        tiles[j + 4].dataset('data-type'),
-        tiles[j].dataset('data-type')
+        tiles[j + 12].dataset.type,
+        tiles[j + 8].dataset.type,
+        tiles[j + 4].dataset.type,
+        tiles[j].dataset.type
       ];
     }
     console.log(islands);
