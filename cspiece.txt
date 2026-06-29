@@ -1,0 +1,181 @@
+// #CSmappiece
+class CsMapPiece {
+  static youngs = new Set([
+    '100000636731698',
+    '100000473806593',
+    '100000556925297',
+    '100000541126764',
+    '100000520204559',
+    '100000533948473',
+    'hg_7b359afdc278e154c3c6f5c6a2f1ba31',
+    'hg_8222e273c0d07aa036e56ed17a8f7884'
+  ]);
+  constructor() {
+    this.nows = [
+      'cape_clawed',
+      'desert_oasis',
+      'fort_rox',
+      'moussu_picchu',
+      'table_of_contents',
+      'floating_islands',
+      'queso_geyser',
+      'labyrinth',
+      'desert_warpath'
+    ];
+    if (CsMapPiece.youngs.has(MhUtils.getSnUserId())) {
+      this.nows.push('rift_valour');
+    } else {
+      this.nows.push('table_of_contents');
+    }
+    if (user.title_name.trim().startsWith('Grand Du'))
+      this.nows = [
+        'cape_clawed',
+        'fort_rox',
+        'moussu_picchu',
+        'queso_geyser',
+        'labyrinth',
+        'desert_warpath',
+        'desert_oasis',
+        'ronzas_traveling_shoppe'
+      ];
+    this.loots = [
+      'Cerulean Armillary Sphere Fragment 1',
+      'Cerulean Armillary Sphere Fragment 3',
+      'Cerulean Armillary Sphere Fragment 4',
+      'Cerulean Armillary Sphere Fragment 7',
+      'Cerulean Armillary Sphere Fragment 9',
+      'Cerulean Armillary Sphere Fragment 8',
+      'Cerulean Armillary Sphere Fragment 5',
+      'Cerulean Armillary Sphere Fragment 6',
+      'Cerulean Armillary Sphere Fragment 2'
+    ];
+    if (user.title_name.trim().startsWith('Grand Du'))
+      this.loots = [
+        'Cerulean Armillary Sphere Fragment 1',
+        'Cerulean Armillary Sphere Fragment 4',
+        'Cerulean Armillary Sphere Fragment 7',
+        'Cerulean Armillary Sphere Fragment 5',
+        'Cerulean Armillary Sphere Fragment 6',
+        'Cerulean Armillary Sphere Fragment 2',
+        'Cerulean Armillary Sphere Fragment 3'
+      ];
+    this.actions = [
+      () => this.goDesertOasis(),
+      () => this.goFortRox(),
+      () => this.goMoussuPicchu(),
+      () => this.goTableOfContents(),
+      () => this.goFloatingIslands(),
+      () => this.goQuesoGeyser(),
+      () => this.goLabyrinth(),
+      () => this.goDesertWarpath(),
+      () => {
+        if (CsMapPiece.youngs.has(MhUtils.getSnUserId())) {
+          this.goRiftValour();
+          return;
+        }
+        this.goTableOfContents();
+      }
+    ];
+    if (user.title_name.trim().startsWith('Grand Du'))
+      this.actions = [
+        () => this.goFortRox(),
+        () => this.goMoussuPicchu(),
+        () => this.goQuesoGeyser(),
+        () => this.goLabyrinth(),
+        () => this.goDesertWarpath(),
+        () => this.goDesertOasis(),
+        () => this.goRonzasShoppe()
+      ];
+  }
+  run() {
+    console.log(this.nows);
+    for (let i = 0; i < this.nows.length; i++) {
+      if (!this.nows[i + 1]) {
+        console.log('At end, stop running');
+        break;
+      }
+      const now = this.nows[i];
+      if (now !== MhUtils.getEnvironmentType()) {
+        console.log(`Not in ${now}, skip`);
+        continue;
+      }
+      const loot = this.loots[i];
+      const next = this.nows[i + 1];
+      const action = this.actions[i];
+      if (hasLootByItemName(loot)) MhUtils.travel(next, 2000, action);
+      break;
+    }
+  }
+  static goCapeClawed() {
+    console.log('traveling to cape_clawed');
+    MhUtils.travel('cape_clawed', 2000, () => {
+      hg.utils.TrapControl.setBait(99)
+        .setWeapon(3087)
+        .setBase(3364)
+        .disarmTrinket()
+        .go();
+    });
+  }
+  goDesertOasis() {
+    MhUtils.reloadWithMessage('traveling to desert_oasis');
+  }
+  goFortRox() {
+    MhUtils.reloadWithMessage('traveling to fort_rox');
+  }
+  goMoussuPicchu() {
+    //* MhUtils.reloadWithMessage('traveling to moussu_picchu');
+    armAllTraps(
+      'Windy Cheese',
+      'best.weapon.arcane',
+      'best.base.combo',
+      'None'
+    );
+  }
+  goTableOfContents() {
+    MhUtils.reloadWithMessage('traveling to table_of_contents');
+    /** console.log('traveling to table_of_contents');
+    MhUtils.travel('table_of_contents', 2000, () => {
+      hg.utils.TrapControl.setBait(3459)
+        .setWeapon(3421)
+        .setBase(2904)
+        .setTrinket(400)
+        .go();
+    });
+     */
+  }
+  goFloatingIslands() {
+    MhUtils.reloadWithMessage('traveling to floating_islands');
+  }
+  goQuesoGeyser() {
+    //* MhUtils.reloadWithMessage('traveling to queso_geyser');
+    armAllTraps(
+      "Wildfire, Flamin' Queso",
+      'best.weapon.draconic',
+      'best.base.combo',
+      'Dragonbane Charm'
+    );
+    //* armAllTraps(
+    //   'Mild Queso',
+    //   'best.weapon.draconic',
+    //   'best.base.combo',
+    //   'Dragonbane Charm'
+    // );
+  }
+  goLabyrinth() {
+    MhUtils.reloadWithMessage('traveling to labyrinth');
+  }
+  goDesertWarpath() {
+    MhUtils.reloadWithMessage('traveling to desert_warpath');
+  }
+  goProloguePond() {
+    MhUtils.reloadWithMessage('traveling to prologue_pond');
+  }
+  goRiftValour() {
+    MhUtils.reloadWithMessage('traveling to rift_valour');
+  }
+  goRonzasShoppe() {
+    MhUtils.reloadWithMessage('traveling to ronzas_traveling_shoppe');
+  }
+}
+new CsMapPiece().run();
+// End #CSmappiece
