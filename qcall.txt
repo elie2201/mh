@@ -1,0 +1,1249 @@
+/* eslint-disable new-cap */
+import { MyUtils, MhUtils } from './my-mh-aid-dev.js';
+
+// #quesoCanyon
+(() => {
+  const QuesoCanyonEnvironmentTypes = {
+    geyser: 'queso_geyser',
+    plain: 'queso_plains',
+    quarry: 'queso_quarry',
+    river: 'queso_river'
+  };
+  const QuesoBaitCraftItemOrder = [
+    'mild_spice_crafting_item',
+    'medium_spice_crafting_item',
+    'hot_spice_crafting_item',
+    'flaming_spice_crafting_item'
+  ];
+  const QuesoBaitsOrder = [
+    'bland_queso_cheese',
+    'mild_queso_cheese',
+    'medium_queso_cheese',
+    'hot_queso_cheese',
+    'flaming_queso_cheese'
+  ];
+  const QuesoBaitTypeNameMap = {
+    gouda_cheese: 'Gouda Cheese',
+    super_brie_cheese: 'SUPER',
+    bland_queso_cheese: 'Bland Queso',
+    mild_queso_cheese: 'Mild Queso',
+    medium_queso_cheese: 'Medium Queso',
+    hot_queso_cheese: 'Hot Queso',
+    flaming_queso_cheese: "Flamin' Queso",
+    queso_river_boss_cheese: 'Wildfire Queso'
+  };
+  const Corks = ['cork_sticky', 'cork_heavy', 'cork_improved', 'cork_basic'];
+  const EnoughCheeseQuantity = 2;
+  const quesoCanyonVersion = '0.0.1.0.3';
+  if (
+    Object.values(QuesoCanyonEnvironmentTypes).includes(
+      MhUtils.getEnvironmentType()
+    )
+  )
+    quesoCanyon();
+  // if (trimToEmpty(user.environment_type)) == quesoCanyonTypes.geyser) quesoGeyser();
+  function quesoCanyon() {
+    logging(`quesoCanyon_${quesoCanyonVersion}`);
+    const enviromentType = MhUtils.getEnvironmentType();
+    switch (enviromentType) {
+      case QuesoCanyonEnvironmentTypes.geyser:
+        quesoGeyser();
+        break;
+      case QuesoCanyonEnvironmentTypes.plain:
+        pricklyPlains();
+        break;
+      case QuesoCanyonEnvironmentTypes.quarry:
+        canteraQuarry();
+        break;
+      case QuesoCanyonEnvironmentTypes.river:
+        quesoRiver();
+        break;
+      default:
+        popupMessage(`Where am I? ${enviromentType}`);
+        break;
+    }
+  }
+  // quesoGeyser
+  function quesoGeyser() {
+    logging(`quesoGeyser_${quesoCanyonVersion}`);
+    const enviromentType = MhUtils.getEnvironmentType();
+    if (enviromentType != QuesoCanyonEnvironmentTypes.geyser) return;
+    // prettier-ignore
+    const defaultSettings = {
+    isAutoClaimNest: true,
+    targetCork: 'cork_heavy',
+    isAutoBuild: false,
+    isStopAsCanBuild: true,
+    isStopAsErupt: false,
+    travelTo: 'queso_plains',
+    pricklyPlainsCallback: 'medium_queso_cheese',
+    plans: ['collecting', 'cork_basic', 'eruption_small', 'cork_improved', 'eruption_medium', 'cork_heavy', 'eruption_large', 'cork_sticky', 'eruption_epic'],
+    traps: {
+      collecting: ['Mild Queso', 'best.weapon.draconic', 'best.base.combo', 'None', false],
+      cork_basic: ['Mild Queso', 'best.weapon.draconic', 'best.base.combo', 'Luck Charm', false],
+      cork_improved: ['Medium Queso', 'best.weapon.draconic', 'best.base.combo', 'Super Snowball', false],
+      cork_heavy: ['Hot Queso', 'best.weapon.draconic', 'best.base.combo', 'Extreme Luck Charm,Extreme Snowball', false],
+      cork_sticky: ['Hot Queso', 'best.weapon.draconic', 'best.base.combo', 'Extreme Luck Charm,Extreme Snowball', false],
+      eruption_small: ['Mild Queso', 'best.weapon.draconic', 'best.base.combo', 'Luck Charm', false, false],
+      eruption_medium: ['Medium Queso', 'best.weapon.draconic', 'best.base.combo', 'Ultimate Ancient Charm', false, false],
+      eruption_large: ['Hot Queso', 'best.weapon.draconic', 'best.base.combo', 'Extreme Chrome Charm', false, false],
+      eruption_epic: ["Flamin' Queso,Wildfire Queso", 'best.weapon.draconic', 'best.base.combo', 'Dragonbane Charm', true, true]
+    }
+  };
+    const settings = getStorageToObject('queso_geyser', defaultSettings);
+    /** const isAutoPlans = settings.isAutoPlans;
+    if (isAutoPlans) {
+    } */
+    if (autoGeyser(settings)) return;
+    const quest = user.quests.QuestQuesoGeyser;
+    const stateData = getGeyserStateData(quest);
+    const traps = settings.traps;
+    const trap = traps[stateData];
+    logging('stateData:', stateData, ', trap:', trap);
+    let baitToUse = null;
+    const trapNames = parseTrapName(trap[0]);
+    for (const trapName of trapNames) {
+      const trapBaitType = getQuesoBaitType(trapName);
+      if (!isEnoughQuesoCheese(trapBaitType, quest)) {
+        continue;
+      }
+      baitToUse = trapName;
+      break;
+    }
+    if (!baitToUse) baitToUse = trapNames[0];
+    logging(`setted bait: ${trap[0]}, bait to use: ${baitToUse}`);
+    const trapBaitType = getQuesoBaitType(baitToUse);
+    const baitType = getLowerAvailableQuesoCheese(trapBaitType, quest);
+    logging(
+      `to use type: ${trapBaitType}, lowerOrEqual available: ${baitType}`
+    );
+    if (baitType != trapBaitType) {
+      stoppingAction(settings.travelTo, baitType);
+      return;
+    }
+    trap[0] = baitToUse;
+    armAllTraps(...trap);
+    const isFuelEnabled = trap[4];
+    toggleWildTonic(isFuelEnabled);
+  }
+  // End quesoGeyser
+  /** @returns {string} */
+  function getGeyserStateData(quest) {
+    let stateData = quest.state_data || '';
+    if (stateData == '') stateData = 'collecting';
+    return stateData;
+  }
+  function stoppingAction(travelTo, baitType) {
+    let callback = null;
+    if (travelTo == QuesoCanyonEnvironmentTypes.plain)
+      callback = () => {
+        pricklyPlains(baitType);
+      };
+    travel(travelTo, 3000, callback);
+  }
+  function autoGeyser(settings) {
+    logging(`autoQuesoGeyser_${quesoCanyonVersion}`);
+    const isAutomated = true;
+    const isNotAutomated = !isAutomated;
+    const quest = user.quests.QuestQuesoGeyser;
+    /** let qgStage = parseInt(localStorage.quesoGeyserStage || 0);
+    const plans = settings.plans;
+    const plan = plans[qgStage]; */
+    if (settings.isAutoClaimNest && isGeyserNestClaimed(quest, settings)) {
+      //* localStorage.quesoGeyserStage = ++qgStage % plans.length;
+      return isAutomated;
+    }
+    if (
+      settings.isStopAsErupt &&
+      getGeyserStateData(quest).startsWith('eruption_')
+    ) {
+      stoppingAction(settings.travelTo, settings.pricklyPlainsCallback);
+      return isAutomated;
+    }
+    const cork = getGeyserBuildCork(settings.targetCork);
+    if (getGeyserStateData(quest) == 'collecting' && cork) {
+      if (settings.isStopAsCanBuild) {
+        stoppingAction(settings.travelTo, settings.pricklyPlainsCallback);
+        return isAutomated;
+      }
+      if (settings.isAutoBuild) {
+        buildGeyserCork(cork);
+        return isAutomated;
+      }
+    }
+    return isNotAutomated;
+  }
+  function isGeyserNestClaimed(quest, settings) {
+    const isAutoClaimed = true;
+    const isNotAutoClaimed = !isAutoClaimed;
+    if (quest.can_claim && settings.isAutoClaimNest) {
+      claimGeyserNest(quest, settings);
+      return isAutoClaimed;
+    }
+    return isNotAutoClaimed;
+  }
+  //* claimNest();
+  function claimGeyserNest(quest, settings) {
+    const stateData = quest.state_data || '';
+    const traps = settings.traps;
+    const trap = traps[stateData];
+    const isUseMnd = trap[5];
+    const element = `<a${isUseMnd ? ' data-is-dusted="true"' : ''}/>`;
+    hg.views.HeadsUpDisplayQuesoGeyserView.claimNestLoot(element);
+    /** setTimeout(() => {
+      document
+        .querySelector('#overlayPopup')
+        .querySelector('.jsDialogClose')
+        .click();
+    }, 1000); */
+    setTimeout(() => {
+      MhUtils.reloadWithMessage('Claimed Geyser Nest Loot');
+    }, 2000);
+  }
+  //* const Corks = ['cork_sticky', 'cork_heavy', 'cork_improved', 'cork_basic'];
+  // getGeyserBuildCork('cork_heavy');
+  function getGeyserBuildCork(targetCork) {
+    console.log(`Can build ${targetCork}?`);
+    const startIndex = Math.max(Corks.indexOf(targetCork), 0);
+    for (let i = startIndex; i < Corks.length; i++) {
+      const quest = user.quests.QuestQuesoGeyser;
+      const corkType = Corks[i];
+      const cork = quest.corks[corkType];
+      const requirements = cork.build_requirements;
+      const myItems = quest.items;
+      let isEnough = true;
+      for (const key in requirements) {
+        if (!Object.hasOwn(requirements, key)) continue;
+        const requirement = requirements[key];
+        const itemType = requirement.item_type;
+        const needQty = requirement.quantity;
+        const myQty = MyUtils.parseQuantity(myItems[itemType].quantity);
+        // 如果是 cork_bark_crafting_item數量不足,直接回傳 null,打斷 autoBuild
+        // 不然會在 low rank cork一直把 cork bark消耗掉
+        if ('cork_bark_crafting_item' === itemType && myQty < needQty)
+          return null;
+        isEnough &&= myQty >= needQty;
+      }
+      console.log(`${isEnough ? 'Can' : 'Cannot'} build ${corkType}`);
+      if (isEnough) return corkType;
+    }
+    return null;
+  }
+  // End getGeyserBuildCork
+  function buildGeyserCork(cork) {
+    logging(`Building ${cork}!!`);
+    const element = `<a data-cork-type="${cork}"/>`;
+    hg.views.HeadsUpDisplayQuesoGeyserView.buildCork(element);
+    setTimeout(() => {
+      MhUtils.reloadWithMessage(`Built ${cork}!!`);
+    }, 2000);
+  }
+  //* getQuesoBaitType('medium_queso_cheese');
+  function getQuesoBaitType(baitName) {
+    for (const key in QuesoBaitTypeNameMap) {
+      if (Object.hasOwn(QuesoBaitTypeNameMap, key)) {
+        const theName = QuesoBaitTypeNameMap[key];
+        if (theName == baitName) return key;
+      }
+    }
+    return null;
+  }
+  // End getQuesoBaitType
+  //* isEnoughQuesoCheese('medium_queso_cheese');
+  function isEnoughQuesoCheese(baitType, quest) {
+    logging(`Is enough ${baitType}?`);
+    if (
+      baitType == QuesoBaitTypeNameMap.gouda_cheese ||
+      baitType == QuesoBaitTypeNameMap.super_brie_cheese
+    )
+      return true;
+    const myItems = quest.items;
+    const baitQty = parseQuantity(myItems[baitType].quantity);
+    const isEnough = baitQty >= EnoughCheeseQuantity;
+    logging(`${isEnough ? '' : 'not'} enough ${baitType}`);
+    return isEnough;
+  }
+  // End isEnoughQuesoCheese
+  //* getLowerAvailableQuesoCheese('medium_queso_cheese');
+  function getLowerAvailableQuesoCheese(quesoBaitType, quest) {
+    logging(`Get lower available cheese of ${quesoBaitType}`);
+    const getQuesoPreviousBaitType = (baitType) => {
+      let armingOrder = QuesoBaitsOrder.indexOf(baitType);
+      if (armingOrder < 0) return null;
+      armingOrder -= 1;
+      if (armingOrder < 0) {
+        return null;
+      }
+      return QuesoBaitsOrder[armingOrder];
+    };
+    const myItems = quest.items;
+    let baitType = quesoBaitType;
+    let baitQty = parseQuantity(myItems[baitType].quantity);
+    if (baitQty >= EnoughCheeseQuantity) {
+      return baitType;
+    }
+    while (baitQty < EnoughCheeseQuantity) {
+      baitType = getQuesoPreviousBaitType(baitType);
+      if (!baitType) {
+        travel(QuesoCanyonEnvironmentTypes.river);
+        return baitType;
+      }
+      baitQty = parseQuantity(myItems[baitType].quantity);
+    }
+    logging(`Get ${baitType}`);
+    return baitType;
+  }
+  // End getQuesoLowerAvailableCheese
+  // toggleWildTonic(false);
+  function toggleWildTonic(isEnabled, callback) {
+    console.log('toggleWildTonic to:', isEnabled, 'callback:', callback);
+    let quest = user.quests.QuestQuesoCanyon;
+    if (!quest) quest = user.quests.QuestQuesoGeyser;
+    if (!quest) return;
+    if ((quest.items.wild_tonic_stat_item.quantity || 0) == 0) return;
+    const params = { action: 'toggle_wild_tonic' };
+    if (user.quests.QuestQuesoCanyon) {
+      const isFuelEnabled = quest.is_wild_tonic_active || false;
+      if ((String(isFuelEnabled) === 'true') != isEnabled)
+        hg.views.HeadsUpDisplayQuesoCanyonView.ajax('<a/>', params, callback);
+    } else {
+      const isFuelEnabled = quest.is_wild_tonic_enabled || false;
+      if ((String(isFuelEnabled) === 'true') != isEnabled)
+        hg.views.HeadsUpDisplayQuesoGeyserView.ajax('<a/>', params, callback);
+    }
+  }
+  // End toggleWildTonic(false);
+  // #quesoRiver()
+  function quesoRiver(baitType) {
+    logging(`quesoRiver_${quesoCanyonVersion}`);
+    // prettier-ignore
+    const defaultSettins = {
+    bait: 'gouda_cheese',
+    traps: {
+      gouda_cheese: ['Gouda Cheese', 'Queso Factory', 'best.base.combo', 'Luck Charm', false],
+      super_brie_cheese: ['SUPER', 'Queso Factory', 'best.base.combo', 'Luck Charm', false],
+      queso_river_boss_cheese: ['Wildfire Queso', 'best.weapon.law', 'best.base.combo', 'Festive Ultimate Lucky Power Charm', false],
+    }
+  };
+    const settings = getStorageToObject('queso_river', defaultSettins);
+    const quest = user.quests.QuestQuesoCanyon;
+    //* const myItems = quest.items;
+    let armingBait = baitType || settings.bait;
+    if (!armingBait || !isEnoughQuesoCheese(armingBait, quest))
+      armingBait = 'gouda_cheese';
+    const trap = settings.traps[armingBait];
+    armAllTraps(...trap);
+    const isFuelEnabled = false;
+    toggleWildTonic(isFuelEnabled);
+  }
+  // End #quesoRiver
+  // #canteraQuarry()
+  function canteraQuarry(baitType) {
+    logging(`canteraQuarry_${quesoCanyonVersion}`);
+    // prettier-ignore
+    const defaultSettins = {
+    bait: 'hot_queso_cheese',
+    traps: {
+      bland_queso_cheese: ['Bland Queso', 'best.weapon.shadow', 'best.base.combo', 'None', false],
+      mild_queso_cheese: ['Mild Queso', 'best.weapon.shadow', 'best.base.combo', 'None', false],
+      medium_queso_cheese: ['Medium Queso', 'best.weapon.shadow', 'best.base.combo', 'None', false],
+      hot_queso_cheese: ['Hot Queso', 'best.weapon.shadow', 'best.base.combo', 'Ancient Charm', false],
+      flaming_queso_cheese: ["Flamin' Queso", 'best.weapon.shadow', 'best.base.combo', 'Ultimate Party Charm', true],
+    }
+  };
+    const settings = getStorageToObject('queso_quarry', defaultSettins);
+    const quest = user.quests.QuestQuesoCanyon;
+    //* const myItems = quest.items;
+    let armingBait = baitType || settings.bait;
+    // if not enough cheese, try lower cheese till bland_queso_cheese
+    while (armingBait && !isEnoughQuesoCheese(armingBait, quest)) {
+      armingBait = getLowerAvailableQuesoCheese(armingBait, quest);
+    }
+    if (!armingBait) {
+      travel(QuesoCanyonEnvironmentTypes.river);
+      return;
+    }
+    const trap = settings.traps[armingBait];
+    armAllTraps(...trap);
+    const isFuelEnabled = trap[4];
+    toggleWildTonic(isFuelEnabled);
+    /** const armedBait = trimToEmpty(user.bait_name);
+  const isFuelEnabled = armedBait.indexOf('Flamin') == 0 ? true : false;
+  toggleWildTonic(isFuelEnabled); */
+  }
+  // End #canteraQuarry
+  // #pricklyPlains('mild_queso_cheese')
+  function pricklyPlains(baitType) {
+    logging(`pricklyPlains_${quesoCanyonVersion} using ${baitType}`);
+    // prettier-ignore
+    const defaultSettins = {
+    bait: 'bland_queso_cheese',
+    goal: { mild_spice_crafting_item: 100, medium_spice_crafting_item: 50, hot_spice_crafting_item: 0, flaming_spice_crafting_item: 0 },
+    traps: {
+      bland_queso_cheese: ['Bland Queso', 'Boiling Cauldron', "Alchemist's Cookbook", 'Unstable Charm,Snowball Charm', false],
+      mild_queso_cheese: ['Mild Queso', 'Boiling Cauldron', "Alchemist's Cookbook", 'Regal Charm', false],
+      medium_queso_cheese: ['Medium Queso', 'best.weapon.arcane', 'best.base.combo', 'None', false],
+      hot_queso_cheese: ['Hot Queso', 'best.weapon.arcane', 'best.base.combo', 'None', false],
+      flaming_queso_cheese: ["Flamin' Queso", 'best.weapon.arcane', 'best.base.combo', 'Festive Ultimate Lucky Power Charm', false],
+    }
+  };
+    const settings = getStorageToObject('queso_plains', defaultSettins);
+    const quest = user.quests.QuestQuesoCanyon;
+    const myItems = quest.items;
+    let armingBait = baitType || settings.bait;
+    // from high to low, try finish goal
+    const goal = settings.goal;
+    for (let i = QuesoBaitCraftItemOrder.length - 1; i > -1; i--) {
+      const item = QuesoBaitCraftItemOrder[i];
+      const itemQty = parseQuantity(myItems[item].quantity);
+      const needQty = goal[item];
+      if (itemQty >= needQty) continue;
+      armingBait = QuesoBaitsOrder[i];
+      break;
+    }
+    // if not enough cheese, try lower cheese till bland_queso_cheese
+    while (armingBait && !isEnoughQuesoCheese(armingBait, quest)) {
+      armingBait = getLowerAvailableQuesoCheese(armingBait, quest);
+    }
+    if (!armingBait) {
+      travel(QuesoCanyonEnvironmentTypes.river);
+      return;
+    }
+    const trap = settings.traps[armingBait];
+    armAllTraps(...trap);
+    const isFuelEnabled = trap[4];
+    toggleWildTonic(isFuelEnabled);
+  }
+  // End #pricklyPlains
+})();
+// End #quesoCanyon
+
+//* function $() {}
+function getStorageToObject(key, obj) {
+  console.log(key, obj);
+  return obj;
+}
+function logging(...any) {
+  console.log(...any);
+}
+function travel(environmentType, milliseconds, callback) {
+  console.log(environmentType, milliseconds, callback);
+}
+function armAllTraps(bait, weapon, base, charm) {
+  console.log(bait, weapon, base, charm);
+}
+function parseTrapName(trapName) {
+  console.log(trapName);
+  return trapName.split(',');
+}
+// Utilities
+function parseQuantity(qty) {
+  const strQty = (qty || 0) + '';
+  const rtn = Number.parseInt(strQty.replaceAll(',', ''));
+  return Number.isNaN(rtn) ? 0 : rtn;
+}
+function popupMessage(message) {
+  const popup = new jsDialog();
+  popup.setTemplate('error');
+  popup.addToken('{*title*}', 'An error has occurred.');
+  popup.addToken('{*content*}', message);
+  popup.show();
+  //* target.removeClass('busy');
+}
+// End Utilities
+
+function jsDialog() {
+  console.log('jsDialog');
+}
+const hg = {};
+const user = {};
+user.quests = {};
+user.quests.QuestQuesoGeyser = QuestQuesoGeyser;
+user.quests.QuestQuesoCanyon = QuestQuesoCanyon;
+user.environment_type = 'queso_geyser';
+
+// <div class="quesoGeyserHUD-claimContainer reveal"><div class="quesoGeyserHUD-claim-title"><b>The Queso Eruption is complete!</b></div><div class="quesoGeyserHUD-claim-subtitle">Time to see what's inside my dragon nest!</div><a href="#" class="quesoGeyserHUD-claimNestButton default" onclick="hg.views.HeadsUpDisplayQuesoGeyserView.claimNestLoot(this); return false;">Claim Loot</a><div class="quesoGeyserHUD-claim-dustContainer mousehuntTooltipParent"><a href="#" class="quesoGeyserHUD-claimNestButton dusted " onclick="hg.views.HeadsUpDisplayQuesoGeyserView.claimNestLoot(this); return false;" data-is-dusted="true"><div class="quesoGeyserHUD-claim-dustQuantity quantity" data-item-type="magic_cork_dust_stat_item">0</div>Dust &amp;<br> Claim</a><div class="mousehuntTooltip tight top hasBuffer"><div class="quesoGeyserPopup-mouse-loot-table"><div class="quesoGeyserPopup-mouse-loot-item dusted" title="Geyserite"><div class="itemImage" style="background-image:url(https://www.mousehuntgame.com/images/items/crafting_items/thumbnails/6a5e34a384e62091b16259061d556fea.gif?cv=3);"></div></div><div class="quesoGeyserPopup-mouse-loot-item dusted" title="Solidified Amber Queso"><div class="itemImage" style="background-image:url(https://www.mousehuntgame.com/images/items/stats/a8397e0218a4762602a429f4f4826690.gif?cv=3);"></div></div><div class="quesoGeyserPopup-mouse-loot-item dusted" title="Bland Queso"><div class="itemImage" style="background-image:url(https://www.mousehuntgame.com/images/items/bait/4752dbfdce202c0d7ad60ce0bacbebae.gif?cv=3);"></div></div><div class="quesoGeyserPopup-mouse-loot-item dusted" title="Hot Spice Leaf"><div class="itemImage" style="background-image:url(https://www.mousehuntgame.com/images/items/crafting_items/thumbnails/0f3acf654bdb0d1f2414ed251a38dbd8.gif?cv=3);"></div></div><div class="quesoGeyserPopup-mouse-loot-item empty" title="Mystery item!"><div class="itemImage"></div></div></div><div class="quesoGeyserHUD-claim-dust-tooltipText">Use <b>Magic Nest Dust</b> for extra rewards plus a mystery item!<a href="#" class="mousehuntBuyButton" onclick="MHCheckout.showItemInfo('1_magic_cork_dust', 'HeadsUpDisplayQuesoGeyserView', 'tooltip'); return false;"></a></div><div class="mousehuntTooltip-arrow"></div></div></div></div>
+
+const QuestQuesoGeyser = {
+  state: 'collecting',
+  state_data: '',
+  state_name: null,
+  hunts_remaining: 0,
+  nest_loot: 0,
+  nest_loot_class: 'loot_0',
+  pressure: 0,
+  pressure_formatted: 0,
+  max_pressure: 0,
+  max_pressure_formatted: 0,
+  is_wild_tonic_enabled: false,
+  wild_tonic_can_activate: true,
+  can_claim: null,
+  items: {
+    cork_bark_crafting_item: {
+      type: 'cork_bark_crafting_item',
+      quantity: 45,
+      status: ''
+    },
+    rubber_crafting_item: {
+      type: 'rubber_crafting_item',
+      quantity: 10,
+      status: ''
+    },
+    geyserite_crafting_item: {
+      type: 'geyserite_crafting_item',
+      quantity: 30,
+      status: ''
+    },
+    tungsten_crafting_item: {
+      type: 'tungsten_crafting_item',
+      quantity: 6,
+      status: ''
+    },
+    magic_cork_dust_stat_item: {
+      type: 'magic_cork_dust_stat_item',
+      quantity: 0,
+      status: 'disabled'
+    },
+    wild_tonic_stat_item: {
+      type: 'wild_tonic_stat_item',
+      quantity: 362,
+      status: ''
+    },
+    mild_spice_crafting_item: {
+      type: 'mild_spice_crafting_item',
+      quantity: '2,156',
+      status: ''
+    },
+    medium_spice_crafting_item: {
+      type: 'medium_spice_crafting_item',
+      quantity: '1,251',
+      status: ''
+    },
+    hot_spice_crafting_item: {
+      type: 'hot_spice_crafting_item',
+      quantity: '1,441',
+      status: ''
+    },
+    flaming_spice_crafting_item: {
+      type: 'flaming_spice_crafting_item',
+      quantity: 45,
+      status: ''
+    },
+    queso_river_boss_cheese: {
+      type: 'queso_river_boss_cheese',
+      quantity: 2,
+      status: '',
+      can_craft: true
+    },
+    magic_essence_craft_item: {
+      type: 'magic_essence_craft_item',
+      quantity: '1,067',
+      status: ''
+    },
+    ember_stone_crafting_item: {
+      type: 'ember_stone_crafting_item',
+      quantity: 245,
+      status: ''
+    },
+    ember_root_crafting_item: {
+      type: 'ember_root_crafting_item',
+      quantity: 80,
+      status: ''
+    },
+    bland_queso_cheese: {
+      type: 'bland_queso_cheese',
+      quantity: '670,703',
+      status: ''
+    },
+    mild_queso_cheese: {
+      type: 'mild_queso_cheese',
+      quantity: 5,
+      status: '',
+      can_craft: true
+    },
+    medium_queso_cheese: {
+      type: 'medium_queso_cheese',
+      quantity: 5,
+      status: '',
+      can_craft: true
+    },
+    hot_queso_cheese: {
+      type: 'hot_queso_cheese',
+      quantity: 665,
+      status: '',
+      can_craft: true
+    },
+    flaming_queso_cheese: {
+      type: 'flaming_queso_cheese',
+      quantity: 7,
+      status: '',
+      can_craft: true
+    }
+  },
+  corks: {
+    cork_basic: {
+      name: 'Small Cork',
+      type: 'cork_basic',
+      description: '',
+      displayOrder: 1,
+      max_pressure: 35,
+      max_hunts: 10,
+      build_requirements: {
+        cork_bark_crafting_item: {
+          item_type: 'cork_bark_crafting_item',
+          quantity: 10,
+          owned: 10,
+          has_enough: true
+        }
+      },
+      can_build: true
+    },
+    cork_improved: {
+      name: 'Medium Cork',
+      type: 'cork_improved',
+      description: '',
+      displayOrder: 2,
+      max_pressure: 175,
+      max_hunts: 25,
+      build_requirements: {
+        cork_bark_crafting_item: {
+          item_type: 'cork_bark_crafting_item',
+          quantity: 30,
+          owned: 30,
+          has_enough: true
+        },
+        rubber_crafting_item: {
+          item_type: 'rubber_crafting_item',
+          quantity: 15,
+          owned: 10,
+          has_enough: null
+        }
+      },
+      can_build: false
+    },
+    cork_heavy: {
+      name: 'Large Cork',
+      type: 'cork_heavy',
+      description: '',
+      displayOrder: 3,
+      max_pressure: 1000,
+      max_hunts: 50,
+      build_requirements: {
+        cork_bark_crafting_item: {
+          item_type: 'cork_bark_crafting_item',
+          quantity: 90,
+          owned: 45,
+          has_enough: null
+        },
+        geyserite_crafting_item: {
+          item_type: 'geyserite_crafting_item',
+          quantity: 30,
+          owned: 30,
+          has_enough: true
+        }
+      },
+      can_build: false
+    },
+    cork_sticky: {
+      name: 'Epic Cork',
+      type: 'cork_sticky',
+      description: '',
+      displayOrder: 4,
+      max_pressure: 3000,
+      max_hunts: 100,
+      build_requirements: {
+        cork_bark_crafting_item: {
+          item_type: 'cork_bark_crafting_item',
+          quantity: 180,
+          owned: 45,
+          has_enough: null
+        },
+        tungsten_crafting_item: {
+          item_type: 'tungsten_crafting_item',
+          quantity: 60,
+          owned: 6,
+          has_enough: null
+        }
+      },
+      can_build: false
+    }
+  },
+  eruptions: {
+    eruption_tiny: {
+      name: 'Tiny Eruption',
+      type: 'eruption_tiny',
+      description: '',
+      displayOrder: 1,
+      required_pressure: 0,
+      max_hunts: 5
+    },
+    eruption_small: {
+      name: 'Small Eruption',
+      type: 'eruption_small',
+      description: '',
+      displayOrder: 2,
+      required_pressure: 35,
+      max_hunts: 10
+    },
+    eruption_medium: {
+      name: 'Medium Eruption',
+      type: 'eruption_medium',
+      description: '',
+      displayOrder: 3,
+      required_pressure: 175,
+      max_hunts: 20
+    },
+    eruption_large: {
+      name: 'Large Eruption',
+      type: 'eruption_large',
+      description: '',
+      displayOrder: 4,
+      required_pressure: 1000,
+      max_hunts: 40
+    },
+    eruption_epic: {
+      name: 'Epic Eruption',
+      type: 'eruption_epic',
+      description: '',
+      displayOrder: 5,
+      required_pressure: 3000,
+      max_hunts: 80
+    }
+  },
+  pressure_gauge: [],
+  desktop_pressure_gauge: [],
+  bait_type: 'toxic_brie_cheese',
+  bait_warning: true,
+  bland_warning: null,
+  wildfire_warning: null,
+  power_type_warning: true,
+  blend_recipes: {
+    mild_queso_cheese: [
+      'mild_queso_cheese_recipe',
+      'mild_queso_cheese_recipe_magic_essence'
+    ],
+    medium_queso_cheese: [
+      'medium_queso_cheese_recipe',
+      'medium_queso_cheese_recipe_magic_essence'
+    ],
+    hot_queso_cheese: [
+      'hot_queso_cheese_recipe',
+      'hot_queso_cheese_recipe_magic_essence'
+    ],
+    flaming_queso_cheese: [
+      'flaming_queso_cheese_recipe',
+      'flaming_queso_cheese_recipe_magic_essence'
+    ],
+    queso_river_boss_cheese: [
+      'queso_river_boss_cheese_recipe',
+      'queso_river_boss_cheese_recipe_magic_essence'
+    ]
+  },
+  dusted_loot_preview: [],
+  dragon_slayer_teaser: {
+    header_text: 'Help wanted!',
+    subheader_text: 'Research a new Draconic trap design',
+    hint_text:
+      "\n\t\t\t\t\tWith the appearance of Kalor'ignis, one of the legendary Dragonic mice thought only to be a myth, the Trapsmith has been convinced that there remains an as of yet undiscovered and extremely powerful trap. She appears to be looking for an especially rare trap component that will help her unlock some of the mystery behind this trap.<br />\n\t\t\t\t\t<br />\n\t\t\t\t\tFind this fabled rib, sourced from Kalor'ignis himself, and return it to the Trapsmith in order to help her discover its secrets.\n\t\t\t\t",
+    help_image:
+      'https://www.mousehuntgame.com/images/items/crafting_items/thumbnails/fc66cd7a58ee0739571dfdfcd7c6a77c.gif?cv=18',
+    power: '???',
+    power_bonus: '???',
+    attraction_bonus: '???',
+    luck: '???',
+    step_one: "<b>Recover Kalor'ignis Rib</b>",
+    step_two: '???',
+    step_three: '???',
+    step_four: '???'
+  },
+  canvas_page_url: 'https://www.mousehuntgame.com/'
+};
+
+const QuestQuesoCanyon = {
+  bait_type: 'mild_queso_cheese',
+  environment_type: 'queso_plains',
+  environment_name: 'Prickly Plains',
+  pump_level: 6,
+  next_pump_cost: 1000,
+  pump_costs: {
+    1: 0,
+    2: 10,
+    3: 25,
+    4: 100,
+    5: 150,
+    6: 300,
+    7: 1000,
+    8: 2000,
+    9: 3000,
+    10: 5000
+  },
+  pump_rewards: {
+    1: 1,
+    2: 2,
+    3: 5,
+    4: 7,
+    5: 12,
+    6: 30,
+    7: 40,
+    8: 60,
+    9: 150,
+    10: 200
+  },
+  pump_can_upgrade: true,
+  pump_reward_quantity: 30,
+  pump_percent: 100,
+  pump: {
+    level_1: 'complete',
+    level_2: 'complete',
+    level_3: 'complete',
+    level_4: 'complete',
+    level_5: 'complete',
+    level_6: 'complete current',
+    level_7: 'next canUpgrade',
+    level_8: 'locked',
+    level_9: 'locked',
+    level_10: 'locked'
+  },
+  is_wild_tonic_active: false,
+  wild_tonic_can_activate: true,
+  items: {
+    nachore_stat_item: {
+      quantity: '1,487',
+      status: ''
+    },
+    wild_tonic_stat_item: {
+      quantity: 114,
+      status: ''
+    },
+    mild_spice_crafting_item: {
+      quantity: 7,
+      status: ''
+    },
+    medium_spice_crafting_item: {
+      quantity: 13,
+      status: ''
+    },
+    hot_spice_crafting_item: {
+      quantity: 573,
+      status: ''
+    },
+    flaming_spice_crafting_item: {
+      quantity: 5,
+      status: ''
+    },
+    queso_river_boss_cheese: {
+      quantity: 6,
+      status: 'discouraged',
+      can_craft: null
+    },
+    magic_essence_craft_item: {
+      quantity: 482,
+      status: ''
+    },
+    ember_stone_crafting_item: {
+      quantity: 69,
+      status: ''
+    },
+    ember_root_crafting_item: {
+      quantity: 40,
+      status: ''
+    },
+    swiss_cheese: {
+      quantity: '1,823',
+      status: 'hidden discouraged'
+    },
+    brie_cheese: {
+      quantity: 673,
+      status: 'hidden discouraged'
+    },
+    gouda_cheese: {
+      quantity: '2,017',
+      status: 'hidden discouraged'
+    },
+    super_brie_cheese: {
+      quantity: '7,293',
+      status: 'discouraged'
+    },
+    bland_queso_cheese: {
+      quantity: '7,047',
+      status: ''
+    },
+    mild_queso_cheese: {
+      quantity: 60,
+      status: 'active',
+      can_craft: null
+    },
+    medium_queso_cheese: {
+      quantity: 24,
+      status: ' spiceHighlight',
+      can_craft: true
+    },
+    hot_queso_cheese: {
+      quantity: 503,
+      status: '',
+      can_craft: true
+    },
+    flaming_queso_cheese: {
+      quantity: 1,
+      status: '',
+      can_craft: null
+    }
+  },
+  blend_recipes: {
+    mild_queso_cheese: [
+      'mild_queso_cheese_recipe',
+      'mild_queso_cheese_recipe_magic_essence'
+    ],
+    medium_queso_cheese: [
+      'medium_queso_cheese_recipe',
+      'medium_queso_cheese_recipe_magic_essence'
+    ],
+    hot_queso_cheese: [
+      'hot_queso_cheese_recipe',
+      'hot_queso_cheese_recipe_magic_essence'
+    ],
+    flaming_queso_cheese: [
+      'flaming_queso_cheese_recipe',
+      'flaming_queso_cheese_recipe_magic_essence'
+    ],
+    queso_river_boss_cheese: [
+      'queso_river_boss_cheese_recipe',
+      'queso_river_boss_cheese_recipe_magic_essence'
+    ]
+  },
+  environment_power_type: {
+    queso_plains: 'arcn',
+    queso_river: 'law',
+    queso_quarry: 'shdw',
+    queso_geyser: 'drcnc'
+  },
+  bait_warning: false,
+  power_type_warning: null,
+  show_boss_cheese: true
+};
+
+/** Claim Loot
+const QuestQuesoGeyser = {
+  state: 'claim',
+  state_data: 'eruption_small',
+  state_name: 'Small Eruption',
+  hunts_remaining: 0,
+  nest_loot: 10,
+  nest_loot_class: 'loot_3',
+  pressure: 35,
+  pressure_formatted: 35,
+  max_pressure: 0,
+  max_pressure_formatted: 0,
+  is_wild_tonic_enabled: false,
+  wild_tonic_can_activate: true,
+  can_claim: true,
+  items: {
+    cork_bark_crafting_item: {
+      type: 'cork_bark_crafting_item',
+      quantity: 458,
+      status: ''
+    },
+    rubber_crafting_item: {
+      type: 'rubber_crafting_item',
+      quantity: 3,
+      status: ''
+    },
+    geyserite_crafting_item: {
+      type: 'geyserite_crafting_item',
+      quantity: 0,
+      status: 'disabled'
+    },
+    tungsten_crafting_item: {
+      type: 'tungsten_crafting_item',
+      quantity: 10,
+      status: ''
+    },
+    magic_cork_dust_stat_item: {
+      type: 'magic_cork_dust_stat_item',
+      quantity: 0,
+      status: 'disabled'
+    },
+    wild_tonic_stat_item: {
+      type: 'wild_tonic_stat_item',
+      quantity: 447,
+      status: ''
+    },
+    mild_spice_crafting_item: {
+      type: 'mild_spice_crafting_item',
+      quantity: 821,
+      status: ''
+    },
+    medium_spice_crafting_item: {
+      type: 'medium_spice_crafting_item',
+      quantity: 515,
+      status: ''
+    },
+    hot_spice_crafting_item: {
+      type: 'hot_spice_crafting_item',
+      quantity: 110,
+      status: ''
+    },
+    flaming_spice_crafting_item: {
+      type: 'flaming_spice_crafting_item',
+      quantity: 715,
+      status: ''
+    },
+    queso_river_boss_cheese: {
+      type: 'queso_river_boss_cheese',
+      quantity: 6,
+      status: '',
+      can_craft: true
+    },
+    magic_essence_craft_item: {
+      type: 'magic_essence_craft_item',
+      quantity: '1,340',
+      status: ''
+    },
+    ember_stone_crafting_item: {
+      type: 'ember_stone_crafting_item',
+      quantity: 370,
+      status: ''
+    },
+    ember_root_crafting_item: {
+      type: 'ember_root_crafting_item',
+      quantity: 147,
+      status: ''
+    },
+    bland_queso_cheese: {
+      type: 'bland_queso_cheese',
+      quantity: '958,644',
+      status: ''
+    },
+    mild_queso_cheese: {
+      type: 'mild_queso_cheese',
+      quantity: 13,
+      status: 'active',
+      can_craft: true
+    },
+    medium_queso_cheese: {
+      type: 'medium_queso_cheese',
+      quantity: 39,
+      status: '',
+      can_craft: true
+    },
+    hot_queso_cheese: {
+      type: 'hot_queso_cheese',
+      quantity: 669,
+      status: '',
+      can_craft: true
+    },
+    flaming_queso_cheese: {
+      type: 'flaming_queso_cheese',
+      quantity: 28,
+      status: '',
+      can_craft: true
+    }
+  },
+  corks: {
+    cork_basic: {
+      name: 'Small Cork',
+      type: 'cork_basic',
+      description: '',
+      displayOrder: 1,
+      max_pressure: 35,
+      max_hunts: 10,
+      build_requirements: {
+        cork_bark_crafting_item: {
+          item_type: 'cork_bark_crafting_item',
+          quantity: 10,
+          owned: 10,
+          has_enough: true
+        }
+      },
+      can_build: false
+    },
+    cork_improved: {
+      name: 'Medium Cork',
+      type: 'cork_improved',
+      description: '',
+      displayOrder: 2,
+      max_pressure: 175,
+      max_hunts: 25,
+      build_requirements: {
+        cork_bark_crafting_item: {
+          item_type: 'cork_bark_crafting_item',
+          quantity: 30,
+          owned: 30,
+          has_enough: true
+        },
+        rubber_crafting_item: {
+          item_type: 'rubber_crafting_item',
+          quantity: 15,
+          owned: 3,
+          has_enough: null
+        }
+      },
+      can_build: false
+    },
+    cork_heavy: {
+      name: 'Large Cork',
+      type: 'cork_heavy',
+      description: '',
+      displayOrder: 3,
+      max_pressure: 1000,
+      max_hunts: 50,
+      build_requirements: {
+        cork_bark_crafting_item: {
+          item_type: 'cork_bark_crafting_item',
+          quantity: 90,
+          owned: 90,
+          has_enough: true
+        },
+        geyserite_crafting_item: {
+          item_type: 'geyserite_crafting_item',
+          quantity: 30,
+          owned: 0,
+          has_enough: null
+        }
+      },
+      can_build: false
+    },
+    cork_sticky: {
+      name: 'Epic Cork',
+      type: 'cork_sticky',
+      description: '',
+      displayOrder: 4,
+      max_pressure: 3000,
+      max_hunts: 100,
+      build_requirements: {
+        cork_bark_crafting_item: {
+          item_type: 'cork_bark_crafting_item',
+          quantity: 180,
+          owned: 180,
+          has_enough: true
+        },
+        tungsten_crafting_item: {
+          item_type: 'tungsten_crafting_item',
+          quantity: 60,
+          owned: 10,
+          has_enough: null
+        }
+      },
+      can_build: false
+    }
+  },
+  eruptions: {
+    eruption_tiny: {
+      name: 'Tiny Eruption',
+      type: 'eruption_tiny',
+      description: '',
+      displayOrder: 1,
+      required_pressure: 0,
+      max_hunts: 5
+    },
+    eruption_small: {
+      name: 'Small Eruption',
+      type: 'eruption_small',
+      description: '',
+      displayOrder: 2,
+      required_pressure: 35,
+      max_hunts: 10
+    },
+    eruption_medium: {
+      name: 'Medium Eruption',
+      type: 'eruption_medium',
+      description: '',
+      displayOrder: 3,
+      required_pressure: 175,
+      max_hunts: 20
+    },
+    eruption_large: {
+      name: 'Large Eruption',
+      type: 'eruption_large',
+      description: '',
+      displayOrder: 4,
+      required_pressure: 1000,
+      max_hunts: 40
+    },
+    eruption_epic: {
+      name: 'Epic Eruption',
+      type: 'eruption_epic',
+      description: '',
+      displayOrder: 5,
+      required_pressure: 3000,
+      max_hunts: 80
+    }
+  },
+  pressure_gauge: [],
+  desktop_pressure_gauge: [],
+  bait_type: 'mild_queso_cheese',
+  bait_warning: null,
+  bland_warning: null,
+  wildfire_warning: null,
+  power_type_warning: null,
+  blend_recipes: {
+    mild_queso_cheese: [
+      'mild_queso_cheese_recipe',
+      'mild_queso_cheese_recipe_magic_essence'
+    ],
+    medium_queso_cheese: [
+      'medium_queso_cheese_recipe',
+      'medium_queso_cheese_recipe_magic_essence'
+    ],
+    hot_queso_cheese: [
+      'hot_queso_cheese_recipe',
+      'hot_queso_cheese_recipe_magic_essence'
+    ],
+    flaming_queso_cheese: [
+      'flaming_queso_cheese_recipe',
+      'flaming_queso_cheese_recipe_magic_essence'
+    ],
+    queso_river_boss_cheese: [
+      'queso_river_boss_cheese_recipe',
+      'queso_river_boss_cheese_recipe_magic_essence'
+    ]
+  },
+  dusted_loot_preview: [
+    {
+      name: 'Congealed Rubber',
+      thumb:
+        'https://www.mousehuntgame.com/images/items/crafting_items/thumbnails/88fb12e07d6d63e738241bc9a531700b.gif?cv=8',
+      type: 'rubber_crafting_item',
+      slot: 'cork_mat'
+    },
+    {
+      name: 'Solidified Amber Queso',
+      thumb:
+        'https://www.mousehuntgame.com/images/items/stats/a8397e0218a4762602a429f4f4826690.gif?cv=8',
+      type: 'amber_queso_stat_item',
+      slot: 'amber'
+    },
+    {
+      name: 'Bland Queso',
+      thumb:
+        'https://www.mousehuntgame.com/images/items/bait/4752dbfdce202c0d7ad60ce0bacbebae.gif?cv=8',
+      type: 'bland_queso_cheese',
+      slot: 'bland'
+    },
+    {
+      name: 'Medium Spice Leaf',
+      thumb:
+        'https://www.mousehuntgame.com/images/items/crafting_items/thumbnails/c697a753288aa6f8b0c343a9cc4bfddb.gif?cv=8',
+      type: 'medium_spice_crafting_item',
+      slot: 'spice'
+    }
+  ],
+  dragon_slayer_teaser: {
+    header_text: 'Help wanted!',
+    subheader_text: 'Research a new Draconic trap design',
+    hint_text:
+      "\n\t\t\t\t\tWith the appearance of Kalor'ignis, one of the legendary Dragonic mice thought only to be a myth, the Trapsmith has been convinced that there remains an as of yet undiscovered and extremely powerful trap. She appears to be looking for an especially rare trap component that will help her unlock some of the mystery behind this trap.<br />\n\t\t\t\t\t<br />\n\t\t\t\t\tFind this fabled rib, sourced from Kalor'ignis himself, and return it to the Trapsmith in order to help her discover its secrets.\n\t\t\t\t",
+    help_image:
+      'https://www.mousehuntgame.com/images/items/crafting_items/thumbnails/fc66cd7a58ee0739571dfdfcd7c6a77c.gif?cv=18',
+    power: '???',
+    power_bonus: '???',
+    attraction_bonus: '???',
+    luck: '???',
+    step_one: "<b>Recover Kalor'ignis Rib</b>",
+    step_two: '???',
+    step_three: '???',
+    step_four: '???'
+  },
+  canvas_page_url: 'https://www.mousehuntgame.com/'
+};
+ */
