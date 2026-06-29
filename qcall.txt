@@ -34,7 +34,7 @@ import { MyUtils, MhUtils } from './my-mh-aid-dev.js';
   };
   const Corks = ['cork_sticky', 'cork_heavy', 'cork_improved', 'cork_basic'];
   const EnoughCheeseQuantity = 2;
-  const quesoCanyonVersion = '0.0.1.0.3';
+  const quesoCanyonVersion = '0.0.1.0.4';
   if (
     Object.values(QuesoCanyonEnvironmentTypes).includes(
       MhUtils.getEnvironmentType()
@@ -200,8 +200,7 @@ import { MyUtils, MhUtils } from './my-mh-aid-dev.js';
       MhUtils.reloadWithMessage('Claimed Geyser Nest Loot');
     }, 2000);
   }
-  //* const Corks = ['cork_sticky', 'cork_heavy', 'cork_improved', 'cork_basic'];
-  // getGeyserBuildCork('cork_heavy');
+  /** 
   function getGeyserBuildCork(targetCork) {
     console.log(`Can build ${targetCork}?`);
     const startIndex = Math.max(Corks.indexOf(targetCork), 0);
@@ -211,6 +210,7 @@ import { MyUtils, MhUtils } from './my-mh-aid-dev.js';
       const cork = quest.corks[corkType];
       const requirements = cork.build_requirements;
       const myItems = quest.items;
+      let isCorkEnough = true;
       let isEnough = true;
       for (const key in requirements) {
         if (!Object.hasOwn(requirements, key)) continue;
@@ -220,14 +220,71 @@ import { MyUtils, MhUtils } from './my-mh-aid-dev.js';
         const myQty = MyUtils.parseQuantity(myItems[itemType].quantity);
         // 如果是 cork_bark_crafting_item數量不足,直接回傳 null,打斷 autoBuild
         // 不然會在 low rank cork一直把 cork bark消耗掉
-        if ('cork_bark_crafting_item' === itemType && myQty < needQty)
-          return null;
-        isEnough &&= myQty >= needQty;
+        if ('cork_bark_crafting_item' === itemType) {
+          if (myQty < needQty) isCorkEnough = false;
+        } else isEnough &&= myQty >= needQty;
       }
       console.log(`${isEnough ? 'Can' : 'Cannot'} build ${corkType}`);
-      if (isEnough) return corkType;
+      if (isEnough)
+        if (isCorkEnough) return corkType;
+        else return null;
     }
     return null;
+  }
+   */
+  //* const Corks = ['cork_sticky', 'cork_heavy', 'cork_improved', 'cork_basic'];
+  // getGeyserBuildCork('cork_heavy');
+  /**
+   * 檢查是否能建造指定的 Cork。
+   * @param {string} targetCork - 目標 Cork 名稱。
+   * @returns {string|null} - 可建造的 Cork 名稱；若材料不足或 bark 不足則回傳 null。
+   */
+  function getGeyserBuildCork(targetCork) {
+    console.log(`Can build ${targetCork}?`);
+    const quest = user.quests.QuestQuesoGeyser;
+    const startIndex = Math.max(Corks.indexOf(targetCork), 0);
+    for (let i = startIndex; i < Corks.length; i++) {
+      const corkType = Corks[i];
+      const cork = quest.corks[corkType];
+      const requirements = cork.build_requirements;
+      const myItems = quest.items;
+      const { isBarkEnough, isEnough } = checkRequirements(
+        requirements,
+        myItems
+      );
+      console.log(
+        `${isBarkEnough && isEnough ? 'Can' : 'Cannot'} build ${corkType}`
+      );
+      // 如果只是 cork_bark_crafting_item數量不足,直接回傳 null,打斷 autoBuild
+      // 不然會在 low rank cork一直把 cork bark消耗掉
+      if (isEnough) {
+        return isBarkEnough ? corkType : null;
+      }
+    }
+    return null;
+  }
+  /**
+   * 檢查建造需求是否滿足。
+   * @param {Object} requirements - 建造需求物件，每個 key 對應一個需求。
+   * @param {Object} myItems - 玩家持有的物品清單。
+   * @returns {{isBarkEnough: boolean, isEnough: boolean}} - cork bark 是否足夠以及，其他材料是否足夠。
+   */
+  function checkRequirements(requirements, myItems) {
+    let isEnough = true;
+    let isBarkEnough = true;
+    for (const key in requirements) {
+      if (!Object.hasOwn(requirements, key)) continue;
+      // 使用 alias，避免 ESLint camelCase 警告
+      const { item_type: itemType, quantity } = requirements[key];
+      const myQty = MyUtils.parseQuantity(myItems[itemType].quantity);
+      if (itemType === 'cork_bark_crafting_item') {
+        if (myQty < quantity) isBarkEnough = false;
+      } else {
+        // 保留原始邏輯：逐一累積判斷
+        isEnough &&= myQty >= quantity;
+      }
+    }
+    return { isBarkEnough, isEnough };
   }
   // End getGeyserBuildCork
   function buildGeyserCork(cork) {
