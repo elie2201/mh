@@ -11,6 +11,7 @@ class CsMapPiece {
     'hg_8222e273c0d07aa036e56ed17a8f7884'
   ]);
   constructor() {
+    this.isVeryYoung = user.title_name.trim().startsWith('Grand Du');
     this.nows = [
       'cape_clawed',
       'desert_oasis',
@@ -27,7 +28,7 @@ class CsMapPiece {
     } else {
       this.nows.push('table_of_contents');
     }
-    if (user.title_name.trim().startsWith('Grand Du'))
+    if (this.isVeryYoung)
       this.nows = [
         'cape_clawed',
         'fort_rox',
@@ -49,7 +50,7 @@ class CsMapPiece {
       'Cerulean Armillary Sphere Fragment 6',
       'Cerulean Armillary Sphere Fragment 2'
     ];
-    if (user.title_name.trim().startsWith('Grand Du'))
+    if (this.isVeryYoung)
       this.loots = [
         'Cerulean Armillary Sphere Fragment 1',
         'Cerulean Armillary Sphere Fragment 4',
@@ -76,7 +77,7 @@ class CsMapPiece {
         this.goTableOfContents();
       }
     ];
-    if (user.title_name.trim().startsWith('Grand Du'))
+    if (this.isVeryYoung)
       this.actions = [
         () => this.goFortRox(),
         () => this.goMoussuPicchu(),
@@ -124,12 +125,10 @@ class CsMapPiece {
   }
   goMoussuPicchu() {
     //* MhUtils.reloadWithMessage('traveling to moussu_picchu');
-    armAllTraps(
-      'Windy Cheese',
-      'best.weapon.arcane',
-      'best.base.combo',
-      'None'
-    );
+    const charm = this.isVeryYoung
+      ? 'Ultimate Luck Charm,Festive Ultimate Luck Charm'
+      : 'None';
+    armAllTraps('Windy Cheese', 'best.weapon.arcane', 'best.base.combo', charm);
   }
   goTableOfContents() {
     MhUtils.reloadWithMessage('traveling to table_of_contents');
