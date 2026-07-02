@@ -37,7 +37,7 @@ class CsMapPiece {
         'labyrinth',
         'desert_warpath',
         'desert_oasis',
-        'ronzas_traveling_shoppe'
+        'fort_rox'
       ];
     this.loots = [
       'Cerulean Armillary Sphere Fragment 1',
