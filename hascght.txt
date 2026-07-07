@@ -1,11 +1,20 @@
-function logging(...any) {}
-function hasCaughtTargetByDataMouseType(dataMouseType) {}
-function hasCaughtTargetByMouseName(keyword) {}
-function getEnvironmentType() {}
-function travel(environmentType, milliseconds, callback) {}
-function checkThenArm(sort, category, name, isForce) {}
-function parseTrapName(trapName) {}
-function getBaitItemId() {}
+import { MhUtils } from './my-mh-aid-dev';
+
+const hg = {};
+function logging(...any) {
+  console.log(...any);
+}
+function hasCaughtTargetByDataMouseType(dataMouseType) {
+  console.log(`hasCaughtTargetByDataMouseType: ${dataMouseType}`);
+  return true;
+}
+function hasCaughtTargetByMouseName(keyword) {
+  console.log(`hasCaughtTargetByMouseName: ${keyword}`);
+  return true;
+}
+function checkThenArm(sort, category, name, isForce) {
+  console.log(`checkThenArm: ${sort}, ${category}, ${name}, ${isForce}`);
+}
 
 // #hasCaughtAction
 const checkedProperty = { isByMouseType: true, isByMouseName: false };
@@ -16,10 +25,14 @@ let checks = [
     atEnvironmentType: 'desert_warpath',
     target: 'desert_boss',
     successCallback() {
-      travel('desert_city', 3000, () => {
+      MhUtils.travel('desert_city', 3000, () => {
         checkThenArm(null, 'bait', 'Gouda Cheese');
-        checkThenArm(null, 'weapon', parseTrapName('best.weapon.physical'));
-        checkThenArm(null, 'base', parseTrapName('best.base.combo'));
+        checkThenArm(
+          null,
+          'weapon',
+          MhUtils.parseTrapName('best.weapon.physical')
+        );
+        checkThenArm(null, 'base', MhUtils.parseTrapName('best.base.combo'));
         checkThenArm(null, 'trinket', ['Artisan Charm', '2025 Charm']);
       });
     }
@@ -32,20 +45,20 @@ checks = [
     atEnvironmentType: 'cape_clawed',
     target: 'elder',
     successCallback() {
-      travel('nerg_plains', 3000, () => {
+      MhUtils.travel('nerg_plains', 3000, () => {
         checkThenArm(null, 'bait', 'Gouda Cheese');
         checkThenArm(null, 'weapon', 'Horrific Venus');
-        // checkThenArm(null, 'base', parseTrapName('best.base.combo'));
+        //* checkThenArm(null, 'base', MhUtils.parseTrapName('best.base.combo'));
         checkThenArm(null, 'trinket', 'None');
       });
     },
     beforeSuccessCallback() {
-      console.log(getBaitItemId());
-      if (getBaitItemId() === 80)
-        travel('elub_shore', 3000, () => {
+      console.log(MhUtils.getBaitItemId());
+      if (MhUtils.getBaitItemId() === 80)
+        MhUtils.travel('elub_shore', 3000, () => {
           checkThenArm(null, 'bait', 'Gouda Cheese');
-          // checkThenArm(null, 'weapon', parseTrapName('best.weapon.physical'));
-          // checkThenArm(null, 'base', parseTrapName('best.base.combo'));
+          //* checkThenArm(null, 'weapon', MhUtils.parseTrapName('best.weapon.physical'));
+          // checkThenArm(null, 'base', MhUtils.parseTrapName('best.base.combo'));
           checkThenArm(null, 'trinket', 'None');
         });
     }
@@ -55,20 +68,20 @@ checks = [
     atEnvironmentType: 'cape_clawed',
     target: 'grandfather',
     successCallback() {
-      travel('elub_shore', 3000, () => {
+      MhUtils.travel('elub_shore', 3000, () => {
         checkThenArm(null, 'bait', 'Gouda Cheese');
         checkThenArm(null, 'weapon', 'Net Cannon');
-        // checkThenArm(null, 'base', parseTrapName('best.base.combo'));
+        //* checkThenArm(null, 'base', MhUtils.parseTrapName('best.base.combo'));
         checkThenArm(null, 'trinket', 'None');
       });
     },
     beforeSuccessCallback() {
-      console.log(getBaitItemId());
-      if (getBaitItemId() === 80)
-        travel('nerg_plains', 3000, () => {
+      console.log(MhUtils.getBaitItemId());
+      if (MhUtils.getBaitItemId() === 80)
+        MhUtils.travel('nerg_plains', 3000, () => {
           checkThenArm(null, 'bait', 'Gouda Cheese');
-          // checkThenArm(null, 'weapon', parseTrapName('best.weapon.physical'));
-          // checkThenArm(null, 'base', parseTrapName('best.base.combo'));
+          //* checkThenArm(null, 'weapon', MhUtils.parseTrapName('best.weapon.physical'));
+          // checkThenArm(null, 'base', MhUtils.parseTrapName('best.base.combo'));
           checkThenArm(null, 'trinket', 'None');
         });
     }
@@ -81,7 +94,7 @@ checks = [
     atEnvironmentType: 'rift_bristle_woods',
     target: 'rift_acolyte',
     successCallback() {
-      travel('rift_furoma');
+      MhUtils.travel('rift_furoma');
     }
   }
 ];
@@ -92,7 +105,7 @@ checks = [
     atEnvironmentType: 'dracano',
     target: 'dragon',
     successCallback() {
-      travel('fort_rox');
+      MhUtils.travel('fort_rox');
     }
   }
 ];
@@ -103,7 +116,7 @@ checks = [
     atEnvironmentType: 'seasonal_garden',
     target: 'winter_mage',
     successCallback() {
-      // travel('fort_rox');
+      //* MhUtils.travel('fort_rox');
     }
   },
   {
@@ -111,7 +124,7 @@ checks = [
     atEnvironmentType: 'seasonal_garden',
     target: 'vinetail',
     successCallback() {
-      // travel('fort_rox');
+      //* MhUtils.travel('fort_rox');
     }
   },
   {
@@ -119,7 +132,7 @@ checks = [
     atEnvironmentType: 'seasonal_garden',
     target: 'summer_mage',
     successCallback() {
-      // travel('fort_rox');
+      //* MhUtils.travel('fort_rox');
     }
   },
   {
@@ -127,8 +140,8 @@ checks = [
     atEnvironmentType: 'seasonal_garden',
     target: 'harvester',
     successCallback() {
-      // travel('fort_rox');
-      /* const itemType = 'spring_key_shard_crafting_item';
+      //* MhUtils.travel('fort_rox');
+      /** const itemType = 'spring_key_shard_crafting_item';
       try {
         hg.utils.UserInventory.getItem(
           itemType,
@@ -144,7 +157,7 @@ checks = [
               setTimeout(() => {
                 hg.utils.UserInventory.craftItem(recipe, 1);
                 setTimeout(() => {
-                  travel('zugzwang_tower');
+                  MhUtils.travel('zugzwang_tower');
                 }, 10000);
               }, 10000);
             }
@@ -200,7 +213,7 @@ checks = [
     target: 'master_of_the_dojo',
     successCallback() {
       if (localStorage['eventLocation'] === 'library_assignment')
-        travel('dojo', 2000, () => {
+        MhUtils.travel('dojo', 2000, () => {
           hg.utils.TrapControl.armItem('gouda_cheese', 'bait')
             .disarmTrinket()
             .go();
@@ -208,15 +221,41 @@ checks = [
     }
   }
 ];
+// Rift
+checks = [
+  {
+    isByMouseType: checkedProperty.isByMouseType,
+    atEnvironmentType: 'rift_gnawnia',
+    target: 'rift_field',
+    successCallback() {
+      MhUtils.travel('rift_burroughs');
+    }
+  },
+  {
+    isByMouseType: checkedProperty.isByMouseType,
+    atEnvironmentType: 'rift_burroughs',
+    target: 'rift_menace',
+    successCallback() {
+      MhUtils.travel('rift_whisker_woods');
+    }
+  },
+  {
+    isByMouseType: checkedProperty.isByMouseType,
+    atEnvironmentType: 'rift_whisker_woods',
+    target: 'rift_black_widow',
+    successCallback() {
+      MhUtils.travel('rift_furoma');
+    }
+  }
+];
 // run hasCaughtAction
 hasCaughtAction(checks);
 /** check journal to find if caught target mouse(by data-mouse-type/mouse name) */
 function hasCaughtAction(checks) {
-  // const isProd = false;
+  //* const isProd = false;
   logging('hasCaughtAction_1.1.2.1.3', checks);
-  for (let i = 0; i < checks.length; i++) {
-    const check = checks[i];
-    if (getEnvironmentType() !== check.atEnvironmentType) continue;
+  for (const check of checks) {
+    if (MhUtils.getEnvironmentType() !== check.atEnvironmentType) continue;
     console.log(`Is by data mouse type? ${check.isByMouseType}`);
     if (
       (check.isByMouseType && hasCaughtTargetByDataMouseType(check.target)) ||
