@@ -1,4 +1,4 @@
-import { MhUtils } from './my-mh-aid-dev';
+import { mh, MhUtils } from './my-mh-aid-dev';
 
 const hg = {};
 function logging(...any) {
@@ -236,7 +236,7 @@ checks = [
     atEnvironmentType: 'rift_burroughs',
     target: 'rift_menace',
     successCallback() {
-      MhUtils.travel('rift_whisker_woods');
+      MhUtils.travel('rift_furoma');
     }
   },
   {
@@ -245,6 +245,24 @@ checks = [
     target: 'rift_black_widow',
     successCallback() {
       MhUtils.travel('rift_furoma');
+    }
+  },
+  {
+    isByMouseType: checkedProperty.isByMouseType,
+    atEnvironmentType: 'rift_bristle_woods',
+    target: 'rift_acolyte',
+    async successCallback() {
+      await mh.UserInventory.useConvertiblePromise(
+        'rift_acolyte_chest_convertible',
+        1
+      );
+      await MhUtils.completeTransactionPromise(
+        true,
+        'rift_luck_codex_stat_item',
+        1,
+        false
+      );
+      MhUtils.travel('rift_whisker_woods');
     }
   }
 ];
