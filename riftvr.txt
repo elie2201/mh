@@ -1960,7 +1960,7 @@ const user = {};
 user.environment_type = 'foreword_farm';
 user.quests = {};
 user.quests.QuestRiftValour = QuestRiftValour;
-// const activejsDialog = {};
+//* const activejsDialog = {};
 // function $() {}
 import { MyUtils, MhUtils } from './my-mh-aid-dev';
 function logging(...any) {
@@ -1974,8 +1974,12 @@ function logging(...any) {
 function armAllTraps(bait, weapon, base, charm) {
   console.log(bait, weapon, base, charm);
 }
-function doubleEgg(isToEnable) {}
-function litCandle(actionType) {}
+function doubleEgg(isToEnable) {
+  console.log(isToEnable);
+}
+function litCandle(actionType) {
+  console.log(actionType);
+}
 
 // #valourRift
 if (MhUtils.getEnvironmentType() === 'rift_valour') valourRift();
@@ -1984,7 +1988,7 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = MhUtils.getEnvironmentType();
   if (environmentType !== targetEnvironmentType) return;
-  logging('valourRift_0.6.61.37.46');
+  logging('valourRift_0.6.61.37.47');
   // move loot stat to better position and make it draggable
   try {
     $('.valourRiftHUD-towerLootContainer')
@@ -2007,7 +2011,7 @@ function valourRift() {
   const bc = 'Boiling Cauldron';
   const bbr = 'best.base.rift';
   const ssdb = 'Signature Series Denture';
-  // const pb = 'Prestige Base';
+  //* const pb = 'Prestige Base';
   // const pbaerb = pb + ',Adorned Empyrean';
   const rhsb = 'Rift Hailstone Singularity';
   const sgotd = 'Seasonal Gift';
@@ -2025,7 +2029,7 @@ function valourRift() {
     'upgrade_hunt_limit',
     'upgrade_boss_extension'
   ];
-  /* const offChampionFireSteps = [
+  /** const offChampionFireSteps = [
     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 15, 16, 17, 18, 19, 20, 23, 24,
     25, 26, 27, 28, 29, 30, 34, 35, 36, 37, 38, 39, 40, 45, 46, 47, 48, 49, 50,
     56, 57, 58, 59, 60, 67, 68, 69, 70, 78, 79, 80, 89, 90, 100
@@ -2441,10 +2445,8 @@ function valourRift() {
     ? MyUtils.getStorageToObject(targetEnvironmentType, defaultSetting)
     : defaultSetting;
   const upgradePlans = settings.upgradePlans;
-  // prettier-ignore
   const upgradeLevelsJSON = [];
-  for (let i = 0; i < upgradePlans.length; i++) {
-    const upgradePlan = upgradePlans[i];
+  for (const upgradePlan of upgradePlans) {
     upgradeLevelsJSON.push(JSON.stringify(upgradePlan));
   }
   const enterAfter = MyUtils.parseDateTime(settings.enterAfterTime);
@@ -2457,10 +2459,10 @@ function valourRift() {
       element,
       { action: 'claim_cache' },
       () => {
-        // document.querySelector('a.jsDialogClose, a#jsDialogClose').click();
+        //* document.querySelector('a.jsDialogClose, a#jsDialogClose').click();
         MhUtils.updateGPWStats();
         setTimeout(() => {
-          // if (callback) callback();
+          //* if (callback) callback();
           window.location.href = MOUSEHUNT_BASE_URL;
         }, 2000);
       }
@@ -2508,7 +2510,7 @@ function valourRift() {
     `current upgrade level ${currentLevelsJSON} index: ${currentLevelIndex}`
   );
   const logFrom = localStorage[vriftEnterTime]
-    ? parseInt(localStorage[vriftEnterTime])
+    ? Number.parseInt(localStorage[vriftEnterTime])
     : MyUtils.parseDateTime(settings.logTimeFrom);
   const logTill = settings.logTimeTill
     ? MyUtils.parseDateTime(settings.logTimeTill)
@@ -2747,7 +2749,7 @@ function valourRift() {
       },
       logTA() {
         MyUtils.logging('log Terrified Adventurer Mouse');
-        // const mouseTypes = ['rift_gaunt_rare', 'rift_gaunt_monster'];
+        //* const mouseTypes = ['rift_gaunt_rare', 'rift_gaunt_monster'];
         const key = 'vriftTaLog';
         const failKey = 'failLog';
         const failKeyword = 'catchfailure';
@@ -2758,28 +2760,28 @@ function valourRift() {
             .get()
             .sort(
               (a, b) =>
-                parseInt(a.getAttribute('data-entry-id')) -
-                parseInt(b.getAttribute('data-entry-id'))
+                Number.parseInt(a.dataset.entryId) -
+                Number.parseInt(b.dataset.entryId)
             ),
           (i, v) => {
             const latestEntryId = log['latestEntryId'] || 0;
-            // console.log(i, v);
-            const entryId = parseInt(v.getAttribute('data-entry-id'));
+            //* console.log(i, v);
+            const entryId = Number.parseInt(v.dataset.entryId);
             if (entryId <= latestEntryId) return true;
             console.log(entryId);
             log['latestEntryId'] = entryId;
             const journaldate = v.querySelector('.journaldate').textContent;
-            let hour = parseInt(journaldate.split(':')[0]);
-            if (journaldate.indexOf('pm') > -1) hour += 12;
+            let hour = Number.parseInt(journaldate.split(':')[0]);
+            if (journaldate.includes('pm')) hour += 12;
             const className = v.className;
-            if (className.indexOf(failKeyword) > -1) {
+            if (className.includes(failKeyword)) {
               console.log(failKeyword, entryId, className);
-              // if (!log[failKey]) log[failKey] = {};
+              //* if (!log[failKey]) log[failKey] = {};
               const failLog = log[failKey] ? log[failKey] : (log[failKey] = {});
               if (!failLog[hour]) failLog[hour] = 1;
               else failLog[hour] += 1;
             }
-            const mouseType = v.getAttribute('data-mouse-type');
+            const mouseType = v.dataset.mouseType;
             if (mouseType !== 'rift_gaunt_rare') return true;
             console.log(entryId, mouseType);
             if (!log[hour] && log[hour] !== 0) log[hour] = 1;
@@ -2826,13 +2828,12 @@ function valourRift() {
       // items state
       for (const key in utils.items) {
         if (key === 'gold') continue;
-        if (Object.prototype.hasOwnProperty.call(utils.items, key)) {
-          const item = utils.items[key];
-          item.quantity = MyUtils.parseQuantity(
-            document.querySelector('div[data-item-type="' + item.type + '"]')
-              .innerText
-          );
-        }
+        if (!Object.hasOwn(utils.items, key)) continue;
+        const item = utils.items[key];
+        item.quantity = MyUtils.parseQuantity(
+          document.querySelector('div[data-item-type="' + item.type + '"]')
+            .innerText
+        );
       }
       console.log('items', utils.items);
       utils.autoAugmentation();
@@ -2845,6 +2846,7 @@ function valourRift() {
   const now = Date.now();
   if (state === vriftStates.tower) {
     console.log(`now: ${now}, logFrom: ${logFrom}, logTill: ${logTill}`);
+    // aggressively if ((!logFrom || now >= logFrom) && (!logTill || now <= logTill))
     if (logFrom && now >= logFrom && logTill && now <= logTill)
       valourRiftUtility.logTA();
     valourRiftUtility.logClimbing();
@@ -2882,7 +2884,7 @@ function valourRift() {
     if (isUU) {
       let msg = '';
       if (huntsLeft < settings.eclipseUUNeedHunts) {
-        if (localStorage.displayedMessage.indexOf(noRetreatHead) < 0) {
+        if (!localStorage.displayedMessage.includes(noRetreatHead)) {
           msg = `${yesRetreatHead} ${huntsLeft} < ${settings.eclipseUUNeedHunts}`;
           MhUtils.storeError(msg);
           MhUtils.displayError(msg);
@@ -2895,7 +2897,7 @@ function valourRift() {
       }
     } else {
       if (huntsLeft < settings.eclipseNeedHunts) {
-        if (localStorage.displayedMessage.indexOf(noRetreatHead) < 0) {
+        if (!localStorage.displayedMessage.includes(noRetreatHead)) {
           msg = `${yesRetreatHead} ${huntsLeft} < ${settings.eclipseNeedHunts}`;
           MhUtils.storeError(msg);
           MhUtils.displayError(msg);
@@ -2909,7 +2911,7 @@ function valourRift() {
     }
   };
   if (state === vriftStates.tower && settings.isAutoRetreat) autoRetreat();
-  // retreat();
+  // TEST retreat();
   const retreat = () => {
     console.log('retreat');
     const element = '<a/>';
@@ -2921,7 +2923,7 @@ function valourRift() {
       }
     );
   };
-  // if (state === vriftStates.tower && settings.isAutoRetreat) {
+  //* if (state === vriftStates.tower && settings.isAutoRetreat) {
   if (state === vriftStates.tower && settings.forceRetreatFloor) {
     console.log('there is forceRetreatFloor:', settings.forceRetreatFloor);
     if (settings.forceRetreatFloor === floor) {
@@ -2986,7 +2988,8 @@ function valourRift() {
             }, 10000);
           valourRift();
         }, 3000);
-        /* setTimeout(() => {
+        /* Old Reload 
+        setTimeout(() => {
           window.location.href = MOUSEHUNT_BASE_URL;
         }, 3000); */
       });
@@ -3144,7 +3147,7 @@ function valourRift() {
     logging(`Before auto off: ${isToEnable}`);
     // 停用. CF我只在 PP時用,但 step變化並不是規律的,停用時少的 1 step可能因為 TA造成多 1 hunt
     // 可能在 UUU run適用,因為沒有被擊退的問題
-    /* if (!isToEnable) return isToEnable;
+    /** if (!isToEnable) return isToEnable;
     if (isAtEclipse) return isToEnable;
     if (offChampionFireSteps.indexOf(stepsToEclipse) > -1) {
       logging('Turn off CF');
@@ -3156,6 +3159,7 @@ function valourRift() {
 }
 // End #valourRift
 
+// test code
 // hg.views.HeadsUpDisplayRiftValourView.riftValourAjax('<a/>', {'action': 'upgrade_long_stride'});
 // hg.views.HeadsUpDisplayRiftValourView.riftValourAjax('<a/>', {'action': 'upgrade_hunt_limit'});
 // hg.views.HeadsUpDisplayRiftValourView.riftValourAjax('<a/>', {'action': 'upgrade_boss_extension'});
@@ -3163,7 +3167,7 @@ function valourRift() {
 // hg.views.HeadsUpDisplayRiftValourView.toggleFuel(this); return false;
 // hg.views.HeadsUpDisplayRiftValourView.retreat(this); return false;
 // hg.views.HeadsUpDisplayRiftValourView.claimCacheLoot(this); return false;
-/* (() => {
+/** (() => {
   const quest = user.quests.QuestRiftValour;
   const speed = quest.power_up_data.long_stride.current_value;
   const huntsLeft = quest.hunts_remaining;
@@ -3172,7 +3176,7 @@ function valourRift() {
   const expectedPercent = (huntsLeft * catchRate * speed) / floorSteps;
   console.log(`${expectedPercent} + ${quest.floor_percent} < 100? ${expectedPercent + quest.floor_percent < 100}`);
 })(); */
-/* function toggleFuel(completionCallback) {
+/** function toggleFuel(completionCallback) {
   const element = '<a/>';
   riftValourAjax(
     element,
