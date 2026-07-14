@@ -3,7 +3,7 @@
 setTimeout(() => { scheduledSleep(); }, getRandomInteger(60000, 120000));
 function scheduledSleep() {
   const environmentType = getEnvironmentType();
-  logging(`scheduledSleep_1.2.16.7.9 in ${environmentType}`);
+  logging(`scheduledSleep_1.2.17.7.10 in ${environmentType}`);
   const floatingIslandsUtility = {
     getSpeed(quest) {
       if (!quest) quest = user.quests.QuestFloatingIslands;
@@ -15,17 +15,16 @@ function scheduledSleep() {
       return speed;
     },
     isShrineActive(quest) {
-      const q = quest ? quest : user.quests.QuestFloatingIslands;
+      const q = quest ?? user.quests.QuestFloatingIslands;
       const activeMods = q.hunting_site_atts.activated_island_mod_types;
-      for (let i = 0; i < activeMods.length; i++) {
-        const mod = activeMods[i];
-        if (mod.indexOf('shrine') > -1 || mod.indexOf('paragon_cache') > -1)
+      for (const mod of activeMods) {
+        if (mod.includes('shrine') || mod.includes('paragon_cache'))
           return true;
       }
       return false;
     },
     getAltitude(quest) {
-      const q = quest ? quest : user.quests.QuestFloatingIslands;
+      const q = quest ?? user.quests.QuestFloatingIslands;
       const atts = q.hunting_site_atts;
       if (atts.is_low_tier_island) return 'lai';
       else if (atts.is_high_tier_island) return 'hai';
@@ -56,9 +55,7 @@ function scheduledSleep() {
   };
   const settings = getStorageToObject(storageKey, defaultSettings);
   const enviromentSetting = settings[environmentType];
-  const enviromentSchedules = enviromentSetting
-    ? enviromentSetting
-    : settings[defaultSleep];
+  const enviromentSchedules = enviromentSetting ?? settings[defaultSleep];
   if (
     !enviromentSchedules.isPreSleep &&
     enviromentSchedules.isPreSleep !== false
@@ -78,21 +75,21 @@ function scheduledSleep() {
     desert_warpath(enviromentSchedules) {
       logging('fiery warpath sleep');
       const quest = user.viewing_atts.desert_warpath;
-      let streak = parseInt(quest.streak_quantity);
+      let streak = Number.parseInt(quest.streak_quantity);
       if (Number.isNaN(streak)) streak = 0;
       console.log(`current streak: ${streak}`);
       if (streak > 2) {
         console.log('streak more than 2, not sleep!!');
         return;
       }
-      let wave = parseInt(quest.wave);
+      let wave = Number.parseInt(quest.wave);
       if (Number.isNaN(wave)) wave = 5;
       console.log(`current wave: ${wave}, 5 means portal`);
       if (wave > 3) {
         console.log(`current wave: ${wave} is boss hunting, not sleep`);
         return;
       }
-      // const population = getFwPopulation();
+      //* const population = getFwPopulation();
       const schedule = matchSchedules(enviromentSchedules);
       if (!schedule) return;
       const isPreSleep = enviromentSchedules.isPreSleep;
@@ -176,7 +173,7 @@ function scheduledSleep() {
       const isLai = atts.is_low_tier_island;
       const isHai = atts.is_high_tier_island;
       const isSp = atts.is_vault_island;
-      // const env = user.enviroment_atts;
+      //* const env = user.enviroment_atts;
       // const items = env.items;
       // const cloudCurd = items.cloud_curd_crafting_item;
       // const ccQty = parseQuantity(cloudCurd.quantity);
@@ -234,7 +231,7 @@ function scheduledSleep() {
         case 'launch':
           console.log('Not sleep on launch except low CCC');
           if (!settings.isLowCC) return;
-          // if (ccQty + cccQty > 75) return;
+          //* if (ccQty + cccQty > 75) return;
           break;
         case 'lai':
           console.log('Check sleeping on LAI');
@@ -259,7 +256,7 @@ function scheduledSleep() {
     },
     super_brie_factory(enviromentSchedules) {
       logging(`SB factory sleep`);
-      // const quest = user.quests.QuestSuperBrieFactory;
+      //* const quest = user.quests.QuestSuperBrieFactory;
       // const atts = quest.factory_atts;
       // const items = quest.items;
       // if (atts.hunts_remaining < 5 + enviromentSchedules.friendHunts) {
@@ -283,27 +280,27 @@ function scheduledSleep() {
       console.log('bwRift sleep');
       const quest = user.quests.QuestRiftBristleWoods;
       console.log(`quest.progress_percent: ${quest.progress_percent}`);
-      if (parseInt(quest.progress_percent) < 90) {
+      if (Number.parseInt(quest.progress_percent) < 90) {
         console.log('progress lower than 90, return!!');
         return;
       }
-      const ignoredChamberNames = [
+      const ignoredChamberNames = new Set([
         'Guard Barracks',
         'Acolyte',
         'Hidden Treasury',
         'Lucky Tower'
-      ];
+      ]);
       const chamberName = trimToEmpty(quest.chamber_name);
-      /* if (ignoredChamberNames.indexOf(chamberName) > -1)
+      /** if (ignoredChamberNames.indexOf(chamberName) > -1)
     if (
       ignoredChamberNames.indexOf('Acolyte') < 0 ||
       (quest.obelisk_percent > 45 && quest.obelisk_percent < 100) ||
       (quest.obelisk_percent == 100 && quest.acolyte_sand < 13)
     )
       return; */
-      if (ignoredChamberNames.indexOf(chamberName) > -1)
+      if (ignoredChamberNames.has(chamberName))
         if (
-          ignoredChamberNames.indexOf('Acolyte') < 0 ||
+          !ignoredChamberNames.has('Acolyte') ||
           (quest.obelisk_percent > 65 && quest.obelisk_percent < 100) ||
           (quest.obelisk_percent == 100 && quest.acolyte_sand < 7)
         )
@@ -322,7 +319,7 @@ function scheduledSleep() {
       goToBed(schedule, isPreSleep);
     },
     rift_furoma(enviromentSchedules) {
-      // const quest = user.quests.QuestRiftFuroma;
+      //* const quest = user.quests.QuestRiftFuroma;
       if (getBaitItemId() !== 1424) return;
       this.defaultSleep(enviromentSchedules);
     },
@@ -341,7 +338,7 @@ function scheduledSleep() {
     return;
   }
   environmentSleep[environmentType](enviromentSchedules);
-  // goToBed([9.07, 5.45, 1]);
+  //* goToBed([9.07, 5.45, 1]);
   // goToBed([9.07, '1.04+-2', 6]);
   function goToBed(schedule, isPreSleep) {
     const sleepForArr = getSleepForArray(schedule);
@@ -366,6 +363,8 @@ function scheduledSleep() {
           duration +
           (deviation || deviation === 0 ? '&fixed=true' : ''); // sleep url
         break;
+      case '':
+        break;
     }
     setTimeout(() => {
       const currentRoutineKey = 'currentRoutine';
@@ -382,17 +381,15 @@ function scheduledSleep() {
     const now = new Date();
     // 剛過 00:00:00如果 shift出昨天,會造成 origHm < 今天的 wakeup但 nowHm > 昨天的 sleepAt的 bug
     // const origHm = toHdotMexpression(now);
-    const nowHm = toHdotMexpression(
+    const nowHm = toHdotMexpression(now);
+    /** const nowHm = toHdotMexpression(
       new Date(now.getTime() + getRandomInteger(-900000, 900000))
-    );
+    ); */
     const day = now.getDay();
     const daySchedules = enviromentSchedules[day];
-    const schedules = daySchedules
-      ? daySchedules
-      : enviromentSchedules['weekDefault'];
-    for (let i = 0; i < schedules.length; i++) {
+    const schedules = daySchedules ?? enviromentSchedules['weekDefault'];
+    for (const schedule of schedules) {
       // schedule [sleepAt, sleepForExpr, segments]
-      const schedule = schedules[i];
       const sleepForArr = getSleepForArray(schedule); // [hours, minutes, deviation]
       if (!sleepForArr[0] && !sleepForArr[1]) {
         console.log(
@@ -422,7 +419,7 @@ function scheduledSleep() {
     }
     return null;
   }
-  // getWakeUpAt([1, 7], [1, -120, 10], 2);
+  //* getWakeUpAt([1, 7], [1, -120, 10], 2);
   /** calculate wakeUpAt as [hours, minutes] */
   function getWakeUpAt(sleepAtHmArr, sleepForHmArr, segments) {
     console.log(sleepAtHmArr, sleepForHmArr, segments);
@@ -433,16 +430,16 @@ function scheduledSleep() {
       hours -= 1;
       minutes += 60;
     }
-    hours += parseInt(minutes / 60); // TODO 極端情形下可能出現負數 hours,暫不處理
-    return [hours < 0 ? 0 : hours, minutes % 60];
+    hours += Number.parseInt(minutes / 60); // TODO 極端情形下可能出現負數 hours,暫不處理
+    return [Math.max(0, hours), minutes % 60];
   }
-  // getSleepForHm([9.07, 5.45, 1]);
+  //* getSleepForHm([9.07, 5.45, 1]);
   // getSleepForHm([9.07, '1.04+-2', 1]);
   function getSleepForHm(schedule) {
     const sleepForArray = getSleepForArray(schedule);
     return sleepForArray[0] + sleepForArray[1] / 100;
   }
-  // getSleepAtArray([9.07, 5.45, 1]);
+  //* getSleepAtArray([9.07, 5.45, 1]);
   // getSleepAtArray([9.07, '1.04+-2', 1]);
   /** get sleepAt as [hours, minutes] */
   function getSleepAtArray(schedule) {
@@ -452,7 +449,7 @@ function scheduledSleep() {
     console.log('sleepAtArray: ', sleepAtArr);
     return sleepAtArr;
   }
-  // getSleepForArray([9.07, 5.45, 1]);
+  //* getSleepForArray([9.07, 5.45, 1]);
   // getSleepForArray([9.07, '1.04+-2', 1]);
   /** get sleepFor as [hours, minutes, deviation] */
   function getSleepForArray(schedule) {
@@ -478,7 +475,7 @@ function scheduledSleep() {
       : 0;
     return [sleepForHours, sleepForMunites];
   }
-  // toHdotMexpression(new Date());
+  //* toHdotMexpression(new Date());
   // toHdotMexpression(new Date(new Date('2025-05-04T01:52:00').getTime() + getRandomInteger(-900000, 900000)));
   /** Express now time like 14(o'clock).34(minutes) */
   function toHdotMexpression(now) {
@@ -491,20 +488,33 @@ function scheduledSleep() {
 // End #scheduledSleep
 
 function getRandomInteger(min, max) {
-  return parseInt(min + Math.random() * (max - min));
+  return Number.parseInt(min + Math.random() * (max - min));
 }
 
-// function $() {}
-function getStorageToObject(key, obj) {}
-function logging(...any) {}
-function getEnvironmentType() {}
-// function getFwPopulation() {}
-function trimToEmpty(any) {}
-// function trimToDefault(any, defaultValue) {}
-function parseQuantity(expr) {}
-function armAllTraps(bait, weapon, base, trinket) {}
-function getBaitQuantity() {}
-function getBaitItemId() {}
+function getStorageToObject(key, obj) {
+  return obj;
+}
+function logging(...any) {
+  console.log(...any);
+}
+function getEnvironmentType() {
+  return '';
+}
+function trimToEmpty(any) {
+  return any;
+}
+function parseQuantity(expr) {
+  return expr;
+}
+function armAllTraps(bait, weapon, base, trinket) {
+  console.log(1);
+}
+function getBaitQuantity() {
+  return 1;
+}
+function getBaitItemId() {
+  return 0;
+}
 
 const hg = {};
 const user = {};
