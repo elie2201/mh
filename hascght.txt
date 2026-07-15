@@ -16,6 +16,75 @@ function checkThenArm(sort, category, name, isForce) {
   console.log(`checkThenArm: ${sort}, ${category}, ${name}, ${isForce}`);
 }
 
+class CatchHandler {
+  static checkedProperty = { isByMouseType: true, isByMouseName: false };
+  static async run(fnName, ...args) {
+    if (!fnName) return;
+    if (!Object.hasOwn(CatchHandler, fnName)) return;
+    if (typeof CatchHandler[fnName] !== 'function') return;
+    try {
+      return await CatchHandler[fnName](...args);
+    } catch (err) {
+      console.error(`Error in ${fnName}:`, err);
+      // Optionally rethrow or return a fallback
+      return null;
+    }
+  }
+  /** check journal to find if caught target mouse(by data-mouse-type/mouse name) */
+  static async hasCaughtAction(checks) {
+    logging('hasCaughtAction_2.1.2.1.3', checks);
+    for (const check of checks) {
+      if (MhUtils.getEnvironmentType() !== check.atEnvironmentType) continue;
+      // 只檢查第一個 match的 environmentType
+      console.log(`Is by data mouse type? ${check.isByMouseType}`);
+      if (
+        (check.isByMouseType && hasCaughtTargetByDataMouseType(check.target)) ||
+        (!check.isByMouseType && hasCaughtTargetByMouseName(check.target))
+      ) {
+        if (check.successCallback) {
+          check.successCallback();
+          return true;
+        }
+      }
+      // 沒抓到目標老鼠時才執行 beforeSuccessCallback
+      if (check.beforeSuccessCallback) check.beforeSuccessCallback();
+    }
+    return false;
+  }
+  // Fiery Warpath check Warmonger
+  static async checkWarmonger(args) {
+    const checks = [
+      {
+        isByMouseType: CatchHandler.checkedProperty.isByMouseType,
+        atEnvironmentType: 'desert_warpath',
+        target: 'desert_boss',
+        successCallback() {
+          MhUtils.travel('desert_city', 3000, () => {
+            checkThenArm(null, 'bait', 'Gouda Cheese');
+            checkThenArm(
+              null,
+              'weapon',
+              MhUtils.parseTrapName('best.weapon.physical')
+            );
+            checkThenArm(
+              null,
+              'base',
+              MhUtils.parseTrapName('best.base.combo')
+            );
+            checkThenArm(null, 'trinket', ['Artisan Charm', '2025 Charm']);
+          });
+        }
+      }
+    ];
+    return await CatchHandler.hasCaughtAction(checks);
+  }
+}
+// Usage
+(async () => {
+  const result = await CatchHandler.run('checkWarmonger', 5);
+  console.log(result); // true: hasCaught/false: not hasCaught
+})();
+
 // #hasCaughtAction
 const checkedProperty = { isByMouseType: true, isByMouseName: false };
 // Fiery Warpath check Warmonger
@@ -256,9 +325,15 @@ checks = [
         'rift_acolyte_chest_convertible',
         1
       );
-      await MhUtils.completeTransactionPromise(
+      await mh.Shop.completeTransactionPromise(
         true,
         'rift_luck_codex_stat_item',
+        1,
+        false
+      );
+      await mh.Shop.completeTransactionPromise(
+        true,
+        'rift_chronometer_stat_item',
         1,
         false
       );
