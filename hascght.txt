@@ -1,6 +1,7 @@
-import { mh, MhUtils } from './my-mh-aid-dev';
+import { mh, MhUtils, MyUtils } from './my-mh-aid-dev';
 
 const hg = {};
+const user = {};
 function logging(...any) {
   console.log(...any);
 }
@@ -19,35 +20,37 @@ function checkThenArm(sort, category, name, isForce) {
 class CatchHandler {
   static checkedProperty = { isByMouseType: true, isByMouseName: false };
   static async run(fnName, ...args) {
-    if (!fnName) return;
-    if (!Object.hasOwn(CatchHandler, fnName)) return;
-    if (typeof CatchHandler[fnName] !== 'function') return;
+    if (!fnName) return false;
+    if (!Object.hasOwn(CatchHandler, fnName)) return false;
+    if (typeof CatchHandler[fnName] !== 'function') return false;
     try {
       return await CatchHandler[fnName](...args);
     } catch (err) {
       console.error(`Error in ${fnName}:`, err);
-      // Optionally rethrow or return a fallback
-      return null;
+      return false;
     }
   }
-  /** check journal to find if caught target mouse(by data-mouse-type/mouse name) */
+  /**
+   * check journal to find if caught target mouse(by data-mouse-type/mouse name)
+   * @param {object} checks
+   * @returns
+   */
   static async hasCaughtAction(checks) {
-    logging('hasCaughtAction_2.1.2.1.3', checks);
+    logging('hasCaughtAction_2.0.0.0.0', checks);
     for (const check of checks) {
       if (MhUtils.getEnvironmentType() !== check.atEnvironmentType) continue;
-      // 只檢查第一個 match的 environmentType
+      // 找到第一個 atEnvironmentType match的 check就終止迴圈
       console.log(`Is by data mouse type? ${check.isByMouseType}`);
       if (
         (check.isByMouseType && hasCaughtTargetByDataMouseType(check.target)) ||
         (!check.isByMouseType && hasCaughtTargetByMouseName(check.target))
       ) {
-        if (check.successCallback) {
-          check.successCallback();
-          return true;
-        }
+        if (check.successCallback) await check.successCallback();
+        return true;
       }
-      // 沒抓到目標老鼠時才執行 beforeSuccessCallback
-      if (check.beforeSuccessCallback) check.beforeSuccessCallback();
+      // 沒抓到目標老鼠時執行 beforeSuccessCallback
+      if (check.beforeSuccessCallback) await check.beforeSuccessCallback();
+      return false;
     }
     return false;
   }
@@ -58,7 +61,7 @@ class CatchHandler {
         isByMouseType: CatchHandler.checkedProperty.isByMouseType,
         atEnvironmentType: 'desert_warpath',
         target: 'desert_boss',
-        successCallback() {
+        async successCallback() {
           MhUtils.travel('desert_city', 3000, () => {
             checkThenArm(null, 'bait', 'Gouda Cheese');
             checkThenArm(
@@ -321,6 +324,12 @@ checks = [
     atEnvironmentType: 'rift_bristle_woods',
     target: 'rift_acolyte',
     async successCallback() {
+      if (
+        MyUtils.parseQuantity(
+          user.quests.QuestRiftBristleWoods.acolyte_catches
+        ) > 0
+      )
+        return;
       await mh.UserInventory.useConvertiblePromise(
         'rift_acolyte_chest_convertible',
         1
