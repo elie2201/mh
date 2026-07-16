@@ -324,10 +324,11 @@ checks = [
     atEnvironmentType: 'rift_bristle_woods',
     target: 'rift_acolyte',
     async successCallback() {
+      // 第一次抓到後執行這個 addon時 acolyte_catches就是 1了
       if (
         MyUtils.parseQuantity(
           user.quests.QuestRiftBristleWoods.acolyte_catches
-        ) > 0
+        ) > 1
       )
         return;
       await mh.UserInventory.useConvertiblePromise(
