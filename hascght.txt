@@ -311,14 +311,16 @@ checks = [
       MhUtils.travel('rift_furoma');
     }
   },
-  {
-    isByMouseType: checkedProperty.isByMouseType,
-    atEnvironmentType: 'rift_whisker_woods',
-    target: 'rift_black_widow',
-    successCallback() {
-      MhUtils.travel('rift_furoma');
-    }
-  },
+  // 拿到 Riftstalker後才做 WWRift/FRift,
+  // 所以 WWRift<=>FRift看 Enerchi Charm,不看 Boss
+  // {
+  //   isByMouseType: checkedProperty.isByMouseType,
+  //   atEnvironmentType: 'rift_whisker_woods',
+  //   target: 'rift_black_widow',
+  //   successCallback() {
+  //     MhUtils.travel('rift_furoma');
+  //   }
+  // },
   {
     isByMouseType: checkedProperty.isByMouseType,
     atEnvironmentType: 'rift_bristle_woods',
