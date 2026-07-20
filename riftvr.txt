@@ -1988,7 +1988,7 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = MhUtils.getEnvironmentType();
   if (environmentType !== targetEnvironmentType) return;
-  logging('valourRift_0.6.61.37.47');
+  logging('valourRift_0.6.62.37.47');
   // move loot stat to better position and make it draggable
   try {
     $('.valourRiftHUD-towerLootContainer')
@@ -2846,8 +2846,9 @@ function valourRift() {
   const now = Date.now();
   if (state === vriftStates.tower) {
     console.log(`now: ${now}, logFrom: ${logFrom}, logTill: ${logTill}`);
-    // aggressively if ((!logFrom || now >= logFrom) && (!logTill || now <= logTill))
-    if (logFrom && now >= logFrom && logTill && now <= logTill)
+    // conservatively if (logFrom && now >= logFrom && logTill && now <= logTill)
+    // aggressively
+    if ((!logFrom || now >= logFrom) && (!logTill || now <= logTill))
       valourRiftUtility.logTA();
     valourRiftUtility.logClimbing();
   }
