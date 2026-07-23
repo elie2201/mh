@@ -1988,7 +1988,7 @@ function valourRift() {
   const targetEnvironmentType = 'rift_valour';
   const environmentType = MhUtils.getEnvironmentType();
   if (environmentType !== targetEnvironmentType) return;
-  logging('valourRift_0.6.62.37.51');
+  logging('valourRift_0.6.63.37.52');
   // move loot stat to better position and make it draggable
   try {
     $('.valourRiftHUD-towerLootContainer')
@@ -2005,22 +2005,28 @@ function valourRift() {
   }
   // my own hard-coded constants
   const vriftEnterTime = 'vriftEnterTime';
+  // 常數定義
+  const none = 'none';
+  // bait
   const gStr = 'Gauntlet String';
-  const bgStr = 'Brie String,' + gStr;
+  const bStr = 'Brie String';
+  const bgStr = `${bStr},${gStr}`;
+  // weapon
   const bwr = 'best.weapon.rift';
   const bc = 'Boiling Cauldron';
+  // base
   const bbr = 'best.base.rift';
   const ssdb = 'Signature Series Denture';
   //* const pb = 'Prestige Base';
-  // const pbaerb = pb + ',Adorned Empyrean';
+  // const pbaerb = `${pb},Adorned Empyrean`;
   const rhsb = 'Rift Hailstone Singularity';
   const sgotd = 'Seasonal Gift';
+  // charm
   const rtrv = 'Rift Tarnished Charm,Rift Vacuum Charm';
-  const rupr254 = 'Rift Ultimate Power Charm,Rift 2025 Charm,Rift 2024 Charm';
-  const r254 = 'Rift 2025 Charm,Rift 2024 Charm';
+  const r202 = 'Rift 202';
+  const rupr202 = `Rift Ultimate Power Charm,${r202}`;
   const rulp = 'Rift Ultimate Lucky Power Charm';
   const uc = 'Ultimate Charm';
-  const none = 'none';
   const white = 'white';
   const red = 'red';
   const vriftStates = { farming: 'farming', tower: 'tower' };
@@ -2109,11 +2115,11 @@ function valourRift() {
     trap: {
       farming: [bgStr, bwr, bbr, rtrv, false, none, false],
       tower25up: [gStr, bwr, bbr, rtrv, false, none, false],
-      shadeEclipse: [gStr, bwr, bbr, r254, '', none, false],
-      uu25up: [gStr, bwr, rhsb, rupr254, false, none, false],
-      uuEclipse: [gStr, bwr, ssdb, rupr254, '', none, false],
-      uust25up: [gStr, bwr, rhsb, rupr254, false, none, false],
-      uustEclipse: [gStr, bwr, ssdb, rupr254, '', none, false],
+      shadeEclipse: [gStr, bwr, bbr, r202, '', none, false],
+      uu25up: [gStr, bwr, rhsb, rupr202, false, none, false],
+      uuEclipse: [gStr, bwr, ssdb, rupr202, '', none, false],
+      uust25up: [gStr, bwr, rhsb, rupr202, false, none, false],
+      uustEclipse: [gStr, bwr, ssdb, rupr202, '', none, false],
       pp25up: [gStr, bwr, rhsb, rulp, true, white, false],
       ppEclipse: [gStr, bc, sgotd, uc, true, red, false],
       uuu25up: [gStr, bc, sgotd, uc, true, none, false],
@@ -3167,6 +3173,14 @@ function valourRift() {
       }
     }
   }
+  // 速度 10後,用 RHSB補差 1 step
+  if (
+    currentLevels[0] === 10 &&
+    stepsToEclipse % 10 === 1 &&
+    MhUtils.getBaseItemId() !== 3954 &&
+    !isAtEclipse
+  )
+    trap[2] = rhsb;
   valourRiftUtility.toggleChampionFire(autoOffChampionFire(trap[4]));
   setTimeout(() => {
     litCandle(trap[5]);
