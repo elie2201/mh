@@ -1481,7 +1481,7 @@ function forewordFarm() {
   const targetEnvironmentType = 'foreword_farm';
   const enviromentType = MhUtils.getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('forewordFarm_0.4.5.4.9');
+  logging('forewordFarm_0.4.5.4.10');
   // my own hard-coded constants
   const plantRowTypes = [
     ['ordinary_farm_plant', 'ordinary_magic_farm_plant'],
@@ -1607,7 +1607,7 @@ function forewordFarm() {
         const params = {
           action: 'claim_harvest'
         };
-        this.ajax('<a/>', params, (data) => {
+        utils.ajax('<a/>', params, (data) => {
           quest.harvest_bin.can_claim = null;
           console.log(
             `claim harvest result: ${data.success ? 'success' : 'failure'}`,
