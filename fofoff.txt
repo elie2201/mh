@@ -1481,7 +1481,7 @@ function forewordFarm() {
   const targetEnvironmentType = 'foreword_farm';
   const enviromentType = MhUtils.getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('forewordFarm_0.4.5.4.10');
+  logging('forewordFarm_0.4.5.4.11');
   // my own hard-coded constants
   const plantRowTypes = [
     ['ordinary_farm_plant', 'ordinary_magic_farm_plant'],
@@ -1597,7 +1597,7 @@ function forewordFarm() {
           mh.ObjectUtils.getValue(items, pathInItems)
         );
         const b = Number.isNaN(Number.parseInt(pathOrNumber))
-          ? MyUtils.parseQuantity(mh.ObjectUtils.getValue(pathOrNumber))
+          ? MyUtils.parseQuantity(mh.ObjectUtils.getValue(items, pathOrNumber))
           : Number.parseInt(pathOrNumber);
         return a - b > Number.parseInt(diff);
       },
