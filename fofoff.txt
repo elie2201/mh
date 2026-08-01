@@ -1481,7 +1481,7 @@ function forewordFarm() {
   const targetEnvironmentType = 'foreword_farm';
   const enviromentType = MhUtils.getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('forewordFarm_0.4.5.4.8');
+  logging('forewordFarm_0.4.5.4.9');
   // my own hard-coded constants
   const plantRowTypes = [
     ['ordinary_farm_plant', 'ordinary_magic_farm_plant'],
@@ -1497,8 +1497,8 @@ function forewordFarm() {
     plantTypeRow: 0,
     isPlantWithMe: false,
     isAutoPlantType: false,
-    travelWhen: '',
-    travelTo: [],
+    travelWhen: [],
+    travelTo: '',
     traps: {
       no_plants: ['Gouda Cheese', 'best.weapon.tactical', 'best.base.combo', 'Luck Charm', false, 'none', false],
       one_plants: ['Gouda Cheese', 'best.weapon.tactical', 'best.base.combo', 'Luck Charm', false, 'none', false],
