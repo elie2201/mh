@@ -1092,14 +1092,14 @@ function floatingIslands() {
   const targetEnvironmentType = 'floating_islands';
   const environmentType = getEnvironmentType();
   if (environmentType != targetEnvironmentType) return;
-  logging('floatingIslands_1.4.26.8.16');
+  logging('floatingIslands_1.4.26.9.16');
   // move item stat to better position and make it draggable
   try {
     $('.floatingIslandsHUD-statItemContainer')
       .css({ position: 'absolute', top: 70, left: 415 })
       .draggable();
     $('.floatingIslandsHUD-huntsRemainingContainer')
-      .css({ position: 'absolute', left: 600 })
+      .css({ position: 'absolute', left: 610, top: 30 })
       .draggable();
   } catch (error) {
     console.log(error);
