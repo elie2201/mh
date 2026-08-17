@@ -1092,7 +1092,7 @@ function floatingIslands() {
   const targetEnvironmentType = 'floating_islands';
   const environmentType = getEnvironmentType();
   if (environmentType != targetEnvironmentType) return;
-  logging('floatingIslands_1.4.26.9.16');
+  logging('floatingIslands_1.4.26.9.17');
   // move item stat to better position and make it draggable
   try {
     $('.floatingIslandsHUD-statItemContainer')
@@ -1439,7 +1439,9 @@ function floatingIslands() {
   // **Retreat after has defeated warden/paragon
   if (hasDefeatedEnemy || (!atts.enemy && quest.can_retreat)) {
     if (
-      (isLai && !settings.isHuntAfterBossLai) ||
+      (isLai &&
+        !settings.isHuntAfterBossLai &&
+        (!settings.isLowCC || isFirst3Block)) ||
       (isHai && !settings.isHuntAfterBossHai) ||
       (isSp && !settings.isHuntAfterBossSp)
     ) {
