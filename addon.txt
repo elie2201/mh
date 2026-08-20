@@ -1,13 +1,31 @@
+import { mh } from './my-mh-aid-dev';
+
+const user = {};
+
 // #kgakey
-(() => {
-  let msgDiv = document.querySelector('div#displayedMessageDiv');
-  if (!msgDiv) {
-    msgDiv = document.createElement('div');
-    msgDiv.setAttribute('id', 'displayedMessageDiv');
-    msgDiv.setAttribute('style', 'background-color: white;');
-    document.querySelector('div#mypanel').append(msgDiv);
+mh.addon.KingsGiveaway = class KingsGiveaway {
+  static version = `${KingsGiveaway.name}_1.0.0.0.0`;
+  constructor() {
+    console.log(`${KingsGiveaway.version} initialized`);
   }
-  const msg = `<h1>${user.quests.QuestKingsGiveaway.prize_key_quantity}</h1>`;
-  if (msgDiv) msgDiv.innerHTML = msg;
-})();
+  static async showQuantity() {
+    let msgDiv = document.querySelector('div#displayedMessageDiv');
+    if (!msgDiv) {
+      msgDiv = document.createElement('div');
+      msgDiv.setAttribute('id', 'displayedMessageDiv');
+      msgDiv.setAttribute('style', 'background-color: white;');
+      document.querySelector('div#mypanel').append(msgDiv);
+    }
+    const credit = await mh.UserInventory.getItemQuantityPromise(
+      'prize_credit_stat_item'
+    );
+    const key = user.quests.QuestKingsGiveaway.prize_key_quantity;
+    const msg = `<h1>Prize Keys: ${key}, Credits: ${credit}</h1>`;
+    if (msgDiv) msgDiv.innerHTML = msg;
+  }
+};
+if (user.quests.QuestKingsGiveaway)
+  (async () => {
+    mh.addon.KingsGiveaway.showQuantity();
+  })();
 // End #kgakey
