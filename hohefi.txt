@@ -1092,7 +1092,7 @@ function floatingIslands() {
   const targetEnvironmentType = 'floating_islands';
   const environmentType = MhUtils.getEnvironmentType();
   if (environmentType != targetEnvironmentType) return;
-  logging('floatingIslands_1.4.27.9.18');
+  logging('floatingIslands_1.4.27.9.19');
   // move item stat to better position and make it draggable
   try {
     $('.floatingIslandsHUD-statItemContainer')
@@ -1438,13 +1438,13 @@ function floatingIslands() {
     }
   };
   bwAutoOff();
-  // **Retreat after has defeated warden/paragon
+  // Retreat after has defeated warden/paragon
   if (hasDefeatedEnemy || (!atts.enemy && quest.can_retreat)) {
+    const skyCurdIndex = modTypes.indexOf('sky_cheese');
     if (
       (isLai &&
         !settings.isHuntAfterBossLai &&
-        (!settings.isLowCC ||
-          (isFirst3Block && !modTypes.includes('sky_cheese')))) ||
+        (!settings.isLowCC || skyCurdIndex < 0 || skyCurdIndex > 2)) ||
       (isHai && !settings.isHuntAfterBossHai) ||
       (isSp && !settings.isHuntAfterBossSp)
     ) {
@@ -1462,7 +1462,7 @@ function floatingIslands() {
       return;
     }
   }
-  // **Retreat after has treasure trove and has defeated warden/paragon without reloading
+  // Retreat after has treasure trove and has defeated warden/paragon without reloading
   // has_defeated_enemy && has_treasure_trove
   // hg.views.HeadsUpDisplayFloatingIslandsView.retreat(this);
   if (
