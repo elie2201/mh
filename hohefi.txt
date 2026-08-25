@@ -1092,7 +1092,7 @@ function floatingIslands() {
   const targetEnvironmentType = 'floating_islands';
   const environmentType = MhUtils.getEnvironmentType();
   if (environmentType != targetEnvironmentType) return;
-  logging('floatingIslands_1.4.27.13.20');
+  logging('floatingIslands_1.4.27.14.20');
   // move item stat to better position and make it draggable
   try {
     $('.floatingIslandsHUD-statItemContainer')
@@ -1101,9 +1101,10 @@ function floatingIslands() {
     $('.floatingIslandsHUD-huntsRemainingContainer')
       .css({ position: 'absolute', left: 610, top: 30 })
       .draggable();
-    $('.floatingIslandsHUD-craftingItemContainer')
-      .css({ top: 130, color: '#00f' })
-      .draggable();
+    // Glass/Ore Position
+    // $('.floatingIslandsHUD-craftingItemContainer')
+    //   .css({ top: 130, color: '#00f' })
+    //   .draggable();
     $('.floatingIslandsHUD-bait').css({ top: 155 }).draggable();
   } catch (error) {
     console.log(error);
@@ -1371,6 +1372,14 @@ function floatingIslands() {
   const isLai = atts.is_low_tier_island; // || !atts.enemy;
   const isHai = atts.is_high_tier_island;
   const isSp = atts.is_vault_island;
+  // move Glass/Ore Position and make it draggable
+  try {
+    $('.floatingIslandsHUD-craftingItemContainer')
+      .css({ top: 130, color: isLai ? '#00f' : '#fff' })
+      .draggable();
+  } catch (error) {
+    console.log(error);
+  }
   const altitude = isLai ? lai : isHai ? hai : isSp ? sp : launch;
   const isCjsOn = quest.jet_stream_active;
   const bossProgress = Number.parseInt(atts.enemy_progress);
