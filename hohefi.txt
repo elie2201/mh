@@ -1092,7 +1092,7 @@ function floatingIslands() {
   const targetEnvironmentType = 'floating_islands';
   const environmentType = MhUtils.getEnvironmentType();
   if (environmentType != targetEnvironmentType) return;
-  logging('floatingIslands_1.4.27.14.20');
+  logging('floatingIslands_1.4.29.14.20');
   // move item stat to better position and make it draggable
   try {
     $('.floatingIslandsHUD-statItemContainer')
@@ -1167,12 +1167,15 @@ function floatingIslands() {
     isAutoCjs: false,
     isSleepInCJS: false,
     isBottledWind: false,
+    isBottledWindHai: true,
+    isBottledWindSp: true,
     isAutoHuntAfterTrove: false,
     // SP pirate可以任選 power type,前 30 progress用來做 map
     // progress 30開始沒有一級海盜且開始最高 Peggy AR
     startPirateProgressSp: 30,
     isAutoBuy: true,
     shrineMaxIndex: 4,
+    shrineMaxIndexHai: 2,
     isAutoLai: true,
     isAutoHai: false,
     isAutoSp: false,
@@ -1437,16 +1440,16 @@ function floatingIslands() {
         settings.isBottledWind = false;
     } else if (isHai && settings.isBwAutoOffHai) {
       if (countArrayElement('loot_cache', modTypes) < 2 && hasSpeedUp)
-        settings.isBottledWind = false;
+        settings.isBottledWindHai = false;
       /** if (!modTypes.includes('sky_pirates')) {
         if (countArrayElement('loot_cache', modTypes) < 2)
-          settings.isBottledWind = false;
+          settings.isBottledWindHai = false;
       } else {
         if (
           modTypes.indexOf('loot_cache') < 0 &&
           countArrayElement('sky_pirates', modTypes) < 2
         )
-          settings.isBottledWind = false;
+          settings.isBottledWindHai = false;
       } */
     }
   };
@@ -1601,12 +1604,16 @@ function floatingIslands() {
   }
   // 新版設定可能有 true/false以外的值,只有 true才是真的 enable.
   // 不過 trap的 Bottled Wind設定沒被使用,要注意的是 isBottledWindXXX
+  const isBottledWind =
+    (isLai && settings.isBottledWind === true) ||
+    (isHai && settings.isBottledWindHai === true) ||
+    (isSp && settings.isBottledWindSp === true);
   const isBottledWindBoss =
     (isWarden && settings.isBottledWindWarden === true) ||
     (isParagon && settings.isBottledWindParagon === true) ||
     (isEmpress && settings.isBottledWindEmpress === true);
   if (
-    settings.isBottledWind &&
+    isBottledWind &&
     islandProgress < 38 &&
     (isFirst3Block ||
       (isLai && settings.isBwLaiLastBlock === true) ||
@@ -1805,10 +1812,11 @@ function floatingIslands() {
     const shrineKey = isHai ? 'paragon_cache' : 'shrine';
     const included = settings.includedHaiShrine;
     const choices = [];
+    const tempMaxIndex = isHai
+      ? settings.shrineMaxIndexHai
+      : settings.shrineMaxIndex;
     // 防呆:測試時曾經忘記放 shrineMaxIndex導致無限 cycle
-    const shrineMaxIndex = settings.shrineMaxIndex
-      ? settings.shrineMaxIndex
-      : 2;
+    const shrineMaxIndex = tempMaxIndex == null ? tempMaxIndex : 2; // 小心 shrineMaxIndex為0時會被判斷成 false,所以要用 == null
     for (let i = 0; i < shrineMaxIndex; i++) {
       for (const myPowerType of myPowerTypes) {
         const modifier = islands[myPowerType][i];
