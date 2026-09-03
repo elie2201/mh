@@ -1092,7 +1092,7 @@ function floatingIslands() {
   const targetEnvironmentType = 'floating_islands';
   const environmentType = MhUtils.getEnvironmentType();
   if (environmentType != targetEnvironmentType) return;
-  logging('floatingIslands_1.4.29.14.20');
+  logging('floatingIslands_1.4.29.14.21');
   // move item stat to better position and make it draggable
   try {
     $('.floatingIslandsHUD-statItemContainer')
@@ -1816,7 +1816,7 @@ function floatingIslands() {
       ? settings.shrineMaxIndexHai
       : settings.shrineMaxIndex;
     // 防呆:測試時曾經忘記放 shrineMaxIndex導致無限 cycle
-    const shrineMaxIndex = tempMaxIndex == null ? tempMaxIndex : 2; // 小心 shrineMaxIndex為0時會被判斷成 false,所以要用 == null
+    const shrineMaxIndex = tempMaxIndex == null ? 2 : tempMaxIndex; // 小心 shrineMaxIndex為0時會被判斷成 false,所以要用 == null
     for (let i = 0; i < shrineMaxIndex; i++) {
       for (const myPowerType of myPowerTypes) {
         const modifier = islands[myPowerType][i];
