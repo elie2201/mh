@@ -1,31 +1,37 @@
-import { mh } from './my-mh-aid-dev';
+import { mh, MyUtils } from './my-mh-aid-dev';
 
 const user = {};
+mh.addon = {};
 
-// #kgakey
-mh.addon.KingsGiveaway = class KingsGiveaway {
-  static version = `${KingsGiveaway.name}_1.0.0.0.0`;
+// #addonFloatingIslands
+mh.addon.FloatingIslands = class FloatingIslands {
+  static version = `mh.addon.${FloatingIslands.name}_1.0.0.0.1`;
   constructor() {
-    console.log(`${KingsGiveaway.version} initialized`);
+    console.info(`${FloatingIslands.version} initialized`);
   }
-  static async showQuantity() {
-    let msgDiv = document.querySelector('div#displayedMessageDiv');
-    if (!msgDiv) {
-      msgDiv = document.createElement('div');
-      msgDiv.setAttribute('id', 'displayedMessageDiv');
-      msgDiv.setAttribute('style', 'background-color: white;');
-      document.querySelector('div#mypanel').append(msgDiv);
-    }
-    const credit = await mh.UserInventory.getItemQuantityPromise(
-      'prize_credit_stat_item'
+  static async hideCyclone(isResell = false) {
+    console.info(`run hideCyclone`);
+    const atts = user.quests.QuestFloatingIslands.hunting_site_atts;
+    const isLaunch = atts.island_type.includes('launch');
+    const cyclone = MyUtils.parseQuantity(
+      user?.enviroment_atts?.items?.sky_scrambler_stat_item?.quantity
     );
-    const key = user.quests.QuestKingsGiveaway.prize_key_quantity;
-    const msg = `<h1>Prize Keys: ${key}, Credits: ${credit}</h1>`;
-    if (msgDiv) msgDiv.innerHTML = msg;
+    const hasCyclone = cyclone > 0;
+    if (isLaunch && !hasCyclone && atts.sky_wardens_caught == 4) {
+      await mh.addon.Marketplace.cancelAndResellCyclone(60_000, isResell);
+      return;
+    }
+    if (!hasCyclone) return;
+    if (
+      atts.island_type.includes('tactical') ||
+      atts.island_mod_types.includes('sky_cheese') ||
+      atts.island_mod_types.includes('sky_pirates')
+    )
+      await mh.addon.Marketplace.cancelAndResellCyclone(60_000);
   }
 };
-if (user.quests.QuestKingsGiveaway)
+if (user.quests.QuestFloatingIslands)
   (async () => {
-    mh.addon.KingsGiveaway.showQuantity();
+    await mh.addon.FloatingIslands.hideCyclone();
   })();
-// End #kgakey
+// End #addonFloatingIslands
