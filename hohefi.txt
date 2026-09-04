@@ -1092,7 +1092,7 @@ function floatingIslands() {
   const targetEnvironmentType = 'floating_islands';
   const environmentType = MhUtils.getEnvironmentType();
   if (environmentType != targetEnvironmentType) return;
-  logging('floatingIslands_1.4.30.14.22');
+  logging('floatingIslands_1.4.30.14.23');
   // move item stat to better position and make it draggable
   try {
     $('.floatingIslandsHUD-statItemContainer')
@@ -1494,8 +1494,7 @@ function floatingIslands() {
         // setTimeout(() => {
         async () => {
           //* if (autoSkyMap(settings)) return;
-          if (atts.sky_wardens_caught == 4 && cycloneQty == 0)
-            await mh.cmd.Marketplace.cancelSellItem(3077);
+          if (cycloneQty == 0) await mh.cmd.Marketplace.cancelSellItem(3077);
           setTimeout(() => {
             location.href = MOUSEHUNT_BASE_URL;
           }, 1000);
