@@ -1,4 +1,4 @@
-import { MhUtils } from './my-mh-aid-dev';
+import { mh, MhUtils } from './my-mh-aid-dev';
 
 /* eslint-disable new-cap */
 const QuestFloatingIslands = {
@@ -1092,7 +1092,7 @@ function floatingIslands() {
   const targetEnvironmentType = 'floating_islands';
   const environmentType = MhUtils.getEnvironmentType();
   if (environmentType != targetEnvironmentType) return;
-  logging('floatingIslands_1.4.29.14.21');
+  logging('floatingIslands_1.4.30.14.21');
   // move item stat to better position and make it draggable
   try {
     $('.floatingIslandsHUD-statItemContainer')
@@ -1466,8 +1466,10 @@ function floatingIslands() {
       retreat(
         null,
         // setTimeout(() => {
-        () => {
+        async () => {
           //* if (autoSkyMap(settings)) return;
+          if (atts.sky_wardens_caught == 4 && cycloneQty == 0)
+            await mh.cmd.Marketplace.cancelSellItem(3077);
           setTimeout(() => {
             location.href = MOUSEHUNT_BASE_URL;
           }, 1000);
