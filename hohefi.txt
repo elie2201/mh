@@ -1,4 +1,4 @@
-import { mh, MhUtils } from './my-mh-aid-dev';
+import { mh, MyUtils, MhUtils } from './my-mh-aid-dev';
 
 /* eslint-disable new-cap */
 const QuestFloatingIslands = {
@@ -1045,28 +1045,54 @@ user.quests = {};
 user.quests.QuestFloatingIslands = QuestFloatingIslands;
 user.environment_type = 'floating_islands';
 user.enviroment_atts = enviromentAtts;
-function $() {}
-function getStorageToObject(key, obj) {}
+function $(selector) {
+  return selector;
+}
+function getStorageToObject(key, obj) {
+  return obj;
+}
 function armAllTraps(bait, weapon, base, charm) {
   console.log(bait, weapon, base, charm);
 }
-function logging(...any) {}
-// function travel(environmentType, milliseconds, callback) {}
-function pauseByTraveling(environmentType, milliseconds, callback) {}
-function parseQuantity(any) {}
+function logging(...any) {
+  console.log(...any);
+}
+function pauseByTraveling(environmentType, milliseconds, callback) {
+  console.log(environmentType, milliseconds, callback);
+}
 function completeTransaction(
   isPurchase,
   itemType,
   itemQuantity,
   isKingsCartItem,
   successCallback
-) {}
-function getRandomInteger(min, max) {}
-function getQuantityByUrlThen(itemType, callback) {}
-function countArrayElement(value, arrIn) {}
-function distinctArray(array) {}
-function doubleEgg(isToEnable) {}
-function litCandle(actionType) {}
+) {
+  console.log(
+    isPurchase,
+    itemType,
+    itemQuantity,
+    isKingsCartItem,
+    successCallback
+  );
+}
+function getRandomInteger(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+function getQuantityByUrlThen(itemType, callback) {
+  return itemType;
+}
+function countArrayElement(value, arrIn) {
+  return 1;
+}
+function distinctArray(array) {
+  return [...new Set(array)];
+}
+function doubleEgg(isToEnable) {
+  console.log(isToEnable);
+}
+function litCandle(actionType) {
+  console.log(actionType);
+}
 // sleep
 (() => {
   const q = user.quests.QuestFloatingIslands;
@@ -1092,7 +1118,7 @@ function floatingIslands() {
   const targetEnvironmentType = 'floating_islands';
   const environmentType = MhUtils.getEnvironmentType();
   if (environmentType != targetEnvironmentType) return;
-  logging('floatingIslands_1.4.30.14.23');
+  logging('floatingIslands_1.4.31.14.23');
   // move item stat to better position and make it draggable
   try {
     $('.floatingIslandsHUD-statItemContainer')
@@ -1179,6 +1205,7 @@ function floatingIslands() {
     isAutoLai: true,
     isAutoHai: false,
     isAutoSp: false,
+    haiLootGoal: 6,
     includedHaiShrine: [], // null or empty if not filter
     // myLaiPowerTypes: ['law', 'phscl', 'hdr', 'drcnc', 'frgttn', 'arcn', 'tctcl', 'shdw'],
     // myLaiPowerTypes: ['law', 'phscl', 'frgttn', 'arcn', 'drcnc', 'tctcl', 'hdr', 'shdw'],
@@ -1338,17 +1365,17 @@ function floatingIslands() {
   const atts = quest.hunting_site_atts;
   const items = env.items;
   const stormCell = items.airship_rocket_fuel_stat_item;
-  const stormCellQty = parseQuantity(stormCell.quantity);
+  const stormCellQty = MyUtils.parseQuantity(stormCell.quantity);
   const cyclone = items.sky_scrambler_stat_item;
-  const cycloneQty = parseQuantity(cyclone.quantity);
+  const cycloneQty = MyUtils.parseQuantity(cyclone.quantity);
   const cloudCurd = items.cloud_curd_crafting_item;
-  const ccQty = parseQuantity(cloudCurd.quantity);
+  const ccQty = MyUtils.parseQuantity(cloudCurd.quantity);
   const cloudCheese = items.sky_cheese;
-  const cccQty = parseQuantity(cloudCheese.quantity);
+  const cccQty = MyUtils.parseQuantity(cloudCheese.quantity);
   const spsCurds = items.sky_pirate_cheese_curd_crafting_item;
-  const spscQty = parseQuantity(spsCurds.quantity);
+  const spscQty = MyUtils.parseQuantity(spsCurds.quantity);
   const magicEssence = items.magic_essence_craft_item;
-  const meQty = parseQuantity(magicEssence.quantity);
+  const meQty = MyUtils.parseQuantity(magicEssence.quantity);
   const islandType = atts.island_type || '';
   const powerType = islandType.split('_')[0];
   if (powerType === '') return;
@@ -1401,6 +1428,19 @@ function floatingIslands() {
     !isBossHunt && !hasTreasureTrove && islandProgress + speed > 39;
   if (settings.trap.paragon[1].startsWith('Polar') && powerType !== 'tactical')
     settings.trap.paragon[1] = auto;
+  const myHaiLoots = [
+    MyUtils.parseQuantity(items['sky_sprocket_stat_item'].quantity),
+    MyUtils.parseQuantity(items['skysoft_silk_stat_item'].quantity),
+    MyUtils.parseQuantity(items['enchanted_wing_stat_item'].quantity),
+    MyUtils.parseQuantity(items['cloudstone_bangle_stat_item'].quantity)
+  ];
+  settings.includedHaiShrine = [
+    'paragon_cache_a',
+    'paragon_cache_b',
+    'paragon_cache_c',
+    'paragon_cache_d'
+  ].filter((v, i) => myHaiLoots[i] < settings.haiLootGoal);
+  console.log(settings);
   const autoHuntAfterTrove = () => {
     if (isLai) {
       if (countArrayElement('sky_pirates', modTypes) == 2) {
@@ -1666,7 +1706,7 @@ function floatingIslands() {
   const autoBuyItems = () => {
     logging('autoBuyItems');
     const armedBaitId = user.bait_item_id;
-    const baitQuantity = parseQuantity(user.bait_quantity);
+    const baitQuantity = MyUtils.parseQuantity(user.bait_quantity);
     const lower = getRandomInteger(20, 30);
     logging(
       `${armedBaitId} === 3089/3274/3090 && ${baitQuantity} < ${lower}? `
@@ -1732,9 +1772,9 @@ function floatingIslands() {
     const env = user.enviroment_atts;
     const items = env.items;
     const stormCell = items.airship_rocket_fuel_stat_item;
-    const stormCellQty = parseQuantity(stormCell.quantity);
+    const stormCellQty = MyUtils.parseQuantity(stormCell.quantity);
     const cyclone = items.sky_scrambler_stat_item;
-    const cycloneQty = parseQuantity(cyclone.quantity);
+    const cycloneQty = MyUtils.parseQuantity(cyclone.quantity);
     if (
       (!settings.isAutoLai || atts.sky_wardens_caught == 4) &&
       (!settings.isAutoHai || atts.sky_wardens_caught < 4) &&
