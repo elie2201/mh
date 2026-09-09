@@ -1,15 +1,15 @@
-import { mh, MyUtils } from './my-mh-aid-dev';
+import { mh, MyUtils, MhUtils } from './my-mh-aid-dev';
 
 const user = {};
 mh.addon = {};
 
 // #addonFloatingIslands
 mh.addon.FloatingIslands = class FloatingIslands {
-  static version = `mh.addon.${FloatingIslands.name}_1.0.0.0.1`;
+  static version = `mh.addon.${FloatingIslands.name}_1.0.0.0.2`;
   constructor() {
     console.info(`${FloatingIslands.version} initialized`);
   }
-  static async hideCyclone(isResell = false) {
+  static async hideCyclone() {
     console.info(`run hideCyclone`);
     const atts = user.quests.QuestFloatingIslands.hunting_site_atts;
     const isLaunch = atts.island_type.includes('launch');
@@ -18,7 +18,7 @@ mh.addon.FloatingIslands = class FloatingIslands {
     );
     const hasCyclone = cyclone > 0;
     if (isLaunch && !hasCyclone && atts.sky_wardens_caught == 4) {
-      await mh.addon.Marketplace.cancelAndResellCyclone(60_000, isResell);
+      await mh.addon.Marketplace.cancelAndResellCyclone(60_000, false);
       return;
     }
     if (!hasCyclone) return;
@@ -29,9 +29,16 @@ mh.addon.FloatingIslands = class FloatingIslands {
     )
       await mh.addon.Marketplace.cancelAndResellCyclone(60_000);
   }
+  static updateGPStats() {
+    console.info(`run updateGPW`);
+    const atts = user.quests.QuestFloatingIslands.hunting_site_atts;
+    const isLaunch = atts.island_type.includes('launch');
+    if (isLaunch && atts.sky_wardens_caught == 4) MhUtils.updateGPStats();
+  }
 };
 if (user.quests.QuestFloatingIslands)
   (async () => {
     await mh.addon.FloatingIslands.hideCyclone();
+    mh.addon.FloatingIslands.updateGPStats();
   })();
 // End #addonFloatingIslands
