@@ -27,7 +27,8 @@ mh.dao.FloatingIslands = class FloatingIslands {
     const envAtts = user.enviroment_atts;
     if (!envAtts.airship.can_upgrade_oculus) return Promise.resolve(null);
     return new Promise((resolve, reject) => {
-      hg.views.FloatingIslandsWorkshopView.upgradeOculusLevel(resolve, reject);
+      hg.views.FloatingIslandsWorkshopView.upgradeOculusLevel();
+      resolve();
     });
   }
   static ajaxPromise(params, element) {
