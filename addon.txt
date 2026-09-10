@@ -38,7 +38,10 @@ mh.addon.FloatingIslands = class FloatingIslands {
 };
 if (user.quests.QuestFloatingIslands)
   (async () => {
+    const atts = user.quests.QuestFloatingIslands.hunting_site_atts;
+    const isLaunch = atts.island_type.includes('launch');
+    if (isLaunch && atts.sky_wardens_caught == 4) 
+      mh.addon.FloatingIslands.updateGPStats();
     await mh.addon.FloatingIslands.hideCyclone();
-    mh.addon.FloatingIslands.updateGPStats();
   })();
 // End #addonFloatingIslands
