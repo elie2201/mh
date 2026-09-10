@@ -1,11 +1,81 @@
+/* eslint-disable new-cap */
 import { mh, MyUtils, MhUtils } from './my-mh-aid-dev';
 
 const user = {};
-mh.addon = {};
+user.quests = {};
+user.quests.QuestFloatingIslands = QuestFloatingIslands;
+user.enviroment_atts = enviromentAtts;
+const hg = {};
+const eventRegistry = {};
+const jsDialog = class {
+  show() {
+    console.log('show');
+  }
+};
+function $(...arg) {
+  return arg;
+}
 
 // #addonFloatingIslands
+mh.dao.FloatingIslands = class FloatingIslands {
+  static version = `mh.dao.${FloatingIslands.name}_1.0.0.0.0`;
+  static URI = 'managers/ajax/environment/floating_islands.php';
+  constructor() {
+    console.info(`${FloatingIslands.version} initialized`);
+  }
+  static upgradeOculusLevel() {
+    const envAtts = user.enviroment_atts;
+    if (!envAtts.airship.can_upgrade_oculus) return Promise.resolve(null);
+    return new Promise((resolve, reject) => {
+      hg.views.FloatingIslandsWorkshopView.upgradeOculusLevel(resolve, reject);
+    });
+  }
+  static ajaxPromise(params, element) {
+    const target = $(element);
+    if (target.hasClass('busy') || target.hasClass('disabled')) {
+      return Promise.resolve(null);
+    }
+    return new Promise((resolve, reject) => {
+      target.addClass('busy');
+      const lastReadJournalEntryId = $('#journallatestentry').data('entry-id');
+      params['last_read_journal_entry_id'] = lastReadJournalEntryId;
+      params['uh'] = user.unique_hash;
+      $.ajax({
+        data: params,
+        dataType: 'json',
+        type: 'post',
+        url: mh.MOUSEHUNT_BASE_URL + FloatingIslands.URI,
+        success: function (data) {
+          target.removeClass('busy');
+          eventRegistry.doEvent('ajax_response', data);
+          resolve(data);
+        },
+        error: function (error) {
+          reject(error);
+          const popup = new jsDialog();
+          popup.setTemplate('error');
+          popup.addToken('{*title*}', 'An error has occurred.');
+          popup.addToken('{*content*}', 'An error occurred. Please try again!');
+          popup.show();
+          target.removeClass('busy');
+        }
+      });
+    });
+  }
+};
+mh.cmd.FloatingIslands = class FloatingIslands {
+  static version = `mh.cmd.${FloatingIslands.name}_1.0.0.0.0`;
+  constructor() {
+    console.info(`${FloatingIslands.version} initialized`);
+  }
+  static async upgradeOculusLevel() {
+    const envAtts = user.enviroment_atts;
+    if (envAtts.airship.can_upgrade_oculus)
+      await mh.dao.FloatingIslands.upgradeOculusLevel();
+  }
+};
 mh.addon.FloatingIslands = class FloatingIslands {
-  static version = `mh.addon.${FloatingIslands.name}_1.0.0.0.2`;
+  static version = `mh.addon.${FloatingIslands.name}_1.0.0.0.3`;
   constructor() {
     console.info(`${FloatingIslands.version} initialized`);
   }
@@ -35,13 +105,29 @@ mh.addon.FloatingIslands = class FloatingIslands {
     const isLaunch = atts.island_type.includes('launch');
     if (isLaunch && atts.sky_wardens_caught == 4) MhUtils.updateGPStats();
   }
+  static async autoUpgradeOculus() {
+    const envAtts = user.enviroment_atts;
+    if (envAtts.airship.can_upgrade_oculus)
+      await mh.cmd.FloatingIslands.upgradeOculusLevel();
+  }
 };
 if (user.quests.QuestFloatingIslands)
   (async () => {
     const atts = user.quests.QuestFloatingIslands.hunting_site_atts;
     const isLaunch = atts.island_type.includes('launch');
-    if (isLaunch && atts.sky_wardens_caught == 4) 
+    const envAtts = user.enviroment_atts;
+    if (isLaunch && atts.sky_wardens_caught == 4)
       mh.addon.FloatingIslands.updateGPStats();
-    await mh.addon.FloatingIslands.hideCyclone();
+    try {
+      await mh.addon.FloatingIslands.hideCyclone();
+    } catch (error) {
+      console.log(error);
+    }
+    if (envAtts.airship.can_upgrade_oculus)
+      try {
+        await mh.addon.FloatingIslands.autoUpgradeOculus();
+      } catch (error) {
+        console.log(error);
+      }
   })();
 // End #addonFloatingIslands
