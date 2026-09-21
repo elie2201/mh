@@ -1055,7 +1055,7 @@ function prologuePond() {
   } catch (error) {
     console.log(error);
   }
-  logging('prologuePond_0.2.8.1.18');
+  logging('prologuePond_0.2.8.1.19');
   // my own hard-coded constants
   const gouda = 'gouda_cheese';
   const grubbeen = 'grubbeen_cheese';
@@ -1089,7 +1089,7 @@ function prologuePond() {
   const settings = isProd
     ? MyUtils.getStorageToObject(targetEnvironmentType, defaultSettings)
     : defaultSettings;
-  const check = new mh.chk.ProloguePond(
+  const check = new mh.chk.Check(
     false,
     async () => globalThis.user.quests.QuestProloguePond.items
   ).loadPlainText(settings.checkers);
