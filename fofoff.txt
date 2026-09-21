@@ -1481,7 +1481,7 @@ function forewordFarm() {
   const targetEnvironmentType = 'foreword_farm';
   const enviromentType = MhUtils.getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('forewordFarm_0.4.6.4.13');
+  logging('forewordFarm_0.4.6.4.14');
   // my own hard-coded constants
   const plantRowTypes = [
     ['ordinary_farm_plant', 'ordinary_magic_farm_plant'],
@@ -1510,7 +1510,7 @@ function forewordFarm() {
   const settings = isProd
     ? MyUtils.getStorageToObject(targetEnvironmentType, defaultSettings)
     : defaultSettings;
-  const check = new mh.chk.ForewordFarm(
+  const check = new mh.chk.Check(
     false,
     async () => globalThis.user.quests.QuestForewordFarm.items
   ).loadPlainText(settings.checkers);
