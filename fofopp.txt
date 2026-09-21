@@ -1,4 +1,4 @@
-import { MyUtils, MhUtils } from './my-mh-aid-dev';
+import { mh, MyUtils, MhUtils } from './my-mh-aid-dev';
 
 // MH constants
 const QuestProloguePond = {
@@ -1015,7 +1015,9 @@ user.environment_type = 'prologue_pond';
 user.quests = {};
 user.quests.QuestProloguePond = QuestProloguePond;
 // MH functions
-function $() {}
+function $(...args) {
+  return args;
+}
 // my-mh-aid constants
 // MH & my-mh-aid functions
 function logging(...any) {
@@ -1043,7 +1045,17 @@ function prologuePond() {
   const targetEnvironmentType = 'prologue_pond';
   const enviromentType = MhUtils.getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('prologuePond_0.1.7.0.15');
+  try {
+    $('.prologuePondView-chumContainer')
+      .css({ position: 'absolute', top: 100 })
+      .draggable();
+    $('.folkloreForestRegionView-footer')
+      .css({ position: 'absolute', top: 160, left: 60 })
+      .draggable();
+  } catch (error) {
+    console.log(error);
+  }
+  logging('prologuePond_0.2.8.1.16');
   // my own hard-coded constants
   const gouda = 'gouda_cheese';
   const grubbeen = 'grubbeen_cheese';
@@ -1052,8 +1064,11 @@ function prologuePond() {
   const grub = 'ingenuity_grub_stat_item';
   const clam = 'cleverness_clam_stat_item';
   const penny = 'pond_penny_stat_item';
+  const ink = 'inspiration_ink_stat_item';
   const chum = 'brainstorm_chum_stat_item';
   const CC = 'condensed_creativity_stat_item';
+  const papyrus = 'parable_papyrus_stat_item';
+  const curds = 'draft_derby_curd_stat_item';
   /** localStorage settings */
   // prettier-ignore
   const defaultSettings = {
@@ -1073,6 +1088,7 @@ function prologuePond() {
   const settings = isProd
     ? MyUtils.getStorageToObject(targetEnvironmentType, defaultSettings)
     : defaultSettings;
+  const check = new mh.chk.ProloguePond(false).loadPlainText(settings.checkers);
   // MH constants
   const quest = isProd ? user.quests.QuestProloguePond : QuestProloguePond;
   const items = {
@@ -1105,6 +1121,18 @@ function prologuePond() {
       type: chum,
       qty: MyUtils.parseQuantity(quest.items[chum].quantity)
     },
+    ink: {
+      type: ink,
+      qty: MyUtils.parseQuantity(quest.items[ink].quantity)
+    },
+    papyrus: {
+      type: papyrus,
+      qty: MyUtils.parseQuantity(quest.items[papyrus].quantity)
+    },
+    curds: {
+      type: curds,
+      qty: MyUtils.parseQuantity(quest.items[curds].quantity)
+    },
     CC: {
       type: CC,
       qty: MyUtils.parseQuantity(quest.items[CC].quantity)
@@ -1136,6 +1164,9 @@ function prologuePond() {
           : clamembert,
       /** start running */
       run() {
+        check.any(mh.chk.ProloguePond.CheckPoints.BeforeRun).then((r) => {
+          if (r) throw new Error('traveled');
+        });
         logging('start running prologuePond');
         this.autoBuyPromise(() => {
           this.autoSettingsPromise();
@@ -1320,16 +1351,16 @@ function prologuePond() {
             }
           }
           // trap沒變動時 set isOkChum by cheese & cheese quantity & enough pennies or not
-          if (MhUtils.getBaitItemId() === 3462) {
-            // stormy
+          if ([3462, 3457].includes(MhUtils.getBaitItemId())) {
+            // 3462 - stormy
             if (items.chum.qty >= MhUtils.getBaitQuantity())
               if (isEnoughPennies) settings.isOkChum = true;
-          } else if (MhUtils.getBaitItemId() === 3457) {
-            // clamembert
-            if (items.chum.qty >= MhUtils.getBaitQuantity())
-              if (isEnoughPennies) settings.isOkChum = true;
+            // } else if (MhUtils.getBaitItemId() === 3457) {
+            //   // 3457 - clamembert
+            //   if (items.chum.qty >= MhUtils.getBaitQuantity())
+            //     if (isEnoughPennies) settings.isOkChum = true;
           } else if (MhUtils.getBaitItemId() === 3460) {
-            // grubbeen
+            // 3460 - grubbeen
             if (settings.isGrubbeenAlwaysScatter) settings.isOkChum = true;
             else if (items.chum.qty >= MhUtils.getBaitQuantity())
               if (isEnoughPennies) settings.isOkChum = true;
