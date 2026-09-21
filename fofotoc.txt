@@ -55,7 +55,7 @@ function tableOfContents() {
   const targetEnvironmentType = 'table_of_contents';
   const enviromentType = MhUtils.getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('tableOfContents_0.1.4.2.12');
+  logging('tableOfContents_0.1.4.2.13');
   // my own hard-coded constants
   const novel = 1000;
   const epic = 2000;
@@ -181,8 +181,11 @@ function tableOfContents() {
       trapState: novel,
       /** start running */
       run() {
-        logging('start running tableOfContents');
-        this.autoSettingsPromise();
+        check.any(mh.chk.Check.CheckPoints.BeforeRun).then((r) => {
+          if (r) throw new Error('traveled');
+          logging('start running tableOfContents');
+          this.autoSettingsPromise();
+        });
       },
       /** auto settings */
       autoSettingsPromise() {
