@@ -1453,8 +1453,8 @@ user.quests = {};
 user.quests.QuestForewordFarm = QuestForewordFarm;
 // mice_state: "three_plants"
 
-function $(any) {
-  console.log(any);
+function $(...args) {
+  return args;
 }
 function logging(...any) {
   const debug = true;
@@ -1481,7 +1481,7 @@ function forewordFarm() {
   const targetEnvironmentType = 'foreword_farm';
   const enviromentType = MhUtils.getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('forewordFarm_0.4.6.4.12');
+  logging('forewordFarm_0.4.6.4.13');
   // my own hard-coded constants
   const plantRowTypes = [
     ['ordinary_farm_plant', 'ordinary_magic_farm_plant'],
@@ -1510,7 +1510,10 @@ function forewordFarm() {
   const settings = isProd
     ? MyUtils.getStorageToObject(targetEnvironmentType, defaultSettings)
     : defaultSettings;
-  const check = new mh.chk.ForewordFarm(false).loadPlainText(settings.checkers);
+  const check = new mh.chk.ForewordFarm(
+    false,
+    async () => globalThis.user.quests.QuestForewordFarm.items
+  ).loadPlainText(settings.checkers);
   const quest = isProd ? user.quests.QuestForewordFarm : QuestForewordFarm;
   const miceState = quest.mice_state;
   const items = quest.items;
@@ -1545,18 +1548,19 @@ function forewordFarm() {
       },
       /** claim harvest promise */
       claimHarvestPromise() {
-        logging('run claimHarvestPromise');
         console.log('try claiming harvest');
         // 先判斷條件，不需要進 Promise
         if (!quest.harvest_bin.can_claim || !settings.isAutoClaim) {
           return this.autoSettingsPromise();
         }
+        logging('run claimHarvestPromise');
         return new Promise((resolve, reject) => {
           console.log('claiming harvest');
           const callback = () => {
             check.any(mh.chk.ForewordFarm.CheckPoints.Claimed).then((r) => {
               if (r) throw new Error('traveled');
             });
+            quest.harvest_bin.can_claim = false;
             // this.run()不會更新遊戲參數, forewordFarm()才會
             forewordFarm();
             return resolve();
