@@ -1055,7 +1055,7 @@ function prologuePond() {
   } catch (error) {
     console.log(error);
   }
-  logging('prologuePond_0.2.8.1.16');
+  logging('prologuePond_0.2.8.1.17');
   // my own hard-coded constants
   const gouda = 'gouda_cheese';
   const grubbeen = 'grubbeen_cheese';
@@ -1072,6 +1072,7 @@ function prologuePond() {
   /** localStorage settings */
   // prettier-ignore
   const defaultSettings = {
+    checkers: '',
     useBaitQuantity: 32,
     changeBaitQuantity: 3,
     extraPenny: 25,
