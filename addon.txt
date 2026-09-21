@@ -136,11 +136,11 @@ if (user.quests.QuestFloatingIslands) {
     const envAtts = user.enviroment_atts;
     if (isLaunch && atts.sky_wardens_caught == 4)
       mh.addon.FloatingIslands.updateGPStats();
-    try {
-      await mh.addon.FloatingIslands.hideCyclone();
-    } catch (error) {
-      console.log(error);
-    }
+    // // try {
+    //   await mh.addon.FloatingIslands.hideCyclone();
+    // } catch (error) {
+    //   console.log(error);
+    // }
     if (envAtts.airship.can_upgrade_oculus)
       try {
         await mh.addon.FloatingIslands.autoUpgradeOculus();
