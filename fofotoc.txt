@@ -1,3 +1,445 @@
+/* eslint-disable new-cap */
+import { mh, MyUtils, MhUtils } from './my-mh-aid-dev';
+
+const MOUSEHUNT_BASE_URL = 'https://www.mousehuntgame.com/';
+const hg = {};
+const activejsDialog = {};
+const eventRegistry = {};
+class jsDialog {
+  static x;
+}
+const user = {};
+user.environment_type = 'table_of_contents';
+user.quests = {};
+user.quests.QuestTableOfContents = QuestTableOfContents;
+// MH functions
+function $(...args) {
+  return args;
+}
+// MH & my-mh-aid functions
+function logging(...any) {
+  const debug = true;
+  if (debug) {
+    console.groupCollapsed(new Date(), ...any);
+    console.log(new Error().stack);
+    console.groupEnd();
+  }
+}
+function armAllTraps(bait, weapon, base, charm) {
+  console.log(bait, weapon, base, charm);
+}
+function completeTransaction(
+  isPurchase,
+  itemType,
+  itemQuantity,
+  isKingsCartItem,
+  successCallback
+) {
+  console.log(`bought ${itemQuantity} ${itemType}!!`);
+  if (successCallback)
+    setTimeout(() => {
+      successCallback();
+    }, 2000);
+}
+function doubleEgg(isToEnable) {
+  console.log('double egg?', isToEnable);
+}
+function litCandle(actionType) {
+  console.log('lit candle to', actionType);
+}
+
+// #tableOfContents
+if (MhUtils.getEnvironmentType() === 'table_of_contents') tableOfContents();
+function tableOfContents() {
+  const isProd = false;
+  const targetEnvironmentType = 'table_of_contents';
+  const enviromentType = MhUtils.getEnvironmentType();
+  if (enviromentType !== targetEnvironmentType) return;
+  logging('tableOfContents_0.1.4.2.9');
+  // my own hard-coded constants
+  const novel = 1000;
+  const epic = 2000;
+  const encyclopedia1 = 4000;
+  const encyclopedia = 2000000;
+  const CC = 'condensed_creativity_stat_item';
+  const ddc = 'draft_derby_curd_stat_item';
+  const papyrus = 'parable_papyrus_stat_item';
+  const ink = 'inspiration_ink_stat_item';
+  const sdd = 'second_draft_derby_cheese';
+  const fdd = 'final_draft_derby_cheese';
+  const tdd = 'thousandth_draft_derby_cheese';
+  const me = 'magic_essence_craft_item';
+  /** localStorage settings */
+  // prettier-ignore
+  const defaultSettings = {
+    checkers: '',
+    isAutoWriting: true,
+    isAutoPublish: true,
+    isAutoTargetWords: true,
+    targetWords: novel,
+    isWritingWithCC: false,
+    fddToStart: 60,
+    changeBaitQuantity: 3,
+    traps: {
+      999: ['Gouda Cheese', 'best.weapon.forgotten', 'best.base.combo', 'Luck Charm', false, 'none', false],
+      1000: ['Second Draft Derby', 'best.weapon.forgotten', 'best.base.combo', 'Luck Charm', false, 'none', false],
+      2000: ['Second Draft Derby', 'best.weapon.forgotten', 'best.base.combo', 'Luck Charm', false, 'none', false],
+      4000: ['Second Draft Derby', 'best.weapon.forgotten', 'best.base.combo', 'Luck Charm', false, 'none', false],
+      2000000: ['Final Draft Derby', 'best.weapon.forgotten', 'best.base.combo', 'Ultimate Lucky Power Charm,Festive Ultimate Lucky Power Charm', true, 'white', true],
+      M1000: ['Thousandth Draft Derby', 'best.weapon.forgotten', 'Naughty List Printing Press', 'Ultimate Lucky Power Charm,Festive Ultimate Lucky Power Charm', true, 'white', true]
+    }
+  };
+  const settings = isProd
+    ? MyUtils.getStorageToObject(targetEnvironmentType, defaultSettings)
+    : defaultSettings;
+  const check = new mh.chk.TableOfContents(false).loadPlainText(
+    settings.checkers
+  );
+  // MH constants
+  const quest = isProd
+    ? user.quests.QuestTableOfContents
+    : QuestTableOfContents;
+  const items = {
+    gold: user.gold,
+    CC: {
+      type: CC,
+      qty: MyUtils.parseQuantity(quest.items[CC].quantity)
+    },
+    ddc: {
+      type: ddc,
+      qty: MyUtils.parseQuantity(quest.items[ddc].quantity)
+    },
+    papyrus: {
+      type: papyrus,
+      qty: MyUtils.parseQuantity(quest.items[papyrus].quantity)
+    },
+    ink: {
+      type: ink,
+      qty: MyUtils.parseQuantity(quest.items[ink].quantity)
+    },
+    sdd: {
+      type: sdd,
+      qty: MyUtils.parseQuantity(quest.items[sdd].quantity)
+    },
+    fdd: {
+      type: fdd,
+      qty: MyUtils.parseQuantity(quest.items[fdd].quantity)
+    },
+    tdd: {
+      type: tdd,
+      qty: MyUtils.parseQuantity(quest.items[tdd].quantity)
+    },
+    me: {
+      type: me,
+      qty: MyUtils.parseQuantity(quest.items[me].quantity)
+    }
+  };
+  console.log('items: ', items);
+  // // const isWriting = quest.is_writing;
+  const tableOfContentsUtility = (() => {
+    const utils = {
+      // values
+      URI: 'managers/ajax/environment/table_of_contents.php',
+      /** Set immutable fields */
+      setImmutable() {
+        const immutableFields = ['URI'];
+        for (const immutableField of immutableFields) {
+          Object.defineProperty(utils, immutableField, {
+            // value: 'This cannot be changed',
+            writable: false, // Makes the field immutable
+            configurable: false, // Prevents deletion or re-configuration of the field
+            enumerable: true // Makes the field visible during enumeration (e.g., in a for...in loop)
+          });
+        }
+      },
+      /** max SDD can be bought */
+      effectiveSdd: {
+        typeWithMe: 'second_draft_derby_pack_small_convertible',
+        qty:
+          Math.min(
+            Math.floor(items.ddc.qty / 10),
+            Math.floor(items.papyrus.qty / 10),
+            Math.floor(items.ink.qty / 10)
+          ) *
+            2 +
+          items.sdd.qty
+      },
+      /** max FDD can be bought */
+      effectiveFdd: {
+        typeWithMe: 'final_draft_derby_pack_small_convertible',
+        qty:
+          Math.min(
+            Math.floor(items.ddc.qty / 100),
+            Math.floor(items.papyrus.qty / 100),
+            Math.floor(items.ink.qty / 100)
+          ) *
+            2 +
+          items.fdd.qty
+      },
+      /** trapState, default: novel */
+      trapState: novel,
+      /** start running */
+      run() {
+        logging('start running tableOfContents');
+        this.autoSettingsPromise();
+      },
+      /** auto settings */
+      autoSettingsPromise() {
+        logging('run initPromise: initialize states for running');
+        return new Promise((resolve, reject) => {
+          // auto settings for running if necessary and then invoke next promise
+          this.trapState = settings.targetWords;
+          if (settings.targetWords < epic) {
+            settings.isWritingWithCC = false;
+          } else if (settings.targetWords === epic) {
+            // TODO 如何適量使用 CC以到達 epic?
+            settings.isWritingWithCC = false;
+          } else if (settings.targetWords > epic) {
+            settings.isWritingWithCC = true;
+          }
+          this.autoWritingPromise();
+          resolve();
+        });
+      },
+      /** check if auto writing */
+      autoWritingPromise() {
+        logging('start running autoWritingPromise');
+        return new Promise((resolve, reject) => {
+          if (settings.isAutoWriting && !quest.is_writing && !quest.can_claim) {
+            console.log('start writing');
+            this.startWriting('<a/>', () => {
+              quest.is_writing = true;
+              console.log('writing new book, set target words first');
+              if (settings.isAutoTargetWords) utils.setTargetWords();
+              tableOfContents();
+              resolve();
+            });
+            return;
+          }
+          this.autoPublishPromise();
+          resolve();
+        });
+      },
+      startWriting(element, successCallback) {
+        logging('start running startWriting');
+        const params = {
+          action: 'start_writing',
+          bait: settings.targetWords < encyclopedia1 ? sdd : fdd,
+          enable_fuel: settings.isWritingWithCC ? 1 : 0,
+          bait_disarm_preference: 'standardBait'
+        };
+        utils.ajax(element, params, function (data) {
+          eventRegistry.doEvent('ajax_response', data);
+          // // getProgressView().reset();
+          activejsDialog.hide();
+          if (successCallback) successCallback();
+        });
+      },
+      setTargetWords() {
+        const settings = isProd
+          ? MyUtils.getStorageToObject(targetEnvironmentType, defaultSettings)
+          : defaultSettings;
+        if (this.effectiveFdd.qty > settings.fddToStart)
+          settings.targetWords = encyclopedia;
+        else if (this.effectiveSdd.qty < 25) settings.targetWords = 999;
+        else settings.targetWords = novel;
+        if (isProd)
+          localStorage[targetEnvironmentType] = JSON.stringify(settings);
+      },
+      /** check if auto publish */
+      autoPublishPromise() {
+        logging('start running autoPublishPromise');
+        return new Promise((resolve, reject) => {
+          if (
+            settings.isAutoPublish &&
+            quest.is_writing &&
+            MyUtils.parseQuantity(quest.current_book.word_count) >=
+              settings.targetWords
+          ) {
+            console.log('publishng');
+            this.cancelBook('<a/>', () => {
+              quest.is_writing = false;
+              tableOfContents();
+              resolve();
+            });
+            return;
+          }
+          this.claimRewardsPromise();
+          resolve();
+        });
+      },
+      /** publish book */
+      cancelBook(element, successCallback) {
+        logging('start running cancelBook');
+        const params = { action: 'cancel_book' };
+        utils.ajax(element, params, function (data) {
+          if (data.success) {
+            // // showBookRewardsDialog(data.table_of_contents_claimed_book);
+            eventRegistry.doEvent('ajax_response', data);
+            if (successCallback) successCallback();
+          }
+        });
+      },
+      /** check if has reward and claim it */
+      claimRewardsPromise() {
+        logging('Try claim book rewards');
+        if (!quest.can_claim) return this.autoBuyPromise();
+        logging('run claimRewardsPromise');
+        return new Promise((resolve, reject) => {
+          console.log('claiming book rewards');
+          this.claimBookRewards('<a/>', () => {
+            quest.can_claim = false;
+            check.any(mh.chk.TableOfContents.CheckPoints.Claimed).then((r) => {
+              if (r) throw new Error('traveled');
+              resolve();
+            });
+            tableOfContents();
+          });
+        });
+      },
+      /** claim book rewards */
+      claimBookRewards(element, successCallback) {
+        const params = { action: 'claim_book_rewards' };
+        utils.ajax(element, params, function (data) {
+          if (data.success) {
+            eventRegistry.doEvent('ajax_response', data);
+            // // showBookRewardsDialog(data.table_of_contents_claimed_book);
+            if (successCallback) successCallback();
+          }
+        });
+      },
+      /** auto buy items */
+      autoBuyPromise() {
+        logging('start running autoBuyPromise');
+        return new Promise((resolve, reject) => {
+          let itemType = '';
+          let itemQuantity = 0;
+          if (
+            // SDD
+            MhUtils.getBaitItemId() === 3461 &&
+            MhUtils.getBaitQuantity() < settings.changeBaitQuantity
+          ) {
+            itemQuantity = Math.min(
+              Math.ceil(quest.current_book.hunts_remaining / 2),
+              Math.floor(items.ddc.qty / 10),
+              Math.floor(items.papyrus.qty / 10),
+              Math.floor(items.ink.qty / 10),
+              items.me.qty
+            );
+            // 如果夠買就買
+            if (itemQuantity > 0) {
+              itemType = this.effectiveSdd.typeWithMe;
+              completeTransaction(true, itemType, itemQuantity, false, () => {
+                this.handleTrapPromise();
+                resolve();
+              });
+              return;
+            }
+            // 如果不夠買,缺 loot就 travel過去,缺 me就 hammer
+          } else if (
+            // FDD
+            MhUtils.getBaitItemId() === 3458 &&
+            MhUtils.getBaitQuantity() < settings.changeBaitQuantity
+          ) {
+            itemQuantity = Math.min(
+              Math.ceil(quest.current_book.hunts_remaining / 2),
+              Math.floor(items.ddc.qty / 100),
+              Math.floor(items.papyrus.qty / 100),
+              Math.floor(items.ink.qty / 100),
+              items.me.qty
+            );
+            // 如果夠買就買
+            if (itemQuantity > 0) {
+              itemType = this.effectiveFdd.typeWithMe;
+              completeTransaction(true, itemType, itemQuantity, false, () => {
+                this.handleTrapPromise();
+                resolve();
+              });
+              return;
+            }
+            // 如果不夠買,缺 loot就 travel過去,缺 me就 hammer
+          }
+          this.handleTrapPromise();
+          resolve();
+        });
+      },
+      /** handle trap promise */
+      handleTrapPromise() {
+        logging('start running handleTrapPromise');
+        return new Promise((resolve, reject) => {
+          let trap = settings.traps[this.trapState];
+          if (trap) {
+            if (settings.targetWords === encyclopedia)
+              if (quest.current_book.word_count < 4000 && items.tdd.qty > 0)
+                trap = settings.traps['M1000'];
+            this.toggleCC(settings.isWritingWithCC);
+            // // this.toggleCC(trap[4]);
+            setTimeout(() => {
+              litCandle(trap[5]);
+              doubleEgg(trap[6]);
+            }, 500);
+            setTimeout(() => {
+              armAllTraps(...trap);
+            }, 1500);
+          }
+          resolve();
+        });
+      },
+      /** toggle condensed creativity */
+      toggleCC(isToEnable) {
+        logging(`toggleCC to ${isToEnable}`);
+        if (items.CC.qty < 1) return;
+        const isFuelEnabled = quest.is_fuel_enabled || false;
+        if ((isFuelEnabled === true) != isToEnable)
+          isProd
+            ? hg.views.HeadsUpDisplayFolkloreForestRegionView.toggleFuel()
+            : console.log('toggled CC');
+      },
+      /** location ajax */
+      ajax(element, params, successCallback, errorCallback) {
+        // prettier-ignore
+        const lastReadJournalEntryId = $('#journallatestentry').data('entry-id');
+        params['last_read_journal_entry_id'] = lastReadJournalEntryId;
+        params['uh'] = user.unique_hash;
+        $.ajax({
+          data: params,
+          dataType: 'json',
+          type: isProd ? 'post' : 'get',
+          url: isProd
+            ? MOUSEHUNT_BASE_URL + this.URI
+            : 'https://elie2201.github.io/mh/jobs.txt',
+          success: function (data) {
+            eventRegistry.doEvent('ajax_response', data);
+            if (successCallback) {
+              successCallback(data);
+            }
+          },
+          // prettier-ignore
+          error: function (data) {
+            const popup = new jsDialog();
+            popup.setTemplate('error');
+            popup.addToken('{*title*}', 'An error has occurred.');
+            popup.addToken('{*content*}', 'An error occurred. Please try again!');
+            popup.show();
+            if (errorCallback) errorCallback(data);
+          }
+        });
+      }
+    };
+    // initial utils
+    function init() {
+      // make fields immutable
+      utils.setImmutable();
+      // initialize values in utils if necessary
+    }
+    init();
+    console.log(utils);
+    return utils;
+  })();
+  tableOfContentsUtility.run();
+}
+// End #tableOfContents
+
 const QuestTableOfContents = {
   show_book: true,
   bait_word_range: {
@@ -1165,513 +1607,3 @@ const QuestTableOfContents = {
   can_claim: false,
   can_start: false
 };
-const MOUSEHUNT_BASE_URL = 'https://www.mousehuntgame.com/';
-const hg = {};
-const activejsDialog = {};
-const eventRegistry = {};
-const jsDialog = {};
-const user = {};
-user.environment_type = 'table_of_contents';
-user.quests = {};
-user.quests.QuestTableOfContents = QuestTableOfContents;
-// MH functions
-function $() {}
-// MH & my-mh-aid functions
-function getEnvironmentType() {
-  const rtn = trimToEmpty(user.environment_type);
-  // console.plog(`Current location environment_type: ${rtn}`);
-  return rtn;
-}
-function trimToEmpty(str) {
-  return trimToDefault(str);
-}
-function trimToDefault(str, deflt) {
-  return str === 0 ? '0' : ((str || (deflt ? deflt : '')) + '').trim();
-}
-function logging(...any) {
-  const debug = true;
-  if (debug) {
-    console.groupCollapsed(new Date(), ...any);
-    console.log(Error().stack);
-    console.groupEnd();
-  }
-}
-function getStorageToObject(keyName, objDefault) {
-  let obj = getStorage(keyName);
-  let bCheckNewProp = true;
-  if (isNullOrUndefined(obj)) {
-    obj = JSON.stringify(objDefault);
-    setStorage(keyName, obj);
-    bCheckNewProp = false;
-  }
-  obj = JSON.parse(obj);
-  if (bCheckNewProp) {
-    if (assignMissingDefault(obj, objDefault)) {
-      setStorage(keyName, JSON.stringify(obj));
-    }
-  }
-  return obj;
-  function getStorage(name) {
-    // check if the web browser support HTML5 storage
-    if ('localStorage' in window && !isNullOrUndefined(window.localStorage)) {
-      return window.localStorage.getItem(name);
-    }
-  }
-  function setStorage(name, value) {
-    // check if the web browser support HTML5 storage
-    if ('localStorage' in window && !isNullOrUndefined(window.localStorage)) {
-      window.localStorage.setItem(name, value);
-    }
-  }
-  function isNullOrUndefined(obj) {
-    return (
-      obj === null || obj === undefined || obj === 'null' || obj === 'undefined'
-    );
-  }
-  function assignMissingDefault(target, source) {
-    let isResave = false;
-    for (const key in source) {
-      if (
-        Object.prototype.hasOwnProperty.call(source, key) &&
-        !Object.prototype.hasOwnProperty.call(target, key)
-      ) {
-        const element = source[key];
-        target[key] = element;
-        isResave = true;
-      }
-    }
-    return isResave;
-  }
-}
-function parseQuantity(qty) {
-  const strQty = (qty || 0) + '';
-  const rtn = parseInt(strQty.replaceAll(',', ''));
-  return Number.isNaN(rtn) ? 0 : rtn;
-}
-/**
- * Get current bait item id.
- * @return {BigInt} current bait item id
- */
-function getBaitItemId() {
-  return parseQuantity(user.bait_item_id);
-}
-/**
- * Get current bait quantity.
- * @return {BigInt} current bait quantity
- */
-function getBaitQuantity() {
-  return parseQuantity(user.bait_quantity);
-}
-function armAllTraps(bait, weapon, base, charm) {
-  console.log(bait, weapon, base, charm);
-}
-/* function getRandomInteger(min, max) {
-  return parseInt(min + Math.random() * (max - min));
-}
-function reloadWithMessage(msg, soundHorn) {
-  console.plog('reloadWithMessage: ', msg, ',', soundHorn);
-  // display the message
-  // displayTimer(msg, msg, msg);
-
-  // reload the page
-  setTimeout(function () {
-    // reloadPage(soundHorn);
-  }, 1000);
-} */
-function completeTransaction(
-  isPurchase,
-  itemType,
-  itemQuantity,
-  isKingsCartItem,
-  successCallback
-) {
-  console.log(`bought ${itemQuantity} ${itemType}!!`);
-  if (successCallback)
-    setTimeout(() => {
-      successCallback();
-    }, 2000);
-}
-function doubleEgg(isToEnable) {
-  console.log('double egg?', isToEnable);
-}
-function litCandle(actionType) {
-  console.log('lit candle to', actionType);
-}
-
-// #tableOfContents
-if (getEnvironmentType() === 'table_of_contents') tableOfContents();
-function tableOfContents() {
-  const isProd = false;
-  const targetEnvironmentType = 'table_of_contents';
-  const enviromentType = getEnvironmentType();
-  if (enviromentType !== targetEnvironmentType) return;
-  logging('tableOfContents_0.0.3.2.7');
-  // my own hard-coded constants
-  const novel = 1000;
-  const epic = 2000;
-  const encyclopedia1 = 4000;
-  const encyclopedia = 2000000;
-  const CC = 'condensed_creativity_stat_item';
-  const ddc = 'draft_derby_curd_stat_item';
-  const papyrus = 'parable_papyrus_stat_item';
-  const ink = 'inspiration_ink_stat_item';
-  const sdd = 'second_draft_derby_cheese';
-  const fdd = 'final_draft_derby_cheese';
-  const tdd = 'thousandth_draft_derby_cheese';
-  const me = 'magic_essence_craft_item';
-  /** localStorage settings */
-  // prettier-ignore
-  const defaultSettings = {
-    isAutoWriting: true,
-    isAutoPublish: true,
-    isAutoTargetWords: true,
-    targetWords: novel,
-    isWritingWithCC: false,
-    fddToStart: 60,
-    changeBaitQuantity: 3,
-    traps: {
-      999: ['Gouda Cheese', 'best.weapon.forgotten', 'best.base.combo', 'Luck Charm', false, 'none', false],
-      1000: ['Second Draft Derby', 'best.weapon.forgotten', 'best.base.combo', 'Luck Charm', false, 'none', false],
-      2000: ['Second Draft Derby', 'best.weapon.forgotten', 'best.base.combo', 'Luck Charm', false, 'none', false],
-      4000: ['Second Draft Derby', 'best.weapon.forgotten', 'best.base.combo', 'Luck Charm', false, 'none', false],
-      2000000: ['Final Draft Derby', 'best.weapon.forgotten', 'best.base.combo', 'Ultimate Lucky Power Charm,Festive Ultimate Lucky Power Charm', true, 'white', true],
-      M1000: ['Thousandth Draft Derby', 'best.weapon.forgotten', 'Naughty List Printing Press', 'Ultimate Lucky Power Charm,Festive Ultimate Lucky Power Charm', true, 'white', true]
-    }
-  };
-  const settings = isProd
-    ? getStorageToObject(targetEnvironmentType, defaultSettings)
-    : defaultSettings;
-  // MH constants
-  const quest = isProd
-    ? user.quests.QuestTableOfContents
-    : QuestTableOfContents;
-  const items = {
-    gold: user.gold,
-    CC: {
-      type: CC,
-      qty: parseQuantity(quest.items[CC].quantity)
-    },
-    ddc: {
-      type: ddc,
-      qty: parseQuantity(quest.items[ddc].quantity)
-    },
-    papyrus: {
-      type: papyrus,
-      qty: parseQuantity(quest.items[papyrus].quantity)
-    },
-    ink: {
-      type: ink,
-      qty: parseQuantity(quest.items[ink].quantity)
-    },
-    sdd: {
-      type: sdd,
-      qty: parseQuantity(quest.items[sdd].quantity)
-    },
-    fdd: {
-      type: fdd,
-      qty: parseQuantity(quest.items[fdd].quantity)
-    },
-    tdd: {
-      type: tdd,
-      qty: parseQuantity(quest.items[tdd].quantity)
-    },
-    me: {
-      type: me,
-      qty: parseQuantity(quest.items[me].quantity)
-    }
-  };
-  console.log('items: ', items);
-  // const isWriting = quest.is_writing;
-  const tableOfContentsUtility = (() => {
-    const utils = {
-      // values
-      URI: 'managers/ajax/environment/table_of_contents.php',
-      /** Set immutable fields */
-      setImmutable() {
-        const immutableFields = ['URI'];
-        for (let i = 0; i < immutableFields.length; i++) {
-          const immutableField = immutableFields[i];
-          Object.defineProperty(utils, immutableField, {
-            // value: 'This cannot be changed',
-            writable: false, // Makes the field immutable
-            configurable: false, // Prevents deletion or re-configuration of the field
-            enumerable: true // Makes the field visible during enumeration (e.g., in a for...in loop)
-          });
-        }
-      },
-      /** max SDD can be bought */
-      effectiveSdd: {
-        typeWithMe: 'second_draft_derby_pack_small_convertible',
-        qty:
-          Math.min(
-            Math.floor(items.ddc.qty / 10),
-            Math.floor(items.papyrus.qty / 10),
-            Math.floor(items.ink.qty / 10)
-          ) *
-            2 +
-          items.sdd.qty
-      },
-      /** max FDD can be bought */
-      effectiveFdd: {
-        typeWithMe: 'final_draft_derby_pack_small_convertible',
-        qty:
-          Math.min(
-            Math.floor(items.ddc.qty / 100),
-            Math.floor(items.papyrus.qty / 100),
-            Math.floor(items.ink.qty / 100)
-          ) *
-            2 +
-          items.fdd.qty
-      },
-      /** trapState, default: novel */
-      trapState: novel,
-      /** start running */
-      run() {
-        logging('start running tableOfContents');
-        this.autoWritingPromise();
-      },
-      /** check if auto writing */
-      autoWritingPromise() {
-        logging('start running autoWritingPromise');
-        return new Promise((resolve, reject) => {
-          if (settings.isAutoWriting && !quest.is_writing && !quest.can_claim) {
-            console.log('start writing');
-            this.startWriting('<a/>', () => {
-              quest.is_writing = true;
-              console.log('writing new book, set target words first');
-              if (settings.isAutoTargetWords) utils.setTargetWords();
-              tableOfContents();
-            });
-            return;
-          }
-          this.autoPublishPromise();
-        });
-      },
-      startWriting(element, successCallback) {
-        logging('start running startWriting');
-        const params = {
-          action: 'start_writing',
-          bait: settings.targetWords < encyclopedia1 ? sdd : fdd,
-          enable_fuel: settings.isWritingWithCC ? 1 : 0,
-          bait_disarm_preference: 'standardBait'
-        };
-        utils.ajax(element, params, function (data) {
-          eventRegistry.doEvent('ajax_response', data);
-          // getProgressView().reset();
-          activejsDialog.hide();
-          if (successCallback) successCallback();
-        });
-      },
-      setTargetWords() {
-        const settings = isProd
-          ? getStorageToObject(targetEnvironmentType, defaultSettings)
-          : defaultSettings;
-        if (this.effectiveFdd.qty > settings.fddToStart)
-          settings.targetWords = encyclopedia;
-        else if (this.effectiveSdd.qty < 25) settings.targetWords = 999;
-        else settings.targetWords = novel;
-        if (isProd)
-          localStorage[targetEnvironmentType] = JSON.stringify(settings);
-      },
-      /** check if auto publish */
-      autoPublishPromise() {
-        logging('start running autoPublishPromise');
-        return new Promise((resolve, reject) => {
-          if (
-            settings.isAutoPublish &&
-            quest.is_writing &&
-            parseQuantity(quest.current_book.word_count) >= settings.targetWords
-          ) {
-            console.log('publishng');
-            this.cancelBook('<a/>', () => {
-              quest.is_writing = false;
-              tableOfContents();
-            });
-            return;
-          }
-          this.claimRewardsPromise();
-        });
-      },
-      /** publish book */
-      cancelBook(element, successCallback) {
-        logging('start running cancelBook');
-        const params = { action: 'cancel_book' };
-        utils.ajax(element, params, function (data) {
-          if (data.success) {
-            // showBookRewardsDialog(data.table_of_contents_claimed_book);
-            eventRegistry.doEvent('ajax_response', data);
-            if (successCallback) successCallback();
-          }
-        });
-      },
-      /** check if has reward and claim it */
-      claimRewardsPromise() {
-        logging('start running claimRewardsPromise');
-        return new Promise((resolve, reject) => {
-          if (quest.can_claim) {
-            console.log('claiming book rewards');
-            this.claimBookRewards('<a/>', () => {
-              quest.can_claim = false;
-              tableOfContents();
-            });
-            return;
-          }
-          this.autoSettingsPromise();
-        });
-      },
-      /** claim book rewards */
-      claimBookRewards(element, successCallback) {
-        const params = { action: 'claim_book_rewards' };
-        utils.ajax(element, params, function (data) {
-          if (data.success) {
-            eventRegistry.doEvent('ajax_response', data);
-            // showBookRewardsDialog(data.table_of_contents_claimed_book);
-            if (successCallback) successCallback();
-          }
-        });
-      },
-      /** auto settings */
-      autoSettingsPromise() {
-        logging('run initPromise: initialize states for running');
-        return new Promise((resolve, reject) => {
-          // auto settings for running if necessary and then invoke next promise
-          this.trapState = settings.targetWords;
-          if (settings.targetWords < epic) {
-            settings.isWritingWithCC = false;
-          } else if (settings.targetWords === epic) {
-            // TODO 如何適量使用 CC以到達 epic?
-            settings.isWritingWithCC = false;
-          } else if (settings.targetWords > epic) {
-            settings.isWritingWithCC = true;
-          }
-          this.autoBuyPromise();
-        });
-      },
-      /** auto buy items */
-      autoBuyPromise() {
-        logging('start running autoBuyPromise');
-        return new Promise((resolve, reject) => {
-          let itemType = '';
-          let itemQuantity = 0;
-          if (
-            // SDD
-            getBaitItemId() === 3461 &&
-            getBaitQuantity() < settings.changeBaitQuantity
-          ) {
-            itemQuantity = Math.min(
-              Math.ceil(quest.current_book.hunts_remaining / 2),
-              Math.floor(items.ddc.qty / 10),
-              Math.floor(items.papyrus.qty / 10),
-              Math.floor(items.ink.qty / 10),
-              items.me.qty
-            );
-            // 如果夠買就買
-            if (itemQuantity > 0) {
-              itemType = this.effectiveSdd.typeWithMe;
-              completeTransaction(true, itemType, itemQuantity, false, () => {
-                this.handleTrapPromise();
-              });
-              return;
-            }
-            // 如果不夠買,缺 loot就 travel過去,缺 me就 hammer
-          } else if (
-            // FDD
-            getBaitItemId() === 3458 &&
-            getBaitQuantity() < settings.changeBaitQuantity
-          ) {
-            itemQuantity = Math.min(
-              Math.ceil(quest.current_book.hunts_remaining / 2),
-              Math.floor(items.ddc.qty / 100),
-              Math.floor(items.papyrus.qty / 100),
-              Math.floor(items.ink.qty / 100),
-              items.me.qty
-            );
-            // 如果夠買就買
-            if (itemQuantity > 0) {
-              itemType = this.effectiveFdd.typeWithMe;
-              completeTransaction(true, itemType, itemQuantity, false, () => {
-                this.handleTrapPromise();
-              });
-              return;
-            }
-            // 如果不夠買,缺 loot就 travel過去,缺 me就 hammer
-          }
-          this.handleTrapPromise();
-        });
-      },
-      /** handle trap promise */
-      handleTrapPromise() {
-        logging('start running handleTrapPromise');
-        return new Promise((resolve, reject) => {
-          let trap = settings.traps[this.trapState];
-          if (trap) {
-            if (settings.targetWords === encyclopedia)
-              if (quest.current_book.word_count < 4000 && items.tdd.qty > 0)
-                trap = settings.traps['M1000'];
-            this.toggleCC(settings.isWritingWithCC);
-            // this.toggleCC(trap[4]);
-            setTimeout(() => {
-              litCandle(trap[5]);
-              doubleEgg(trap[6]);
-            }, 500);
-            setTimeout(() => {
-              armAllTraps(...trap);
-            }, 1500);
-          }
-        });
-      },
-      /** toggle condensed creativity */
-      toggleCC(isToEnable) {
-        logging(`toggleCC to ${isToEnable}`);
-        if (items.CC.qty < 1) return;
-        const isFuelEnabled = quest.is_fuel_enabled || false;
-        if ((isFuelEnabled === true) != isToEnable)
-          isProd
-            ? hg.views.HeadsUpDisplayFolkloreForestRegionView.toggleFuel()
-            : console.log('toggled CC');
-      },
-      /** location ajax */
-      ajax(element, params, successCallback, errorCallback) {
-        // prettier-ignore
-        const lastReadJournalEntryId = $('#journallatestentry').data('entry-id');
-        params['last_read_journal_entry_id'] = lastReadJournalEntryId;
-        params['uh'] = user.unique_hash;
-        $.ajax({
-          data: params,
-          dataType: 'json',
-          type: isProd ? 'post' : 'get',
-          url: isProd
-            ? MOUSEHUNT_BASE_URL + this.URI
-            : 'https://elie2201.github.io/mh/jobs.txt',
-          success: function (data) {
-            eventRegistry.doEvent('ajax_response', data);
-            if (successCallback) {
-              successCallback(data);
-            }
-          },
-          // prettier-ignore
-          error: function (data) {
-            // eslint-disable-next-line new-cap
-            const popup = new jsDialog();
-            popup.setTemplate('error');
-            popup.addToken('{*title*}', 'An error has occurred.');
-            popup.addToken('{*content*}', 'An error occurred. Please try again!');
-            popup.show();
-            if (errorCallback) errorCallback(data);
-          }
-        });
-      }
-    };
-    // initial utils
-    function init() {
-      // make fields immutable
-      utils.setImmutable();
-      // initialize values in utils if necessary
-    }
-    init();
-    console.log(utils);
-    return utils;
-  })();
-  tableOfContentsUtility.run();
-}
-// End #tableOfContents
