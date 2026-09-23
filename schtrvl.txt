@@ -14,7 +14,7 @@
     Nina:     ['10:45', '11:05', 'table_of_contents', '12:45', '13:05', 'rift_valour', '15:45', '16:05', 'table_of_contents', '17:45', '18:05', 'rift_valour'], // ['04:45', '05:05'],
     Angela:   ['02:45', '03:05', 'table_of_contents', '04:45', '05:05', 'rift_valour', '18:45', '19:05', 'table_of_contents', '20:45', '21:05', 'rift_valour'], // ['21:45', '22:05'],
     Kitty:    ['02:40', '03:00', 'table_of_contents', '04:40', '05:00', 'rift_valour', '07:40', '08:00', 'table_of_contents', '09:40', '10:00', 'rift_valour'], // ['13:40', '14:00'],
-    Mary:     ['00:46', '23:06', 'table_of_contents', '00:46', '01:06', 'rift_valour', '12:46', '13:06', 'table_of_contents', '14:46', '15:06', 'rift_valour'], // ['02:46', '03:06']
+    Mary:     ['23:06', '00:46', 'table_of_contents', '00:46', '01:06', 'rift_valour', '12:46', '13:06', 'table_of_contents', '14:46', '15:06', 'rift_valour'], // ['02:46', '03:06']
     Rose:     ['01:45', '02:05', 'table_of_contents', '03:45', '04:05', 'rift_valour', '04:45', '05:05', 'table_of_contents', '06:45', '07:05', 'rift_valour'], // ['06:45', '07:05']
     Weyl:     ['12:46', '13:06', 'table_of_contents', '12:46', '13:06'], // ['14:46', '15:06']
     Pola:     ['04:45', '05:05', 'table_of_contents', '04:45', '05:05'], // ['06:45', '07:05']
