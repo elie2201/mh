@@ -31,7 +31,8 @@
     backPlans?.[0]?.environmentType !== 'rift_valour' ||
     user?.quests?.QuestRiftValour?.state.trim().toLowerCase() === 'tower'
   )
-    mh.addon.TravelPlan.run(leavePlans);
-  if (backPlans.length > 0) mh.addon.TravelPlan.run(backPlans);
+    if (mh.addon.TravelPlan.run(leavePlans)) throw new Error('Has traveled');
+  if (backPlans.length > 0)
+    if (mh.addon.TravelPlan.run(backPlans)) throw new Error('Has traveled');
 })();
 // End #scheduledTravel
