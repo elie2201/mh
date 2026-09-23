@@ -1,149 +1,62 @@
-import { MhUtils } from './my-mh-aid-dev';
-
-const user = {};
-const hg = {};
-
-function logging(...any) {
-  console.log(...any);
-}
-
 // #scheduledTravel
-scheduledTravel('2026-02-22T08:01:00', '2026-02-22T08:30:00', 'queso_quarry');
-scheduledTravel(
-  '2026-02-21T08:01:00',
-  '2026-02-21T08:30:00',
-  'laboratory',
-  2000,
-  () => {
-    armAllTraps(
-      'Dumpling Cheese',
-      'best.weapon.physical',
-      'Seasonal Gift',
-      'Snowball Charm'
-    );
-  }
-);
-scheduledTravel('2026-02-20T08:01:00', '2026-02-20T08:30:00', 'queso_quarry');
-scheduledTravel(
-  '2026-02-19T08:01:00',
-  '2026-02-19T08:30:00',
-  'laboratory',
-  2000,
-  () => {
-    armAllTraps(
-      'Dumpling Cheese',
-      'best.weapon.physical',
-      'Seasonal Gift',
-      'Snowball Charm'
-    );
-  }
-);
-scheduledTravel('2026-02-18T08:01:00', '2026-02-18T08:30:00', 'queso_quarry');
-scheduledTravel(
-  '2026-02-17T08:01:00',
-  '2026-02-17T08:30:00',
-  'laboratory',
-  2000,
-  () => {
-    armAllTraps(
-      'Dumpling Cheese',
-      'best.weapon.physical',
-      'Seasonal Gift',
-      'Snowball Charm'
-    );
-  }
-);
-// scheduledTravel(
-//   '2026-02-06T08:01:00',
-//   '2026-02-06T08:30:00',
-//   'dojo',
-//   1000,
-//   () => {
-//     localStorage.eventLocation = 'library_assignment';
-//     MhUtils.reloadWithMessage('After travel, Reloading...', false);
-//   }
-// );
-// scheduledTravel('2024-10-17T06:35:00','2024-10-17T06:59:00','claw_shot_city');
-// scheduledTravel('2024-10-14T06:35:00','2024-10-14T06:59:00','train_station');
-// 每天往返 CSC跟 GES
-/* const snuid = MhUtils.getSnUserId();
-if (
-  [
-    'hg_d783ff747d3b60073ef541d335ff901d',
-    'hg_1602095c6c0a2376b3bbb12e417df9a4',
-    'hg_3207d1fd7e0a8bca4bdef74c378a6a32',
-    'hg_81538b33309a53ae077d5f01f53f6c06'
-  ].indexOf(snuid) > -1
-) {
-  scheduledTravel('08:35:00', '08:59:00', 'train_station');
-  scheduledTravel('00:50:00', '01:14:00', 'claw_shot_city');
-} else if (
-  [
-    'hg_62a01c775dd2fe8670b6cb46b31c1318',
-    'hg_2d25dd402e32439c658e10b62d1d64bf',
-    'hg_3aee6d83ca43348e580141870193b531',
-    'hg_91cbc542b246f2f8b4f0f3b446915199'
-  ].indexOf(snuid) > -1
-) {
-  scheduledTravel('12:35:00', '12:59:00', 'train_station');
-  scheduledTravel('04:50:00', '05:14:00', 'claw_shot_city');
-} else if (
-  [
-    'hg_5eeb1174c05069baa7fa40bd82897130',
-    'hg_52952f2bb5ff36565d7936529f156349',
-    'hg_219f8417793705b8bfe8c4a01ecce1fc',
-    'hg_9ab9014e7b20bd60ce4a31485651e008'
-  ].indexOf(snuid) > -1
-) {
-  scheduledTravel('16:35:00', '16:59:00', 'train_station');
-  scheduledTravel('08:50:00', '09:14:00', 'claw_shot_city');
-} */
-// scheduledTravel('2025-02-06T08:01:00','2025-02-06T08:30:00','fort_rox');
-// scheduledTravel('2026-01-20T16:01:00', '2026-01-20T16:30:00', 'seasonal_garden');
-// scheduledTravel('2024-09-27T04:50:00','2024-09-27T05:10:00','ancient_city');
-// scheduledTravel('2026-02-05T01:58:00', '2026-02-05T02:30:00', 'rift_furoma');
-function scheduledTravel(
-  beginTime,
-  endTime,
-  environmentType,
-  timeout,
-  callback
-) {
-  const isProd = false;
-  const version = `scheduledTravel_1.0.3.0.0(${beginTime}, ${endTime}, ${environmentType})`;
-  isProd ? logging(version) : console.log(version);
-  const isoDate = new Date().toLocaleDateString('en-CA');
-  if (beginTime.indexOf('T') < 0) beginTime = isoDate + 'T' + beginTime;
-  if (endTime.indexOf('T') < 0) endTime = isoDate + 'T' + endTime;
-  isProd ? console.plog(beginTime, endTime) : console.log(beginTime, endTime);
-  if (Date.now() < Date.parse(beginTime)) return;
-  if (Date.now() > Date.parse(endTime)) return;
-  const nowEnvironmentType = isProd
-    ? MhUtils.getEnvironmentType()
-    : user.environment_type;
-  if (nowEnvironmentType === environmentType) return;
-  isProd
-    ? console.plog(environmentType, beginTime, endTime, callback)
-    : console.log(environmentType, beginTime, endTime, callback);
-  isProd
-    ? MhUtils.travel(environmentType, timeout, callback)
-    : travelMock(environmentType, timeout, callback);
-}
-function travelMock(environmentType, milliseconds, callback) {
-  const MOUSEHUNT_BASE_URL = 'https://www.mousehuntgame.com/';
-  if (user.environment_type === environmentType) {
-    if (callback) callback();
-    return;
-  }
-  const timeout = milliseconds ? milliseconds : 2000;
-  hg.utils.User.travel(environmentType, () => {
-    if (timeout >= 0) {
-      window.setTimeout(function () {
-        console.log(callback);
-        if (callback) callback();
-        else window.location.href = MOUSEHUNT_BASE_URL;
-      }, timeout);
+// 1.爬塔避開爛時段靈活版
+// 2.好時段刷 GP(提前 1.5小時進去,讓好時段時已經在百科全書)
+(() => {
+  // prettier-ignore
+  const unluckys = {
+    Elie:     ['20:45', '21:05', 'table_of_contents', '20:45', '21:05'], // ['22:45', '23:05'],
+    van:      ['20:40', '21:00', 'table_of_contents', '20:40', '21:00'], // ['22:40', '23:00'],
+    Hsilung:  ['12:45', '13:05', 'table_of_contents', '12:45', '13:05'], // ['14:45', '15:05'],
+    Vera:     ['01:45', '02:05', 'table_of_contents', '02:45', '03:05', 'rift_valour', '13:45', '14:05', 'table_of_contents', '16:45', '17:05', 'rift_valour'], // ['17:45', '18:05'],
+    Raphael:  ['20:45', '21:05', 'table_of_contents', '20:45', '21:05'], // ['22:45', '23:05'],
+    Levi:     ['12:45', '13:05', 'table_of_contents', '12:45', '13:05'], // ['14:45', '15:05'],
+    Kevin:    ['01:45', '02:05', 'table_of_contents', '02:45', '03:05', 'rift_valour', '18:45', '19:05', 'table_of_contents', '21:45', '22:05', 'rift_valour'], // ['03:45', '04:05'],
+    Nina:     ['10:45', '11:05', 'table_of_contents', '12:45', '13:05', 'rift_valour', '15:45', '16:05', 'table_of_contents', '17:45', '18:05', 'rift_valour'], // ['04:45', '05:05'],
+    Angela:   ['02:45', '03:05', 'table_of_contents', '04:45', '05:05', 'rift_valour', '18:45', '19:05', 'table_of_contents', '20:45', '21:05', 'rift_valour'], // ['21:45', '22:05'],
+    Kitty:    ['02:40', '03:00', 'table_of_contents', '04:40', '05:00', 'rift_valour', '07:40', '08:00', 'table_of_contents', '09:40', '10:00', 'rift_valour'], // ['13:40', '14:00'],
+    Mary:     ['00:46', '23:06', 'table_of_contents', '00:46', '01:06', 'rift_valour', '12:46', '13:06', 'table_of_contents', '14:46', '15:06', 'rift_valour'], // ['02:46', '03:06']
+    Rose:     ['01:45', '02:05', 'table_of_contents', '03:45', '04:05', 'rift_valour', '04:45', '05:05', 'table_of_contents', '06:45', '07:05', 'rift_valour'], // ['06:45', '07:05']
+    Weyl:     ['12:46', '13:06', 'table_of_contents', '12:46', '13:06'], // ['14:46', '15:06']
+    Pola:     ['04:45', '05:05', 'table_of_contents', '04:45', '05:05'], // ['06:45', '07:05']
+    文:       ['12:45', '13:05', 'table_of_contents', '12:45', '13:05'], // ['14:45', '15:05']
+    Lydia:    ['02:45', '03:05', 'table_of_contents', '04:45', '05:05', 'rift_valour', '21:45', '22:05', 'table_of_contents', '23:45', '00:05', 'rift_valour'], // ['17:45', '18:05'],
+    Elice:    ['04:45', '05:05', 'table_of_contents', '04:45', '05:05'], // ['06:45', '07:05'],
+    Angel:    ['12:46', '13:06', 'table_of_contents', '12:46', '13:06'], // ['14:46', '15:06'],
+    Angelie:  ['20:45', '21:05', 'table_of_contents', '20:45', '21:05'], // ['22:45', '23:05']
+    Anthony:  ['12:45', '13:05', 'table_of_contents', '12:45', '13:05'], // ['14:45', '15:05']
+    Kelly:    ['20:40', '21:00', 'table_of_contents', '20:40', '21:00'], // ['22:40', '23:00'],
+    Mina:     ['20:45', '21:05', 'table_of_contents', '20:45', '21:05'], // ['22:45', '23:05'],
+    Monica:   ['04:45', '05:05', 'table_of_contents', '04:45', '05:05'], // ['06:45', '07:05'],
+    Vivienne: ['20:45', '21:05', 'table_of_contents', '20:45', '21:05']  // ['22:45', '23:05']
+  };
+  const unlucky = unluckys[user.firstname];
+  const getPlan = (i, j, k) => {
+    return {
+      beginTime: unlucky[i],
+      endTime: unlucky[j],
+      environmentType: unlucky[k]
+    };
+  };
+  const leavePlans = [];
+  const backPlans = [];
+  const maxIndex = Math.floor(unlucky.length / 3);
+  for (let i = 0; i < maxIndex; i++) {
+    const beginIndex = i * 3;
+    const go = unlucky[beginIndex + 2];
+    if (go)
+      leavePlans.push(getPlan(beginIndex, beginIndex + 1, beginIndex + 2));
+    const back = unlucky[beginIndex + 5];
+    if (back) {
+      backPlans.push(getPlan(beginIndex + 3, beginIndex + 4, beginIndex + 5));
+      i++;
     }
-  });
-}
+  }
+  console.debug(leavePlans, backPlans);
+  if (
+    backPlans?.[0]?.environmentType !== 'rift_valour' ||
+    user?.quests?.QuestRiftValour?.state.trim().toLowerCase() === 'tower'
+  )
+    mh.addon.TravelPlan.run(leavePlans);
+  if (backPlans.length > 0) mh.addon.TravelPlan.run(backPlans);
+})();
 // End #scheduledTravel
