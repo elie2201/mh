@@ -1,9 +1,11 @@
+import { MyUtils, MhUtils } from './my-mh-aid-dev';
+
 // #scheduledSleep
 // prettier-ignore
-setTimeout(() => { scheduledSleep(); }, getRandomInteger(60000, 120000));
+setTimeout(() => { scheduledSleep(); }, MyUtils.getRandomInteger(60000, 120000));
 function scheduledSleep() {
-  const environmentType = getEnvironmentType();
-  logging(`scheduledSleep_1.2.17.7.10 in ${environmentType}`);
+  const environmentType = MhUtils.getEnvironmentType();
+  logging(`scheduledSleep_1.2.17.7.11 in ${environmentType}`);
   const floatingIslandsUtility = {
     getSpeed(quest) {
       if (!quest) quest = user.quests.QuestFloatingIslands;
@@ -53,7 +55,7 @@ function scheduledSleep() {
     rift_bristle_woods: { weekDefault: [[9.07, 3.3, 2]] },
     floating_islands: { weekDefault: [[9.07, 5.45, 1]] }
   };
-  const settings = getStorageToObject(storageKey, defaultSettings);
+  const settings = MyUtils.getStorageToObject(storageKey, defaultSettings);
   const enviromentSetting = settings[environmentType];
   const enviromentSchedules = enviromentSetting ?? settings[defaultSleep];
   if (
@@ -101,7 +103,7 @@ function scheduledSleep() {
       const daySchedule = matchSchedules(enviromentSchedules);
       if (!daySchedule) return;
       if (
-        getBaitQuantity() <
+        MhUtils.getBaitQuantity() <
         Math.ceil(daySchedule[1] + enviromentSchedules.friendHunts)
       )
         return;
@@ -111,7 +113,7 @@ function scheduledSleep() {
       const daySchedule = matchSchedules(enviromentSchedules);
       if (!daySchedule) return;
       if (
-        getBaitQuantity() <
+        MhUtils.getBaitQuantity() <
         Math.ceil(daySchedule[1] + enviromentSchedules.friendHunts)
       )
         return;
@@ -121,7 +123,7 @@ function scheduledSleep() {
       const daySchedule = matchSchedules(enviromentSchedules);
       if (!daySchedule) return;
       if (
-        getBaitQuantity() <
+        MhUtils.getBaitQuantity() <
         Math.ceil(daySchedule[1] + enviromentSchedules.friendHunts)
       )
         return;
@@ -179,7 +181,7 @@ function scheduledSleep() {
       // const ccQty = parseQuantity(cloudCurd.quantity);
       // const cloudCheese = items.sky_cheese;
       // const cccQty = parseQuantity(cloudCheese.quantity);
-      const settings = getStorageToObject('floating_islands');
+      const settings = MyUtils.getStorageToObject('floating_islands');
       // exclude not sleep
       if (quest.jet_stream_active && !settings.isSleepInCJS) {
         console.log('Not sleep when CJS active');
@@ -290,7 +292,7 @@ function scheduledSleep() {
         'Hidden Treasury',
         'Lucky Tower'
       ]);
-      const chamberName = trimToEmpty(quest.chamber_name);
+      const chamberName = MyUtils.trimToEmpty(quest.chamber_name);
       /** if (ignoredChamberNames.indexOf(chamberName) > -1)
     if (
       ignoredChamberNames.indexOf('Acolyte') < 0 ||
@@ -310,7 +312,7 @@ function scheduledSleep() {
       console.log('For sleep:', schedule);
       if ('Runic Laboratory' == chamberName) {
         // ancient string = 2343
-        if (parseQuantity(user.bait_item_id) != 2343)
+        if (MyUtils.parseQuantity(user.bait_item_id) != 2343)
           hg.utils.TrapControl.setBait('ancient_string_cheese').go(() => {});
       }
       const isPreSleep = enviromentSchedules.isPreSleep;
@@ -319,14 +321,16 @@ function scheduledSleep() {
       goToBed(schedule, isPreSleep);
     },
     rift_furoma(enviromentSchedules) {
-      //* const quest = user.quests.QuestRiftFuroma;
-      if (getBaitItemId() !== 1424) return;
+      const quest = user.quests.QuestRiftFuroma;
+      const enerchi = MyUtils.parseQuantity(quest?.droid?.remaining_energy);
+      if (enerchi > 770 && enerchi < 1835 && MhUtils.getBaitItemId() !== 1424)
+        return;
       this.defaultSleep(enviromentSchedules);
     },
     rift_valour(enviromentSchedules) {
       const quest = user.quests.QuestRiftValour;
       const floor = quest.floor;
-      const state = trimToEmpty(quest.state);
+      const state = MyUtils.trimToEmpty(quest.state);
       if (floor % 8 > 6 || floor % 8 === 0) return;
       const huntsLeft = quest.hunts_remaining;
       if (state === 'tower' && huntsLeft < 6) return;
@@ -347,12 +351,14 @@ function scheduledSleep() {
     const deviation = sleepForArr[2];
     const duration =
       Math.floor(sleepForHours * 3600000 + sleepForMinutes * 60000) +
-      (deviation ? getRandomInteger(-deviation * 60000, deviation * 60000) : 0);
+      (deviation
+        ? MyUtils.getRandomInteger(-deviation * 60000, deviation * 60000)
+        : 0);
     const storedRoutine = isPreSleep ? localStorage.currentRoutine : 'toRest';
     let currentRoutine = 'toRest';
     let sleepHref =
       'https://elie2201.github.io/mh/mhReloader.html?until=0&duration=' +
-      getRandomInteger(480000, 720000) +
+      MyUtils.getRandomInteger(480000, 720000) +
       '&fixed=true'; // pre-sleep url
     switch (storedRoutine) {
       case 'toRest':
@@ -464,14 +470,14 @@ function scheduledSleep() {
   /** split argument by +- and return split result */
   function parseSleepFor(sleepForExpr) {
     const s1Arr = (sleepForExpr + '').split('+-');
-    return [parseFloat(s1Arr[0]), parseFloat(s1Arr[1])];
+    return [Number.parseFloat(s1Arr[0]), Number.parseFloat(s1Arr[1])];
   }
   // splitHourMinutes(9.67); // => [9, 7]
   function splitHourMinutes(hmExpr) {
     const hm = (hmExpr + '').split('.');
-    const sleepForHours = parseInt(hm[0]);
+    const sleepForHours = Number.parseInt(hm[0], 10);
     const sleepForMunites = hm[1]
-      ? Math.floor(parseFloat('.' + hm[1]) * 100) % 60
+      ? Math.floor(Number.parseFloat('.' + hm[1]) * 100) % 60
       : 0;
     return [sleepForHours, sleepForMunites];
   }
@@ -487,33 +493,11 @@ function scheduledSleep() {
 }
 // End #scheduledSleep
 
-function getRandomInteger(min, max) {
-  return Number.parseInt(min + Math.random() * (max - min));
-}
-
-function getStorageToObject(key, obj) {
-  return obj;
-}
 function logging(...any) {
   console.log(...any);
 }
-function getEnvironmentType() {
-  return '';
-}
-function trimToEmpty(any) {
-  return any;
-}
-function parseQuantity(expr) {
-  return expr;
-}
 function armAllTraps(bait, weapon, base, trinket) {
   console.log(1);
-}
-function getBaitQuantity() {
-  return 1;
-}
-function getBaitItemId() {
-  return 0;
 }
 
 const hg = {};
