@@ -55,7 +55,7 @@ function tableOfContents() {
   const targetEnvironmentType = 'table_of_contents';
   const enviromentType = MhUtils.getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('tableOfContents_0.1.4.2.14');
+  logging('tableOfContents_0.1.4.2.15');
   // my own hard-coded constants
   const novel = 1000;
   const epic = 2000;
@@ -92,10 +92,9 @@ function tableOfContents() {
   const settings = isProd
     ? MyUtils.getStorageToObject(targetEnvironmentType, defaultSettings)
     : defaultSettings;
-  const check = new mh.chk.Check(
-    false,
-    async () => user.quests.QuestTableOfContents.items
-  ).loadPlainText(settings.checkers);
+  const check = new mh.chk.TableOfContents(false).loadPlainText(
+    settings.checkers
+  );
   // MH constants
   const quest = isProd
     ? user.quests.QuestTableOfContents
