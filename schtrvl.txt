@@ -5,6 +5,7 @@
   const storageKey = 'allLuckyUnlucky';
   const settings = MyUtils.getStorageToObject(storageKey, {});
   const setting = settings[user.firstname];
+  if (!setting) return;
   const getPlan = (i, j, k) => {
     return {
       beginTime: setting[i],
