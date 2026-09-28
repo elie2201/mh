@@ -1,53 +1,6 @@
 /* eslint-disable new-cap */
 import { mh, MyUtils, MhUtils } from './my-mh-aid-dev';
 
-const MOUSEHUNT_BASE_URL = 'https://www.mousehuntgame.com/';
-const hg = {};
-const activejsDialog = {};
-const eventRegistry = {};
-class jsDialog {
-  static x;
-}
-const user = {};
-user.environment_type = 'table_of_contents';
-user.quests = {};
-user.quests.QuestTableOfContents = QuestTableOfContents;
-// MH functions
-function $(...args) {
-  return args;
-}
-// MH & my-mh-aid functions
-function logging(...any) {
-  const debug = true;
-  if (debug) {
-    console.groupCollapsed(new Date(), ...any);
-    console.log(new Error().stack);
-    console.groupEnd();
-  }
-}
-function armAllTraps(bait, weapon, base, charm) {
-  console.log(bait, weapon, base, charm);
-}
-function completeTransaction(
-  isPurchase,
-  itemType,
-  itemQuantity,
-  isKingsCartItem,
-  successCallback
-) {
-  console.log(`bought ${itemQuantity} ${itemType}!!`);
-  if (successCallback)
-    setTimeout(() => {
-      successCallback();
-    }, 2000);
-}
-function doubleEgg(isToEnable) {
-  console.log('double egg?', isToEnable);
-}
-function litCandle(actionType) {
-  console.log('lit candle to', actionType);
-}
-
 // #tableOfContents
 if (MhUtils.getEnvironmentType() === 'table_of_contents') tableOfContents();
 function tableOfContents() {
@@ -55,7 +8,7 @@ function tableOfContents() {
   const targetEnvironmentType = 'table_of_contents';
   const enviromentType = MhUtils.getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('tableOfContents_0.1.4.2.15');
+  logging('tableOfContents_0.1.5.2.15');
   // my own hard-coded constants
   const novel = 1000;
   const epic = 2000;
@@ -181,7 +134,7 @@ function tableOfContents() {
       /** start running */
       run() {
         check.any(mh.chk.Check.CheckPoints.BeforeRun).then((r) => {
-          if (r) throw new Error('traveled');
+          if (r) throw new Error('Stop execution');
           logging('start running tableOfContents');
           this.autoSettingsPromise();
         });
@@ -207,35 +160,38 @@ function tableOfContents() {
       /** check if auto writing */
       autoWritingPromise() {
         logging('start running autoWritingPromise');
+        if (!settings.isAutoWriting || quest.is_writing || quest.can_claim)
+          return this.autoPublishPromise();
         return new Promise((resolve, reject) => {
-          if (settings.isAutoWriting && !quest.is_writing && !quest.can_claim) {
-            console.log('start writing');
-            this.startWriting('<a/>', () => {
-              quest.is_writing = true;
-              console.log('writing new book, set target words first');
-              if (settings.isAutoTargetWords) utils.setTargetWords();
-              tableOfContents();
+          console.log('start writing');
+          this.startWriting('<a/>', () => {
+            quest.is_writing = true;
+            console.log('writing new book, set target words first');
+            if (settings.isAutoTargetWords) utils.setTargetWords();
+            check.any(mh.chk.Check.CheckPoints.AfterOpen).then((r) => {
+              if (r) throw new Error('Stop execution');
               resolve();
+              tableOfContents();
             });
-            return;
-          }
-          this.autoPublishPromise();
-          resolve();
+          });
         });
       },
       startWriting(element, successCallback) {
         logging('start running startWriting');
-        const params = {
-          action: 'start_writing',
-          bait: settings.targetWords < encyclopedia1 ? sdd : fdd,
-          enable_fuel: settings.isWritingWithCC ? 1 : 0,
-          bait_disarm_preference: 'standardBait'
-        };
-        utils.ajax(element, params, function (data) {
-          eventRegistry.doEvent('ajax_response', data);
-          // // getProgressView().reset();
-          activejsDialog.hide();
-          if (successCallback) successCallback();
+        check.any(mh.chk.Check.CheckPoints.BeforeOpen).then((r) => {
+          if (r) throw new Error('Stop execution');
+          const params = {
+            action: 'start_writing',
+            bait: settings.targetWords < encyclopedia1 ? sdd : fdd,
+            enable_fuel: settings.isWritingWithCC ? 1 : 0,
+            bait_disarm_preference: 'standardBait'
+          };
+          utils.ajax(element, params, function (data) {
+            eventRegistry.doEvent('ajax_response', data);
+            // // getProgressView().reset();
+            activejsDialog.hide();
+            if (successCallback) successCallback();
+          });
         });
       },
       setTargetWords() {
@@ -262,8 +218,8 @@ function tableOfContents() {
             console.log('publishng');
             this.cancelBook('<a/>', () => {
               quest.is_writing = false;
-              tableOfContents();
               resolve();
+              tableOfContents();
             });
             return;
           }
@@ -292,8 +248,8 @@ function tableOfContents() {
           console.log('claiming book rewards');
           this.claimBookRewards('<a/>', () => {
             quest.can_claim = false;
-            check.any(mh.chk.Check.CheckPoints.Claimed).then((r) => {
-              if (r) throw new Error('traveled');
+            check.any(mh.chk.Check.CheckPoints.AfterDone).then((r) => {
+              if (r) throw new Error('Stop execution');
               resolve();
               tableOfContents();
             });
@@ -302,13 +258,16 @@ function tableOfContents() {
       },
       /** claim book rewards */
       claimBookRewards(element, successCallback) {
-        const params = { action: 'claim_book_rewards' };
-        utils.ajax(element, params, function (data) {
-          if (data.success) {
-            eventRegistry.doEvent('ajax_response', data);
-            // // showBookRewardsDialog(data.table_of_contents_claimed_book);
-            if (successCallback) successCallback();
-          }
+        check.any(mh.chk.Check.CheckPoints.BeforeDone).then((r) => {
+          if (r) throw new Error('Stop execution');
+          const params = { action: 'claim_book_rewards' };
+          utils.ajax(element, params, function (data) {
+            if (data.success) {
+              eventRegistry.doEvent('ajax_response', data);
+              // // showBookRewardsDialog(data.table_of_contents_claimed_book);
+              if (successCallback) successCallback();
+            }
+          });
         });
       },
       /** auto buy items */
@@ -442,6 +401,53 @@ function tableOfContents() {
   tableOfContentsUtility.run();
 }
 // End #tableOfContents
+
+const MOUSEHUNT_BASE_URL = 'https://www.mousehuntgame.com/';
+const hg = {};
+const activejsDialog = {};
+const eventRegistry = {};
+class jsDialog {
+  static x;
+}
+const user = {};
+user.environment_type = 'table_of_contents';
+user.quests = {};
+user.quests.QuestTableOfContents = QuestTableOfContents;
+// MH functions
+function $(...args) {
+  return args;
+}
+// MH & my-mh-aid functions
+function logging(...any) {
+  const debug = true;
+  if (debug) {
+    console.groupCollapsed(new Date(), ...any);
+    console.log(new Error().stack);
+    console.groupEnd();
+  }
+}
+function armAllTraps(bait, weapon, base, charm) {
+  console.log(bait, weapon, base, charm);
+}
+function completeTransaction(
+  isPurchase,
+  itemType,
+  itemQuantity,
+  isKingsCartItem,
+  successCallback
+) {
+  console.log(`bought ${itemQuantity} ${itemType}!!`);
+  if (successCallback)
+    setTimeout(() => {
+      successCallback();
+    }, 2000);
+}
+function doubleEgg(isToEnable) {
+  console.log('double egg?', isToEnable);
+}
+function litCandle(actionType) {
+  console.log('lit candle to', actionType);
+}
 
 const QuestTableOfContents = {
   show_book: true,
