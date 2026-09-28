@@ -1,5 +1,313 @@
 import { MhUtils, MyUtils, mh } from './my-mh-aid-dev';
 
+// #forewordFarm
+if (MhUtils.getEnvironmentType() === 'foreword_farm') forewordFarm();
+function forewordFarm() {
+  const isProd = false;
+  const targetEnvironmentType = 'foreword_farm';
+  const enviromentType = MhUtils.getEnvironmentType();
+  if (enviromentType !== targetEnvironmentType) return;
+  logging('forewordFarm_0.4.7.4.17');
+  // my own hard-coded constants
+  const plantRowTypes = [
+    ['ordinary_farm_plant', 'ordinary_magic_farm_plant'],
+    ['legendary_farm_plant', 'legendary_magic_farm_plant'],
+    ['twisted_legendary_farm_plant', 'twisted_legendary_magic_farm_plant']
+  ];
+  /** localStorage settings */
+  // prettier-ignore
+  const defaultSettings = {
+    checkers: '',
+    isAutoClaim: true,
+    isAutoPlant: true,
+    isPlant3AtOnce: false,
+    plantTypeRow: 0,
+    isPlantWithMe: false,
+    isAutoPlantType: false,
+    traps: {
+      no_plants: ['Gouda Cheese', 'best.weapon.tactical', 'best.base.combo', 'Luck Charm', false, 'none', false],
+      one_plants: ['Gouda Cheese', 'best.weapon.tactical', 'best.base.combo', 'Luck Charm', false, 'none', false],
+      two_plants: ['Gouda Cheese', 'best.weapon.tactical', 'best.base.combo', 'Luck Charm', false, 'none', false],
+      three_plants: ['Gouda Cheese', 'best.weapon.tactical', 'best.base.combo', 'Luck Charm', false, 'none', false],
+      three_papyrus: ['Gouda Cheese', 'best.weapon.tactical', 'best.base.combo', 'Super Snowball Charm', false, 'none', false],
+      boss: ['Super', 'best.weapon.tactical', 'best.base.combo', 'Ultimate Lucky Power Charm,Festive Ultimate Lucky Power Charm', false, 'none', false]
+    }
+  };
+  const settings = isProd
+    ? MyUtils.getStorageToObject(targetEnvironmentType, defaultSettings)
+    : defaultSettings;
+  const check = new mh.chk.Check(
+    false,
+    async () => user.quests.QuestForewordFarm.items
+  ).loadPlainText(settings.checkers);
+  const quest = isProd ? user.quests.QuestForewordFarm : QuestForewordFarm;
+  const miceState = quest.mice_state;
+  const items = quest.items;
+  const plots = quest.plots;
+  const forewordFarmUtility = (function () {
+    let isPlantable = false;
+    let is3Plantable = false;
+    let plotsPlantable = [];
+    const utils = {
+      // values
+      URI: 'managers/ajax/environment/foreword_farm.php',
+      /** Set immutable fields */
+      setImmutable() {
+        const immutableFields = ['URI'];
+        for (const immutableField of immutableFields) {
+          Object.defineProperty(utils, immutableField, {
+            // value: 'This cannot be changed',
+            writable: false, // Makes the field immutable
+            configurable: false, // Prevents deletion or re-configuration of the field
+            enumerable: true // Makes the field visible during enumeration (e.g., in a for...in loop)
+          });
+        }
+      },
+      run() {
+        check.any(mh.chk.Check.CheckPoints.BeforeRun).then((r) => {
+          if (r) throw new Error('Stop execution');
+          logging('start running forewordFarmUtility');
+          this.claimHarvestPromise();
+          // .then(() => this.autoSettingsPromise())
+          // .catch((reason) => console.log(reason));
+        });
+      },
+      /** claim harvest promise */
+      claimHarvestPromise() {
+        console.log('try claiming harvest');
+        // 先判斷條件，不需要進 Promise
+        if (!quest.harvest_bin.can_claim || !settings.isAutoClaim) {
+          return this.autoSettingsPromise();
+        }
+        logging('run claimHarvestPromise');
+        return new Promise((resolve, reject) => {
+          console.log('claiming harvest');
+          const callback = () => {
+            quest.harvest_bin.can_claim = false;
+            check.any(mh.chk.Check.CheckPoints.AfterDone).then((r) => {
+              if (r) throw new Error('Stop execution');
+              // this.run()不會更新遊戲參數, forewordFarm()才會
+              forewordFarm();
+            });
+            return resolve();
+          };
+          const fn = isProd ? this.claimHarvest : this.claimHarvestMock;
+          fn(callback);
+        });
+      },
+      /** claim harvest */
+      claimHarvest(callback) {
+        logging('run claimHarvest');
+        check.any(mh.chk.Check.CheckPoints.BeforeDone).then((r) => {
+          if (r) throw new Error('Stop execution');
+          const params = {
+            action: 'claim_harvest'
+          };
+          utils.ajax('<a/>', params, (data) => {
+            quest.harvest_bin.can_claim = null;
+            console.log(
+              `claim harvest result: ${data.success ? 'success' : 'failure'}`,
+              data.foreword_farm_harvest_bin
+            );
+            if (callback) callback(data);
+          });
+        });
+      },
+      /** claim harvest mock */
+      claimHarvestMock(callback) {
+        console.log('run claimHarvestMock');
+        setTimeout(() => {
+          quest.harvest_bin.can_claim = null;
+          const data = {
+            success: 1,
+            foreword_farm_harvest_bin: quest.harvest_bin
+          };
+          console.log(
+            `claim harvest result: ${data.success ? 'success' : 'failure'}`,
+            data.foreword_farm_harvest_bin
+          );
+          if (callback) callback(data);
+        }, 3000);
+      },
+      autoSettingsPromise() {
+        logging('run initPromise: initialize states for running');
+        return new Promise((resolve, reject) => {
+          // auto settings for running if necessary and then invoke next promise
+          const mulch = MyUtils.parseQuantity(
+            items.mythical_mulch_stat_item.quantity
+          );
+          const seeds = MyUtils.parseQuantity(
+            items.papyrus_seed_stat_item.quantity
+          );
+          if (seeds < 30) settings.isAutoPlant = false;
+          if (settings.isAutoPlantType)
+            if (mulch < 60) settings.plantTypeRow = 0;
+            else settings.plantTypeRow = 1;
+          this.plantPromise();
+          return resolve();
+        });
+      },
+      /** check if need to plant */
+      plantPromise() {
+        logging('run plantPromise');
+        return new Promise((resolve, reject) => {
+          if (!settings.isAutoPlant || !isPlantable) {
+            console.log('Nothing plantable, go handleTrapPromise');
+            this.handleTrapPromise();
+            return resolve();
+          }
+          console.log('Need to plant', plotsPlantable);
+          for (let i = 0; i < plotsPlantable.length; i++) {
+            const plotPlantable = plotsPlantable[i];
+            console.log(`Is plot(${i}) plantable? ${plotPlantable}`);
+            if (!plotPlantable) continue;
+            console.log(`plant plot ${i}`);
+            const startGrowing = isProd
+              ? this.startGrowing
+              : this.startGrowingMock;
+            startGrowing(
+              i,
+              plantRowTypes[settings.plantTypeRow][
+                settings.isPlantWithMe ? 1 : 0
+              ],
+              () => {
+                plotsPlantable[i] = false;
+                this.plantPromise();
+              }
+            );
+            return resolve();
+          }
+          console.log('all planted, double check plotPlantableState');
+          setTimeout(() => {
+            forewordFarm();
+          }, 3000);
+        });
+      },
+      /** startGrowing */
+      startGrowing(slot, plantType, callback) {
+        logging('run startGrowing');
+        const params = {
+          action: 'start_growing',
+          slot: slot,
+          plant_type: plantType
+        };
+        // TODO only ajax cannot be invoked by this.
+        utils.ajax('<a/>', params, function (data) {
+          console.log(`startGrowing: ${data.success ? 'success' : 'failure'}`);
+          if (data.success) {
+            // 以防萬一 QuestForewordFarm沒更新
+            user.quests.QuestForewordFarm.plots[slot].can_plant_anything = null;
+            if (callback) callback(data);
+          }
+        });
+      },
+      /** start growing mock */
+      startGrowingMock(slot, plantType, callback) {
+        logging('run startGrowingMock');
+        setTimeout(() => {
+          console.log(`Started growing ${plantType} at ${slot}`);
+          user.quests.QuestForewordFarm.plots[slot].can_plant_anything = null;
+          if (callback) {
+            callback();
+          }
+        }, 3000);
+      },
+      /** handle trap promise */
+      handleTrapPromise() {
+        logging('run handleTrapPromise');
+        return new Promise((resolve, reject) => {
+          const trap = settings.traps[miceState];
+          if (trap) {
+            this.toggleCC(trap[4]);
+            setTimeout(() => {
+              litCandle(trap[5]);
+              doubleEgg(trap[6]);
+            }, 500);
+            setTimeout(() => {
+              armAllTraps(...trap);
+            }, 1500);
+          }
+          return resolve();
+        });
+      },
+      /** toggle condensed creativity */
+      toggleCC(isToEnable) {
+        logging(`toggleCC to ${isToEnable}`);
+        const itemQuantity = MyUtils.parseQuantity(
+          items.condensed_creativity_stat_item.quantity
+        );
+        if (itemQuantity < 1) return;
+        const isFuelEnabled = quest.is_fuel_enabled || false;
+        if ((isFuelEnabled === true) != isToEnable)
+          isProd
+            ? hg.views.HeadsUpDisplayFolkloreForestRegionView.toggleFuel()
+            : console.log('toggled CC');
+      },
+      /** MH ajax */
+      ajax(element, params, successCallback, errorCallback) {
+        params['last_read_journal_entry_id'] = $('#journallatestentry').data(
+          'entry-id'
+        );
+        params['uh'] = user.unique_hash;
+        $.ajax({
+          data: params,
+          dataType: 'json',
+          type: 'post',
+          url: isProd ? MOUSEHUNT_BASE_URL + this.URI : '',
+          success: function (data) {
+            eventRegistry.doEvent('ajax_response', data);
+            if (successCallback) {
+              successCallback(data);
+            }
+          },
+          error: function (data) {
+            // eslint-disable-next-line new-cap
+            const popup = new jsDialog();
+            popup.setTemplate('error');
+            popup.addToken('{*title*}', 'An error has occurred.');
+            popup.addToken(
+              '{*content*}',
+              'An error occurred. Please try again!'
+            );
+            popup.show();
+            if (errorCallback) errorCallback(data);
+          }
+        });
+      }
+    };
+    // initial utils
+    function init() {
+      // make fields immutable
+      utils.setImmutable();
+      // initialize values in utils if necessary
+      isPlantable = false; // true if isPlant3AtOnce and all 3 plot plantable or not isPlant3AtOnce and any of plot plantable
+      is3Plantable = false;
+      plotsPlantable = [];
+      let temp3 = true;
+      for (const plot of plots) {
+        isPlantable ||= plot.can_plant_anything;
+        temp3 &&= plot.can_plant_anything;
+        plotsPlantable.push(plot.can_plant_anything);
+      }
+      is3Plantable = temp3;
+      if (settings.isPlant3AtOnce && !is3Plantable) {
+        isPlantable = false;
+        plotsPlantable = [false, false, false];
+      }
+      console.log(
+        'Plots plantable State: ',
+        isPlantable,
+        is3Plantable,
+        plotsPlantable
+      );
+    }
+    init();
+    return utils;
+  })();
+  forewordFarmUtility.run();
+}
+// End #forewordFarm
+
 const QuestForewordFarm = {
   environment_type: 'foreword_farm',
   bait: 'super_brie_cheese',
@@ -1473,311 +1781,6 @@ function doubleEgg(isToEnable) {
 function litCandle(actionType) {
   console.log('lit candle to', actionType);
 }
-
-// #forewordFarm
-if (MhUtils.getEnvironmentType() === 'foreword_farm') forewordFarm();
-function forewordFarm() {
-  const isProd = false;
-  const targetEnvironmentType = 'foreword_farm';
-  const enviromentType = MhUtils.getEnvironmentType();
-  if (enviromentType !== targetEnvironmentType) return;
-  logging('forewordFarm_0.4.6.4.17');
-  // my own hard-coded constants
-  const plantRowTypes = [
-    ['ordinary_farm_plant', 'ordinary_magic_farm_plant'],
-    ['legendary_farm_plant', 'legendary_magic_farm_plant'],
-    ['twisted_legendary_farm_plant', 'twisted_legendary_magic_farm_plant']
-  ];
-  /** localStorage settings */
-  // prettier-ignore
-  const defaultSettings = {
-    checkers: '',
-    isAutoClaim: true,
-    isAutoPlant: true,
-    isPlant3AtOnce: false,
-    plantTypeRow: 0,
-    isPlantWithMe: false,
-    isAutoPlantType: false,
-    traps: {
-      no_plants: ['Gouda Cheese', 'best.weapon.tactical', 'best.base.combo', 'Luck Charm', false, 'none', false],
-      one_plants: ['Gouda Cheese', 'best.weapon.tactical', 'best.base.combo', 'Luck Charm', false, 'none', false],
-      two_plants: ['Gouda Cheese', 'best.weapon.tactical', 'best.base.combo', 'Luck Charm', false, 'none', false],
-      three_plants: ['Gouda Cheese', 'best.weapon.tactical', 'best.base.combo', 'Luck Charm', false, 'none', false],
-      three_papyrus: ['Gouda Cheese', 'best.weapon.tactical', 'best.base.combo', 'Super Snowball Charm', false, 'none', false],
-      boss: ['Super', 'best.weapon.tactical', 'best.base.combo', 'Ultimate Lucky Power Charm,Festive Ultimate Lucky Power Charm', false, 'none', false]
-    }
-  };
-  const settings = isProd
-    ? MyUtils.getStorageToObject(targetEnvironmentType, defaultSettings)
-    : defaultSettings;
-  const check = new mh.chk.Check(
-    false,
-    async () => user.quests.QuestForewordFarm.items
-  ).loadPlainText(settings.checkers);
-  const quest = isProd ? user.quests.QuestForewordFarm : QuestForewordFarm;
-  const miceState = quest.mice_state;
-  const items = quest.items;
-  const plots = quest.plots;
-  const forewordFarmUtility = (function () {
-    let isPlantable = false;
-    let is3Plantable = false;
-    let plotsPlantable = [];
-    const utils = {
-      // values
-      URI: 'managers/ajax/environment/foreword_farm.php',
-      /** Set immutable fields */
-      setImmutable() {
-        const immutableFields = ['URI'];
-        for (const immutableField of immutableFields) {
-          Object.defineProperty(utils, immutableField, {
-            // value: 'This cannot be changed',
-            writable: false, // Makes the field immutable
-            configurable: false, // Prevents deletion or re-configuration of the field
-            enumerable: true // Makes the field visible during enumeration (e.g., in a for...in loop)
-          });
-        }
-      },
-      run() {
-        check.any(mh.chk.Check.CheckPoints.BeforeRun).then((r) => {
-          if (r) throw new Error('traveled');
-          logging('start running forewordFarmUtility');
-          this.claimHarvestPromise();
-          // .then(() => this.autoSettingsPromise())
-          // .catch((reason) => console.log(reason));
-        });
-      },
-      /** claim harvest promise */
-      claimHarvestPromise() {
-        console.log('try claiming harvest');
-        // 先判斷條件，不需要進 Promise
-        if (!quest.harvest_bin.can_claim || !settings.isAutoClaim) {
-          return this.autoSettingsPromise();
-        }
-        logging('run claimHarvestPromise');
-        return new Promise((resolve, reject) => {
-          console.log('claiming harvest');
-          const callback = () => {
-            quest.harvest_bin.can_claim = false;
-            check.any(mh.chk.Check.CheckPoints.Claimed).then((r) => {
-              if (r) throw new Error('traveled');
-              // this.run()不會更新遊戲參數, forewordFarm()才會
-              forewordFarm();
-            });
-            return resolve();
-          };
-          const fn = isProd ? this.claimHarvest : this.claimHarvestMock;
-          fn(callback);
-        });
-      },
-      /** claim harvest */
-      claimHarvest(callback) {
-        logging('run claimHarvest');
-        const params = {
-          action: 'claim_harvest'
-        };
-        utils.ajax('<a/>', params, (data) => {
-          quest.harvest_bin.can_claim = null;
-          console.log(
-            `claim harvest result: ${data.success ? 'success' : 'failure'}`,
-            data.foreword_farm_harvest_bin
-          );
-          if (callback) callback(data);
-        });
-      },
-      /** claim harvest mock */
-      claimHarvestMock(callback) {
-        console.log('run claimHarvestMock');
-        setTimeout(() => {
-          quest.harvest_bin.can_claim = null;
-          const data = {
-            success: 1,
-            foreword_farm_harvest_bin: quest.harvest_bin
-          };
-          console.log(
-            `claim harvest result: ${data.success ? 'success' : 'failure'}`,
-            data.foreword_farm_harvest_bin
-          );
-          if (callback) callback(data);
-        }, 3000);
-      },
-      autoSettingsPromise() {
-        logging('run initPromise: initialize states for running');
-        return new Promise((resolve, reject) => {
-          // auto settings for running if necessary and then invoke next promise
-          const mulch = MyUtils.parseQuantity(
-            items.mythical_mulch_stat_item.quantity
-          );
-          const seeds = MyUtils.parseQuantity(
-            items.papyrus_seed_stat_item.quantity
-          );
-          if (seeds < 30) settings.isAutoPlant = false;
-          if (settings.isAutoPlantType)
-            if (mulch < 60) settings.plantTypeRow = 0;
-            else settings.plantTypeRow = 1;
-          this.plantPromise();
-          return resolve();
-        });
-      },
-      /** check if need to plant */
-      plantPromise() {
-        logging('run plantPromise');
-        return new Promise((resolve, reject) => {
-          if (!settings.isAutoPlant || !isPlantable) {
-            console.log('Nothing plantable, go handleTrapPromise');
-            this.handleTrapPromise();
-            return resolve();
-          }
-          console.log('Need to plant', plotsPlantable);
-          for (let i = 0; i < plotsPlantable.length; i++) {
-            const plotPlantable = plotsPlantable[i];
-            console.log(`Is plot(${i}) plantable? ${plotPlantable}`);
-            if (!plotPlantable) continue;
-            console.log(`plant plot ${i}`);
-            const startGrowing = isProd
-              ? this.startGrowing
-              : this.startGrowingMock;
-            startGrowing(
-              i,
-              plantRowTypes[settings.plantTypeRow][
-                settings.isPlantWithMe ? 1 : 0
-              ],
-              () => {
-                plotsPlantable[i] = false;
-                this.plantPromise();
-              }
-            );
-            return resolve();
-          }
-          console.log('all planted, double check plotPlantableState');
-          setTimeout(() => {
-            forewordFarm();
-          }, 3000);
-        });
-      },
-      /** startGrowing */
-      startGrowing(slot, plantType, callback) {
-        logging('run startGrowing');
-        const params = {
-          action: 'start_growing',
-          slot: slot,
-          plant_type: plantType
-        };
-        // TODO only ajax cannot be invoked by this.
-        utils.ajax('<a/>', params, function (data) {
-          console.log(`startGrowing: ${data.success ? 'success' : 'failure'}`);
-          if (data.success) {
-            // 以防萬一 QuestForewordFarm沒更新
-            user.quests.QuestForewordFarm.plots[slot].can_plant_anything = null;
-            if (callback) callback(data);
-          }
-        });
-      },
-      /** start growing mock */
-      startGrowingMock(slot, plantType, callback) {
-        logging('run startGrowingMock');
-        setTimeout(() => {
-          console.log(`Started growing ${plantType} at ${slot}`);
-          user.quests.QuestForewordFarm.plots[slot].can_plant_anything = null;
-          if (callback) {
-            callback();
-          }
-        }, 3000);
-      },
-      /** handle trap promise */
-      handleTrapPromise() {
-        logging('run handleTrapPromise');
-        return new Promise((resolve, reject) => {
-          const trap = settings.traps[miceState];
-          if (trap) {
-            this.toggleCC(trap[4]);
-            setTimeout(() => {
-              litCandle(trap[5]);
-              doubleEgg(trap[6]);
-            }, 500);
-            setTimeout(() => {
-              armAllTraps(...trap);
-            }, 1500);
-          }
-          return resolve();
-        });
-      },
-      /** toggle condensed creativity */
-      toggleCC(isToEnable) {
-        logging(`toggleCC to ${isToEnable}`);
-        const itemQuantity = MyUtils.parseQuantity(
-          items.condensed_creativity_stat_item.quantity
-        );
-        if (itemQuantity < 1) return;
-        const isFuelEnabled = quest.is_fuel_enabled || false;
-        if ((isFuelEnabled === true) != isToEnable)
-          isProd
-            ? hg.views.HeadsUpDisplayFolkloreForestRegionView.toggleFuel()
-            : console.log('toggled CC');
-      },
-      /** MH ajax */
-      ajax(element, params, successCallback, errorCallback) {
-        params['last_read_journal_entry_id'] = $('#journallatestentry').data(
-          'entry-id'
-        );
-        params['uh'] = user.unique_hash;
-        $.ajax({
-          data: params,
-          dataType: 'json',
-          type: 'post',
-          url: isProd ? MOUSEHUNT_BASE_URL + this.URI : '',
-          success: function (data) {
-            eventRegistry.doEvent('ajax_response', data);
-            if (successCallback) {
-              successCallback(data);
-            }
-          },
-          error: function (data) {
-            // eslint-disable-next-line new-cap
-            const popup = new jsDialog();
-            popup.setTemplate('error');
-            popup.addToken('{*title*}', 'An error has occurred.');
-            popup.addToken(
-              '{*content*}',
-              'An error occurred. Please try again!'
-            );
-            popup.show();
-            if (errorCallback) errorCallback(data);
-          }
-        });
-      }
-    };
-    // initial utils
-    function init() {
-      // make fields immutable
-      utils.setImmutable();
-      // initialize values in utils if necessary
-      isPlantable = false; // true if isPlant3AtOnce and all 3 plot plantable or not isPlant3AtOnce and any of plot plantable
-      is3Plantable = false;
-      plotsPlantable = [];
-      let temp3 = true;
-      for (const plot of plots) {
-        isPlantable ||= plot.can_plant_anything;
-        temp3 &&= plot.can_plant_anything;
-        plotsPlantable.push(plot.can_plant_anything);
-      }
-      is3Plantable = temp3;
-      if (settings.isPlant3AtOnce && !is3Plantable) {
-        isPlantable = false;
-        plotsPlantable = [false, false, false];
-      }
-      console.log(
-        'Plots plantable State: ',
-        isPlantable,
-        is3Plantable,
-        plotsPlantable
-      );
-    }
-    init();
-    return utils;
-  })();
-  forewordFarmUtility.run();
-}
-// End #forewordFarm
 
 /* check plot
 (() => {
