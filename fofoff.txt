@@ -1,313 +1,381 @@
-import { MhUtils, MyUtils, mh } from './my-mh-aid-dev';
+import { mh, MhUtils, MyUtils } from './my-mh-aid-dev';
 
 // #forewordFarm
-if (MhUtils.getEnvironmentType() === 'foreword_farm') forewordFarm();
-function forewordFarm() {
-  const isProd = false;
-  const targetEnvironmentType = 'foreword_farm';
-  const enviromentType = MhUtils.getEnvironmentType();
-  if (enviromentType !== targetEnvironmentType) return;
-  logging('forewordFarm_0.4.7.4.17');
+mh.dao.ForewordFarm = class ForewordFarm extends mh.dao.Repository {
+  static version = `mh.dao.${ForewordFarm.name}_0.0.0.0.1`;
+  static uri = 'managers/ajax/environment/foreword_farm.php';
+  static ImmutableFields = [...super.ImmutableFields, 'uri'];
+  static {
+    super.basicStaticBlock();
+  }
+  /**
+   * 開始種植
+   * @param {HTMLElement|string} element - DOM 元素或字串
+   * @returns {Promise<void>}
+   */
+  static async startGrowing(slot, plantType, element) {
+    const { log, version } = this;
+    log.info(`${version}.${this.startGrowing.name}`, {
+      slot,
+      plantType,
+      element
+    });
+    const params = {
+      action: 'start_growing',
+      slot: slot,
+      plant_type: plantType
+    };
+    const request = { key: this.uri, element: element, payload: params };
+    const data = await mh.dao.AjaxProvider.send(request);
+    log.debug('ajax_response', data);
+    try {
+      activejsDialog.hide();
+    } catch (error) {
+      log.debug(error);
+    }
+    return data;
+  }
+  /**
+   * 領取收穫
+   * @param {HTMLElement|string} element - DOM 元素或字串
+   * @returns {Promise<void>}
+   */
+  static async claimHarvest(element) {
+    const { log, version } = this;
+    log.info(`${version}.${this.claimHarvest.name}`, { element });
+    const params = { action: 'claim_harvest' };
+    const request = { key: this.uri, element: element, payload: params };
+    const data = await mh.dao.AjaxProvider.send(request);
+    log.debug('ajax_response', data);
+    return data;
+  }
+  /**
+   * 切換 Condensed Creativity (CC)
+   * @param {HTMLElement|string} element - DOM 元素或字串
+   * @returns {Promise<object>}
+   */
+  static async toggleFuel(element) {
+    const { log, version } = this;
+    log.info(`${version}.${this.toggleFuel.name}`, { element });
+    const uri = 'managers/ajax/environment/folklore_forest_region.php';
+    const params = { action: 'toggle_fuel' };
+    const request = { key: uri, element: element, payload: params };
+    const data = await mh.dao.AjaxProvider.send(request);
+    log.debug('ajax_response', data);
+    return data;
+  }
+};
+mh.cmd.ForewordFarm = class ForewordFarmFactory extends mh.cmd.StrategyFactory {
+  static version = `mh.cmd.${ForewordFarmFactory.name}_0.0.0.0.1`;
+  static Strategy = class ForewordFarm extends mh.cmd.StrategyFactory.Strategy {
+    static version = `mh.cmd.${ForewordFarm.name}_0.0.0.0.1`;
+    static {
+      super.basicStaticBlock();
+    }
+    constructor() {
+      super();
+      this.repository = mh.dao.ForewordFarm;
+    }
+    /**
+     * 開始種植
+     * @param {HTMLElement|string} element - DOM 元素或字串
+     * @returns {Promise<boolean>}
+     */
+    async startGrowing(slot, plantType, element) {
+      const { log, version } = this.constructor;
+      log.info(`${version}.${this.startGrowing.name}`, {
+        slot,
+        plantType,
+        element
+      });
+      try {
+        await this.repository.startGrowing(slot, plantType, element);
+        return true;
+      } catch (error) {
+        log.error(error);
+        return false;
+      }
+    }
+    /**
+     * 領取收穫
+     * @param {HTMLElement|string} element - DOM 元素或字串
+     * @returns {Promise<boolean>}
+     */
+    async claimHarvest(element) {
+      const { log, version } = this.constructor;
+      log.info(`${version}.${this.claimHarvest.name}`, {
+        element
+      });
+      try {
+        await this.repository.claimHarvest(element);
+        return true;
+      } catch (error) {
+        log.error(error);
+        return false;
+      }
+    }
+    /**
+     * 切換 Condensed Creativity (CC)
+     * @param {HTMLElement|string} element - DOM 元素或字串
+     * @returns {Promise<object>}
+     */
+    async toggleFuel(element) {
+      const { log, version } = this.constructor;
+      log.info(`${version}.${this.toggleFuel.name}`, { element });
+      try {
+        await this.repository.toggleFuel(element);
+        return true;
+      } catch (error) {
+        log.error(error);
+        return false;
+      }
+    }
+  };
+  static {
+    super.basicStaticBlock();
+  }
+};
+mh.core.ForewordFarm = class ForewordFarm extends (
+  mh.core.ControllerFactory.Controller
+) {
+  static version = `mh.core.${ForewordFarm.name}_0.0.0.0.1`;
+  // --- target location ---
+  static targetEnvironmentType = 'foreword_farm';
   // my own hard-coded constants
-  const plantRowTypes = [
+  static plantRowTypes = [
     ['ordinary_farm_plant', 'ordinary_magic_farm_plant'],
     ['legendary_farm_plant', 'legendary_magic_farm_plant'],
     ['twisted_legendary_farm_plant', 'twisted_legendary_magic_farm_plant']
   ];
-  /** localStorage settings */
-  // prettier-ignore
-  const defaultSettings = {
-    checkers: '',
-    isAutoClaim: true,
-    isAutoPlant: true,
-    isPlant3AtOnce: false,
-    plantTypeRow: 0,
-    isPlantWithMe: false,
-    isAutoPlantType: false,
-    traps: {
-      no_plants: ['Gouda Cheese', 'best.weapon.tactical', 'best.base.combo', 'Luck Charm', false, 'none', false],
-      one_plants: ['Gouda Cheese', 'best.weapon.tactical', 'best.base.combo', 'Luck Charm', false, 'none', false],
-      two_plants: ['Gouda Cheese', 'best.weapon.tactical', 'best.base.combo', 'Luck Charm', false, 'none', false],
-      three_plants: ['Gouda Cheese', 'best.weapon.tactical', 'best.base.combo', 'Luck Charm', false, 'none', false],
-      three_papyrus: ['Gouda Cheese', 'best.weapon.tactical', 'best.base.combo', 'Super Snowball Charm', false, 'none', false],
-      boss: ['Super', 'best.weapon.tactical', 'best.base.combo', 'Ultimate Lucky Power Charm,Festive Ultimate Lucky Power Charm', false, 'none', false]
-    }
-  };
-  const settings = isProd
-    ? MyUtils.getStorageToObject(targetEnvironmentType, defaultSettings)
-    : defaultSettings;
-  const check = new mh.chk.Check(
-    false,
-    async () => user.quests.QuestForewordFarm.items
-  ).loadPlainText(settings.checkers);
-  const quest = isProd ? user.quests.QuestForewordFarm : QuestForewordFarm;
-  const miceState = quest.mice_state;
-  const items = quest.items;
-  const plots = quest.plots;
-  const forewordFarmUtility = (function () {
-    let isPlantable = false;
-    let is3Plantable = false;
-    let plotsPlantable = [];
-    const utils = {
-      // values
-      URI: 'managers/ajax/environment/foreword_farm.php',
-      /** Set immutable fields */
-      setImmutable() {
-        const immutableFields = ['URI'];
-        for (const immutableField of immutableFields) {
-          Object.defineProperty(utils, immutableField, {
-            // value: 'This cannot be changed',
-            writable: false, // Makes the field immutable
-            configurable: false, // Prevents deletion or re-configuration of the field
-            enumerable: true // Makes the field visible during enumeration (e.g., in a for...in loop)
-          });
-        }
+  static ImmutableFields = [
+    ...super.ImmutableFields,
+    'targetEnvironmentType',
+    'plantRowTypes'
+  ];
+  static {
+    super.basicStaticBlock();
+  }
+  static async toggleFuel(isToEnable, element) {
+    const { log, version } = this;
+    log.info(`${version}.${this.toggleFuel.name}`, { isToEnable, element });
+    const quest =
+      user.quests.QuestForewordFarm ||
+      user.quests.QuestProloguePond ||
+      user.quests.QuestTableOfContents;
+    const fuelQuantity = MyUtils.parseQuantity(
+      quest.items[mh.data.FoFoConfigConstants.ccType].quantity
+    );
+    if (fuelQuantity < 1) return;
+    const isFuelEnabled = quest.is_fuel_enabled || false;
+    if ((isFuelEnabled === true) != isToEnable)
+      await mh.cmd.ForewordFarm.getInstance().toggleFuel(element);
+  }
+  async init() {
+    const { log, version } = this.constructor;
+    log.info(`${version}.${this.init.name}`);
+    this.environmentType = MhUtils.getEnvironmentType();
+    this.strategy = mh.cmd.ForewordFarm.getInstance();
+    // --- settings ---
+    this.data = mh.data.ForewordFarm;
+    this.config = mh.cmd.ConfigFactory.getInstanceReloaded(this.data).config;
+    // --- quest ---
+    /**
+     * 當前任務資訊
+     * @type {object}
+     */
+    this.quest = user.quests.QuestForewordFarm;
+    this.c = this.data.C;
+    // --- items ---
+    /**
+     * 玩家物品資訊
+     * @type {object}
+     */
+    this.items = {
+      gold: user.gold,
+      cc: {
+        type: this.c.ccType,
+        qty: MyUtils.parseQuantity(this.quest.items[this.c.ccType].quantity)
       },
-      run() {
-        check.any(mh.chk.Check.CheckPoints.BeforeRun).then((r) => {
-          if (r) throw new Error('Stop execution');
-          logging('start running forewordFarmUtility');
-          this.claimHarvestPromise();
-          // .then(() => this.autoSettingsPromise())
-          // .catch((reason) => console.log(reason));
-        });
+      ddc: {
+        type: this.c.ddcType,
+        qty: MyUtils.parseQuantity(this.quest.items[this.c.ddcType].quantity)
       },
-      /** claim harvest promise */
-      claimHarvestPromise() {
-        console.log('try claiming harvest');
-        // 先判斷條件，不需要進 Promise
-        if (!quest.harvest_bin.can_claim || !settings.isAutoClaim) {
-          return this.autoSettingsPromise();
-        }
-        logging('run claimHarvestPromise');
-        return new Promise((resolve, reject) => {
-          console.log('claiming harvest');
-          const callback = () => {
-            quest.harvest_bin.can_claim = false;
-            check.any(mh.chk.Check.CheckPoints.AfterDone).then((r) => {
-              if (r) throw new Error('Stop execution');
-              // this.run()不會更新遊戲參數, forewordFarm()才會
-              forewordFarm();
-            });
-            return resolve();
-          };
-          const fn = isProd ? this.claimHarvest : this.claimHarvestMock;
-          fn(callback);
-        });
+      papyrus: {
+        type: this.c.papyrusType,
+        qty: MyUtils.parseQuantity(
+          this.quest.items[this.c.papyrusType].quantity
+        )
       },
-      /** claim harvest */
-      claimHarvest(callback) {
-        logging('run claimHarvest');
-        check.any(mh.chk.Check.CheckPoints.BeforeDone).then((r) => {
-          if (r) throw new Error('Stop execution');
-          const params = {
-            action: 'claim_harvest'
-          };
-          utils.ajax('<a/>', params, (data) => {
-            quest.harvest_bin.can_claim = null;
-            console.log(
-              `claim harvest result: ${data.success ? 'success' : 'failure'}`,
-              data.foreword_farm_harvest_bin
-            );
-            if (callback) callback(data);
-          });
-        });
+      ink: {
+        type: this.c.inkType,
+        qty: MyUtils.parseQuantity(this.quest.items[this.c.inkType].quantity)
       },
-      /** claim harvest mock */
-      claimHarvestMock(callback) {
-        console.log('run claimHarvestMock');
-        setTimeout(() => {
-          quest.harvest_bin.can_claim = null;
-          const data = {
-            success: 1,
-            foreword_farm_harvest_bin: quest.harvest_bin
-          };
-          console.log(
-            `claim harvest result: ${data.success ? 'success' : 'failure'}`,
-            data.foreword_farm_harvest_bin
-          );
-          if (callback) callback(data);
-        }, 3000);
+      mulch: {
+        type: this.c.mulchType,
+        qty: MyUtils.parseQuantity(
+          this.quest.items['mythical_mulch_stat_item'].quantity
+        )
       },
-      autoSettingsPromise() {
-        logging('run initPromise: initialize states for running');
-        return new Promise((resolve, reject) => {
-          // auto settings for running if necessary and then invoke next promise
-          const mulch = MyUtils.parseQuantity(
-            items.mythical_mulch_stat_item.quantity
-          );
-          const seeds = MyUtils.parseQuantity(
-            items.papyrus_seed_stat_item.quantity
-          );
-          if (seeds < 30) settings.isAutoPlant = false;
-          if (settings.isAutoPlantType)
-            if (mulch < 60) settings.plantTypeRow = 0;
-            else settings.plantTypeRow = 1;
-          this.plantPromise();
-          return resolve();
-        });
+      seed: {
+        type: this.c.seedType,
+        qty: MyUtils.parseQuantity(
+          this.quest.items['papyrus_seed_stat_item'].quantity
+        )
       },
-      /** check if need to plant */
-      plantPromise() {
-        logging('run plantPromise');
-        return new Promise((resolve, reject) => {
-          if (!settings.isAutoPlant || !isPlantable) {
-            console.log('Nothing plantable, go handleTrapPromise');
-            this.handleTrapPromise();
-            return resolve();
-          }
-          console.log('Need to plant', plotsPlantable);
-          for (let i = 0; i < plotsPlantable.length; i++) {
-            const plotPlantable = plotsPlantable[i];
-            console.log(`Is plot(${i}) plantable? ${plotPlantable}`);
-            if (!plotPlantable) continue;
-            console.log(`plant plot ${i}`);
-            const startGrowing = isProd
-              ? this.startGrowing
-              : this.startGrowingMock;
-            startGrowing(
-              i,
-              plantRowTypes[settings.plantTypeRow][
-                settings.isPlantWithMe ? 1 : 0
-              ],
-              () => {
-                plotsPlantable[i] = false;
-                this.plantPromise();
-              }
-            );
-            return resolve();
-          }
-          console.log('all planted, double check plotPlantableState');
-          setTimeout(() => {
-            forewordFarm();
-          }, 3000);
-        });
-      },
-      /** startGrowing */
-      startGrowing(slot, plantType, callback) {
-        logging('run startGrowing');
-        const params = {
-          action: 'start_growing',
-          slot: slot,
-          plant_type: plantType
-        };
-        // TODO only ajax cannot be invoked by this.
-        utils.ajax('<a/>', params, function (data) {
-          console.log(`startGrowing: ${data.success ? 'success' : 'failure'}`);
-          if (data.success) {
-            // 以防萬一 QuestForewordFarm沒更新
-            user.quests.QuestForewordFarm.plots[slot].can_plant_anything = null;
-            if (callback) callback(data);
-          }
-        });
-      },
-      /** start growing mock */
-      startGrowingMock(slot, plantType, callback) {
-        logging('run startGrowingMock');
-        setTimeout(() => {
-          console.log(`Started growing ${plantType} at ${slot}`);
-          user.quests.QuestForewordFarm.plots[slot].can_plant_anything = null;
-          if (callback) {
-            callback();
-          }
-        }, 3000);
-      },
-      /** handle trap promise */
-      handleTrapPromise() {
-        logging('run handleTrapPromise');
-        return new Promise((resolve, reject) => {
-          const trap = settings.traps[miceState];
-          if (trap) {
-            this.toggleCC(trap[4]);
-            setTimeout(() => {
-              litCandle(trap[5]);
-              doubleEgg(trap[6]);
-            }, 500);
-            setTimeout(() => {
-              armAllTraps(...trap);
-            }, 1500);
-          }
-          return resolve();
-        });
-      },
-      /** toggle condensed creativity */
-      toggleCC(isToEnable) {
-        logging(`toggleCC to ${isToEnable}`);
-        const itemQuantity = MyUtils.parseQuantity(
-          items.condensed_creativity_stat_item.quantity
-        );
-        if (itemQuantity < 1) return;
-        const isFuelEnabled = quest.is_fuel_enabled || false;
-        if ((isFuelEnabled === true) != isToEnable)
-          isProd
-            ? hg.views.HeadsUpDisplayFolkloreForestRegionView.toggleFuel()
-            : console.log('toggled CC');
-      },
-      /** MH ajax */
-      ajax(element, params, successCallback, errorCallback) {
-        params['last_read_journal_entry_id'] = $('#journallatestentry').data(
-          'entry-id'
-        );
-        params['uh'] = user.unique_hash;
-        $.ajax({
-          data: params,
-          dataType: 'json',
-          type: 'post',
-          url: isProd ? MOUSEHUNT_BASE_URL + this.URI : '',
-          success: function (data) {
-            eventRegistry.doEvent('ajax_response', data);
-            if (successCallback) {
-              successCallback(data);
-            }
-          },
-          error: function (data) {
-            // eslint-disable-next-line new-cap
-            const popup = new jsDialog();
-            popup.setTemplate('error');
-            popup.addToken('{*title*}', 'An error has occurred.');
-            popup.addToken(
-              '{*content*}',
-              'An error occurred. Please try again!'
-            );
-            popup.show();
-            if (errorCallback) errorCallback(data);
-          }
-        });
+      me: {
+        type: this.c.meType,
+        qty: MyUtils.parseQuantity(this.quest.items[this.c.meType].quantity)
       }
     };
-    // initial utils
-    function init() {
-      // make fields immutable
-      utils.setImmutable();
-      // initialize values in utils if necessary
-      isPlantable = false; // true if isPlant3AtOnce and all 3 plot plantable or not isPlant3AtOnce and any of plot plantable
-      is3Plantable = false;
-      plotsPlantable = [];
-      let temp3 = true;
-      for (const plot of plots) {
-        isPlantable ||= plot.can_plant_anything;
-        temp3 &&= plot.can_plant_anything;
-        plotsPlantable.push(plot.can_plant_anything);
-      }
-      is3Plantable = temp3;
-      if (settings.isPlant3AtOnce && !is3Plantable) {
-        isPlantable = false;
-        plotsPlantable = [false, false, false];
-      }
-      console.log(
-        'Plots plantable State: ',
-        isPlantable,
-        is3Plantable,
-        plotsPlantable
-      );
+    /** @type {number} 當前陷阱狀態 (預設 no plants) */
+    this.trapState = this.quest.mice_state;
+    this.plots = this.quest.plots;
+    /** 各農田是否可種植 */
+    this.plotsPlantable = [];
+    /** 是否進行種植 */
+    this.isPlantable = false;
+    /** 各農田的種植進度(剩餘 hunts) */
+    this.plantState = [];
+    for (const plot of this.plots) {
+      this.isPlantable ||= plot.can_plant_anything;
+      this.plotsPlantable.push(plot.can_plant_anything);
+      this.plantState.push(MyUtils.parseQuantity(plot.num_catches_remaining));
     }
-    init();
-    return utils;
+    /** 農田是否對齊 */
+    this.isPlotsAligned =
+      Math.max(...this.plantState) === Math.min(...this.plantState);
+    if (this.config.isPlant3AtOnce && !this.isPlotsAligned) {
+      this.isPlantable = false;
+      this.plotsPlantable = [false, false, false];
+    }
+    log.debug(
+      'Plots plantable State: ',
+      `isPlantable: ${this.isPlantable}`,
+      'plotsPlantable: ',
+      this.plotsPlantable,
+      `isPlotsAligned: ${this.isPlotsAligned}`,
+      'plantState: ',
+      this.plantState
+    );
+    this.check = new mh.chk.Check(
+      false,
+      async () => user.quests.QuestForewordFarm.items
+    ).loadPlainText(this.config.checkers);
+    return this;
+  }
+  async getItems() {
+    const { log, version } = this.constructor;
+    log.info(`${version}.${this.getItems.name}`);
+    return this.items;
+  }
+  async run() {
+    if (this.environmentType !== ForewordFarm.targetEnvironmentType) return;
+    const { log, version } = this.constructor;
+    log.info(`${version}.${this.run.name}`);
+    log.debug('1. 檢查領取收穫');
+    if (this.quest.harvest_bin.can_claim && this.config.isAutoClaim) {
+      log.debug('before claiming harvest');
+      if (await this.check.any(mh.chk.Check.CheckPoints.BeforeOpen)) return;
+      await this.strategy.claimHarvest();
+      log.debug('after claiming harvest');
+      if (await this.check.any(mh.chk.Check.CheckPoints.AfterOpen)) return;
+      return (await this.init()).run();
+    }
+    log.debug('2. 自動設定');
+    await this.autoConfig();
+    log.debug('3. 檢查自動種植');
+    log.debug(
+      `Need to plant? isAutoPlant: ${this.config.isAutoPlant}, isPlantable: ${this.isPlantable}`,
+      this.plotsPlantable
+    );
+    if (this.config.isAutoPlant && this.isPlantable) {
+      const plantType =
+        this.constructor.plantRowTypes[this.config.plantTypeRow][
+          this.config.isPlantWithMe ? 1 : 0
+        ];
+      await this.startGrowing(plantType);
+      return (await this.init()).run();
+    }
+    log.debug('4. 陷阱處理');
+    await this.handleTrap();
+  }
+  async startGrowing(plantType, plotIndex = 0) {
+    const { log, version } = this.constructor;
+    log.info(`${version}.${this.run.name}`, { plantType, plotIndex });
+    const plotPlantable = this.plotsPlantable[plotIndex];
+    log.debug(`Is plot(${plotIndex}) plantable? ${plotPlantable}`);
+    if (!plotPlantable) {
+      await this.startGrowing(plotIndex + 1);
+      return;
+    }
+    if (plotIndex === 0) log.debug(`Started growing`);
+    log.debug(`Started growing plot ${plotIndex}`);
+    const isOk = await this.strategy.startGrowing(plotIndex, plantType);
+    log.debug(`plant plot(${plotIndex}) ${isOk ? 'success' : 'failed'}`);
+    if (plotIndex < this.plotsPlantable.length - 1) {
+      await this.startGrowing(plantType, plotIndex + 1);
+      log.debug(`Finished growing plot ${plotIndex}`);
+      return;
+    }
+    log.debug(`Finished growing`);
+  }
+  /**
+   * 自動調整 config
+   */
+  async autoConfig() {
+    const { log, version } = this.constructor;
+    log.info(`${version}.${this.autoConfig.name}`);
+    if (this.items.seed.qty < 30) this.config.isAutoPlant = false;
+    if (this.config.isAutoPlantType)
+      if (this.items.mulch.qty < 60) this.config.plantTypeRow = 0;
+      else this.config.plantTypeRow = 1;
+  }
+  /**
+   * 陷阱處理
+   */
+  async handleTrap() {
+    const { log, version } = this.constructor;
+    log.info(`${version}.${this.handleTrap.name}`);
+    let trap = this.config.traps[this.trapState];
+    if (!trap) trap = this.config.traps['no_plants'];
+    await this.constructor.toggleFuel(trap[4]);
+    // 執行蠟燭與雙蛋效果
+    litCandle(trap[5]);
+    doubleEgg(trap[6]);
+    // 延遲執行陷阱裝備
+    setTimeout(() => {
+      armAllTraps(...trap);
+    }, 1500);
+  }
+};
+if (user.quests.QuestForewordFarm)
+  void (async () => {
+    // await mh.cmd.ForewordFarm.getInstance().claimHarvest();
+    // await mh.cmd.ForewordFarm.getInstance().startGrowing(
+    //   0,
+    //   'ordinary_farm_plant'
+    // );
+    // await mh.core.ForewordFarm.toggleFuel(true);
+    (await mh.core.ControllerFactory.getInstance(mh.core.ForewordFarm)).run();
   })();
-  forewordFarmUtility.run();
-}
 // End #forewordFarm
 
+// MH & my-mh-aid functions
+function armAllTraps(bait, weapon, base, charm) {
+  console.log(bait, weapon, base, charm);
+}
+function doubleEgg(isToEnable) {
+  console.log('double egg?', isToEnable);
+}
+function litCandle(actionType) {
+  console.log('lit candle to', actionType);
+}
+
+// ----- Fakes for Develop ----- //
+const activejsDialog = { hide: () => {} };
+const user = {};
+user.environment_type = 'foreword_farm';
+user.quests = {};
 const QuestForewordFarm = {
   environment_type: 'foreword_farm',
   bait: 'super_brie_cheese',
@@ -1751,315 +1819,4 @@ const QuestForewordFarm = {
     }
   ]
 };
-const MOUSEHUNT_BASE_URL = 'https://www.mousehuntgame.com/';
-const hg = {};
-const eventRegistry = {};
-const jsDialog = {};
-const user = {};
-user.environment_type = 'foreword_farm';
-user.quests = {};
 user.quests.QuestForewordFarm = QuestForewordFarm;
-// mice_state: "three_plants"
-
-function $(...args) {
-  return args;
-}
-function logging(...any) {
-  const debug = true;
-  if (debug) {
-    console.groupCollapsed(new Date(), ...any);
-    console.log(new Error().stack);
-    console.groupEnd();
-  }
-}
-function armAllTraps(bait, weapon, base, charm) {
-  console.log(bait, weapon, base, charm);
-}
-function doubleEgg(isToEnable) {
-  console.log('double egg?', isToEnable);
-}
-function litCandle(actionType) {
-  console.log('lit candle to', actionType);
-}
-
-/* check plot
-(() => {
-  const a = [];
-  const plots = user.quests.QuestForewordFarm.plots;
-  for (let i = 0; i < plots.length; i++) {
-    const plot = plots[i];
-    a.push(plot.can_plant_anything);
-  }
-  console.log(a);
-})();
- */
-/*
-ordinary_farm_plant           ordinary_magic_farm_plant
-legendary_farm_plant          legendary_magic_farm_plant
-twisted_legendary_farm_plant  twisted_legendary_magic_farm_plant
-*/
-/* old code
-(() => {
-  const MOUSEHUNT_BASE_URL = 'https://www.mousehuntgame.com/';
-  const quest = user.quests.QuestForewordFarm;
-  const plantRowTypes = [
-    ['ordinary_farm_plant', 'ordinary_magic_farm_plant'],
-    ['legendary_farm_plant', 'legendary_magic_farm_plant'],
-    ['twisted_legendary_farm_plant', 'twisted_legendary_magic_farm_plant']
-  ];
-  startGrowing(0, plantRowTypes[0][0]);
-  function startGrowing(slot, plantType) {
-    // const target = $(event.currentTarget);
-    // event.preventDefault();
-    // event.stopPropagation();
-    const params = {
-      action: 'start_growing',
-      slot: slot,
-      plant_type: plantType
-    };
-    ajax(null, params, function (data) {
-      // const nextPlot = findNextPlot();
-      // if (nextPlot) {
-      //   self.setSlot(nextPlot.slot_num);
-      //   getPlotView().setHighlightedPlot(nextPlot.slot_num);
-      //   moveArrow(nextPlot.slot_num);
-      // }
-      // getPlotView().update();
-      // self.update();
-      console.log(data.success);
-    });
-  }
-  if (quest.harvest_bin.can_claim)
-    setTimeout(() => {
-      claimHarvest();
-    }, 3000);
-  function claimHarvest(element) {
-    // var target = $(element);
-    const params = {
-      action: 'claim_harvest'
-    };
-    ajax(element, params, function (data) {
-      if (data.success) {
-        console.log(data.foreword_farm_harvest_bin);
-      }
-    });
-  }
-  function ajax(element, params, successCallback) {
-    // var target = $(element);
-    // if (target.hasClass('busy') || target.hasClass('disabled')) {
-    //   return false;
-    // }
-    // target.addClass('busy');
-    params['last_read_journal_entry_id'] = $('#journallatestentry').data(
-      'entry-id'
-    );
-    params['uh'] = user.unique_hash;
-    $.ajax({
-      data: params,
-      dataType: 'json',
-      type: 'post',
-      url: MOUSEHUNT_BASE_URL + 'managers/ajax/environment/foreword_farm.php',
-      success: function (data) {
-        // target.removeClass('busy');
-        // eventRegistry.doEvent('ajax_response', data);
-        if (successCallback) {
-          successCallback(data);
-        }
-      },
-      error: function () {
-        // eslint-disable-next-line new-cap
-        const popup = new jsDialog();
-        popup.setTemplate('error');
-        popup.addToken('{*title*}', 'An error has occurred.');
-        popup.addToken('{*content*}', 'An error occurred. Please try again!');
-        popup.show();
-        // target.removeClass('busy');
-      }
-    });
-  }
-})();
- */
-/* 符合預期行為的 self-looping
-(() => {
-  let i = 0;
-  function foo() {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        console.log(`foo(${i})`);
-        if (i++ < 3) {
-          foo();
-          return;
-        }
-        bar().then((v) => {
-          console.log(v);
-        });
-      }, i * 1000);
-    });
-  }
-  function bar() {
-    return new Promise((resolve, reject) => {
-      console.log('bar');
-      setTimeout(() => {
-        resolve('done');
-      }, 1000);
-    });
-  }
-  foo();
-})();
- */
-/* 符合預期行為但有點笨的 self-looping
-(() => {
-  function foo(i) {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        console.log(i);
-        resolve(++i);
-      }, i * 1000);
-    });
-  }
-  function bar() {
-    return new Promise((resolve, reject) => {
-      console.log('bar');
-      resolve();
-    });
-  }
-  foo(0)
-    .then(() => {
-      return foo(1);
-    })
-    .then(() => {
-      return foo(2);
-    })
-    .then(() => {
-      return bar();
-    })
-    .then((result) => {
-      console.log('done');
-    });
-})();
- */
-/* 不符合預期行為的 self-looping
-(() => {
-  let i = 0;
-  function foo() {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        console.log(i);
-        if (++i > 3) {
-          console.log('go next');
-          resolve(false);
-          return;
-        }
-        foo();
-        resolve(true);
-      }, i * 1000);
-    });
-  }
-  function bar() {
-    return new Promise((resolve, reject) => {
-      console.log('bar');
-      resolve();
-    });
-  }
-  foo()
-    .then((result) => {
-      console.log(result ? 'break' : 'continue');
-      if (result) throw new Error('break');
-      else {
-        console.log('continue');
-        return bar();
-      }
-    })
-    .then((result) => {
-      console.log('done');
-    });
-})();
- */
-/* 不符合預期行為且說不出來哪裡怪怪的 self-looping
-(() => {
-  let i = 0;
-  function foo() {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        console.log(i);
-        if (++i > 3) {
-          resolve();
-          return;
-        }
-        foo();
-        reject(new Error('break;'));
-      }, i * 1000);
-    });
-  }
-  function bar() {
-    return new Promise((resolve, reject) => {
-      console.log('bar');
-      resolve();
-    });
-  }
-  foo()
-    .catch((result) => {
-      console.log(result);
-      throw result;
-    })
-    .then((result) => {
-      return bar();
-    })
-    .then(() => {
-      console.log('done');
-    });
-})();
- */
-/* Promise chain,不好用
-(() => {
-  somePromiseFunction()
-    .then((result) => {
-      if (result.conditionMet) {
-        return anotherPromiseFunction(result.data); // Chain another promise
-      } else {
-        return Promise.resolve('Alternative outcome'); // Resolve with a value
-      }
-    })
-    .then((finalResult) => {
-      console.log(finalResult);
-    })
-    .catch((error) => {
-      console.error('Error:', error);
-    });
-  function somePromiseFunction() {
-    console.log('somePromiseFunction');
-    return new Promise((resolve, reject) => {
-      resolve({ conditionMet: true, data: 10 });
-    });
-  }
-  function anotherPromiseFunction() {
-    console.log('anotherPromiseFunction');
-    return new Promise((resolve, reject) => {
-      resolve('anotherPromiseData');
-    });
-  }
-})();
- */
-/* 測試 Promise chain
-(() => {
-  const shouldAddA = true;
-  const shouldAddB = true;
-  const shouldAddC = true;
-  function run(params) {
-    return Promise.resolve()
-      .then(shouldAddA && taskA)
-      .then(shouldAddB && taskB)
-      .then(shouldAddC && taskC);
-  }
-  function taskA(params) {
-    console.log('taskA');
-  }
-  function taskB(params) {
-    console.log('taskB');
-  }
-  function taskC(params) {
-    console.log('taskC');
-  }
-  run();
-})();
- */
