@@ -138,7 +138,7 @@ mh.cmd.ForewordFarm = class ForewordFarmFactory extends mh.cmd.StrategyFactory {
 mh.core.ForewordFarm = class ForewordFarm extends (
   mh.core.ControllerFactory.Controller
 ) {
-  static version = `mh.core.${ForewordFarm.name}_0.0.0.0.1`;
+  static version = `mh.core.${ForewordFarm.name}_0.0.1.0.2`;
   // --- target location ---
   static targetEnvironmentType = 'foreword_farm';
   // my own hard-coded constants
@@ -178,6 +178,10 @@ mh.core.ForewordFarm = class ForewordFarm extends (
     // --- settings ---
     this.data = mh.data.ForewordFarm;
     this.config = mh.cmd.ConfigFactory.getInstanceReloaded(this.data).config;
+    this.check = new mh.chk.Check(
+      false,
+      async () => user.quests.QuestForewordFarm.items
+    ).loadPlainText(this.config.checkers);
     // --- quest ---
     /**
      * 當前任務資訊
@@ -257,10 +261,6 @@ mh.core.ForewordFarm = class ForewordFarm extends (
       'plantState: ',
       this.plantState
     );
-    this.check = new mh.chk.Check(
-      false,
-      async () => user.quests.QuestForewordFarm.items
-    ).loadPlainText(this.config.checkers);
     return this;
   }
   async getItems() {
@@ -272,13 +272,10 @@ mh.core.ForewordFarm = class ForewordFarm extends (
     if (this.environmentType !== ForewordFarm.targetEnvironmentType) return;
     const { log, version } = this.constructor;
     log.info(`${version}.${this.run.name}`);
+    if (await this.check.any(mh.chk.Check.CheckPoints.BeforeRun)) return;
     log.debug('1. 檢查領取收穫');
     if (this.quest.harvest_bin.can_claim && this.config.isAutoClaim) {
-      log.debug('before claiming harvest');
-      if (await this.check.any(mh.chk.Check.CheckPoints.BeforeOpen)) return;
-      await this.strategy.claimHarvest();
-      log.debug('after claiming harvest');
-      if (await this.check.any(mh.chk.Check.CheckPoints.AfterOpen)) return;
+      if (await this.handleClaimHarvest()) return;
       return (await this.init()).run();
     }
     log.debug('2. 自動設定');
@@ -289,15 +286,33 @@ mh.core.ForewordFarm = class ForewordFarm extends (
       this.plotsPlantable
     );
     if (this.config.isAutoPlant && this.isPlantable) {
+      if (await this.check.any(mh.chk.Check.CheckPoints.BeforeOpen)) return;
       const plantType =
         this.constructor.plantRowTypes[this.config.plantTypeRow][
           this.config.isPlantWithMe ? 1 : 0
         ];
       await this.startGrowing(plantType);
+      if (await this.check.any(mh.chk.Check.CheckPoints.AfterOpen)) return;
       return (await this.init()).run();
     }
     log.debug('4. 陷阱處理');
     await this.handleTrap();
+    if (await this.check.any(mh.chk.Check.CheckPoints.AfterRun)) return;
+  }
+  async handleClaimHarvest() {
+    const { log, version } = this.constructor;
+    log.info(`${version}.${this.handleClaimHarvest.name}`);
+    log.debug('before claiming harvest');
+    if (await this.check.any(mh.chk.Check.CheckPoints.BeforeDone)) return true;
+    try {
+      await this.strategy.claimHarvest();
+    } catch (error) {
+      log.error(error);
+      throw error;
+    }
+    log.debug('after claiming harvest');
+    if (await this.check.any(mh.chk.Check.CheckPoints.AfterDone)) return true;
+    return false;
   }
   async startGrowing(plantType, plotIndex = 0) {
     const { log, version } = this.constructor;
