@@ -320,13 +320,13 @@ function scheduledSleep() {
       if (sleepTrap) armAllTraps(...sleepTrap);
       goToBed(schedule, isPreSleep);
     },
-    rift_furoma(enviromentSchedules) {
-      const quest = user.quests.QuestRiftFuroma;
-      const enerchi = MyUtils.parseQuantity(quest?.droid?.remaining_energy);
-      if (enerchi > 770 && enerchi < 1835 && MhUtils.getBaitItemId() !== 1424)
-        return;
-      this.defaultSleep(enviromentSchedules);
-    },
+    // rift_furoma(enviromentSchedules) {
+    //   const quest = user.quests.QuestRiftFuroma;
+    //   const enerchi = MyUtils.parseQuantity(quest?.droid?.remaining_energy);
+    //   if (enerchi > 770 && enerchi < 1835 && MhUtils.getBaitItemId() !== 1424)
+    //     return;
+    //   this.defaultSleep(enviromentSchedules);
+    // },
     rift_valour(enviromentSchedules) {
       const quest = user.quests.QuestRiftValour;
       const floor = quest.floor;
