@@ -5,24 +5,6 @@ import {
   allSnuids,
   MapClasses
 } from './my-mh-aid-dev';
-// MH constants
-const eventRegistry = {};
-const jsDialog = {};
-const hg = {};
-const user = {};
-user.environment_type = 'environment_type';
-user.quests = {};
-// MH functions
-function $() {}
-// MH & my-mh-aid functions
-function logging(...any) {
-  const debug = true;
-  if (debug) {
-    console.groupCollapsed(new Date(), ...any);
-    console.log(Error().stack);
-    console.groupEnd();
-  }
-}
 
 // #testMappingUtility
 // if (
@@ -47,7 +29,7 @@ function logging(...any) {
 setTimeout(() => testMappingUtility(), 30000);
 function testMappingUtility() {
   const isProd = false;
-  const version = 'testMappingUtility_1.0.2.0.2';
+  const version = 'testMappingUtility_1.0.2.1.2';
   isProd ? logging(version) : console.log(version);
   // my own hard-coded constants
   const maptainTypes = {
@@ -57,6 +39,24 @@ function testMappingUtility() {
     never: 'never'
   };
   const scrollChests = {
+    treat: {
+      size: 5,
+      mapClass: MapClasses.event,
+      name: 'Halloween Treat',
+      scroll: 'halloween_2021_treat_scroll_case_convertible',
+      chest: 'halloween_2021_treat_chest_convertible',
+      chestRare: 'rare_halloween_2021_treat_chest_convertible',
+      isAutoOpen: true
+    },
+    trick: {
+      size: 5,
+      mapClass: MapClasses.event,
+      name: 'Halloween Trick',
+      scroll: 'halloween_2021_trick_scroll_case_convertible',
+      chest: 'halloween_2021_trick_chest_convertible',
+      chestRare: 'rare_halloween_2021_trick_chest_convertible',
+      isAutoOpen: true
+    },
     naughtyList: {
       size: 5,
       mapClass: MapClasses.event,
@@ -638,6 +638,36 @@ function testMappingUtility() {
 }
 // End #testMappingUtility
 
+(async () => {
+  try {
+    const scroll = 'halloween_2021_trick_scroll_case_convertible';
+    const qty = await mh.cmd.UserInventory.getItemQuantity(scroll);
+    if (qty < 1)
+      await mh.dao.Shop.completeTransactionPromise(true, scroll, 1, false);
+    mh.dao.UserInventory.useConvertiblePromise(scroll, 1);
+  } catch (error) {
+    console.error(error);
+  }
+})();
+
+// MH constants
+const eventRegistry = {};
+const jsDialog = {};
+const hg = {};
+const user = {};
+user.environment_type = 'environment_type';
+user.quests = {};
+// MH functions
+function $() {}
+// MH & my-mh-aid functions
+function logging(...any) {
+  const debug = true;
+  if (debug) {
+    console.groupCollapsed(new Date(), ...any);
+    console.log(Error().stack);
+    console.groupEnd();
+  }
+}
 console.log(MapInfo);
 const MapInfo = {
   asset_package_hash: '8a47b5fc363',
