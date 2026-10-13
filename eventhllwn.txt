@@ -7,7 +7,7 @@ function halloween() {
   const targetEnvironmentType = 'halloween_event_location';
   const enviromentType = MhUtils.getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('halloween_2.0.4.2.9');
+  logging('halloween_2.0.4.2.10');
   // my own hard-coded constants
   const mapScrollType = 'halloween_2021_trick_scroll_case_convertible';
   const scream = 'Scream Cheese';
@@ -144,13 +144,28 @@ function halloween() {
             $('.halloweenBoilingCauldronHUD-instantFinish')
               .css({ top: '80px' })
               .draggable();
-          } else
+          } else {
             $('.halloweenBoilingCauldronHUD-baitContainer')
               .css({
                 top: '80px',
                 zIndex: '3'
               })
               .draggable();
+            $('.halloweenBoilingCauldronHUD-extract.mousehuntTooltipParent')
+              .css({
+                top: '130px',
+                zIndex: '3'
+              })
+              .draggable();
+            $(
+              '.halloweenBoilingCauldronHUD-instantFinish.mousehuntTooltipParent'
+            )
+              .css({
+                top: '130px',
+                zIndex: '3'
+              })
+              .draggable();
+          }
         } catch (error) {
           console.error(error);
         }
