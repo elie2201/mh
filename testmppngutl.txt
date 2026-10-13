@@ -29,7 +29,7 @@ import {
 setTimeout(() => testMappingUtility(), 30000);
 function testMappingUtility() {
   const isProd = false;
-  const version = 'testMappingUtility_1.0.2.1.2';
+  const version = 'testMappingUtility_1.0.2.2.2';
   isProd ? logging(version) : console.log(version);
   // my own hard-coded constants
   const maptainTypes = {
@@ -39,7 +39,7 @@ function testMappingUtility() {
     never: 'never'
   };
   const scrollChests = {
-    treat: {
+    halloweenTreat: {
       size: 5,
       mapClass: MapClasses.event,
       name: 'Halloween Treat',
@@ -48,7 +48,7 @@ function testMappingUtility() {
       chestRare: 'rare_halloween_2021_treat_chest_convertible',
       isAutoOpen: true
     },
-    trick: {
+    halloweenTrick: {
       size: 5,
       mapClass: MapClasses.event,
       name: 'Halloween Trick',
