@@ -7,7 +7,7 @@ function halloween() {
   const targetEnvironmentType = 'halloween_event_location';
   const enviromentType = MhUtils.getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('halloween_2.0.4.2.7');
+  logging('halloween_2.0.4.2.8');
   // my own hard-coded constants
   const mapScrollType = 'halloween_2021_trick_scroll_case_convertible';
   const scream = 'Scream Cheese';
@@ -122,14 +122,24 @@ function halloween() {
       },
       tuneUI() {
         logging('start tuneUI');
-        if (user.quests.QuestHalloweenBoilingCauldron.is_shutdown) {
-          $('.halloweenBoilingCauldronHUD-extract').css({ top: '80px' });
-          $('.halloweenBoilingCauldronHUD-instantFinish').css({ top: '80px' });
-        } else
-          $('.halloweenBoilingCauldronHUD-baitContainer').css({
-            top: '80px',
-            zIndex: '3'
-          });
+        try {
+          if (user.quests.QuestHalloweenBoilingCauldron.is_shutdown) {
+            $('.halloweenBoilingCauldronHUD-extract')
+              .css({ top: '80px' })
+              .draggable();
+            $('.halloweenBoilingCauldronHUD-instantFinish')
+              .css({ top: '80px' })
+              .draggable();
+          } else
+            $('.halloweenBoilingCauldronHUD-baitContainer')
+              .css({
+                top: '80px',
+                zIndex: '3'
+              })
+              .draggable();
+        } catch (error) {
+          console.error(error);
+        }
         console.log('next: 自動設定');
         this.autoSettingsPromise(); // NOSONAR
       },
@@ -402,7 +412,10 @@ function halloween() {
           //   if (map.map_class == MapClasses.event) inEventMap = true;
           // }
           // if (totalEE > 600 && isTrackingReward && !inEventMap) {
-          if (isTrackingReward) {
+          if (
+            isTrackingReward &&
+            recipeTypes.indexOf('halloween_extract_cauldron_recipe') !== 0
+          ) {
             ingredients.unshift(ingredients.pop());
             recipeTypes.unshift(recipeTypes.pop());
             itemTypes.unshift(itemTypes.pop());
