@@ -29,7 +29,7 @@ import {
 setTimeout(() => testMappingUtility(), 30000);
 function testMappingUtility() {
   const isProd = false;
-  const version = 'testMappingUtility_1.0.2.2.2';
+  const version = 'testMappingUtility_1.0.2.3.2';
   isProd ? logging(version) : console.log(version);
   // my own hard-coded constants
   const maptainTypes = {
@@ -44,8 +44,8 @@ function testMappingUtility() {
       mapClass: MapClasses.event,
       name: 'Halloween Treat',
       scroll: 'halloween_2021_treat_scroll_case_convertible',
-      chest: 'halloween_2021_treat_chest_convertible',
-      chestRare: 'rare_halloween_2021_treat_chest_convertible',
+      chest: 'treat_halloween_2021_chest_convertible',
+      chestRare: 'rare_treat_halloween_2021_chest_convertible',
       isAutoOpen: true
     },
     halloweenTrick: {
@@ -53,8 +53,8 @@ function testMappingUtility() {
       mapClass: MapClasses.event,
       name: 'Halloween Trick',
       scroll: 'halloween_2021_trick_scroll_case_convertible',
-      chest: 'halloween_2021_trick_chest_convertible',
-      chestRare: 'rare_halloween_2021_trick_chest_convertible',
+      chest: 'trick_hween2021_treasure_chest_convertible',
+      chestRare: 'rare_trick_hween2021_treasure_chest_convertible',
       isAutoOpen: true
     },
     naughtyList: {
@@ -188,6 +188,7 @@ function testMappingUtility() {
         return new Promise((resolve, reject) => {
           // auto settings if necessary and then invoke next promise
           this.scrollChest = scrollChests[this.mapTypeKey];
+          if (!this.scrollChest) return resolve();
           this.map = MhUtils.getMapByClass(this.scrollChest.mapClass);
           resolve();
         });
