@@ -625,7 +625,7 @@ function testMappingUtility() {
   //   }
   // );
 }
-setTimeout(() => testMappingUtility, 0); // 30000);
+// setTimeout(() => testMappingUtility, 0); // 30000);
 // End #testMappingUtility
 
 // 用掉庫存的 scroll
