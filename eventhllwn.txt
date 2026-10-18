@@ -130,7 +130,7 @@ function halloween(mapInfo) {
   const targetEnvironmentType = 'halloween_event_location';
   const enviromentType = MhUtils.getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('halloween_2.0.5.2.10');
+  logging('halloween_2.0.5.2.12');
   // my own hard-coded constants
   const mapScrollType = 'halloween_2021_trick_scroll_case_convertible';
   const scream = 'Scream Cheese';
@@ -679,7 +679,7 @@ function halloween(mapInfo) {
             this.handleTrap(trap, trap[4]);
             return resolve();
           }
-          if (this.mapInfo && !settings.isLootEnding) {
+          if (this.mapInfo?.isFull && !settings.isLootEnding) {
             if (this.handleTrapByMapping(traps)) return resolve();
           }
           this.chooseAndArm(traps, resolve);
@@ -690,7 +690,7 @@ function halloween(mapInfo) {
         console.debug(`mapping bait index: ${baitIndex}`);
         if (
           baitIndex > -1 &&
-          cheeseStats[baitIndex] > settings.minBaitQuantity[baitIndex]
+          cheeseStats[baitIndex] > settings.minBaitQuantityTracking[baitIndex]
         ) {
           const trap = traps[`cauldron_tier_${4 - baitIndex}_cheese`];
           this.handleTrap(
