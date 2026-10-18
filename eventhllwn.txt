@@ -1,27 +1,151 @@
-/* global $, MhUtils, MyUtils */
+/* global $, user, hg, eventRegistry, jsDialog, mh, MhUtils, MyUtils, mappingUtility */
 
 // #Halloween
-// if (MhUtils.getEnvironmentType() === 'halloween_event_location') halloween();
-function halloween() {
+const HalloweenMouses = {
+  creepy_marionette: {
+    uid: 826,
+    type: 'creepy_marionette',
+    name: 'Creepy Marionette',
+    config: 'cauldron_tier_2_cheese'
+  },
+  hollowhead: {
+    uid: 99,
+    type: 'hollowhead',
+    name: 'Hollowhead',
+    config: 'cauldron_tier_2_cheese'
+  },
+  hween_2013_boss: {
+    uid: 513,
+    type: 'hween_2013_boss',
+    name: 'Titanic Brain-Taker',
+    config: 'cauldron_tier_2_cheese'
+  },
+  hween_2014_boss: {
+    uid: 674,
+    type: 'hween_2014_boss',
+    name: 'Mousataur Priestess',
+    config: 'cauldron_tier_2_cheese'
+  },
+  hween_2016_boss: {
+    uid: 827,
+    type: 'hween_2016_boss',
+    name: 'Sandmouse',
+    config: 'cauldron_tier_2_cheese'
+  },
+  rift_grave_digger: {
+    uid: 864,
+    type: 'rift_grave_digger',
+    name: 'Tomb Exhumer',
+    config: 'cauldron_tier_2_cheese'
+  },
+  dire_lycan: {
+    uid: 790,
+    type: 'dire_lycan',
+    name: 'Dire Lycan',
+    config: 'cauldron_tier_2_cheese'
+  },
+  grave_digger: {
+    uid: 337,
+    type: 'grave_digger',
+    name: 'Grave Robber',
+    config: 'cauldron_tier_2_cheese'
+  },
+  gourd_ghoul: {
+    uid: 791,
+    type: 'gourd_ghoul',
+    name: 'Gourd Ghoul',
+    config: 'cauldron_tier_3_cheese'
+  },
+  hween_2017_boss: {
+    uid: 910,
+    type: 'hween_2017_boss',
+    name: 'Captain Cannonball',
+    config: 'cauldron_tier_3_cheese'
+  },
+  hween_2018_boss: {
+    uid: 954,
+    type: 'hween_2018_boss',
+    name: 'Admiral Arrrgh',
+    config: 'cauldron_tier_3_cheese'
+  },
+  rift_ghost_pirate: {
+    uid: 911,
+    type: 'rift_ghost_pirate',
+    name: 'Ghost Pirate Queen',
+    config: 'cauldron_tier_3_cheese'
+  },
+  scorned_pirate: {
+    uid: 912,
+    type: 'scorned_pirate',
+    name: 'Scorned Pirate',
+    config: 'cauldron_tier_3_cheese'
+  },
+  spectral_swashbuckler: {
+    uid: 913,
+    type: 'spectral_swashbuckler',
+    name: 'Spectral Swashbuckler',
+    config: 'cauldron_tier_3_cheese'
+  },
+  spectral_butler: {
+    uid: 795,
+    type: 'spectral_butler',
+    name: 'Spectral Butler',
+    config: 'cauldron_tier_3_cheese'
+  },
+  hween_2012_boss: {
+    uid: 403,
+    type: 'hween_2012_boss',
+    name: 'Swamp Thang',
+    config: 'cauldron_tier_4_cheese'
+  },
+  hween_2015_boss: {
+    uid: 793,
+    type: 'hween_2015_boss',
+    name: 'Bonbon Gummy Globlin',
+    config: 'cauldron_tier_4_cheese'
+  },
+  hween_2021_boss: {
+    uid: 1088,
+    type: 'hween_2021_boss',
+    name: 'Baba Gaga',
+    config: 'cauldron_tier_4_cheese'
+  },
+  hollowed_demon: {
+    uid: 673,
+    type: 'hollowed_demon',
+    name: 'Hollowed',
+    config: 'cauldron_tier_4_cheese'
+  },
+  hollowed_minion: {
+    uid: 792,
+    type: 'hollowed_minion',
+    name: 'Hollowed Minion',
+    config: 'cauldron_tier_4_cheese'
+  }
+};
+if (MhUtils.getEnvironmentType() === 'halloween_event_location') halloween();
+function halloween(mapInfo) {
   const isProd = false;
+  const todayUTC = new Date().toISOString().split('T')[0];
   const targetEnvironmentType = 'halloween_event_location';
   const enviromentType = MhUtils.getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('halloween_2.0.4.2.10');
+  logging('halloween_2.0.5.2.10');
   // my own hard-coded constants
   const mapScrollType = 'halloween_2021_trick_scroll_case_convertible';
   const scream = 'Scream Cheese';
   const polter = 'Polter-Geitost';
   const bonefort = 'Bonefort Cheese';
   const monterey = 'Monterey Jack-O-Lantern';
-  const shoppeCheese = 'Gouda Cheese';
+  const gouda = 'Gouda Cheese';
+  const sb = 'SUPER';
   const bct = 'Boiling Cauldron';
   const acb = "Alchemist's Cookbook";
   const bestBase = 'best.base.combo';
   const sgotd = 'Seasonal Gift';
-  const luck7up = 'Chrome Charm,Extreme Luck Charm,Super Regal';
-  const luck5 = 'Airship Charm,Greasy Glob Charm,Luck Charm';
-  const luck2to3 = 'Cactus Charm,Luck Charm';
+  const l7up = 'Chrome Charm,Extreme Luck Charm,Super Regal';
+  const l5c = 'Airship Charm,Greasy Glob Charm,Luck Charm';
+  const l2to3 = 'Cactus Charm,Spooky Charm,Snowball Charm,Luck Charm';
   const none = 'none';
   /** localStorage settings */
   const defaultSettings = {
@@ -37,27 +161,34 @@ function halloween() {
     isLootEnding: false,
     gotdDates: [],
     traps: {
-      tracking: [
-        [scream, bct, bestBase, none, true],
-        [polter, bct, bestBase, none, false],
-        [bonefort, bct, bestBase, none, false],
-        [monterey, bct, acb, luck2to3, false],
-        [shoppeCheese, bct, acb, luck2to3, false]
-      ],
-      boon: [
-        [scream, bct, acb, luck7up, true],
-        [polter, bct, acb, luck7up, false],
-        [bonefort, bct, acb, luck5, false],
-        [monterey, bct, acb, luck2to3, false],
-        [shoppeCheese, bct, acb, luck2to3, false]
-      ],
-      gotd: [
-        [scream, bct, sgotd, luck7up, true],
-        [polter, bct, sgotd, luck7up, false],
-        [bonefort, bct, sgotd, luck5, false],
-        [monterey, bct, sgotd, luck2to3, false],
-        [shoppeCheese, bct, sgotd, luck2to3, false]
-      ]
+      tracking: {
+        cauldron_tier_4_cheese: [scream, bct, bestBase, none, true],
+        cauldron_tier_3_cheese: [polter, bct, bestBase, none, false],
+        cauldron_tier_2_cheese: [bonefort, bct, bestBase, none, false],
+        cauldron_tier_1_cheese: [monterey, bct, acb, l2to3, false],
+        cauldron_tier_0_cheese: [sb, bct, acb, l2to3, false]
+      },
+      boon: {
+        cauldron_tier_4_cheese: [scream, bct, acb, l7up, true],
+        cauldron_tier_3_cheese: [polter, bct, acb, l7up, false],
+        cauldron_tier_2_cheese: [bonefort, bct, acb, l5c, false],
+        cauldron_tier_1_cheese: [monterey, bct, acb, l2to3, false],
+        cauldron_tier_0_cheese: [sb, bct, acb, l2to3, false]
+      },
+      gotd: {
+        cauldron_tier_4_cheese: [scream, bct, sgotd, l7up, true],
+        cauldron_tier_3_cheese: [polter, bct, sgotd, l7up, false],
+        cauldron_tier_2_cheese: [bonefort, bct, sgotd, l5c, false],
+        cauldron_tier_1_cheese: [monterey, bct, sgotd, l2to3, false],
+        cauldron_tier_0_cheese: [gouda, bct, sgotd, l2to3, false]
+      },
+      shutdown: {
+        cauldron_tier_4_cheese: [gouda, bct, sgotd, l2to3, false],
+        cauldron_tier_3_cheese: [gouda, bct, sgotd, l2to3, false],
+        cauldron_tier_2_cheese: [gouda, bct, sgotd, l2to3, false],
+        cauldron_tier_1_cheese: [gouda, bct, sgotd, l2to3, false],
+        cauldron_tier_0_cheese: [gouda, bct, sgotd, l2to3, false]
+      }
     }
   };
   const settings = isProd
@@ -70,6 +201,11 @@ function halloween() {
   // // const trapState = quest.mice_state;
   const rewardTrack = quest.reward_track;
   const isTrackingReward = rewardTrack.total_progress < 40;
+  const totalEE =
+    MyUtils.parseQuantity(rewardTrack.total_progress) * 15 +
+    MyUtils.parseQuantity(
+      quest.items.cauldron_potion_ingredient_stat_item.quantity_unformatted
+    );
   const isAutoOpen =
     settings.isAutoMap &&
     !settings.isLootEnding &&
@@ -111,6 +247,19 @@ function halloween() {
     'cauldron_tier_1_cheese',
     'halloween_extract_stat_item'
   ];
+  const cheeseTypes = [
+    'cauldron_tier_4_cheese',
+    'cauldron_tier_3_cheese',
+    'cauldron_tier_2_cheese',
+    'cauldron_tier_1_cheese'
+  ];
+  const cheeseStats = [
+    MyUtils.parseQuantity(quest.items[cheeseTypes[0]].quantity_unformatted),
+    MyUtils.parseQuantity(quest.items[cheeseTypes[1]].quantity_unformatted),
+    MyUtils.parseQuantity(quest.items[cheeseTypes[2]].quantity_unformatted),
+    MyUtils.parseQuantity(quest.items[cheeseTypes[3]].quantity_unformatted),
+    1000
+  ];
   const halloweenUtility = (() => {
     const utils = {
       // values
@@ -128,6 +277,7 @@ function halloween() {
           });
         }
       },
+      mapInfo: mapInfo, // 先用傳進來的參數,不管有沒有傳.後面 setMapInfo才是最主要的賦值
       /** start running */
       run() {
         logging('start run');
@@ -188,6 +338,7 @@ function halloween() {
           }
           console.log('next: 檢查是否能 claim track reward');
           this.claimRewardTrackPromise(); // NOSONAR
+          resolve();
         });
       },
       /** promise to claim track reward if can claim and tracking reward */
@@ -203,11 +354,12 @@ function halloween() {
                 rewardTrack.can_claim = false;
                 halloween();
               }, 2000);
+              resolve();
             });
             return;
           }
           console.log('next: 沒有 track reward,處理 map reward');
-          this.claimMapRewardPromise(MapClasses.event); // NOSONAR
+          this.checkMapPromise(mh.MapClasses.event); // NOSONAR
         });
       },
       /** claim track reward */
@@ -223,7 +375,31 @@ function halloween() {
           }
         });
       },
-      /** claim map rewards promise */
+      /** Check map with mappingUtility */
+      checkMapPromise(mapClass) {
+        if (!settings.isAutoMap) {
+          this.boilingCauldronPromise(settings.minBrewingQty); // NOSONAR
+          return;
+        }
+        const mapTypeKey = localStorage[mappingUtility.workingMapKey];
+        console.log(`working map: ${mapTypeKey}`);
+        if (!mapTypeKey) {
+          console.info('Not set auto mapping');
+          this.boilingCauldronPromise(settings.minBrewingQty); // NOSONAR
+          return;
+        }
+        // full auto mapping
+        mappingUtility.run(
+          mapTypeKey,
+          mappingUtility.defaultMapInfoParser,
+          (mapInfo) => {
+            console.log('Finished!!');
+            this.setMapInfo(mapInfo);
+          },
+          isAutoOpen
+        );
+      },
+      /** @deprecated claim map rewards promise */
       claimMapRewardPromise(mapClass) {
         logging(`start claimMapRewardPromise(${mapClass})`);
         if (!settings.isAutoMap) {
@@ -261,7 +437,7 @@ function halloween() {
           next();
         });
       },
-      /** accept map invite promise */
+      /** @deprecated accept map invite promise */
       acceptMapInvitePromise(mapClass) {
         logging(`start acceptMapInvitePromise(${mapClass}).)`);
         return new Promise((resolve, reject) => {
@@ -269,7 +445,7 @@ function halloween() {
             this.boilingCauldronPromise(settings.minBrewingQty); // NOSONAR
           };
           // 防呆
-          if (!mapClass || !MapClasses[mapClass]) {
+          if (!mapClass || !mh.MapClasses[mapClass]) {
             notAcceptAction();
             return;
           }
@@ -287,7 +463,7 @@ function halloween() {
             return;
           }
           console.log('invited, try accept');
-          const map = getMapByClass(mapClass);
+          const map = MhUtils.getMapByClass(mapClass);
           if (map) {
             console.log('already in map, ignore invite');
             notAcceptAction();
@@ -313,19 +489,19 @@ function halloween() {
                         );
                       }, 2000);
                     });
-                    closeAnyJsDialog();
+                    MhUtils.closeAnyJsDialog();
                     return;
                   }
                 }
               });
-              closeAnyJsDialog();
+              MhUtils.closeAnyJsDialog();
               notAcceptAction();
             },
             Number.parseInt(3500 + Math.random() * 1500) // NOSONAR
           );
         });
       },
-      /** open map scroll promise */
+      /** @deprecated open map scroll promise */
       openMapScrollPromise(mapClass, scrollType, isAutoBuy) {
         logging(
           `start openMapScrollPromise(${mapClass}, ${scrollType}, ${isAutoBuy})`
@@ -346,7 +522,7 @@ function halloween() {
           });
         };
         return new Promise((resolve, reject) => {
-          if (getMapByClass(mapClass)) {
+          if (MhUtils.getMapByClass(mapClass)) {
             console.log('already in map, not open again');
             notOpenAction();
             return;
@@ -386,7 +562,7 @@ function halloween() {
           );
         });
       },
-      /** invite map friends promise, 只在 open scroll當下執行 */
+      /** @deprecated invite map friends promise, 只在 open scroll當下執行 */
       inviteMapFriendsPromise(mapClass) {
         logging('start inviteMapFriendsPromise');
         const next = () => {
@@ -415,6 +591,11 @@ function halloween() {
           next
         ); */
       },
+      setMapInfo(mapInfo) {
+        this.mapInfo = mapInfo;
+        console.debug('After auto mapping, get map info:', this.mapInfo);
+        this.boilingCauldronPromise(settings.minBrewingQty); // NOSONAR
+      },
       /** boiling cauldron promise */
       boilingCauldronPromise(minBrewingQty) {
         logging(`start boilingCauldronPromise(${minBrewingQty})`);
@@ -439,8 +620,10 @@ function halloween() {
           if (
             cauldronUsage[0][0] + cauldronUsage[0][1] > minBrewingQty &&
             cauldronUsage[1][0] + cauldronUsage[1][1] > minBrewingQty
-          )
-            return;
+          ) {
+            this.handleTrapPromise().catch((e) => console.trace(e));
+            return resolve();
+          }
           console.log(
             `Have cauldrons progress less than ${minBrewingQty} , fill it up!!`
           );
@@ -465,100 +648,133 @@ function halloween() {
                   setTimeout(() => {
                     this.boilingCauldronPromise(minBrewingQty); // NOSONAR
                   }, 1000);
+                  resolve();
                 }
               );
               // 問題還是有點多 setTimeout(() => { boilingCauldron(minBrewingQty); }, 10000);
               return;
             }
           }
+          this.handleTrapPromise().catch((e) => console.trace(e));
         });
       },
       /** handle trap promise */
       handleTrapPromise() {
         logging('start handleTrapPromise.');
         return new Promise((resolve, reject) => {
-          const traps = isTrackingReward ? settings.trap : settings.trapBoon;
+          const shoppeCheeseKey = 'cauldron_tier_0_cheese';
           if (quest.is_shutdown || quest.is_final_shutdown) {
+            const trap = settings.traps.shutdown[shoppeCheeseKey];
             // // traps[4][0] = 'Brie Cheese'; // shutdown phase用 Brie就夠了, brew只看 hunts
-            armAllTraps(...traps[4]); // shoppe cheese setup
-            this.toggleIncense(traps[4][4]);
-            return;
+            this.handleTrap(trap, trap[4]); // shoppe cheese setup
+            return resolve();
           }
-          const minBaitQuantity = isTrackingReward
-            ? settings.minBaitQuantityTracking
-            : settings.minBaitQuantity;
-          const ingredients = [
-            MyUtils.parseQuantity(
-              quest.items.cauldron_tier_4_ingredient_stat_item
-                .quantity_unformatted
-            ),
-            MyUtils.parseQuantity(
-              quest.items.cauldron_tier_3_ingredient_stat_item
-                .quantity_unformatted
-            ),
-            MyUtils.parseQuantity(
-              quest.items.cauldron_tier_2_ingredient_stat_item
-                .quantity_unformatted
-            ),
-            MyUtils.parseQuantity(
-              quest.items.cauldron_tier_1_ingredient_stat_item
-                .quantity_unformatted
-            ),
-            MyUtils.parseQuantity(
-              quest.items.cauldron_potion_ingredient_stat_item
-                .quantity_unformatted
-            )
-          ];
-          if (settings.isLootEnding) {
-            // 接近停止 loot時,把 tier-4 tier-3材料歸零就好,可以繼續收集 Bonefort
-            // 也就是只用 Gouda/Monterey hunting. Bonefort材料有剩也不是太浪費
-            if (ingredients[0] % 15 > 1) logging('Normally hunt.');
-            else if (ingredients[1] % 15 > 2) minBaitQuantity[1] = 1000;
-            else {
-              minBaitQuantity[1] = 1000;
-              minBaitQuantity[2] = 1000;
-            }
+          const traps = settings.gotdDates.includes(todayUTC)
+            ? settings.traps.gotd
+            : isTrackingReward
+              ? settings.traps.tracking
+              : settings.traps.boon;
+          if (isTrackingReward && totalEE > 600) {
+            const trap = traps[shoppeCheeseKey];
+            this.handleTrap(trap, trap[4]);
+            return resolve();
           }
-          logging('minBaitQuantity:', minBaitQuantity);
-          const cheeseStats = [
-            MyUtils.parseQuantity(
-              quest.items.cauldron_tier_4_cheese.quantity_unformatted
-            ),
-            MyUtils.parseQuantity(
-              quest.items.cauldron_tier_3_cheese.quantity_unformatted
-            ),
-            MyUtils.parseQuantity(
-              quest.items.cauldron_tier_2_cheese.quantity_unformatted
-            ),
-            MyUtils.parseQuantity(
-              quest.items.cauldron_tier_1_cheese.quantity_unformatted
-            ),
-            1000
-          ];
-          let priorityBegin = settings.priorityBegin;
-          if (this.mapMouseRemaining() < settings.mapEndingQuantity)
-            priorityBegin = Math.max(
-              settings.priorityBegin,
-              settings.mapEndingPriorityBegin
-            );
-          for (let i = priorityBegin; i < cheeseStats.length; i++) {
-            const baitQuantity = cheeseStats[i];
-            if (baitQuantity > minBaitQuantity[i]) {
-              logging('found best bait with enough quantity, bait index:', i);
-              const trap = traps[i];
-              logging(trap);
-              if (trap) {
-                armAllTraps(...trap);
-                this.toggleIncense(
-                  isTrackingReward || settings.isIncenseTrackComplete
-                    ? settings.trap[i][4]
-                    : false
-                );
-              }
-              break;
-            }
+          if (this.mapInfo && !settings.isLootEnding) {
+            if (this.handleTrapByMapping(traps)) return resolve();
           }
+          this.chooseAndArm(traps, resolve);
         });
+      },
+      handleTrapByMapping(traps) {
+        const baitIndex = this.findBaitByMapping();
+        console.debug(`mapping bait index: ${baitIndex}`);
+        if (
+          baitIndex > -1 &&
+          cheeseStats[baitIndex] > settings.minBaitQuantity[baitIndex]
+        ) {
+          const trap = traps[`cauldron_tier_${4 - baitIndex}_cheese`];
+          this.handleTrap(
+            trap,
+            isTrackingReward || settings.isIncenseTrackComplete
+              ? trap[4]
+              : false
+          );
+          return trap;
+        }
+        return null;
+      },
+      findBaitByMapping() {
+        const remainingMouses = this.mapInfo?.all;
+        if (!remainingMouses?.length) {
+          return -1;
+        }
+        const baits = new Set();
+        for (const mouse of remainingMouses) {
+          const config = HalloweenMouses[mouse]?.config;
+          if (!config) {
+            console.warn(`Unknown Halloween mouse: ${mouse}`);
+            continue;
+          }
+          const index = cheeseTypes.indexOf(config);
+          if (index !== -1) {
+            baits.add(index);
+          }
+        }
+        console.debug('Remaining mouse config indexes:', [...baits]);
+        const bait = Math.max(...baits); // // baits.values().next().value;
+        return bait;
+      },
+      chooseAndArm(traps, resolve) {
+        const minBaitQuantity = this.autoMinBaitQuantity();
+        logging('minBaitQuantity:', minBaitQuantity);
+        const priorityBegin = this.calculatePriorityBegin();
+        for (let i = priorityBegin; i < cheeseStats.length; i++) {
+          const baitQuantity = cheeseStats[i];
+          if (baitQuantity > minBaitQuantity[i]) {
+            logging('found best bait with enough quantity, bait index:', i);
+            const trap = traps[`cauldron_tier_${4 - i}_cheese`];
+            logging(trap);
+            if (trap) {
+              this.handleTrap(
+                trap,
+                isTrackingReward || settings.isIncenseTrackComplete
+                  ? trap[4]
+                  : false
+              );
+            }
+            break;
+          }
+        }
+        resolve();
+      },
+      autoMinBaitQuantity() {
+        const minBaitQuantity = isTrackingReward
+          ? settings.minBaitQuantityTracking
+          : settings.minBaitQuantity;
+        if (settings.isLootEnding) {
+          // 接近停止 loot時,把 tier-4 tier-3材料歸零就好,可以繼續收集 Bonefort
+          // 也就是只用 Gouda/Monterey hunting. Bonefort材料有剩也不是太浪費
+          if (ingredients[0] % 15 > 1) logging('Normally hunt.');
+          else if (ingredients[1] % 15 > 2) minBaitQuantity[1] = 1000;
+          else {
+            minBaitQuantity[1] = 1000;
+            minBaitQuantity[2] = 1000;
+          }
+        }
+        return minBaitQuantity;
+      },
+      calculatePriorityBegin() {
+        let priorityBegin = settings.priorityBegin;
+        if (this.mapMouseRemaining() > settings.mapEndingQuantity)
+          priorityBegin = Math.max(
+            settings.priorityBegin,
+            settings.mapEndingPriorityBegin
+          );
+        return priorityBegin;
+      },
+      handleTrap(trap, isToEnable) {
+        armAllTraps(...trap);
+        this.toggleIncense(isToEnable);
       },
       mapMouseRemaining() {
         const maps = user.quests.QuestRelicHunter.maps;
@@ -600,7 +816,7 @@ function halloween() {
           data: params,
           dataType: 'json',
           type: 'post',
-          url: MOUSEHUNT_BASE_URL + this.URI,
+          url: mh.MOUSEHUNT_BASE_URL + this.URI,
           success: function (data) {
             target.removeClass('busy');
             eventRegistry.doEvent('ajax_response', data);
@@ -637,6 +853,20 @@ function halloween() {
 // End #Halloween
 
 // MH constants
+user.environment_type = 'halloween_event_location';
+user.quests = {};
+user.quests.QuestHalloweenBoilingCauldron = QuestHalloweenBoilingCauldron;
+function logging(...any) {
+  const debug = true;
+  if (debug) {
+    console.groupCollapsed(new Date(), ...any);
+    console.log(new Error().stack);
+    console.groupEnd();
+  }
+}
+function armAllTraps(bait, weapon, base, charm) {
+  console.log(bait, weapon, base, charm);
+}
 const QuestHalloweenBoilingCauldron = {
   is_basic_bait_armed: null,
   bait_type: 'cauldron_tier_1_cheese',
@@ -3808,38 +4038,3 @@ const QuestHalloweenBoilingCauldron = {
   timer_bar_end_date: '2024-11-04T15:00:00.000Z',
   standard_bait_choice: 'super_brie_cheese'
 };
-const MOUSEHUNT_BASE_URL = 'https://www.mousehuntgame.com/';
-const MapClasses = { treasuer: 'treasure', poster: 'poster', event: 'event' };
-const eventRegistry = {};
-const jsDialog = {};
-const hg = {};
-const user = {};
-user.environment_type = 'halloween_event_location';
-user.quests = {};
-user.quests.QuestHalloweenBoilingCauldron = QuestHalloweenBoilingCauldron;
-function logging(...any) {
-  const debug = true;
-  if (debug) {
-    console.groupCollapsed(new Date(), ...any);
-    console.log(new Error().stack);
-    console.groupEnd();
-  }
-}
-/**
- * Find a working map by map_class
- * @param {String} mapClass
- * @returns
- */
-function getMapByClass(mapClass) {
-  const maps = user.quests.QuestRelicHunter.maps;
-  for (const element of maps) {
-    if (element.map_class == mapClass) {
-      return element;
-    }
-  }
-  return null;
-}
-function closeAnyJsDialog() {}
-function armAllTraps(bait, weapon, base, charm) {
-  console.log(bait, weapon, base, charm);
-}
