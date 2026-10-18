@@ -1,7 +1,7 @@
 /* global $, MhUtils, MyUtils */
 
 // #Halloween
-if (MhUtils.getEnvironmentType() === 'halloween_event_location') halloween();
+// if (MhUtils.getEnvironmentType() === 'halloween_event_location') halloween();
 function halloween() {
   const isProd = false;
   const targetEnvironmentType = 'halloween_event_location';
