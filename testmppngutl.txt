@@ -1,631 +1,619 @@
-import {
-  MyUtils,
-  MhUtils,
-  MOUSEHUNT_BASE_URL,
-  allSnuids,
-  MapClasses
-} from './my-mh-aid-dev';
+/* global $, user, mh */
+import { MyUtils, MhUtils, allSnuids, MapClasses } from './my-mh-aid-dev';
 
 // #testMappingUtility
-// if (
-//   [
-//     'town_of_gnawnia',
-//     'great_gnarled_tree',
-//     'laboratory',
-//     'dojo',
-//     'claw_shot_city',
-//     'desert_city',
-//     'ss_huntington_ii',
-//     'queso_river',
-//     'fungal_cavern',
-//     'moussu_picchu',
-//     'floating_islands',
-//     'foreword_farm',
-//     'bountiful_beanstalk',
-//     'conclusion_cliffs',
-//     'rift_gnawnia'
-//   ].includes(MhUtils.getEnvironmentType())
-// )
-setTimeout(() => testMappingUtility(), 30000);
-function testMappingUtility() {
-  const isProd = false;
-  const version = 'testMappingUtility_1.0.2.3.2';
-  isProd ? logging(version) : console.log(version);
-  // my own hard-coded constants
-  const maptainTypes = {
-    always: 'always',
-    once: 'once',
-    no: '',
-    never: 'never'
-  };
-  const scrollChests = {
-    halloweenTreat: {
-      size: 5,
-      mapClass: MapClasses.event,
-      name: 'Halloween Treat',
-      scroll: 'halloween_2021_treat_scroll_case_convertible',
-      chest: 'treat_halloween_2021_chest_convertible',
-      chestRare: 'rare_treat_halloween_2021_chest_convertible',
-      isAutoOpen: true
+const mappingUtility = (() => {
+  const utils = {
+    isProd: true,
+    // values
+    version: 'mappingUtility_1.0.1.1.5',
+    /** ajax URI */
+    URI: 'managers/ajax/users/treasuremap_v2.php',
+    // my own hard-coded constants
+    maptainTypes: {
+      always: 'always',
+      once: 'once',
+      no: '',
+      never: 'never'
     },
-    halloweenTrick: {
-      size: 5,
-      mapClass: MapClasses.event,
-      name: 'Halloween Trick',
-      scroll: 'halloween_2021_trick_scroll_case_convertible',
-      chest: 'trick_hween2021_treasure_chest_convertible',
-      chestRare: 'rare_trick_hween2021_treasure_chest_convertible',
-      isAutoOpen: true
-    },
-    naughtyList: {
-      size: 5,
-      mapClass: MapClasses.event,
-      name: 'Naughty List',
-      scroll: 'naughty_list_convertible',
-      chest: 'naughty_2022_list_chest_convertible',
-      chestRare: 'rare_naughty_2022_list_chest_convertible',
-      isAutoOpen: true
-    },
-    newYearsParty: {
-      size: 10,
-      mapClass: MapClasses.event,
-      name: 'New Year',
-      scroll: 'new_year_scroll_case_convertible',
-      chest: 'new_years_chest_convertible',
-      chestRare: 'rare_new_years_chest_convertible',
-      isAutoOpen: true
-    },
-    lny: {
-      size: 5,
-      mapClass: MapClasses.event,
-      name: 'Lantern Lighter',
-      scroll: 'lunar_new_year_scroll_case_convertible',
-      chest: 'lny_treasure_chest_2024_convertible',
-      chestRare: 'rare_lny_treasure_chest_2024_convertible',
-      isAutoOpen: true
-    },
-    birthday: {
-      size: 5,
-      mapClass: MapClasses.event,
-      name: 'Birthday Event',
-      scroll: 'birthday_f_scroll_case_convertible',
-      chest: 'birthday_2021_treasure_chest_convertible',
-      chestRare: 'rare_birthday_2021_treasure_chest_convertible',
-      isAutoOpen: true
-    }
-  };
-  // prettier-ignore
-  const mapGroups = {
-    5: [
-      [allSnuids.elie],[allSnuids.raphael],[allSnuids.van],[allSnuids.levi],[allSnuids.pola],
-      [allSnuids.weyl],[allSnuids.levine],[allSnuids.kelly],[allSnuids.angel],[allSnuids.mina],
-      [allSnuids.vanne],[allSnuids.angelie],[allSnuids.anthony],[allSnuids.monica],[allSnuids.vivienne],
-      [allSnuids.lydia],[allSnuids.kevin],[allSnuids.nina],[allSnuids.rose],
-      [allSnuids.vera],[allSnuids.hsilung],[allSnuids.angela],[allSnuids.kitty],[allSnuids.mary],
-      [allSnuids.riem,allSnuids.furt,allSnuids.haru,allSnuids.kaze,allSnuids.feyn,allSnuids.kaze],
-      [allSnuids.Umr,allSnuids.sky,allSnuids.rebec,allSnuids.scent,allSnuids.shall,allSnuids.scent],
-      [allSnuids.renee,allSnuids.stein,allSnuids.riem,allSnuids.furt,allSnuids.haru,allSnuids.furt],
-      [allSnuids.kaze,allSnuids.feyn,allSnuids.Umr,allSnuids.sky,allSnuids.rebec,allSnuids.sky],
-      [allSnuids.scent,allSnuids.shall,allSnuids.renee,allSnuids.stein,allSnuids.riem,allSnuids.stein],
-      [allSnuids.furt,allSnuids.haru,allSnuids.kaze,allSnuids.feyn,allSnuids.Umr,allSnuids.feyn],
-      [allSnuids.sky,allSnuids.rebec,allSnuids.scent,allSnuids.shall,allSnuids.renee,allSnuids.shall],
-      [allSnuids.stein,allSnuids.riem,allSnuids.furt,allSnuids.haru,allSnuids.kaze,allSnuids.haru],
-      [allSnuids.feyn,allSnuids.Umr,allSnuids.sky,allSnuids.rebec,allSnuids.scent,allSnuids.rebec],
-      [allSnuids.shall,allSnuids.renee,allSnuids.stein,allSnuids.riem,allSnuids.furt,allSnuids.riem],
-      [allSnuids.haru,allSnuids.kaze,allSnuids.feyn,allSnuids.Umr,allSnuids.sky,allSnuids.Umr],
-      [allSnuids.rebec,allSnuids.scent,allSnuids.shall,allSnuids.renee,allSnuids.stein,allSnuids.renee]
-    ],
-    10: [
-      [allSnuids.elie],[allSnuids.raphael],[allSnuids.van],[allSnuids.levi],[allSnuids.pola],
-      [allSnuids.weyl],[allSnuids.levine],[allSnuids.kelly],[allSnuids.angel],[allSnuids.mina],
-      [allSnuids.vanne],[allSnuids.angelie],[allSnuids.anthony],[allSnuids.monica],[allSnuids.vivienne],
-      [allSnuids.lydia],[allSnuids.kevin],[allSnuids.nina],[allSnuids.rose],
-      [allSnuids.vera],[allSnuids.hsilung],[allSnuids.angela],[allSnuids.kitty],[allSnuids.mary],
-      [allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.haru],
-      [allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.Umr],
-      [allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.scent],
-      [allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.stein],
-      [allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.riem],
-      [allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.kaze],
-      [allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.shall],
-      [allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.furt],
-      [allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.feyn],
-      [allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.feyn],
-      [allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.rebec],
-      [allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.renee]
-    ]
-  };
-  const workingMapKey = 'workingMap';
-  const maptainTypeKey = 'maptainType';
-  const dusterCycleKey = 'dusterCycle';
-  /** localStorage settings */
-  // const defaultSettings = {};
-  // const settings = isProd
-  //   ? MyUtils.getStorageToObject(targetEnvironmentType, defaultSettings)
-  //   : defaultSettings;
-  // MH constants
-  const mappingUtility = (() => {
-    const utils = {
-      // values
-      version: 'mappingUtility_1.0.0.1.4',
-      /** ajax URI */
-      URI: 'managers/ajax/environment/foreword_farm.php',
-      /** Set immutable fields */
-      setImmutable() {
-        const immutableFields = ['version', 'URI'];
-        for (let i = 0; i < immutableFields.length; i++) {
-          const immutableField = immutableFields[i];
-          if (!Object.hasOwn(utils, immutableField)) continue;
-          Object.defineProperty(utils, immutableField, {
-            // value: 'This cannot be changed',
-            writable: false, // Makes the field immutable
-            configurable: false, // Prevents deletion or re-configuration of the field
-            enumerable: true // Makes the field visible during enumeration (e.g., in a for...in loop)
-          });
-        }
+    scrollChests: {
+      halloweenTreat: {
+        size: 5,
+        mapClass: MapClasses.event,
+        name: 'Halloween Treat',
+        scroll: 'halloween_2021_treat_scroll_case_convertible',
+        chest: 'treat_halloween_2021_chest_convertible',
+        chestRare: 'rare_treat_halloween_2021_chest_convertible',
+        isAutoOpen: true
       },
-      snuid: null,
-      mapTypeKey: null,
-      mapInfoParser: null,
-      callback: null,
-      scrollChest: null,
-      map: null,
-      mapInfo: null,
-      /** start running */
-      run(callback) {
-        const version = 'start run mappingUtility';
-        isProd ? logging(version) : console.log(version);
-        if (!mapTypeKey) return console.log('No working map');
-        this.callback = callback;
-        this.autoSettingsPromise().then(() => {
-          this.autoMapping(this.mapTypeKey, this.callback);
+      halloweenTrick: {
+        size: 5,
+        mapClass: MapClasses.event,
+        name: 'Halloween Trick',
+        scroll: 'halloween_2021_trick_scroll_case_convertible',
+        chest: 'trick_hween2021_treasure_chest_convertible',
+        chestRare: 'rare_trick_hween2021_treasure_chest_convertible',
+        isAutoOpen: true
+      },
+      naughtyList: {
+        size: 5,
+        mapClass: MapClasses.event,
+        name: 'Naughty List',
+        scroll: 'naughty_list_convertible',
+        chest: 'naughty_2022_list_chest_convertible',
+        chestRare: 'rare_naughty_2022_list_chest_convertible',
+        isAutoOpen: true
+      },
+      newYearsParty: {
+        size: 10,
+        mapClass: MapClasses.event,
+        name: 'New Year',
+        scroll: 'new_year_scroll_case_convertible',
+        chest: 'new_years_chest_convertible',
+        chestRare: 'rare_new_years_chest_convertible',
+        isAutoOpen: true
+      },
+      lny: {
+        size: 5,
+        mapClass: MapClasses.event,
+        name: 'Lantern Lighter',
+        scroll: 'lunar_new_year_scroll_case_convertible',
+        chest: 'lny_treasure_chest_2024_convertible',
+        chestRare: 'rare_lny_treasure_chest_2024_convertible',
+        isAutoOpen: true
+      },
+      birthday: {
+        size: 5,
+        mapClass: MapClasses.event,
+        name: 'Birthday Event',
+        scroll: 'birthday_f_scroll_case_convertible',
+        chest: 'birthday_2021_treasure_chest_convertible',
+        chestRare: 'rare_birthday_2021_treasure_chest_convertible',
+        isAutoOpen: true
+      }
+    },
+    // prettier-ignore
+    mapGroups: {
+      5: [
+        [allSnuids.elie],[allSnuids.raphael],[allSnuids.van],[allSnuids.levi],[allSnuids.pola],
+        [allSnuids.weyl],[allSnuids.levine],[allSnuids.kelly],[allSnuids.angel],[allSnuids.mina],
+        [allSnuids.vanne],[allSnuids.angelie],[allSnuids.anthony],[allSnuids.monica],[allSnuids.vivienne],
+        [allSnuids.lydia],[allSnuids.kevin],[allSnuids.nina],[allSnuids.rose],
+        [allSnuids.vera],[allSnuids.hsilung],[allSnuids.angela],[allSnuids.kitty],[allSnuids.mary],
+        [allSnuids.riem,allSnuids.furt,allSnuids.haru,allSnuids.kaze,allSnuids.feyn,allSnuids.kaze],
+        [allSnuids.Umr,allSnuids.sky,allSnuids.rebec,allSnuids.scent,allSnuids.shall,allSnuids.scent],
+        [allSnuids.renee,allSnuids.stein,allSnuids.riem,allSnuids.furt,allSnuids.haru,allSnuids.furt],
+        [allSnuids.kaze,allSnuids.feyn,allSnuids.Umr,allSnuids.sky,allSnuids.rebec,allSnuids.sky],
+        [allSnuids.scent,allSnuids.shall,allSnuids.renee,allSnuids.stein,allSnuids.riem,allSnuids.stein],
+        [allSnuids.furt,allSnuids.haru,allSnuids.kaze,allSnuids.feyn,allSnuids.Umr,allSnuids.feyn],
+        [allSnuids.sky,allSnuids.rebec,allSnuids.scent,allSnuids.shall,allSnuids.renee,allSnuids.shall],
+        [allSnuids.stein,allSnuids.riem,allSnuids.furt,allSnuids.haru,allSnuids.kaze,allSnuids.haru],
+        [allSnuids.feyn,allSnuids.Umr,allSnuids.sky,allSnuids.rebec,allSnuids.scent,allSnuids.rebec],
+        [allSnuids.shall,allSnuids.renee,allSnuids.stein,allSnuids.riem,allSnuids.furt,allSnuids.riem],
+        [allSnuids.haru,allSnuids.kaze,allSnuids.feyn,allSnuids.Umr,allSnuids.sky,allSnuids.Umr],
+        [allSnuids.rebec,allSnuids.scent,allSnuids.shall,allSnuids.renee,allSnuids.stein,allSnuids.renee]
+      ],
+      10: [
+        [allSnuids.elie],[allSnuids.raphael],[allSnuids.van],[allSnuids.levi],[allSnuids.pola],
+        [allSnuids.weyl],[allSnuids.levine],[allSnuids.kelly],[allSnuids.angel],[allSnuids.mina],
+        [allSnuids.vanne],[allSnuids.angelie],[allSnuids.anthony],[allSnuids.monica],[allSnuids.vivienne],
+        [allSnuids.lydia],[allSnuids.kevin],[allSnuids.nina],[allSnuids.rose],
+        [allSnuids.vera],[allSnuids.hsilung],[allSnuids.angela],[allSnuids.kitty],[allSnuids.mary],
+        [allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.haru],
+        [allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.Umr],
+        [allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.scent],
+        [allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.stein],
+        [allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.riem],
+        [allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.kaze],
+        [allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.shall],
+        [allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.furt],
+        [allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.feyn],
+        [allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.feyn],
+        [allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.rebec],
+        [allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.renee]
+      ]
+    },
+    workingMapKey: 'workingMap',
+    maptainTypeKey: 'maptainType',
+    dusterCycleKey: 'dusterCycle',
+    /** Set immutable fields */
+    setImmutable() {
+      const immutableFields = [
+        'isProd',
+        'version',
+        'URI',
+        'maptainTypes',
+        'scrollChests',
+        'mapGroups',
+        'workingMapKey',
+        'maptainTypeKey',
+        'dusterCycleKey'
+      ];
+      for (const immutableField of immutableFields) {
+        if (!Object.hasOwn(utils, immutableField)) continue;
+        Object.defineProperty(utils, immutableField, {
+          // value: 'This cannot be changed',
+          writable: false, // Makes the field immutable
+          configurable: false, // Prevents deletion or re-configuration of the field
+          enumerable: true // Makes the field visible during enumeration (e.g., in a for...in loop)
         });
-      },
-      /** auto settings */
-      autoSettingsPromise() {
-        const version = 'start autoSettingsPromise';
-        isProd ? logging(version) : console.log(version);
-        return new Promise((resolve, reject) => {
-          // auto settings if necessary and then invoke next promise
-          this.scrollChest = scrollChests[this.mapTypeKey];
-          if (!this.scrollChest) return resolve();
-          this.map = MhUtils.getMapByClass(this.scrollChest.mapClass);
-          resolve();
-        });
-      },
-      /** autoMapping */
-      autoMapping() {
-        const version = 'autoMapping_1.0.1.0.4';
-        isProd ? logging(version) : console.log(version);
-        const selfInvoking = () => {
-          setTimeout(() => {
-            utils.autoMapping();
-          }, 1000);
-        };
+      }
+    },
+    snuid: null,
+    mapTypeKey: null,
+    mapInfoParser: null,
+    callback: null,
+    isAutoOpenMap: true,
+    scrollChest: null,
+    map: null,
+    mapInfo: null,
+    /**
+     * start running.
+     * pass argument here,
+     * or init() first and run() without argument
+     */
+    run(mapTypeKey, mapInfoParser, callback, isAutoOpenMap = true) {
+      const version = 'start run mappingUtility';
+      this.isProd ? logging(version) : console.log(version);
+      this.init(mapTypeKey, mapInfoParser, callback, isAutoOpenMap);
+      if (!this.mapTypeKey || !this.mapInfoParser)
+        return console.log('mapTypeKey && mapInfoParser are required');
+      this.autoSettingsPromise().catch((error) => console.log(error));
+    },
+    /** auto settings */
+    autoSettingsPromise() {
+      const version = 'start autoSettingsPromise';
+      this.isProd ? logging(version) : console.log(version);
+      return new Promise((resolve, reject) => {
+        // auto settings if necessary and then invoke next promise
+        this.scrollChest = this.scrollChests[this.mapTypeKey];
         if (!this.scrollChest) {
-          if (this.callback) this.callback();
-          return;
+          console.error(
+            'Map config not found!!',
+            this.mapTypeKey,
+            this.scrollChests
+          );
+          return resolve();
         }
-        // autoMapping會 self invoking,必須自行更新 this.map
         this.map = MhUtils.getMapByClass(this.scrollChest.mapClass);
-        console.log('claim map reward checking');
-        if (this.map && this.map.is_complete) {
-          // clear this.map in claimAllMapReward
-          this.claimAllMapReward(selfInvoking);
+        this.autoMapping(this.mapTypeKey, this.callback);
+        resolve();
+      });
+    },
+    /** autoMapping */
+    autoMapping() {
+      const version = 'autoMapping_1.0.1.0.5';
+      this.isProd ? logging(version) : console.log(version);
+      const runAutoMapping = () => {
+        setTimeout(() => {
+          utils.autoMapping();
+        }, 1000);
+      };
+      if (!this.scrollChest) {
+        if (this.callback) this.callback(this.mapInfo);
+        return;
+      }
+      console.log('1. Check claiming map rewards');
+      // autoMapping會 self invoking,必須自行更新 this.map
+      this.map = MhUtils.getMapByClass(this.scrollChest.mapClass);
+      console.log('claim map reward checking');
+      if (this.map?.is_complete) {
+        // clear this.map in claimAllMapReward
+        this.claimAllMapReward(runAutoMapping);
+        return;
+      }
+      console.log('2. Check accepting invite');
+      const quest = user.quests.QuestRelicHunter;
+      if (!this.map && (quest.num_invites || 0) > 0) {
+        this.acceptFirstInvite(this.scrollChest.mapClass, runAutoMapping);
+        return;
+      }
+      console.log('3. Check auto maptain');
+      const okMaptain = new Set([
+        this.maptainTypes.always,
+        this.maptainTypes.once
+      ]);
+      console.log('autoMaptain: buy scroll=>use scroll=>invite(checking)');
+      if (!this.map) {
+        if (okMaptain.has(localStorage[this.maptainTypeKey])) {
+          console.log('is autoMaptain, buy=>use scroll=>invite');
+          this.autoMaptain(
+            this.scrollChest.size,
+            this.scrollChest.mapClass,
+            this.scrollChest.scroll,
+            runAutoMapping
+          );
           return;
         }
-        console.log('accept invite checking');
-        const quest = user.quests.QuestRelicHunter;
-        if (!this.map && (quest.num_invites || 0) > 0) {
-          this.acceptFirstInvite(this.scrollChest.mapClass, selfInvoking);
-          return;
-        }
-        const okMaptain = [maptainTypes.always, maptainTypes.once];
-        console.log('autoMaptain: buy scroll=>use scroll=>(invite) checking');
-        if (!this.map) {
-          if (okMaptain.indexOf(localStorage[maptainTypeKey]) > -1) {
-            console.log('is autoMaptain, buy=>use scroll=>invite');
-            this.autoMaptain(
-              this.scrollChest.size,
-              this.scrollChest.mapClass,
-              this.scrollChest.scroll,
-              selfInvoking
-            );
-            return;
-          }
-          console.log('不在地圖中又不是 maptain,結束 autoMapping呼叫 callback');
-          this.callback();
-          return;
-        }
-        console.log('Must be in map, mapId:', this.map.map_id);
+        console.log('不在地圖中又不是 maptain,結束 autoMapping呼叫 callback');
+        this.callback(this.mapInfo);
+        return;
+      }
+      console.log('Must be in map now, mapId:', this.map.map_id);
+      try {
         hg.utils.TreasureMapUtil.getMapInfo(
           this.map.map_id,
           (data) => {
-            const info = data; // isProd ? data : MapInfo;
-            utils.mapInfo = parseMapInfo(info);
+            const info = data; // // utils.isProd ? data : MapInfo;
+            utils.mapInfo = utils.mapInfoParser(info);
             if (!utils.mapInfo) {
               utils.map = null;
-              utils.callback();
+              utils.callback(utils.mapInfo);
               return;
             }
-            if (utils.mapInfo && utils.mapInfo.isCompleted) {
+            if (utils.mapInfo?.isCompleted) {
               const msg = '到這裡不應該 map is completed.game data沒 sync?';
-              isProd ? console.plog(msg) : console.log(msg);
+              this.isProd ? console.plog(msg) : console.log(msg);
               setTimeout(() => {
                 MhUtils.reloadWithMessage('Why map completed!? Reloading...');
-                // run();
+                // // run();
               }, 2000);
               return;
             }
             // 先判斷 mapInfo,減少讀取 localStorage
             console.log('mapInfo exists and is full?', utils.mapInfo);
-            if (utils.mapInfo && utils.mapInfo.isFull) {
+            if (utils.mapInfo?.isFull) {
               if (!utils.mapInfo.isDusted) {
                 console.log('Map is full and not dusted, ok to dust');
+                console.log('4. Check auto dust');
                 if (
-                  okMaptain.indexOf(localStorage[dusterCycleKey]) > -1 &&
+                  okMaptain.has(localStorage[utils.dusterCycleKey]) &&
                   this.snuid === utils.mapInfo.maptain
                 ) {
                   console.log('I am maptain and ok to dust');
                   utils.autoDust(() => {
                     utils.mapInfo.isDusted = true;
                     console.log(
-                      `localStorage: maptainType:${localStorage[maptainTypeKey]},dusterCycle:${localStorage[dusterCycleKey]}`
+                      `localStorage: maptainType:${localStorage[utils.maptainTypeKey]},dusterCycle:${localStorage[utils.dusterCycleKey]}`
                     );
-                    utils.callback();
+                    utils.callback(utils.mapInfo);
                   });
                   return;
                 }
               }
               console.log('Map is full and dusted, auto next maptain');
+              console.log('5. Check auto next maptain');
               utils.autoNextMaptain(12, utils.scrollChest.size, utils.mapInfo);
               console.log(
-                `localStorage: maptainType:${localStorage[maptainTypeKey]},dusterCycle:${localStorage[dusterCycleKey]}`
+                `localStorage: maptainType:${localStorage[utils.maptainTypeKey]},dusterCycle:${localStorage[utils.dusterCycleKey]}`
               );
-              utils.callback();
+              utils.callback(utils.mapInfo);
               return;
             }
-            utils.callback();
+            utils.callback(utils.mapInfo);
           },
           // 這邊必須有 mapInfo了,沒有就 reload
-          () => {
+          (data) => {
+            console.trace(data);
             MhUtils.reloadWithMessage('getMapInfo failed, Reloading...');
           }
         );
-      },
-      /**
-       * 根據 mapGroups設定, attendance(12)人 RR時,
-       * group中的第 n人:
-       * n = ((mapSize - (attendance % mapSize)) % mapSize) + 1,
-       * index: (mapSize - (attendance % mapSize)) % mapSize,
-       * 為下一個 maptain+duster.
-       * maptainType/dusterCycle為 never時不自動 next maptain.
-       */
-      autoNextMaptain(attendance, mapSize, mapInfo) {
-        const version = `autoNextMaptain_1.0.2.1.0(${attendance}, ${mapSize},`;
-        isProd ? logging(version, mapInfo) : console.log(version, mapInfo);
-        const mapGroup = this.findNowGroup(mapSize, mapInfo);
-        if (!mapGroup) return;
-        // 用 mapSize而非 mapGroup.length - 1,就可以避掉 solo的情況
-        const nextMaptainIndex = mapSize; // (mapSize - (attendance % mapSize)) % mapSize;
-        const isNextMaptain = this.snuid === mapGroup[nextMaptainIndex];
-        console.log(`I am${isNextMaptain ? '' : ' not'} next maptain`);
-        if (!isNextMaptain) return;
-        // 判斷不是 once只是為了減少寫入 localStorage,沒有業務邏輯
-        // 判斷不是 never才是新功能: 停止 loop-mapping
-        const notWriteTypes = [maptainTypes.once, maptainTypes.never];
-        if (notWriteTypes.indexOf(localStorage[maptainTypeKey]) < 0)
-          localStorage[maptainTypeKey] = maptainTypes.once;
-        if (notWriteTypes.indexOf(localStorage[dusterCycleKey]) < 0)
-          localStorage[dusterCycleKey] = maptainTypes.once;
-      },
-      /** findNowGroup */
-      findNowGroup(mapSize, mapInfo) {
-        const version = 'findNowGroup(';
-        isProd ? logging(version, mapInfo) : console.log(version, mapInfo);
-        const maptain = mapInfo.maptain;
-        const groups = mapGroups[mapSize];
-        if (!groups) return null;
-        for (let i = 0; i < groups.length; i++) {
-          const mapGroup = groups[i];
-          const groupMaptain = mapGroup[0];
-          if (groupMaptain === maptain) {
-            console.log('mapGroup found:', mapGroup);
-            return mapGroup;
-          }
+      } catch (error) {
+        console.trace(error);
+      }
+    },
+    /**
+     * 根據 mapGroups設定, attendance(12)人 RR時,
+     * group中的第 n人:
+     * n = ((mapSize - (attendance % mapSize)) % mapSize) + 1,
+     * index: (mapSize - (attendance % mapSize)) % mapSize,
+     * 為下一個 maptain+duster.
+     * attendance目前未使用
+     * maptainType/dusterCycle為 never時不自動 next maptain.
+     */
+    autoNextMaptain(attendance, mapSize, mapInfo) {
+      const version = `autoNextMaptain_1.0.2.1.1(${attendance}, ${mapSize},`;
+      this.isProd ? logging(version, mapInfo) : console.log(version, mapInfo);
+      const mapGroup = this.findNowGroup(mapSize, mapInfo);
+      if (!mapGroup) return;
+      // 用 mapSize而非 mapGroup.length - 1,就可以避掉 solo的情況
+      const nextMaptainIndex = mapSize; // // (mapSize - (attendance % mapSize)) % mapSize;
+      const isNextMaptain = this.snuid === mapGroup[nextMaptainIndex];
+      console.log(`I am${isNextMaptain ? '' : ' not'} next maptain`);
+      if (!isNextMaptain) return;
+      // 判斷不是 once只是為了減少寫入 localStorage,沒有業務邏輯
+      // 判斷不是 never才是新功能: 停止 loop-mapping
+      const notWriteTypes = new Set([
+        this.maptainTypes.once,
+        this.maptainTypes.never
+      ]);
+      if (!notWriteTypes.has(localStorage[this.maptainTypeKey]))
+        localStorage[this.maptainTypeKey] = this.maptainTypes.once;
+      if (!notWriteTypes.has(localStorage[this.dusterCycleKey]))
+        localStorage[this.dusterCycleKey] = this.maptainTypes.once;
+    },
+    /** findNowGroup */
+    findNowGroup(mapSize, mapInfo) {
+      const version = 'findNowGroup(';
+      this.isProd ? logging(version, mapInfo) : console.log(version, mapInfo);
+      const maptain = mapInfo.maptain;
+      const groups = this.mapGroups[mapSize];
+      if (!groups) return null;
+      for (const mapGroup of groups) {
+        const groupMaptain = mapGroup[0];
+        if (groupMaptain === maptain) {
+          console.log('mapGroup found:', mapGroup);
+          return mapGroup;
         }
-        return null;
-      },
-      /** autoDust */
-      autoDust(callback) {
-        const version = 'autoDust_1.0.0.0.0';
-        isProd ? logging(version, callback) : console.log(version, callback);
-        const dusterCycle = localStorage[dusterCycleKey];
-        if ([maptainTypes.always, maptainTypes.once].indexOf(dusterCycle) < 0) {
-          callback(); // autoMapping不須先檢查,異常就跳過跑 callback
-          return;
-        }
-        if (!this.mapInfo) {
-          callback(); // 需要 mapInfo的 mapId,沒有就跳過跑 callback
-          return;
-        }
-        // upgrade map
-        const next = () => {
-          if (dusterCycle === maptainTypes.once)
-            localStorage[dusterCycleKey] = maptainTypes.no;
-          callback();
-        };
-        const mapId = this.mapInfo.mapId;
-        if (mapId) hg.utils.TreasureMapUtil.upgrade(mapId, next, callback);
-      },
-      /** Claim "all" claimable map reward */
-      claimAllMapReward(callback) {
-        const version = 'claimAllMapReward_1.0.1.0.0';
-        isProd ? logging(version) : console.log(version);
-        const maps = user.quests.QuestRelicHunter.maps;
-        // 沒 map視同完成 claim檢查,執行 callback離開自己
-        if (!maps || maps.length == 0) {
-          if (callback) callback();
-          return;
-        }
-        const selfInvoking = () => {
-          utils.claimAllMapReward(callback);
-        };
-        for (let i = 0; i < maps.length; i++) {
-          const map = maps[i];
-          console.log(
-            'Check auto claim map reward!!',
-            map.map_id,
-            map.is_complete
-          );
-          if (map.is_complete) {
-            const mapName = MyUtils.trimToEmpty(map.name);
-            const isMapRare = map.is_rare;
-            console.log(
-              `Claim map reward, id: ${map.map_id}, name: ${mapName}`
-            );
-            // 先 claim reward
-            hg.utils.TreasureMapUtil.claim(map.map_id, () => {
-              const scrollChest = utils.findScrollChest(mapName);
-              // const scrollChest = scrollChests[MyUtils.trimToEmpty(mapName)];
-              // claim後如果有對應的 chest且自動開,等 1秒開箱
-              if (scrollChest && scrollChest.isAutoOpen) {
-                const chest = isMapRare
-                  ? scrollChest['chestRare']
-                  : scrollChest['chest'];
-                setTimeout(() => {
-                  hg.utils.UserInventory.useConvertible(chest, 1, (data) => {
-                    console.log(data.success == 1 ? 'success' : 'failed', data);
-                    // 開箱後回 call自己檢查還有沒有待 claim的 map
-                    setTimeout(selfInvoking, 1000);
-                  });
-                }, 1000);
-                return;
-              }
-              // 沒開箱的話,直接回 call自己檢查還有沒有待 claim的 map
-              setTimeout(selfInvoking, 1000);
-            });
-            // 有處理到完成的 map,就中斷迴圈
-            return;
-          }
-        }
-        // for loop沒有被中斷並回 call的話:
-        // utils.map也應該被 claim了
-        utils.map = null;
-        // 只剩不能 claim=完成 claim檢查, callback
-        if (callback) callback();
-      },
-      /** Find scrollChest by map name */
-      findScrollChest(mapName) {
-        const version = 'findScrollChest(';
-        isProd ? logging(version, mapName) : console.log(version, mapName);
-        for (const key in scrollChests) {
-          if (!Object.hasOwn(scrollChests, key)) continue;
-          const scrollChest = scrollChests[key];
-          if (mapName.indexOf(scrollChest.name) > -1) {
-            console.log('scrollChest found:', scrollChest);
-            return scrollChest;
-          }
-        }
-        return null;
-      },
-      /** Accept first invite */
-      acceptFirstInvite(mapClass, callback) {
-        const version = `acceptFirstInvite(${mapClass})_1.0.0.0.0`;
-        isProd ? logging(version) : console.log(version);
-        const isAccepted = true;
-        const isNotAccepted = !isAccepted;
-        const quest = user.quests.QuestRelicHunter;
-        if ((quest.num_invites || 0) < 1) return isNotAccepted;
-        const map = MhUtils.getMapByClass(mapClass);
-        if (map) return isNotAccepted;
-        console.log(`Accept map invite of map class: ${mapClass}`);
-        hg.controllers.TreasureMapController.showCommunity();
-        setTimeout(
-          () => {
-            $('a[data-map-id]').each((i, e) => {
-              console.log(e.className);
-              if (e.className.indexOf('mousehuntActionButton') > -1) {
-                // e.click();
-                const mapId = parseInt(e.getAttribute('data-map-id'));
-                console.log(`map request id: ${mapId}`);
-                if (!Number.isNaN(mapId)) {
-                  console.log('auto accept map invite of map id', mapId);
-                  hg.utils.TreasureMapUtil.acceptInvite(mapId, () => {
-                    MhUtils.closeAnyJsDialog();
-                    if (callback)
-                      setTimeout(() => {
-                        callback();
-                      }, 2000);
-                  });
-                  // 只自動接受一個邀請,在 RR-mapping可能比較不會出錯
-                  // 因為有時會同時存在前一組跟後一組的邀請(後開的 map先完成)
-                  return false; // jquery each use return false to break looping
-                }
-              }
-            });
-          },
-          parseInt(3500 + Math.random() * 1500)
+      }
+      return null;
+    },
+    /** autoDust */
+    autoDust(callback) {
+      const version = 'autoDust_1.0.0.0.1';
+      this.isProd ? logging(version, callback) : console.log(version, callback);
+      const dusterCycle = localStorage[this.dusterCycleKey];
+      if (
+        ![this.maptainTypes.always, this.maptainTypes.once].includes(
+          dusterCycle
+        )
+      ) {
+        callback(this.mapInfo); // autoMapping不須先檢查,異常就跳過跑 callback
+        return;
+      }
+      if (!this.mapInfo) {
+        callback(this.mapInfo); // 需要 mapInfo的 mapId,沒有就跳過跑 callback
+        return;
+      }
+      // upgrade map
+      const next = () => {
+        if (dusterCycle === utils.maptainTypes.once)
+          localStorage[utils.dusterCycleKey] = utils.maptainTypes.no;
+        callback(utils.mapInfo);
+      };
+      const mapId = this.mapInfo.mapId;
+      if (mapId) hg.utils.TreasureMapUtil.upgrade(mapId, next, callback);
+    },
+    /** Claim "all" claimable map reward */
+    claimAllMapReward(callback) {
+      const version = 'claimAllMapReward_1.0.1.0.2';
+      this.isProd ? logging(version) : console.log(version);
+      const maps = user.quests.QuestRelicHunter.maps;
+      // 沒 map視同完成 claim檢查,執行 callback離開自己
+      if (!maps || maps.length == 0) {
+        if (callback) callback(this.mapInfo);
+        return;
+      }
+      const selfInvoking = () => {
+        utils.claimAllMapReward(callback);
+      };
+      for (const map of maps) {
+        console.log(
+          'Check auto claim map reward!!',
+          map.map_id,
+          map.is_complete
         );
-        return isAccepted;
-      },
-      // autoMaptain(MapClasses.event, 'lunar_new_year_scroll_case_convertible');
-      /** autoMaptain */
-      autoMaptain(mapSize, mapClass, scrollType, callback) {
-        const version = `autoMaptain(${mapSize}, ${mapClass}, ${scrollType})_1.0.2.0.0`;
-        isProd ? logging(version) : console.log(version);
-        const maptainType = localStorage[maptainTypeKey];
-        if ([maptainTypes.always, maptainTypes.once].indexOf(maptainType) < 0)
-          return; // autoMapping必須先檢查,不然異常,斷
-        if (!mapClass || !MapClasses[mapClass]) return; // 異常,斷
-        if (!scrollType || scrollType == '') return; // 異常,斷
-        const map = MhUtils.getMapByClass(mapClass);
-        if (map) return; // autoMapping必須先檢查,不然異常,斷
-        const groups = mapGroups[mapSize];
-        let snuids = null;
-        for (let i = 0; i < groups.length; i++) {
-          snuids = groups[i];
-          if (snuids.indexOf(this.snuid) === 0) break;
-        }
-        // 下面那行很危險,直接 return程式就斷了
-        // 如果 callback(回 autoMapping檢查沒有 map又是 maptain)絕對無限循環
-        if (!snuids || !Array.isArray(snuids) || snuids.length == 0) {
-          const msg = 'mapGroup not found';
-          MhUtils.storeError(msg);
+        if (map.is_complete) {
+          const mapName = MyUtils.trimToEmpty(map.name);
+          const isMapRare = map.is_rare;
+          console.log(`Claim map reward, id: ${map.map_id}, name: ${mapName}`);
+          // 先 claim reward
+          hg.utils.TreasureMapUtil.claim(map.map_id, () => {
+            const scrollChest = utils.findScrollChest(mapName);
+            // const scrollChest = scrollChests[MyUtils.trimToEmpty(mapName)];
+            // claim後如果有對應的 chest且自動開,等 1秒開箱
+            if (scrollChest?.isAutoOpen) {
+              const chest = isMapRare
+                ? scrollChest['chestRare']
+                : scrollChest['chest'];
+              setTimeout(() => {
+                hg.utils.UserInventory.useConvertible(chest, 1, (data) => {
+                  console.log(data.success == 1 ? 'success' : 'failed', data);
+                  // 開箱後回 call自己檢查還有沒有待 claim的 map
+                  setTimeout(selfInvoking, 1000);
+                });
+              }, 1000);
+              return;
+            }
+            // 沒開箱的話,直接回 call自己檢查還有沒有待 claim的 map
+            setTimeout(selfInvoking, 1000);
+          });
+          // 有處理到完成的 map,就中斷迴圈
           return;
         }
-        console.log('map group found, open scroll and invite', snuids);
-        snuids = snuids
-          .filter((value) => value !== this.snuid)
-          .filter((value, index, array) => array.indexOf(value) === index);
-        console.log('After remove self and duplicate', snuids, mapGroups);
-        MhUtils.completeTransaction(true, scrollType, 1, false, () => {
-          hg.utils.UserInventory.useConvertible(
-            scrollType,
-            1,
-            () => {
-              console.log('After scroll opened, invite map members');
-              utils.autoInvite(mapClass, snuids, callback);
-              if (maptainType === maptainTypes.once)
-                localStorage[maptainTypeKey] = maptainTypes.no;
-            },
-            parseInt(5000 + Math.random() * 2000)
-          );
-        });
-      },
-      /** Auto invite as scroll opened */
-      autoInvite(mapClass, snuids, callback) {
-        const version = `autoInvite(${mapClass}, ${snuids}, ${callback})_1.0.1.0.0`;
-        isProd ? logging(version) : console.log(version);
-        const map = MhUtils.getMapByClass(mapClass);
-        if (!map) {
-          setTimeout(() => {
-            MhUtils.closeAnyJsDialog();
-            if (callback) callback();
-          }, 2000);
-          return;
+      }
+      // for loop沒有被中斷並回 call的話:
+      // this.map也應該被 claim了
+      this.map = null;
+      // 只剩不能 claim=完成 claim檢查, callback
+      if (callback) callback(this.mapInfo);
+    },
+    /** Find scrollChest by map name */
+    findScrollChest(mapName) {
+      const version = 'findScrollChest(';
+      this.isProd ? logging(version, mapName) : console.log(version, mapName);
+      for (const key in this.scrollChests) {
+        if (!Object.hasOwn(this.scrollChests, key)) continue;
+        const scrollChest = this.scrollChests[key];
+        if (mapName.includes(scrollChest.name)) {
+          console.log('scrollChest found:', scrollChest);
+          return scrollChest;
         }
-        if (!snuids || snuids.length < 1) {
-          setTimeout(() => {
-            MhUtils.closeAnyJsDialog();
-            if (callback) callback();
-          }, 2000);
-          return;
-        }
-        hg.utils.TreasureMapUtil.sendInvites(map.map_id, snuids);
+      }
+      return null;
+    },
+    /** Accept first invite */
+    acceptFirstInvite(mapClass, callback) {
+      const version = `acceptFirstInvite(${mapClass})_1.0.0.0.1`;
+      this.isProd ? logging(version) : console.log(version);
+      const isAccepted = true;
+      const isNotAccepted = !isAccepted;
+      const quest = user.quests.QuestRelicHunter;
+      if ((quest.num_invites || 0) < 1) return isNotAccepted;
+      const map = MhUtils.getMapByClass(mapClass);
+      if (map) return isNotAccepted;
+      console.log(`Accept map invite of map class: ${mapClass}`);
+      hg.controllers.TreasureMapController.showCommunity();
+      setTimeout(
+        () => {
+          $('a[data-map-id]').each((i, e) => {
+            console.log(e.className);
+            if (e.className.includes('mousehuntActionButton')) {
+              // // e.click();
+              const mapId = Number.parseInt(e.dataset.mapId);
+              console.log(`map request id: ${mapId}`);
+              if (!Number.isNaN(mapId)) {
+                console.log('auto accept map invite of map id', mapId);
+                hg.utils.TreasureMapUtil.acceptInvite(mapId, () => {
+                  MhUtils.closeAnyJsDialog();
+                  if (callback)
+                    setTimeout(() => {
+                      callback(utils.mapInfo);
+                    }, 2000);
+                });
+                // 只自動接受一個邀請,在 RR-mapping可能比較不會出錯
+                // 因為有時會同時存在前一組跟後一組的邀請(後開的 map先完成)
+                return false; // jquery each use return false to break looping
+              }
+            }
+          });
+        },
+        Number.parseInt(3500 + Math.random() * 1500) // NOSONAR
+      );
+      return isAccepted;
+    },
+    // // autoMaptain(MapClasses.event, 'lunar_new_year_scroll_case_convertible');
+    /** autoMaptain */
+    autoMaptain(mapSize, mapClass, scrollType, callback) {
+      const version = `autoMaptain(${mapSize}, ${mapClass}, ${scrollType})_1.0.2.0.1`;
+      this.isProd ? logging(version) : console.log(version);
+      const maptainType = localStorage[this.maptainTypeKey];
+      if (
+        ![this.maptainTypes.always, this.maptainTypes.once].includes(
+          maptainType
+        )
+      )
+        return; // autoMapping必須先檢查,不然異常,斷
+      if (!mapClass || !MapClasses[mapClass]) return; // 異常,斷
+      if (!scrollType || scrollType == '') return; // 異常,斷
+      const map = MhUtils.getMapByClass(mapClass);
+      if (map) return; // autoMapping必須先檢查,不然異常,斷
+      const groups = this.mapGroups[mapSize];
+      let snuids = null;
+      for (const group of groups) {
+        snuids = group;
+        if (snuids.indexOf(this.snuid) === 0) break;
+      }
+      // 下面那行很危險,直接 return程式就斷了
+      // 如果 callback(回 autoMapping檢查沒有 map又是 maptain)絕對無限循環
+      if (!snuids || !Array.isArray(snuids) || snuids.length == 0) {
+        const msg = 'mapGroup not found';
+        MhUtils.storeError(msg);
+        return;
+      }
+      console.log('map group found, open scroll and invite', snuids);
+      snuids = snuids
+        .filter((value) => value !== this.snuid)
+        .filter((value, index, array) => array.indexOf(value) === index);
+      console.log('After remove self and duplicate', snuids, this.mapGroups);
+      MhUtils.completeTransaction(true, scrollType, 1, false, () => {
+        hg.utils.UserInventory.useConvertible(
+          scrollType,
+          1,
+          () => {
+            console.log('After scroll opened, invite map members');
+            utils.autoInvite(mapClass, snuids, callback);
+            if (maptainType === utils.maptainTypes.once)
+              localStorage[utils.maptainTypeKey] = utils.maptainTypes.no;
+          },
+          Number.parseInt(3000 + Math.random() * 1000) // NOSONAR
+        );
+      });
+    },
+    /** Auto invite as scroll opened */
+    autoInvite(mapClass, snuids, callback) {
+      const version = `autoInvite(${mapClass}, ${snuids}, ${callback})_1.0.1.0.2`;
+      this.isProd ? logging(version) : console.log(version);
+      const map = MhUtils.getMapByClass(mapClass);
+      if (!map) {
         setTimeout(() => {
           MhUtils.closeAnyJsDialog();
-          if (callback) callback();
+          if (callback) callback(this.mapInfo);
         }, 2000);
-      },
-      /** location ajax */
-      ajax(element, params, successCallback, errorCallback) {
-        params['last_read_journal_entry_id'] = $('#journallatestentry').data(
-          'entry-id'
-        );
-        params['uh'] = user.unique_hash;
-        $.ajax({
-          data: params,
-          dataType: 'json',
-          type: isProd ? 'post' : 'get',
-          url: isProd
-            ? MOUSEHUNT_BASE_URL + this.URI
-            : 'https://elie2201.github.io/mh/jobs.txt',
-          success: function (data) {
-            eventRegistry.doEvent('ajax_response', data);
-            if (successCallback) {
-              successCallback(data);
-            }
-          },
-          // prettier-ignore
-          error: function (data) {
-            // eslint-disable-next-line new-cap
-            const popup = new jsDialog();
-            popup.setTemplate('error');
-            popup.addToken('{*title*}', 'An error has occurred.');
-            popup.addToken('{*content*}', 'An error occurred. Please try again!');
-            popup.show();
-            if (errorCallback) errorCallback(data);
-          }
-        });
+        return;
       }
-    };
+      if (!snuids || snuids.length < 1) {
+        setTimeout(() => {
+          MhUtils.closeAnyJsDialog();
+          if (callback) callback(this.mapInfo);
+        }, 2000);
+        return;
+      }
+      hg.utils.TreasureMapUtil.sendInvites(map.map_id, snuids);
+      setTimeout(() => {
+        MhUtils.closeAnyJsDialog();
+        if (callback) callback(utils.mapInfo);
+      }, 2000);
+    },
     // initial utils
-    const init = (mapTypeKey, mapInfoParser) => {
+    init(mapTypeKey, mapInfoParser, callback, isAutoOpenMap = true) {
       // make fields immutable
-      utils.setImmutable();
+      this.setImmutable();
       // initialize values in utils if necessary
-      utils.mapTypeKey = mapTypeKey;
-      utils.mapInfoParser = mapInfoParser;
-      utils.snuid = MhUtils.getSnUserId();
-      return utils;
-    };
-    return init;
-  })();
-  /** parseMapInfo */
-  function parseMapInfo(mapInfo) {
-    const version = 'parseMapInfo(';
-    isProd ? logging(version, mapInfo) : console.log(version, mapInfo);
-    const all = 'all';
-    if (!mapInfo) return null;
-    const myMap = mapInfo.treasure_map;
-    if (!myMap) return null;
-    const rtn = {};
-    rtn.mapId = myMap.map_id;
-    rtn.mapName = myMap.name;
-    if (myMap.can_claim_reward) rtn.isCompleted = true;
-    if (!myMap.can_send_invites) rtn.isFull = true;
-    if (!myMap.can_upgrade) rtn.isDusted = true;
-    const hunters = myMap.hunters;
-    let completed = [];
-    for (let i = 0; i < hunters.length; i++) {
-      const hunter = hunters[i];
-      if (hunter.captain) rtn.maptain = (hunter.sn_user_id + '').trim();
-      const completedIds = hunter.completed_goal_ids.mouse;
-      if (completedIds && completedIds.length > 0)
-        completed = completed.concat(completedIds);
+      this.mapTypeKey = mapTypeKey;
+      this.mapInfoParser = mapInfoParser;
+      this.callback = callback;
+      this.isAutoOpenMap = isAutoOpenMap;
+      this.snuid = MhUtils.getSnUserId();
+      return this;
+    },
+    /** parseMapInfo */
+    defaultMapInfoParser(mapInfo) {
+      const version = 'parseMapInfo(';
+      this.isProd ? logging(version, mapInfo) : console.log(version, mapInfo);
+      const all = 'all';
+      if (!mapInfo) return null;
+      const myMap = mapInfo.treasure_map;
+      if (!myMap) return null;
+      const rtn = {};
+      rtn.mapId = myMap.map_id;
+      rtn.mapName = myMap.name;
+      if (myMap.can_claim_reward) rtn.isCompleted = true;
+      if (!myMap.can_send_invites) rtn.isFull = true;
+      if (!myMap.can_upgrade) rtn.isDusted = true;
+      const hunters = myMap.hunters;
+      let completed = [];
+      for (const hunter of hunters) {
+        if (hunter.captain) rtn.maptain = (hunter.sn_user_id + '').trim();
+        const completedIds = hunter.completed_goal_ids.mouse;
+        if (completedIds && completedIds.length > 0)
+          completed = completed.concat(completedIds);
+      }
+      console.log('completed mouse ids', completed);
+      rtn.completed = completed;
+      const mouses = myMap.goals.mouse;
+      for (const mouse of mouses) {
+        if (completed.includes(mouse.unique_id)) continue;
+        const type = mouse.type;
+        if (!rtn[all]) rtn[all] = [];
+        rtn[all].push(type);
+      }
+      console.log('parsed mapInfo:', rtn);
+      return rtn;
     }
-    console.log('completed mouse ids', completed);
-    rtn.completed = completed;
-    const mouses = myMap.goals.mouse;
-    for (let i = 0; i < mouses.length; i++) {
-      const mouse = mouses[i];
-      if (completed.indexOf(mouse.unique_id) > -1) continue;
-      const type = mouse.type;
-      if (!rtn[all]) rtn[all] = [];
-      rtn[all].push(type);
-    }
-    console.log('parsed mapInfo:', rtn);
-    return rtn;
-  }
-  const mapTypeKey = localStorage[workingMapKey];
+  };
+  return utils;
+})();
+function testMappingUtility() {
+  const isProd = false;
+  const version = 'testMappingUtility_1.0.2.3.3';
+  isProd ? logging(version) : console.log(version);
+  const mapTypeKey = localStorage[mappingUtility.workingMapKey];
   // console.log(`working map: ${mapTypeKey}`);
   // test full auto mapping
-  if (mapTypeKey && mapTypeKey !== '')
-    mappingUtility(mapTypeKey, parseMapInfo).run(() => {
+  if (!mapTypeKey) {
+    console.info('Not set auto mapping');
+    return;
+  }
+  mappingUtility.run(
+    mapTypeKey,
+    mappingUtility.defaultMapInfoParser,
+    (mapInfo) => {
       console.log('Finished!!');
-    });
-  // // test claimAllMapReward
+      halloween(mapInfo);
+    }
+  );
+  //* test claimAllMapReward
   // mappingUtility('newYearsParty', parseMapInfo).claimAllMapReward(() => {
   //   console.log('Finished');
   // });
@@ -637,35 +625,183 @@ function testMappingUtility() {
   //   }
   // );
 }
+setTimeout(() => testMappingUtility, 0); // 30000);
 // End #testMappingUtility
 
-(async () => {
+// 用掉庫存的 scroll
+await (async () => {
   try {
     const scroll = 'halloween_2021_trick_scroll_case_convertible';
     const qty = await mh.cmd.UserInventory.getItemQuantity(scroll);
     if (qty < 1)
       await mh.dao.Shop.completeTransactionPromise(true, scroll, 1, false);
-    mh.dao.UserInventory.useConvertiblePromise(scroll, 1);
+    await mh.dao.UserInventory.useConvertiblePromise(scroll, 1);
   } catch (error) {
     console.error(error);
   }
 })();
 
+// 取得 map mouses
+function grabMapMouse(mapType) {
+  const map = user.quests.QuestRelicHunter.maps.find(
+    (v) => v.map_class === mapType
+  );
+  const mapId = map.map_id ?? Number.parseInt(map.map_id);
+  if (!mapId) return;
+  const HalloweenMouses = {
+    creepy_marionette: {
+      uid: 826,
+      type: 'creepy_marionette',
+      name: 'Creepy Marionette',
+      config: 'bonefort'
+    },
+    hollowhead: {
+      uid: 99,
+      type: 'hollowhead',
+      name: 'Hollowhead',
+      config: 'bonefort'
+    },
+    hween_2013_boss: {
+      uid: 513,
+      type: 'hween_2013_boss',
+      name: 'Titanic Brain-Taker',
+      config: 'bonefort'
+    },
+    hween_2014_boss: {
+      uid: 674,
+      type: 'hween_2014_boss',
+      name: 'Mousataur Priestess',
+      config: 'bonefort'
+    },
+    hween_2016_boss: {
+      uid: 827,
+      type: 'hween_2016_boss',
+      name: 'Sandmouse',
+      config: 'bonefort'
+    },
+    rift_grave_digger: {
+      uid: 864,
+      type: 'rift_grave_digger',
+      name: 'Tomb Exhumer',
+      config: 'bonefort'
+    },
+    dire_lycan: {
+      uid: 790,
+      type: 'dire_lycan',
+      name: 'Dire Lycan',
+      config: 'bonefort'
+    },
+    grave_digger: {
+      uid: 337,
+      type: 'grave_digger',
+      name: 'Grave Robber',
+      config: 'bonefort'
+    },
+    gourd_ghoul: {
+      uid: 791,
+      type: 'gourd_ghoul',
+      name: 'Gourd Ghoul',
+      config: 'polter'
+    },
+    hween_2017_boss: {
+      uid: 910,
+      type: 'hween_2017_boss',
+      name: 'Captain Cannonball',
+      config: 'polter'
+    },
+    hween_2018_boss: {
+      uid: 954,
+      type: 'hween_2018_boss',
+      name: 'Admiral Arrrgh',
+      config: 'polter'
+    },
+    rift_ghost_pirate: {
+      uid: 911,
+      type: 'rift_ghost_pirate',
+      name: 'Ghost Pirate Queen',
+      config: 'polter'
+    },
+    scorned_pirate: {
+      uid: 912,
+      type: 'scorned_pirate',
+      name: 'Scorned Pirate',
+      config: 'polter'
+    },
+    spectral_swashbuckler: {
+      uid: 913,
+      type: 'spectral_swashbuckler',
+      name: 'Spectral Swashbuckler',
+      config: 'polter'
+    },
+    spectral_butler: {
+      uid: 795,
+      type: 'spectral_butler',
+      name: 'Spectral Butler',
+      config: 'polter'
+    },
+    hween_2012_boss: {
+      uid: 403,
+      type: 'hween_2012_boss',
+      name: 'Swamp Thang',
+      config: 'scream'
+    },
+    hween_2015_boss: {
+      uid: 793,
+      type: 'hween_2015_boss',
+      name: 'Bonbon Gummy Globlin',
+      config: 'scream'
+    },
+    hween_2021_boss: {
+      uid: 1088,
+      type: 'hween_2021_boss',
+      name: 'Baba Gaga',
+      config: 'scream'
+    },
+    hollowed_demon: {
+      uid: 673,
+      type: 'hollowed_demon',
+      name: 'Hollowed',
+      config: 'scream'
+    },
+    hollowed_minion: {
+      uid: 792,
+      type: 'hollowed_minion',
+      name: 'Hollowed Minion',
+      config: 'scream'
+    }
+  };
+  hg.utils.TreasureMapUtil.getMapInfo(mapId, (data) => {
+    console.log(data);
+    const goals = data.treasure_map.goals;
+    const mouses = goals.mouse.reduce(
+      (p, { unique_id: uid, type, name }) => (
+        (p[type] = {
+          uid,
+          type,
+          name
+        }),
+        p
+      ),
+      HalloweenMouses
+    );
+    console.log(mouses);
+  });
+}
+(() => {
+  grabMapMouse('event');
+})();
+
 // MH constants
-const eventRegistry = {};
-const jsDialog = {};
 const hg = {};
-const user = {};
 user.environment_type = 'environment_type';
 user.quests = {};
 // MH functions
-function $() {}
 // MH & my-mh-aid functions
 function logging(...any) {
   const debug = true;
   if (debug) {
     console.groupCollapsed(new Date(), ...any);
-    console.log(Error().stack);
+    console.log(new Error().stack);
     console.groupEnd();
   }
 }
