@@ -1,12 +1,11 @@
-/* global $, user, mh */
-import { MyUtils, MhUtils, allSnuids, MapClasses } from './my-mh-aid-dev';
+/* global $, user, hg, mh, MyUtils, MhUtils, halloween */
 
 // #testMappingUtility
 const mappingUtility = (() => {
   const utils = {
     isProd: true,
     // values
-    version: 'mappingUtility_1.0.1.1.5',
+    version: 'mappingUtility_1.0.2.1.6',
     /** ajax URI */
     URI: 'managers/ajax/users/treasuremap_v2.php',
     // my own hard-coded constants
@@ -19,7 +18,7 @@ const mappingUtility = (() => {
     scrollChests: {
       halloweenTreat: {
         size: 5,
-        mapClass: MapClasses.event,
+        mapClass: mh.MapClasses.event,
         name: 'Halloween Treat',
         scroll: 'halloween_2021_treat_scroll_case_convertible',
         chest: 'treat_halloween_2021_chest_convertible',
@@ -28,7 +27,7 @@ const mappingUtility = (() => {
       },
       halloweenTrick: {
         size: 5,
-        mapClass: MapClasses.event,
+        mapClass: mh.MapClasses.event,
         name: 'Halloween Trick',
         scroll: 'halloween_2021_trick_scroll_case_convertible',
         chest: 'trick_hween2021_treasure_chest_convertible',
@@ -37,7 +36,7 @@ const mappingUtility = (() => {
       },
       naughtyList: {
         size: 5,
-        mapClass: MapClasses.event,
+        mapClass: mh.MapClasses.event,
         name: 'Naughty List',
         scroll: 'naughty_list_convertible',
         chest: 'naughty_2022_list_chest_convertible',
@@ -46,7 +45,7 @@ const mappingUtility = (() => {
       },
       newYearsParty: {
         size: 10,
-        mapClass: MapClasses.event,
+        mapClass: mh.MapClasses.event,
         name: 'New Year',
         scroll: 'new_year_scroll_case_convertible',
         chest: 'new_years_chest_convertible',
@@ -55,7 +54,7 @@ const mappingUtility = (() => {
       },
       lny: {
         size: 5,
-        mapClass: MapClasses.event,
+        mapClass: mh.MapClasses.event,
         name: 'Lantern Lighter',
         scroll: 'lunar_new_year_scroll_case_convertible',
         chest: 'lny_treasure_chest_2024_convertible',
@@ -64,7 +63,7 @@ const mappingUtility = (() => {
       },
       birthday: {
         size: 5,
-        mapClass: MapClasses.event,
+        mapClass: mh.MapClasses.event,
         name: 'Birthday Event',
         scroll: 'birthday_f_scroll_case_convertible',
         chest: 'birthday_2021_treasure_chest_convertible',
@@ -75,42 +74,42 @@ const mappingUtility = (() => {
     // prettier-ignore
     mapGroups: {
       5: [
-        [allSnuids.elie],[allSnuids.raphael],[allSnuids.van],[allSnuids.levi],[allSnuids.pola],
-        [allSnuids.weyl],[allSnuids.levine],[allSnuids.kelly],[allSnuids.angel],[allSnuids.mina],
-        [allSnuids.vanne],[allSnuids.angelie],[allSnuids.anthony],[allSnuids.monica],[allSnuids.vivienne],
-        [allSnuids.lydia],[allSnuids.kevin],[allSnuids.nina],[allSnuids.rose],
-        [allSnuids.vera],[allSnuids.hsilung],[allSnuids.angela],[allSnuids.kitty],[allSnuids.mary],
-        [allSnuids.riem,allSnuids.furt,allSnuids.haru,allSnuids.kaze,allSnuids.feyn,allSnuids.kaze],
-        [allSnuids.Umr,allSnuids.sky,allSnuids.rebec,allSnuids.scent,allSnuids.shall,allSnuids.scent],
-        [allSnuids.renee,allSnuids.stein,allSnuids.riem,allSnuids.furt,allSnuids.haru,allSnuids.furt],
-        [allSnuids.kaze,allSnuids.feyn,allSnuids.Umr,allSnuids.sky,allSnuids.rebec,allSnuids.sky],
-        [allSnuids.scent,allSnuids.shall,allSnuids.renee,allSnuids.stein,allSnuids.riem,allSnuids.stein],
-        [allSnuids.furt,allSnuids.haru,allSnuids.kaze,allSnuids.feyn,allSnuids.Umr,allSnuids.feyn],
-        [allSnuids.sky,allSnuids.rebec,allSnuids.scent,allSnuids.shall,allSnuids.renee,allSnuids.shall],
-        [allSnuids.stein,allSnuids.riem,allSnuids.furt,allSnuids.haru,allSnuids.kaze,allSnuids.haru],
-        [allSnuids.feyn,allSnuids.Umr,allSnuids.sky,allSnuids.rebec,allSnuids.scent,allSnuids.rebec],
-        [allSnuids.shall,allSnuids.renee,allSnuids.stein,allSnuids.riem,allSnuids.furt,allSnuids.riem],
-        [allSnuids.haru,allSnuids.kaze,allSnuids.feyn,allSnuids.Umr,allSnuids.sky,allSnuids.Umr],
-        [allSnuids.rebec,allSnuids.scent,allSnuids.shall,allSnuids.renee,allSnuids.stein,allSnuids.renee]
+        [mh.allSnuids.elie],[mh.allSnuids.raphael],[mh.allSnuids.van],[mh.allSnuids.levi],[mh.allSnuids.pola],
+        [mh.allSnuids.weyl],[mh.allSnuids.levine],[mh.allSnuids.kelly],[mh.allSnuids.angel],[mh.allSnuids.mina],
+        [mh.allSnuids.vanne],[mh.allSnuids.angelie],[mh.allSnuids.anthony],[mh.allSnuids.monica],[mh.allSnuids.vivienne],
+        [mh.allSnuids.lydia],[mh.allSnuids.kevin],[mh.allSnuids.nina],[mh.allSnuids.rose],
+        [mh.allSnuids.vera],[mh.allSnuids.hsilung],[mh.allSnuids.angela],[mh.allSnuids.kitty],[mh.allSnuids.mary],
+        [mh.allSnuids.riem,mh.allSnuids.furt,mh.allSnuids.haru,mh.allSnuids.kaze,mh.allSnuids.feyn,mh.allSnuids.kaze],
+        [mh.allSnuids.Umr,mh.allSnuids.sky,mh.allSnuids.rebec,mh.allSnuids.scent,mh.allSnuids.shall,mh.allSnuids.scent],
+        [mh.allSnuids.renee,mh.allSnuids.stein,mh.allSnuids.riem,mh.allSnuids.furt,mh.allSnuids.haru,mh.allSnuids.furt],
+        [mh.allSnuids.kaze,mh.allSnuids.feyn,mh.allSnuids.Umr,mh.allSnuids.sky,mh.allSnuids.rebec,mh.allSnuids.sky],
+        [mh.allSnuids.scent,mh.allSnuids.shall,mh.allSnuids.renee,mh.allSnuids.stein,mh.allSnuids.riem,mh.allSnuids.stein],
+        [mh.allSnuids.furt,mh.allSnuids.haru,mh.allSnuids.kaze,mh.allSnuids.feyn,mh.allSnuids.Umr,mh.allSnuids.feyn],
+        [mh.allSnuids.sky,mh.allSnuids.rebec,mh.allSnuids.scent,mh.allSnuids.shall,mh.allSnuids.renee,mh.allSnuids.shall],
+        [mh.allSnuids.stein,mh.allSnuids.riem,mh.allSnuids.furt,mh.allSnuids.haru,mh.allSnuids.kaze,mh.allSnuids.haru],
+        [mh.allSnuids.feyn,mh.allSnuids.Umr,mh.allSnuids.sky,mh.allSnuids.rebec,mh.allSnuids.scent,mh.allSnuids.rebec],
+        [mh.allSnuids.shall,mh.allSnuids.renee,mh.allSnuids.stein,mh.allSnuids.riem,mh.allSnuids.furt,mh.allSnuids.riem],
+        [mh.allSnuids.haru,mh.allSnuids.kaze,mh.allSnuids.feyn,mh.allSnuids.Umr,mh.allSnuids.sky,mh.allSnuids.Umr],
+        [mh.allSnuids.rebec,mh.allSnuids.scent,mh.allSnuids.shall,mh.allSnuids.renee,mh.allSnuids.stein,mh.allSnuids.renee]
       ],
       10: [
-        [allSnuids.elie],[allSnuids.raphael],[allSnuids.van],[allSnuids.levi],[allSnuids.pola],
-        [allSnuids.weyl],[allSnuids.levine],[allSnuids.kelly],[allSnuids.angel],[allSnuids.mina],
-        [allSnuids.vanne],[allSnuids.angelie],[allSnuids.anthony],[allSnuids.monica],[allSnuids.vivienne],
-        [allSnuids.lydia],[allSnuids.kevin],[allSnuids.nina],[allSnuids.rose],
-        [allSnuids.vera],[allSnuids.hsilung],[allSnuids.angela],[allSnuids.kitty],[allSnuids.mary],
-        [allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.haru],
-        [allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.Umr],
-        [allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.scent],
-        [allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.stein],
-        [allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.riem],
-        [allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.kaze],
-        [allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.shall],
-        [allSnuids.renee,allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.furt],
-        [allSnuids.haru,allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.feyn],
-        [allSnuids.Umr,allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.feyn],
-        [allSnuids.scent,allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.rebec],
-        [allSnuids.stein,allSnuids.riem,allSnuids.kaze,allSnuids.sky,allSnuids.shall,allSnuids.furt,allSnuids.feyn,allSnuids.rebec,allSnuids.renee,allSnuids.haru,allSnuids.renee]
+        [mh.allSnuids.elie],[mh.allSnuids.raphael],[mh.allSnuids.van],[mh.allSnuids.levi],[mh.allSnuids.pola],
+        [mh.allSnuids.weyl],[mh.allSnuids.levine],[mh.allSnuids.kelly],[mh.allSnuids.angel],[mh.allSnuids.mina],
+        [mh.allSnuids.vanne],[mh.allSnuids.angelie],[mh.allSnuids.anthony],[mh.allSnuids.monica],[mh.allSnuids.vivienne],
+        [mh.allSnuids.lydia],[mh.allSnuids.kevin],[mh.allSnuids.nina],[mh.allSnuids.rose],
+        [mh.allSnuids.vera],[mh.allSnuids.hsilung],[mh.allSnuids.angela],[mh.allSnuids.kitty],[mh.allSnuids.mary],
+        [mh.allSnuids.riem,mh.allSnuids.kaze,mh.allSnuids.sky,mh.allSnuids.shall,mh.allSnuids.furt,mh.allSnuids.feyn,mh.allSnuids.rebec,mh.allSnuids.renee,mh.allSnuids.haru,mh.allSnuids.Umr,mh.allSnuids.haru],
+        [mh.allSnuids.kaze,mh.allSnuids.sky,mh.allSnuids.shall,mh.allSnuids.furt,mh.allSnuids.feyn,mh.allSnuids.rebec,mh.allSnuids.renee,mh.allSnuids.haru,mh.allSnuids.Umr,mh.allSnuids.scent,mh.allSnuids.Umr],
+        [mh.allSnuids.sky,mh.allSnuids.shall,mh.allSnuids.furt,mh.allSnuids.feyn,mh.allSnuids.rebec,mh.allSnuids.renee,mh.allSnuids.haru,mh.allSnuids.Umr,mh.allSnuids.scent,mh.allSnuids.stein,mh.allSnuids.scent],
+        [mh.allSnuids.shall,mh.allSnuids.furt,mh.allSnuids.feyn,mh.allSnuids.rebec,mh.allSnuids.renee,mh.allSnuids.haru,mh.allSnuids.Umr,mh.allSnuids.scent,mh.allSnuids.stein,mh.allSnuids.riem,mh.allSnuids.stein],
+        [mh.allSnuids.furt,mh.allSnuids.feyn,mh.allSnuids.rebec,mh.allSnuids.renee,mh.allSnuids.haru,mh.allSnuids.Umr,mh.allSnuids.scent,mh.allSnuids.stein,mh.allSnuids.riem,mh.allSnuids.kaze,mh.allSnuids.riem],
+        [mh.allSnuids.feyn,mh.allSnuids.rebec,mh.allSnuids.renee,mh.allSnuids.haru,mh.allSnuids.Umr,mh.allSnuids.scent,mh.allSnuids.stein,mh.allSnuids.riem,mh.allSnuids.kaze,mh.allSnuids.sky,mh.allSnuids.kaze],
+        [mh.allSnuids.rebec,mh.allSnuids.renee,mh.allSnuids.haru,mh.allSnuids.Umr,mh.allSnuids.scent,mh.allSnuids.stein,mh.allSnuids.riem,mh.allSnuids.kaze,mh.allSnuids.sky,mh.allSnuids.shall,mh.allSnuids.shall],
+        [mh.allSnuids.renee,mh.allSnuids.haru,mh.allSnuids.Umr,mh.allSnuids.scent,mh.allSnuids.stein,mh.allSnuids.riem,mh.allSnuids.kaze,mh.allSnuids.sky,mh.allSnuids.shall,mh.allSnuids.furt,mh.allSnuids.furt],
+        [mh.allSnuids.haru,mh.allSnuids.Umr,mh.allSnuids.scent,mh.allSnuids.stein,mh.allSnuids.riem,mh.allSnuids.kaze,mh.allSnuids.sky,mh.allSnuids.shall,mh.allSnuids.furt,mh.allSnuids.feyn,mh.allSnuids.feyn],
+        [mh.allSnuids.Umr,mh.allSnuids.scent,mh.allSnuids.stein,mh.allSnuids.riem,mh.allSnuids.kaze,mh.allSnuids.sky,mh.allSnuids.shall,mh.allSnuids.furt,mh.allSnuids.feyn,mh.allSnuids.rebec,mh.allSnuids.feyn],
+        [mh.allSnuids.scent,mh.allSnuids.stein,mh.allSnuids.riem,mh.allSnuids.kaze,mh.allSnuids.sky,mh.allSnuids.shall,mh.allSnuids.furt,mh.allSnuids.feyn,mh.allSnuids.rebec,mh.allSnuids.renee,mh.allSnuids.rebec],
+        [mh.allSnuids.stein,mh.allSnuids.riem,mh.allSnuids.kaze,mh.allSnuids.sky,mh.allSnuids.shall,mh.allSnuids.furt,mh.allSnuids.feyn,mh.allSnuids.rebec,mh.allSnuids.renee,mh.allSnuids.haru,mh.allSnuids.renee]
       ]
     },
     workingMapKey: 'workingMap',
@@ -484,7 +483,7 @@ const mappingUtility = (() => {
         )
       )
         return; // autoMapping必須先檢查,不然異常,斷
-      if (!mapClass || !MapClasses[mapClass]) return; // 異常,斷
+      if (!mapClass || !mh.MapClasses[mapClass]) return; // 異常,斷
       if (!scrollType || scrollType == '') return; // 異常,斷
       const map = MhUtils.getMapByClass(mapClass);
       if (map) return; // autoMapping必須先檢查,不然異常,斷
@@ -569,7 +568,7 @@ const mappingUtility = (() => {
       rtn.mapId = myMap.map_id;
       rtn.mapName = myMap.name;
       if (myMap.can_claim_reward) rtn.isCompleted = true;
-      if (!myMap.can_send_invites) rtn.isFull = true;
+      // // if (!myMap.can_send_invites) rtn.isFull = true;
       if (!myMap.can_upgrade) rtn.isDusted = true;
       const hunters = myMap.hunters;
       let completed = [];
@@ -579,6 +578,8 @@ const mappingUtility = (() => {
         if (completedIds && completedIds.length > 0)
           completed = completed.concat(completedIds);
       }
+      rtn.isFull =
+        !myMap.can_send_invites && rtn.maptain === MhUtils.getSnUserId();
       console.log('completed mouse ids', completed);
       rtn.completed = completed;
       const mouses = myMap.goals.mouse;
@@ -625,9 +626,10 @@ function testMappingUtility() {
   //   }
   // );
 }
-// setTimeout(() => testMappingUtility, 0); // 30000);
+// setTimeout(() => testMappingUtility(), 30000);
 // End #testMappingUtility
 
+setTimeout(() => testMappingUtility(), 30000);
 // 用掉庫存的 scroll
 await (async () => {
   try {
@@ -792,7 +794,6 @@ function grabMapMouse(mapType) {
 })();
 
 // MH constants
-const hg = {};
 user.environment_type = 'environment_type';
 user.quests = {};
 // MH functions
