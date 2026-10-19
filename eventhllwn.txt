@@ -130,7 +130,7 @@ function halloween(mapInfo) {
   const targetEnvironmentType = 'halloween_event_location';
   const enviromentType = MhUtils.getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('halloween_2.0.5.2.12');
+  logging('halloween_2.0.5.2.13');
   // my own hard-coded constants
   const mapScrollType = 'halloween_2021_trick_scroll_case_convertible';
   const scream = 'Scream Cheese';
@@ -679,7 +679,10 @@ function halloween(mapInfo) {
             this.handleTrap(trap, trap[4]);
             return resolve();
           }
-          if (this.mapInfo?.isFull && !settings.isLootEnding) {
+          if (
+            (this.mapInfo?.isFull || this.mapInfo?.isDusted) &&
+            !settings.isLootEnding
+          ) {
             if (this.handleTrapByMapping(traps)) return resolve();
           }
           this.chooseAndArm(traps, resolve);
