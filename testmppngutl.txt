@@ -5,7 +5,7 @@ const mappingUtility = (() => {
   const utils = {
     isProd: true,
     // values
-    version: 'mappingUtility_1.0.2.1.8',
+    version: 'mappingUtility_1.0.2.1.9',
     /** ajax URI */
     URI: 'managers/ajax/users/treasuremap_v2.php',
     // my own hard-coded constants
@@ -568,11 +568,6 @@ const mappingUtility = (() => {
       rtn.mapId = myMap.map_id;
       rtn.mapName = myMap.name;
       if (myMap.can_claim_reward) rtn.isCompleted = true;
-      if (
-        Number.parseInt(myMap.num_active_hunters) ===
-        Number.parseInt(myMap.max_hunters)
-      )
-        rtn.isFull = true;
       if (!myMap.can_upgrade) rtn.isDusted = true;
       const hunters = myMap.hunters;
       let completed = [];
@@ -582,6 +577,13 @@ const mappingUtility = (() => {
         if (completedIds && completedIds.length > 0)
           completed = completed.concat(completedIds);
       }
+      // 能 mapping的看人數,不能 mapping的一定是 maptain,看能否邀請
+      if (
+        Number.parseInt(myMap.num_active_hunters) ===
+          Number.parseInt(myMap.max_hunters) ||
+        (!myMap.can_send_invites && rtn.maptain === MhUtils.getSnUserId())
+      )
+        rtn.isFull = true;
       console.log('completed mouse ids', completed);
       rtn.completed = completed;
       const mouses = myMap.goals.mouse;
