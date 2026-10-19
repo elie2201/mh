@@ -130,7 +130,7 @@ function halloween(mapInfo) {
   const targetEnvironmentType = 'halloween_event_location';
   const enviromentType = MhUtils.getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('halloween_2.0.5.2.13');
+  logging('halloween_2.0.6.2.14');
   // my own hard-coded constants
   const mapScrollType = 'halloween_2021_trick_scroll_case_convertible';
   const scream = 'Scream Cheese';
@@ -157,7 +157,9 @@ function halloween(mapInfo) {
     minBaitQuantityTracking: [1, 1, 1, 1, 0],
     mapEndingQuantity: 3,
     mapEndingPriorityBegin: 0,
-    saveBaitEndAt: null,
+    isIncenseInTracking: true,
+    heldIncense: 60,
+    saveBaitFrom: '10-31T23:00',
     isLootEnding: false,
     gotdDates: [],
     traps: {
@@ -198,7 +200,14 @@ function halloween(mapInfo) {
   const quest = isProd
     ? user.quests.QuestHalloweenBoilingCauldron
     : QuestHalloweenBoilingCauldron;
-  // // const trapState = quest.mice_state;
+  const items = {
+    incense: {
+      type: 'insidious_incense_stat_item',
+      quantity: MyUtils.parseQuantity(
+        quest.items.insidious_incense_stat_item.quantity
+      )
+    }
+  };
   const rewardTrack = quest.reward_track;
   const isTrackingReward = rewardTrack.total_progress < 40;
   const totalEE =
@@ -206,11 +215,11 @@ function halloween(mapInfo) {
     MyUtils.parseQuantity(
       quest.items.cauldron_potion_ingredient_stat_item.quantity_unformatted
     );
-  const isAutoOpen =
-    settings.isAutoMap &&
-    !settings.isLootEnding &&
-    !quest.is_shutdown &&
-    !quest.is_final_shutdown;
+  //* const isAutoOpen =
+  //   settings.isAutoMap &&
+  //   !settings.isLootEnding &&
+  //   !quest.is_shutdown &&
+  //   !quest.is_final_shutdown;
   const cauldrons = quest.cauldrons;
   const cauldronUsage = [
     [0, 0, 0],
@@ -278,6 +287,7 @@ function halloween(mapInfo) {
         }
       },
       mapInfo: mapInfo, // 先用傳進來的參數,不管有沒有傳.後面 setMapInfo才是最主要的賦值
+      isAutoOpen: true,
       /** start running */
       run() {
         logging('start run');
@@ -329,11 +339,14 @@ function halloween(mapInfo) {
           console.log('auto settings if necessary');
           // 超過指定日期,強制不再為了 map調節 bait的使用,也不再 auto map
           if (
-            settings.saveBaitEndAt &&
-            Date.now() > Date.parse(settings.saveBaitEndAt)
+            settings.saveBaitFrom &&
+            Date.now() >
+              Date.parse(`${todayUTC.split('-')[0]}-${settings.saveBaitFrom}`)
           ) {
+            settings.isLootEnding = true;
             settings.mapEndingPriorityBegin = 0;
             settings.isAutoMap = false;
+            this.isAutoOpen = false;
             settings.isAutoBuyMap = false;
           }
           console.log('next: 檢查是否能 claim track reward');
@@ -396,7 +409,7 @@ function halloween(mapInfo) {
             console.log('Finished!!');
             this.setMapInfo(mapInfo);
           },
-          isAutoOpen
+          this.isAutoOpen
         );
       },
       /** @deprecated claim map rewards promise */
@@ -452,7 +465,7 @@ function halloween(mapInfo) {
           const quest = user.quests.QuestRelicHunter;
           if (MyUtils.parseQuantity(quest.num_invites) < 1) {
             console.log('沒有 map邀請');
-            if (!isAutoOpen) {
+            if (!this.isAutoOpen) {
               console.log('且不自動開 map');
               notAcceptAction();
               return;
@@ -532,7 +545,7 @@ function halloween(mapInfo) {
             notOpenAction();
             return;
           }
-          if (!isAutoOpen) {
+          if (!this.isAutoOpen) {
             console.log('不自動 mapping');
             notOpenAction();
             return;
@@ -550,12 +563,12 @@ function halloween(mapInfo) {
                   return;
                 }
                 MhUtils.completeTransaction(true, scrollType, 1, false, () => {
-                  console.log(`bought scroll, open one? ${isAutoOpen}`);
+                  console.log(`bought scroll, open one? ${this.isAutoOpen}`);
                   openScrollAndThenAction();
                 });
                 return;
               }
-              console.log(`have scroll, open one? ${isAutoOpen}`);
+              console.log(`have scroll, open one? ${this.isAutoOpen}`);
               openScrollAndThenAction();
             },
             true
@@ -696,12 +709,7 @@ function halloween(mapInfo) {
           cheeseStats[baitIndex] > settings.minBaitQuantityTracking[baitIndex]
         ) {
           const trap = traps[`cauldron_tier_${4 - baitIndex}_cheese`];
-          this.handleTrap(
-            trap,
-            isTrackingReward || settings.isIncenseTrackComplete
-              ? trap[4]
-              : false
-          );
+          this.handleTrap(trap, trap[4]);
           return trap;
         }
         return null;
@@ -738,12 +746,7 @@ function halloween(mapInfo) {
             const trap = traps[`cauldron_tier_${4 - i}_cheese`];
             logging(trap);
             if (trap) {
-              this.handleTrap(
-                trap,
-                isTrackingReward || settings.isIncenseTrackComplete
-                  ? trap[4]
-                  : false
-              );
+              this.handleTrap(trap, trap[4]);
             }
             break;
           }
@@ -777,7 +780,11 @@ function halloween(mapInfo) {
       },
       handleTrap(trap, isToEnable) {
         armAllTraps(...trap);
-        this.toggleIncense(isToEnable);
+        this.toggleFuel(
+          isToEnable &&
+            (items.incense.quantity > settings.heldIncense ||
+              (settings.isIncenseInTracking && isTrackingReward))
+        );
       },
       mapMouseRemaining() {
         const maps = user.quests.QuestRelicHunter.maps;
@@ -792,16 +799,11 @@ function halloween(mapInfo) {
         }
         return 0;
       },
-      toggleIncense(isEnabled) {
+      toggleFuel(isEnabled) {
         const quest = user.quests.QuestHalloweenBoilingCauldron;
-        if (
-          MyUtils.parseQuantity(
-            quest.items.insidious_incense_stat_item.quantity
-          ) == 0
-        )
-          return;
-        const isFuelEnabled = quest.is_fuel_enabled;
-        if ((isFuelEnabled == true) != isEnabled)
+        if (items.incense.quantity === 0) return;
+        const isFuelEnabled = [true, 'true'].includes(quest.is_fuel_enabled);
+        if ((isFuelEnabled === true) != isEnabled)
           hg.views.HeadsUpDisplayHalloweenBoilingCauldronView.toggleFuel();
       },
       /** location ajax */
