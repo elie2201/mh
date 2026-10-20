@@ -130,7 +130,7 @@ function halloween(mapInfo) {
   const targetEnvironmentType = 'halloween_event_location';
   const enviromentType = MhUtils.getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('halloween_2.0.6.2.14');
+  logging('halloween_2.0.7.2.14');
   // my own hard-coded constants
   const mapScrollType = 'halloween_2021_trick_scroll_case_convertible';
   const scream = 'Scream Cheese';
@@ -161,6 +161,7 @@ function halloween(mapInfo) {
     heldIncense: 60,
     saveBaitFrom: '10-31T23:00',
     isLootEnding: false,
+    trapState: '',
     gotdDates: [],
     traps: {
       tracking: {
@@ -687,6 +688,11 @@ function halloween(mapInfo) {
             : isTrackingReward
               ? settings.traps.tracking
               : settings.traps.boon;
+          if (settings.trapState) {
+            const trap = traps[settings.trapState];
+            this.handleTrap(trap, trap[4]);
+            return resolve();
+          }
           if (isTrackingReward && totalEE > 600) {
             const trap = traps[shoppeCheeseKey];
             this.handleTrap(trap, trap[4]);
