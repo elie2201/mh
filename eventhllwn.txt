@@ -130,7 +130,7 @@ function halloween(mapInfo) {
   const targetEnvironmentType = 'halloween_event_location';
   const enviromentType = MhUtils.getEnvironmentType();
   if (enviromentType !== targetEnvironmentType) return;
-  logging('halloween_2.0.7.2.14');
+  logging('halloween_2.0.7.2.15');
   // my own hard-coded constants
   const mapScrollType = 'halloween_2021_trick_scroll_case_convertible';
   const scream = 'Scream Cheese';
@@ -344,7 +344,7 @@ function halloween(mapInfo) {
             Date.now() >
               Date.parse(`${todayUTC.split('-')[0]}-${settings.saveBaitFrom}`)
           ) {
-            settings.isLootEnding = true;
+            // saveBaitFrom只是不為了 map消耗 bait settings.isLootEnding = true;
             settings.mapEndingPriorityBegin = 0;
             settings.isAutoMap = false;
             this.isAutoOpen = false;
